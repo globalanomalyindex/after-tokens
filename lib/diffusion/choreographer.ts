@@ -1,0 +1,162 @@
+'use client'
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useMotionValue, type MotionValue } from 'motion/react'
+import type { MeasuredAtom, ModeStrategy, ResolutionEvent, WordState } from './types'
+
+type Trigger = 'inView' | 'immediate' | 'manual'
+
+type UseChoreography = {
+  words: MeasuredAtom[]
+  strategy: ModeStrategy
+  trigger?: Trigger
+  reduced?: boolean
+  onResolved?: () => void
+}
+
+type ChoreographyAPI = {
+  wordStates: Map<number, WordState>
+  progress: MotionValue<number>
+  isComplete: boolean
+  play: () => void
+  replay: () => void
+  pause: () => void
+}
+
+export function useDiffusionChoreography({
+  words,
+  strategy,
+  trigger = 'inView',
+  reduced = false,
+  onResolved,
+}: UseChoreography): ChoreographyAPI {
+  const events = useMemo<ResolutionEvent[]>(() => {
+    if (words.length === 0) return []
+    return reduced ? strategy.reducedMotionFallback(words) : strategy.computeTimeline(words)
+  }, [words, strategy, reduced])
+
+  const totalDuration = useMemo(() => strategy.totalDuration(words), [words, strategy])
+
+  const [wordStates, setWordStates] = useState<Map<number, WordState>>(() => {
+    const m = new Map<number, WordState>()
+    for (const w of words) m.set(w.index, 'pending')
+    return m
+  })
+  const progress = useMotionValue(0)
+  const [isComplete, setIsComplete] = useState(false)
+
+  const startedAtRef = useRef<number | null>(null)
+  const rafRef = useRef<number | null>(null)
+  const pausedAtRef = useRef<number | null>(null)
+  const pauseOffsetRef = useRef<number>(0)
+  const onResolvedRef = useRef(onResolved)
+  onResolvedRef.current = onResolved
+
+  const tick = useCallback(() => {
+    if (startedAtRef.current == null) return
+    const now = performance.now()
+    const elapsed = now - startedAtRef.current - pauseOffsetRef.current
+
+    setWordStates((prev) => {
+      let next: Map<number, WordState> | null = null
+      for (const ev of events) {
+        if (ev.t <= elapsed && prev.get(ev.wordIndex) !== ev.state) {
+          if (!next) next = new Map(prev)
+          next.set(ev.wordIndex, ev.state)
+        }
+      }
+      return next ?? prev
+    })
+
+    const p = totalDuration > 0 ? Math.min(1, elapsed / totalDuration) : 1
+    progress.set(p)
+
+    if (elapsed >= totalDuration) {
+      setIsComplete(true)
+      onResolvedRef.current?.()
+      return
+    }
+    rafRef.current = requestAnimationFrame(tick)
+  }, [events, totalDuration, progress])
+
+  // Idempotent play: once startedAtRef is set, play() is a no-op. Without
+  // this guard, any useEffect that depends on the returned `play` identity
+  // would re-fire play() each time isComplete flips (because that flip
+  // changes the callback identity), causing an infinite play → complete →
+  // replay loop. Explicit replay() resets startedAtRef and re-enters play.
+  const play = useCallback(() => {
+    if (startedAtRef.current != null) return
+    startedAtRef.current = performance.now()
+    pauseOffsetRef.current = 0
+    setIsComplete(false)
+    rafRef.current = requestAnimationFrame(tick)
+  }, [tick])
+
+  const pause = useCallback(() => {
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+    if (startedAtRef.current != null && pausedAtRef.current == null) {
+      pausedAtRef.current = performance.now()
+    }
+  }, [])
+
+  const replay = useCallback(() => {
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    setWordStates(() => {
+      const m = new Map<number, WordState>()
+      for (const w of words) m.set(w.index, 'pending')
+      return m
+    })
+    progress.set(0)
+    setIsComplete(false)
+    startedAtRef.current = null
+    pausedAtRef.current = null
+    pauseOffsetRef.current = 0
+    queueMicrotask(play)
+  }, [words, play, progress])
+
+  useEffect(() => {
+    if (trigger === 'immediate') play()
+  }, [trigger, play])
+
+  // rAF cancellation lives in its own unmount-only effect. The previous setup
+  // tied it to the trigger='immediate' effect, which meant every `play`
+  // identity change (caused by `measured` updating mid-animation) would
+  // cancel the in-flight rAF — and the idempotent play() can't restart it.
+  // Result: the diffusion froze mid-flight, leaving half the words cycling.
+  //
+  // The cleanup ALSO resets the start marker. React StrictMode (dev) runs
+  // mount effects as mount → cleanup → mount. For a consumer whose `words`
+  // are non-empty on first mount (e.g. the weather widget's virtual atoms),
+  // play() fires during the first invoke, the cleanup cancels its rAF, and
+  // the idempotent play() on the second invoke is a no-op — so the loop never
+  // restarts and progress freezes at 0. Clearing startedAtRef here lets the
+  // re-invoked play() start cleanly. On a real unmount this is harmless.
+  useEffect(() => {
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+      startedAtRef.current = null
+      pausedAtRef.current = null
+      pauseOffsetRef.current = 0
+    }
+  }, [])
+
+  useEffect(() => {
+    function onVisibility() {
+      if (document.hidden) pause()
+      else if (startedAtRef.current != null && !isComplete) {
+        const offset = pausedAtRef.current ? performance.now() - pausedAtRef.current : 0
+        pauseOffsetRef.current += offset
+        pausedAtRef.current = null
+        rafRef.current = requestAnimationFrame(tick)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [pause, tick, isComplete])
+
+  return { wordStates, progress, isComplete, play, replay, pause }
+}
