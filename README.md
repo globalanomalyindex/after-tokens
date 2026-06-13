@@ -1,37 +1,51 @@
 # after tokens
 
-A design and engineering case study on how to render text from a diffusion language model.
+a design and engineering case study on how to render text from a diffusion language model.
 
-Autoregressive models write left to right, one token at a time, so the typewriter stream became the default way to show an answer arriving. Diffusion models do not work that way: they resolve a whole response at once, refining from noise toward clarity across the answer surface, with confidence rising in parallel rather than position by position. The typewriter is the wrong picture for that process.
+- live (vercel): https://after-tokens.vercel.app
+- live (github pages): https://globalanomalyindex.github.io/after-tokens/
 
-This piece works through what the right picture is. The thesis: animation should signal the shape of the answer. A good reveal communicates the shape and state of a response so a person can read how far along it is and how sure the system is, and calibrate their trust in provisional output accordingly. The visual language is anchored in nature (mycelium, fog, aurora) because those are the systems that already resolve everywhere at once.
+autoregressive models write left to right, one token at a time, so the typewriter stream became the default way to show an answer arriving. diffusion models do not work that way: they resolve a whole response at once, refining from noise toward clarity across the answer surface, with confidence rising in parallel rather than position by position. the typewriter is the wrong picture for that process.
 
-It is built as a scrolling editorial article with live, interactive demonstrations: the diffusion reveal running under multiple brand identities, a weather widget that arrives whole, and a playground for driving the choreography directly.
+this piece works through what the right picture is. the thesis: animation should signal the shape of the answer. a good reveal communicates the shape and state of a response so a person can read how far along it is and how sure the system is, then calibrate their trust in provisional output accordingly. the visual language is anchored in nature (mycelium, fog, aurora) because those are the systems that already resolve everywhere at once.
 
-## Run it
+it is built as a scrolling editorial article with live, interactive demonstrations: the diffusion reveal running under multiple brand identities, a weather widget that arrives whole, and a playground for driving the choreography directly.
+
+## run it
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+then open http://localhost:3000.
 
-## Scripts
+## scripts
 
 | command | what it does |
-| --- | --- |
+| - | - |
 | `pnpm dev` | start the dev server |
 | `pnpm build` | production build |
-| `pnpm test` | run the unit tests (Vitest) |
-| `pnpm test:e2e` | run the end-to-end tests (Playwright) |
-| `pnpm typecheck` | type-check without emitting |
+| `pnpm test` | run the unit tests (vitest) |
+| `pnpm test:e2e` | run the end to end tests (playwright) |
+| `pnpm typecheck` | type check without emitting |
 
-## Stack
+## stack
 
-Next.js (App Router), TypeScript, Tailwind, and Motion for the choreography. All animation respects `prefers-reduced-motion`.
+next.js (app router), typescript, tailwind, and motion for the choreography. all animation respects `prefers-reduced-motion`.
 
-## Reference
+## deploys
 
-- Design spec: [`docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md`](docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md)
-- Type system notes: [`docs/fonts.md`](docs/fonts.md)
+the same app ships to two hosts from one codebase.
+
+- vercel: the default build serves at the domain root.
+- github pages: the workflow in `.github/workflows/deploy-pages.yml` builds with `GITHUB_PAGES=true`, which switches on next.js static export and a `/after-tokens` base path, then publishes the static `out` directory to pages.
+
+## reference
+
+- design spec: [`docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md`](docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md)
+- type system notes: [`docs/fonts.md`](docs/fonts.md)
+
+## credit
+
+designed and built by [globalanomalyindex](https://github.com/globalanomalyindex). portfolio theme: looking to nature for answers.

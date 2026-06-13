@@ -45,3 +45,6 @@ next-env.d.ts
 /playwright-report
 .claude/
 .superpowers/
+
+# static export output (github pages)
+/out
