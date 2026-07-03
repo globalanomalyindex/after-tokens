@@ -20,6 +20,8 @@ import { DecodingWord } from '@/components/diffusion/decoding-word'
 //   - click / scroll / touch / Esc / Space all skip straight to the handoff
 //   - it plays once per load and never blocks scroll permanently
 
+const SEEN_KEY = 'after-tokens:intro-seen'
+
 type Beat = { word: string; hold: number }
 
 // Tight, well-paced. Reads as one sentence that lands the concept and ends on
@@ -62,11 +64,24 @@ export function IntroGate() {
   }, [])
 
   // Decide whether to run at all. Reduced motion -> never mount the overlay.
+  // Same for a session that has already seen it: sessionStorage (not
+  // localStorage) means a fresh browser session still gets the full
+  // cinematic entrance, but reloads and return visits within that same
+  // sitting don't pay the 5-6 seconds again — a returning reviewer should
+  // not sit through the intro twice in one sitting.
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (mq.matches) {
       setPhase('done')
       return
+    }
+    try {
+      if (window.sessionStorage.getItem(SEEN_KEY)) {
+        setPhase('done')
+        return
+      }
+    } catch {
+      // non-fatal: sessionStorage can throw in private/locked-down modes
     }
     // Start at the top so the intro reads as first paint, never mid-scroll.
     try {
@@ -94,6 +109,14 @@ export function IntroGate() {
   const handoff = useCallback(() => {
     if (dismissedRef.current) return
     dismissedRef.current = true
+    // Mark this browser session as having seen the intro (completed or
+    // skipped, both count) so it doesn't replay on the next reload/return
+    // visit this sitting; guarded for privacy modes that block storage.
+    try {
+      window.sessionStorage.setItem(SEEN_KEY, '1')
+    } catch {
+      // non-fatal: sessionStorage can throw in private/locked-down modes
+    }
     clearTimers()
     setPhase('handoff')
     const t = window.setTimeout(() => {

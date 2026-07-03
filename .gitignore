@@ -48,3 +48,6 @@ next-env.d.ts
 
 # static export output (github pages)
 /out
+
+# local browser-qa artifacts
+/.playwright-mcp

@@ -62,7 +62,7 @@ export function SectionBrandVariations() {
       n={5}
       act="III"
       title="Brand variations"
-      eyebrow={['Section 05', 'One grammar', 'Four identities']}
+      eyebrow={['One grammar', 'Four identities']}
     >
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6 max-w-3xl">
         <span className="title-index">v.</span>The reveal grammar is brand-agnostic
@@ -70,8 +70,16 @@ export function SectionBrandVariations() {
       <p className="mb-6 text-base max-w-prose">
         <Highlight>
           One timeline, four identities. Same mode, same timing, same stagger, same tokenization.
-          Only surface, ink, accent, and type change. The reveal that tells you how settled an answer
-          is does not belong to any one brand; it is a grammar each one can speak in its own voice.
+          Only surface, ink, accent, type, and corner radius change. The reveal that tells you how
+          settled an answer is does not belong to any one brand; it is a grammar each one can speak
+          in its own voice. Four here, but the grammar does not care how many.
+        </Highlight>
+      </p>
+      <p className="mb-6 text-base max-w-prose">
+        <Highlight>
+          Arrival is a brand moment, the way a splash screen or an app icon is. A portfolio of
+          products sharing one system inherits a recognizable way of settling, without flattening
+          what makes each voice its own.
         </Highlight>
       </p>
       <p className="mb-10 text-base max-w-prose">

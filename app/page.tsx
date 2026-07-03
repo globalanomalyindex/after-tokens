@@ -1,4 +1,5 @@
 import { BrandProvider } from '@/lib/brand/provider'
+import { SectionNav } from '@/components/chrome/section-nav'
 import { SectionHook } from '@/components/sections/section-01-hook'
 import { SectionPrimer } from '@/components/sections/section-02-primer'
 import { SectionThesis } from '@/components/sections/section-04-thesis'
@@ -31,6 +32,7 @@ export default function HomePage() {
       <SectionStyles />
       <SectionPlayground />
       <SectionClose />
+      <SectionNav />
     </BrandProvider>
   )
 }

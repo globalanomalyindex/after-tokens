@@ -37,7 +37,8 @@ export function SectionMycelium() {
             the way{' '}
             <NatureWord kind="pinecone">pine cones</NatureWord> and{' '}
             <NatureWord kind="nautilus">nautilus shells</NatureWord> already trained the eye to read
-            growth.
+            growth. it earned the slot: a particle-flock mode tried three shapes for the same job
+            and was cut for clarity.
           </>
         }
         prompt="How does diffusion text generation actually work?"

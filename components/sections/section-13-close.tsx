@@ -4,7 +4,7 @@ import { NatureWord } from '@/components/chrome/nature-word'
 
 export function SectionClose() {
   return (
-    <Section id="close" n={10} act="V" title="Close" eyebrow={['Section 10', 'Close', '2026']}>
+    <Section id="close" n={10} act="V" title="Close" eyebrow={['Close', '2026']}>
       <div className="max-w-2xl">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-8">
           <span className="title-index">x.</span>What this case study does not solve
@@ -41,7 +41,54 @@ export function SectionClose() {
               decorative; at that point the legibility argument fails and it is back to ornament.
             </p>
           </li>
+          <li>
+            <Highlight>
+              <strong>An honest cadence only.</strong> The reveal is only as truthful as the confidence
+              signal driving it. Decorative timing that is not derived from real model uncertainty
+              teaches false trust, which is worse than teaching none.
+            </Highlight>
+          </li>
+          <li>
+            <Highlight>
+              <strong>Latin script, for now.</strong> The glyph choreography and golden-angle stride were
+              tuned on English tokens. CJK, RTL, and diacritic-heavy scripts break per-glyph assumptions
+              this system has not yet earned.
+            </Highlight>
+          </li>
         </ul>
+        <div className="mb-12">
+          <p
+            className="text-[10px] lowercase tracking-[0.16em] mb-3"
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+          >
+            + cut on the way here
+          </p>
+          <p className="text-base leading-relaxed mb-4" style={{ color: 'var(--ink-2)' }}>
+            the shipped thing is the survivor. three earlier shapes did not make it:
+          </p>
+          <ul className="space-y-4 text-base leading-relaxed">
+            <li>
+              <Highlight>
+                <strong>A fourth reveal mode.</strong> A particle flock, rebuilt three times:
+                chain-reaction swarm, liquid-glass orbs, fireflies. The faster it moved the harder it was
+                to read; mycelium said the same thing simpler, so the flock went.
+              </Highlight>
+            </li>
+            <li>
+              <Highlight>
+                <strong>The first entrance.</strong> Shipped, broke, removed. Rebuilt only after the
+                failure taught what it had to survive: reduced motion, replays, impatient scrolls.
+              </Highlight>
+            </li>
+            <li>
+              <Highlight>
+                <strong>Line graphs.</strong> The first thesis comparison plotted resolution as curves.
+                Graphs describe a process, they do not feel like one. Rows of crosshairs lit by the
+                actual word locks replaced them.
+              </Highlight>
+            </li>
+          </ul>
+        </div>
         <div className="border-t pt-8" style={{ borderColor: 'color-mix(in oklab, var(--ink) 15%, transparent)' }}>
           <p
             className="text-[10px] lowercase tracking-[0.16em] mb-2"

@@ -31,7 +31,7 @@ export function SectionWidget() {
       n={7}
       act="III"
       title="Beyond words"
-      eyebrow={['Section 07', 'Beyond words', 'Color · graphics · widgets']}
+      eyebrow={['Beyond words', 'Color · graphics · widgets']}
     >
       <div className="grid gap-10 lg:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(380px,460px)] items-start">
         <div className="max-w-2xl">

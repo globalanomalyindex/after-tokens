@@ -1361,3 +1361,102 @@ html.intro-lock body {
   .intro-skip { animation: none; opacity: 1; }
 }
 /* ===== end entrance ====================================================== */
+/* ===== section nav ===== */
+/* Fixed vertical jump-nav rail, right edge, vertically centered. Desktop only
+   (the max-w-5xl content column leaves gutter at >=1100px). Quiet
+   instrument-panel chrome, same family as the corner numerals / registration
+   marks — texture first, UI second. Sits BELOW the intro overlay (z-index 80)
+   so the entrance always covers it. */
+.section-nav {
+  display: none;
+  position: fixed;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 40;
+}
+@media (min-width: 1100px) {
+  .section-nav { display: block; }
+}
+.section-nav-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.section-nav-item { position: relative; }
+.section-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--ink);
+  opacity: 0.35;
+  transition: opacity 180ms var(--ease-out-strong), color 180ms var(--ease-out-strong);
+}
+.section-nav-link:hover,
+.section-nav-link:focus-visible {
+  opacity: 1;
+}
+/* Over the dark hero (the one full-viewport stage section), ink numerals at
+   0.35 vanish; flip the resting color to the stage text token so the rail
+   stays legible on both surfaces. Active item keeps its section accent. */
+.section-nav[data-on-stage="true"] .section-nav-link:not([data-active="true"]) {
+  color: var(--stage-text);
+}
+.section-nav-link:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+.section-nav-link[data-active="true"] {
+  opacity: 1;
+  color: var(--section-nav-color, var(--ink));
+}
+.section-nav-mark { position: relative; display: inline-flex; align-items: center; }
+.section-nav-plus {
+  position: absolute;
+  left: -0.85em;
+  opacity: 0.8;
+}
+.section-nav-link[data-active="true"] .section-nav-mark {
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+}
+/* Label chip: appears to the LEFT on hover/focus, absolutely positioned so it
+   never shifts layout. Ink-on-bone, hairline border, 2px radius, fast
+   fade + slide-in from 4px right. */
+.section-nav-chip {
+  position: absolute;
+  right: calc(100% + 0.6rem);
+  top: 50%;
+  transform: translate(4px, -50%);
+  white-space: nowrap;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: var(--bone);
+  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: 2px;
+  padding: 0.28em 0.5em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms var(--ease-out-strong), transform 140ms var(--ease-out-strong);
+}
+.section-nav-link:hover .section-nav-chip,
+.section-nav-link:focus-visible .section-nav-chip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .section-nav-link,
+  .section-nav-chip { transition: none; }
+}
+/* ===== end section nav ===== */

@@ -34,6 +34,10 @@ then open http://localhost:3000.
 
 next.js (app router), typescript, tailwind, and motion for the choreography. all animation respects `prefers-reduced-motion`.
 
+## process
+
+this shipped through cycles of build, audit, and cut. a fourth reveal mode (a particle flock) was rebuilt three times and killed for clarity. the first entrance shipped, broke, and was rebuilt around its failure modes. the thesis comparison began as line graphs and became crosshairs lit by real word locks. the close section of the piece documents what was cut, what remains unsolved, and how the thesis would be falsified.
+
 ## deploys
 
 the same app ships to two hosts from one codebase.

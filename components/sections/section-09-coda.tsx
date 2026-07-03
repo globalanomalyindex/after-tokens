@@ -114,10 +114,9 @@ export function SectionCoda() {
       </h2>
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
-          Pick a prompt. The system classifies what you are asking for and answers in the
-          treatment that fits it: an analytic question settles in order, a creative one drifts
-          in. The mode is the system telling you how it read you. Override it and watch the
-          read change.
+          Pick a prompt. Each is tagged with the reveal it reads as: an analytic question settles
+          in order, a creative one drifts in. A production system would classify live; here the
+          tags are set by hand, so the demo stays honest. Override one and watch the read change.
         </Highlight>
       </p>
 
@@ -145,7 +144,7 @@ export function SectionCoda() {
             layout="list"
           />
           <p className="mt-3 text-[11px] leading-relaxed" style={{ color: 'var(--muted)' }}>
-            The tag is the mode the system chose for that intent. Press Space to replay the read.
+            The label above shows the mode the prompt is tagged with. Press Space to replay the read.
           </p>
         </aside>
       </div>

@@ -46,7 +46,7 @@ export function SectionStyles() {
       n={8}
       act="IV"
       title="Infinite styles"
-      eyebrow={['Section 08', 'Designed', 'Not decorated']}
+      eyebrow={['Designed', 'Not decorated']}
     >
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-4xl">
         <span className="title-index">viii.</span>Nothing in <NatureWord kind="nature">nature</NatureWord> is decorative
@@ -141,8 +141,9 @@ export function SectionStyles() {
             <Highlight>
               Before a single word exists, the answer is already taking shape. A wellness brand loads
               in living green, earthy and organic, so you read its register in the first frame: the
-              color alone signals the kind of answer that is coming. And when the words arrive, they
-              carry full weight: bold, italics, scale, color, even an emoji.
+              color alone signals the kind of answer that is coming, and on a shared surface carrying
+              many products, that loading frame is branded space, not a blank. And when the words
+              arrive, they carry full weight: bold, italics, scale, color, even an emoji.
             </Highlight>
           </p>
         </div>
