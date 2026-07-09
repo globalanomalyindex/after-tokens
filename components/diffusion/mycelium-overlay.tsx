@@ -10,5 +10,6 @@ import type { OverlayProps } from '@/lib/diffusion/types'
 // We still accept OverlayProps so the strategy's renderOverlay contract
 // stays unchanged — props are just unused here.
 export function MyceliumOverlay(_props: OverlayProps) {
+  void _props
   return null
 }

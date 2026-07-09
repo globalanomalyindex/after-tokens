@@ -91,7 +91,12 @@ export function ModeDemo({
           style={{ background: 'var(--stage)', color: 'var(--stage-text)' }}
         >
           <ChatExchange prompt={prompt} runKey={`${mode}-${replayKey}`}>
-            <DiffusionText mode={mode} trigger="immediate" className="text-base md:text-lg leading-relaxed">
+            <DiffusionText
+              mode={mode}
+              trigger="immediate"
+              showStatus
+              className="text-base md:text-lg leading-relaxed"
+            >
               {answer}
             </DiffusionText>
           </ChatExchange>

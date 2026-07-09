@@ -18,7 +18,7 @@ describe('design tokens', () => {
     expect(css).toMatch(/--accent:\s*#F5F2EA/i)
   })
 
-  it('forbids pure black and pure white in tokens', () => {
+  it('keeps the case-study root palette off pure black and white', () => {
     const tokenBlock = css.match(/:root\s*\{[^}]+\}/)?.[0] ?? ''
     expect(tokenBlock).not.toMatch(/#000000|#FFFFFF|#000\b|#FFF\b/i)
   })

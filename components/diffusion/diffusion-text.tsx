@@ -19,6 +19,7 @@ import { mitosis } from '@/lib/diffusion/modes/mitosis'
 import { CyclingWord } from './cycling-word'
 import { DecodingWord } from './decoding-word'
 import { isDecodeStyle, DECODE_WINDOW } from '@/lib/diffusion/decode'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import type { MeasuredAtom, ModeName, ModeStrategy, OverlayProps } from '@/lib/diffusion/types'
 
 const strategies: Record<ModeName, ModeStrategy> = { mycelium, fog, aurora, mitosis }
@@ -35,7 +36,7 @@ type DiffusionTextProps = {
   // the text only after a sibling widget has finished settling.
   externalActive?: boolean
   // Multiplier on the strategy's totalDuration. 1 = native speed. Used by
-  // the coda's "thinking" rail to lengthen the diffusion for low/med/high
+  // prototype controls to compare short and long reveal windows
   // without changing the relative choreography rhythm.
   durationScale?: number
   // The vocabulary words cycle through while pending. 'words' (default) is the
@@ -46,6 +47,12 @@ type DiffusionTextProps = {
   // word bloom into that color the moment it locks (pending words stay neutral).
   // Used by the playground for solid-accent and rainbow/spectrum text.
   wordColor?: (index: number, total: number) => string | undefined
+  // Editorial specimens should not all announce themselves as live updates.
+  // Interactive results can opt into one announcement after the reveal ends.
+  announce?: 'none' | 'on-complete'
+  // A visible, motion-independent state readout. This also makes the prototype
+  // source explicit: the shipped timelines are authored, not model confidence.
+  showStatus?: boolean
   onResolved?: () => void
   className?: string
 }
@@ -58,6 +65,8 @@ export function DiffusionText({
   durationScale = 1,
   glyphStyle = 'words',
   wordColor,
+  announce = 'none',
+  showStatus = false,
   onResolved,
   className = '',
 }: DiffusionTextProps) {
@@ -72,8 +81,11 @@ export function DiffusionText({
   const containerRef = useRef<HTMLDivElement>(null)
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([])
   const [measured, setMeasured] = useState<MeasuredAtom[]>([])
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
   const [active, setActive] = useState(trigger === 'immediate')
+  // Reduced-motion users get the final readable content immediately instead
+  // of waiting for each offscreen IntersectionObserver to activate.
+  const shouldPlay = active || reduced
   const [cycleTick, setCycleTick] = useState(0)
   const [unblurred, setUnblurred] = useState(false)
 
@@ -83,14 +95,6 @@ export function DiffusionText({
   useEffect(() => {
     if (externalActive === true && !active) setActive(true)
   }, [externalActive, active])
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
 
   // Re-measure when atoms change, when the container resizes, or when web
   // fonts swap in. Without these triggers the overlay dots & flock targets
@@ -151,6 +155,7 @@ export function DiffusionText({
   }, [atoms])
 
   useEffect(() => {
+    if (reduced) return
     if (trigger !== 'inView' || !containerRef.current) return
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -163,11 +168,11 @@ export function DiffusionText({
     )
     observer.observe(containerRef.current)
     return () => observer.disconnect()
-  }, [trigger])
+  }, [trigger, reduced])
 
   const baseStrategy = strategies[mode]!
   // Wrap the strategy in a duration-scaled adapter when the caller wants a
-  // longer "thinking" window. Scale = 1 returns the original strategy so
+  // longer presentation window. Scale = 1 returns the original strategy so
   // hot paths stay identity-equal.
   const strategy = useMemo<ModeStrategy>(() => {
     if (!durationScale || durationScale === 1) return baseStrategy
@@ -177,8 +182,9 @@ export function DiffusionText({
       computeTimeline: (w) =>
         baseStrategy.computeTimeline(w).map((e) => ({ ...e, t: e.t * durationScale })),
       renderOverlay: baseStrategy.renderOverlay,
-      reducedMotionFallback: (w) =>
-        baseStrategy.reducedMotionFallback(w).map((e) => ({ ...e, t: e.t * durationScale })),
+      // A presentation-speed control must never stretch the accessibility
+      // fallback. Reduced motion keeps its own compact timing contract.
+      reducedMotionFallback: baseStrategy.reducedMotionFallback,
     }
   }, [baseStrategy, durationScale])
 
@@ -189,16 +195,20 @@ export function DiffusionText({
   // This is what makes the per-character decode REACT in the mode's style: the
   // aurora band sweeps and the cells under it resolve in row order, mycelium
   // resolves them in its organic order, etc. Fractions are scale-invariant, so
-  // the thinking budget stretches the decode in real time without reordering it.
+  // the reveal-duration control stretches the decode without reordering it.
   //
   // FROZEN once computed: a re-measurement mid-animation (font swap, reflow)
   // would otherwise shift the geometry-derived lock times and rewind a word's
   // decode. We compute once from the first complete measurement and reuse it for
   // the life of this mount (content/mode/scale changes remount via runKey).
-  const lockWindowsRef = useRef<Map<number, { startP: number; endP: number }> | null>(null)
+  const lockIdentity = `${mode}\u0000${glyphStyle}\u0000${durationScale}\u0000${children}`
+  const lockWindowsRef = useRef<{
+    identity: string
+    windows: Map<number, { startP: number; endP: number }>
+  } | null>(null)
   const lockWindows = useMemo(() => {
     if (!isDecode) return null
-    if (lockWindowsRef.current) return lockWindowsRef.current
+    if (lockWindowsRef.current?.identity === lockIdentity) return lockWindowsRef.current.windows
     if (measured.length === 0 || measured.length !== atoms.length) return null
     const total = strategy.totalDuration(measured)
     if (total <= 0) return null
@@ -214,11 +224,11 @@ export function DiffusionText({
       const endP = Math.min(1, (resolvedAt.get(w.index) ?? total) / total)
       map.set(w.index, { startP: Math.max(0, endP - DECODE_WINDOW), endP })
     }
-    lockWindowsRef.current = map
+    lockWindowsRef.current = { identity: lockIdentity, windows: map }
     return map
-  }, [isDecode, measured, strategy, atoms.length])
+  }, [isDecode, measured, strategy, atoms.length, lockIdentity])
 
-  const { wordStates, progress, play } = useDiffusionChoreography({
+  const { wordStates, progress, isComplete, play } = useDiffusionChoreography({
     words: measured,
     strategy,
     trigger: 'manual',
@@ -227,8 +237,8 @@ export function DiffusionText({
   })
 
   useEffect(() => {
-    if (active && measured.length > 0) play()
-  }, [active, measured.length, play])
+    if (shouldPlay && measured.length > 0) play()
+  }, [shouldPlay, measured.length, play])
 
   // Global unblur once progress crosses threshold — drives the "final reveal" beat.
   useMotionValueEvent(progress, 'change', (p) => {
@@ -286,12 +296,12 @@ export function DiffusionText({
   }, [atoms, wordStates])
   useEffect(() => {
     // Decode styles drive their own glyph churn from progress; no cycle tick.
-    if (!active || !hasPending || reduced || isDecode) return
+    if (!shouldPlay || !hasPending || reduced || isDecode) return
     const id = setInterval(() => {
       setCycleTick((t) => t + 1)
     }, CYCLE_INTERVAL_MS)
     return () => clearInterval(id)
-  }, [active, hasPending, reduced, isDecode])
+  }, [shouldPlay, hasPending, reduced, isDecode])
 
   const Overlay = strategy.renderOverlay
 
@@ -302,15 +312,21 @@ export function DiffusionText({
       data-mode={mode}
       data-glyph={glyphStyle}
       data-unblurred={unblurred ? 'true' : 'false'}
-      data-active={active ? 'true' : 'false'}
+      data-active={shouldPlay ? 'true' : 'false'}
+      data-complete={isComplete ? 'true' : 'false'}
+      data-reduced-motion={reduced ? 'true' : 'false'}
       // Decode styles render in monospace so every stage glyph (block, braille,
       // katakana, letter) occupies one cell — zero layout jitter, like the
       // static specimens. 'words' keeps the chat-native UI font.
       style={isDecode ? { fontFamily: 'var(--font-mono)' } : undefined}
     >
-      <div role="status" aria-live="polite" className="sr-only">
-        {children}
-      </div>
+      {announce === 'on-complete' ? (
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+          {isComplete ? children : ''}
+        </div>
+      ) : (
+        <span className="sr-only">{children}</span>
+      )}
       <span aria-hidden="true" className="block">
         {atoms.map((atom, i) => {
           // Decode styles: per-character stage decode, timed to the mode's lock
@@ -379,9 +395,10 @@ export function DiffusionText({
                 atomIndex={atom.index}
                 finalText={atom.text}
                 candidates={candidatesPerAtom[i] ?? []}
-                state={active ? state : 'pending'}
+                state={shouldPlay ? state : 'pending'}
                 cycleTick={cycleTick}
                 slotWidth={slotWidth}
+                reduced={reduced}
               />
             </span>
           )
@@ -395,6 +412,19 @@ export function DiffusionText({
           totalDuration={totalDuration}
           reduced={reduced}
         />
+      )}
+      {showStatus && (
+        <div
+          className="mt-4 flex items-center gap-2 text-[9.5px] uppercase tracking-[0.16em]"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            color: 'color-mix(in oklab, currentColor 62%, transparent)',
+          }}
+          data-prototype-status={isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
+        >
+          <span aria-hidden="true">{isComplete ? '●' : shouldPlay ? '◐' : '○'}</span>
+          authored prototype · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
+        </div>
       )}
     </div>
   )

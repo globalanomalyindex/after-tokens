@@ -6,7 +6,6 @@ import type { OverlayProps } from '@/lib/diffusion/types'
 import {
   MITOSIS_PRE_ROLL_MS,
   MITOSIS_SPLIT_MS,
-  MITOSIS_SETTLE_MS,
   computeMitosisLockOrder,
   computeMitosisLockTimes,
 } from '@/lib/diffusion/modes/mitosis'
@@ -36,6 +35,7 @@ export function MitosisOverlay({ words, progress, totalDuration, reduced }: Over
   const [size, setSize] = useState({ w: 0, h: 0 })
 
   useEffect(() => {
+    if (reduced) return
     if (!svgRef.current) return
     const parent = svgRef.current.parentElement
     if (!parent) return
@@ -47,7 +47,7 @@ export function MitosisOverlay({ words, progress, totalDuration, reduced }: Over
     const ro = new ResizeObserver(measure)
     ro.observe(parent)
     return () => ro.disconnect()
-  }, [])
+  }, [reduced])
 
   const orbData = useMemo(() => {
     if (words.length === 0 || size.w === 0) return []

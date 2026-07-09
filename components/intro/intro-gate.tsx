@@ -52,9 +52,11 @@ export function IntroGate() {
 
   const progress = useMotionValue(0)
   const rootRef = useRef<HTMLDivElement | null>(null)
+  const skipRef = useRef<HTMLButtonElement | null>(null)
   const timersRef = useRef<number[]>([])
   const animRef = useRef<ReturnType<typeof animate> | null>(null)
   const dismissedRef = useRef(false)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   const clearTimers = useCallback(() => {
     for (const id of timersRef.current) window.clearTimeout(id)
@@ -86,14 +88,54 @@ export function IntroGate() {
     // Start at the top so the intro reads as first paint, never mid-scroll.
     try {
       window.scrollTo(0, 0)
-      if ('scrollRestoration' in window.history) {
-        window.history.scrollRestoration = 'manual'
-      }
     } catch {
       // non-fatal: scrollTo can throw in exotic embeds
     }
     setMounted(true)
   }, [])
+
+  // The intro is a real modal, not an aria-hidden layer with a focusable child.
+  // While it is present, hide and inert the underlying case study, place focus
+  // on the one available action, then restore every attribute exactly as found.
+  useEffect(() => {
+    if (!mounted) return
+    const root = rootRef.current
+    if (!root) return
+
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previousRestoration =
+      'scrollRestoration' in window.history ? window.history.scrollRestoration : null
+    if (previousRestoration != null) window.history.scrollRestoration = 'manual'
+
+    const underlying = new Set<HTMLElement>()
+    document.querySelectorAll<HTMLElement>('[data-section]:not(#hook), .section-nav').forEach((el) => underlying.add(el))
+    root.parentElement?.querySelectorAll<HTMLElement>(':scope > *').forEach((el) => {
+      if (el !== root) underlying.add(el)
+    })
+
+    const prior = [...underlying].map((el) => ({
+      el,
+      inert: el.inert,
+      ariaHidden: el.getAttribute('aria-hidden'),
+    }))
+    for (const { el } of prior) {
+      el.inert = true
+      el.setAttribute('aria-hidden', 'true')
+    }
+
+    requestAnimationFrame(() => skipRef.current?.focus())
+
+    return () => {
+      for (const { el, inert, ariaHidden } of prior) {
+        el.inert = inert
+        if (ariaHidden == null) el.removeAttribute('aria-hidden')
+        else el.setAttribute('aria-hidden', ariaHidden)
+      }
+      if (previousRestoration != null) window.history.scrollRestoration = previousRestoration
+      const previous = previousFocusRef.current
+      if (previous && previous !== document.body && previous.isConnected) previous.focus()
+    }
+  }, [mounted])
 
   // Lock scroll while the overlay is up; always release on unmount.
   useEffect(() => {
@@ -198,14 +240,23 @@ export function IntroGate() {
       ref={rootRef}
       data-intro
       data-phase={phase}
-      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="intro-title"
       className="intro-gate"
       onClick={handoff}
+      onKeyDown={(event) => {
+        if (event.key === 'Tab') {
+          event.preventDefault()
+          skipRef.current?.focus()
+        }
+      }}
     >
+      <h2 id="intro-title" className="sr-only">After Tokens introduction</h2>
       {/* ambient noise field, same texture as the hero stage */}
-      <div className="intro-field" />
+      <div aria-hidden="true" className="intro-field" />
 
-      <div className="intro-stage">
+      <div aria-hidden="true" className="intro-stage">
         <span className="intro-word">
           {/* Remount per beat (key) so each word resolves from a fresh noise
               field. Single shared progress MV drives the decode at frame rate. */}
@@ -224,9 +275,9 @@ export function IntroGate() {
       </div>
 
       {/* fog sheet: parts on handoff, blurring then clearing to the light site */}
-      <div className="intro-fog" />
+      <div aria-hidden="true" className="intro-fog" />
 
-      <button type="button" className="intro-skip" onClick={handoff}>
+      <button ref={skipRef} type="button" className="intro-skip" onClick={handoff}>
         skip
       </button>
     </div>

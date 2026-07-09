@@ -13,7 +13,7 @@ import { motion, useReducedMotion } from 'motion/react'
 // has fully formed. Stark near-black surface, off-white text, generous space.
 // The elegance is entirely in the timing, the spacing, and the restraint.
 //
-// PERF / LIFECYCLE: mirrors crosshair-wave.tsx. The resolve to hold to fade loop is
+// PERF / LIFECYCLE: the resolve to hold to fade loop is
 // driven by timers that only run while the specimen is on screen
 // (IntersectionObserver) and the tab is visible (visibilitychange). Per-word
 // motion is handled by `motion` (transform + opacity + filter on the GPU), not
@@ -212,7 +212,6 @@ export function MinimalSpecimen({ className = '' }: { className?: string }) {
     // words.length is stable for the lifetime of this component (fixed
     // sentence); deliberately not depending on changing loop state so the
     // timer chain is created exactly once.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReduced, words.length])
 
   // ---- Render ------------------------------------------------------------

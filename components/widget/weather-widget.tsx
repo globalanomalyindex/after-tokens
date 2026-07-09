@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, useTransform } from 'motion/react'
+import { motion, useMotionValueEvent, useTransform } from 'motion/react'
 import type { MotionValue } from 'motion/react'
 import { useDiffusionChoreography } from '@/lib/diffusion/choreographer'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
@@ -17,6 +17,7 @@ import type {
 import { weatherFixtures } from '@/lib/widget/weather-data'
 import type { WeatherFixture } from '@/lib/widget/weather-data'
 import { WeatherIcon } from './weather-icon'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 const strategies: Record<ModeName, ModeStrategy> = {
   mycelium,
@@ -30,6 +31,7 @@ type WeatherWidgetProps = {
   mode?: ModeName
   trigger?: 'inView' | 'immediate' | 'manual'
   onComplete?: () => void
+  announce?: 'none' | 'on-complete'
   className?: string
 }
 
@@ -76,20 +78,14 @@ export function WeatherWidget({
   mode,
   trigger = 'inView',
   onComplete,
+  announce = 'none',
   className = '',
 }: WeatherWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
   const [active, setActive] = useState(trigger === 'immediate')
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+  const [complete, setComplete] = useState(false)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -123,6 +119,15 @@ export function WeatherWidget({
   const activeMode: ModeName = mode ?? fixture.defaultMode
   const strategy = strategies[activeMode]!
 
+  useEffect(() => setComplete(false), [fixture.id, activeMode])
+
+  const accessibleSummary = (
+    <>
+      {fixture.city}, {fixture.region}. {fixture.temperature} degrees. {fixture.conditionLabel}.
+      Feels like {fixture.feelsLike}. Wind {fixture.windMph} miles per hour {fixture.windDir}.
+    </>
+  )
+
   return (
     <div
       ref={containerRef}
@@ -132,10 +137,13 @@ export function WeatherWidget({
       data-mode={activeMode}
       style={{ aspectRatio: '0.78 / 1' }}
     >
-      <div role="status" aria-live="polite" className="sr-only">
-        {fixture.city}, {fixture.region}. {fixture.temperature} degrees. {fixture.conditionLabel}.
-        Feels like {fixture.feelsLike}. Wind {fixture.windMph} miles per hour {fixture.windDir}.
-      </div>
+      {announce === 'on-complete' ? (
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+          {complete ? accessibleSummary : null}
+        </div>
+      ) : (
+        <div className="sr-only">{accessibleSummary}</div>
+      )}
 
       {/*
         No dark outer card anymore — the widget visually integrates into the
@@ -152,7 +160,10 @@ export function WeatherWidget({
             sizeH={size.h}
             active={active}
             reduced={reduced}
-            onComplete={onComplete}
+            onComplete={() => {
+              setComplete(true)
+              onComplete?.()
+            }}
           />
         )}
       </div>
@@ -329,53 +340,41 @@ function TempBlock({
   const [displayTemp, setDisplayTemp] = useState<number>(fixture.temperature)
   const [locked, setLocked] = useState(false)
   const lockedRef = useRef(false)
+  const lastTraceIndexRef = useRef(-1)
 
   useEffect(() => {
     lockedRef.current = false
+    lastTraceIndexRef.current = -1
     setLocked(false)
     setDisplayTemp(fixture.temperature)
   }, [fixture])
 
-  useEffect(() => {
-    let cancelled = false
-    let raf = 0
-    let lastSwap = 0
-    const TARGET = fixture.temperature
-    const HOT = TARGET > 80
-    const COLD = TARGET < 40
+  // A deterministic, fixture-authored trace replaces the previous random rAF
+  // loop. It only reacts when choreography progress changes, so an offscreen
+  // widget does no perpetual work and every replay tells the same story.
+  const trace = useMemo(() => {
+    const target = fixture.temperature
+    const offsets = target > 80 ? [-11, 7, -4, 3, -1] : target < 40 ? [9, -7, 5, -2, 1] : [-8, 6, -3, 2, -1]
+    return offsets.map((offset) => target + offset)
+  }, [fixture.temperature])
 
-    // Drives the "scrubbing through plausible temperatures, then snapping to
-    // true" beat. Once the value locks (p >= 0.7) the loop STOPS rescheduling
-    // entirely — there's nothing left to animate, so we don't keep a rAF alive
-    // for the rest of the page's life.
-    function loop(now: number) {
-      if (cancelled) return
-      const p = progress.get()
-      if (p < 0.36) {
-        if (lockedRef.current === false) setDisplayTemp(TARGET)
-      } else if (p < 0.7) {
-        if (now - lastSwap > 90) {
-          lastSwap = now
-          const base = HOT ? 78 : COLD ? 12 : 56
-          const span = HOT ? 35 : COLD ? 32 : 32
-          setDisplayTemp(base + Math.floor(Math.random() * span))
-        }
-      } else if (!lockedRef.current) {
-        lockedRef.current = true
-        setDisplayTemp(TARGET)
-        setLocked(true)
-        return // locked — stop the loop, the number is final
-      } else {
-        return // already locked — nothing to schedule
+  useMotionValueEvent(progress, 'change', (p) => {
+    if (p < 0.36) return
+    if (p < 0.7) {
+      const normalized = (p - 0.36) / 0.34
+      const index = Math.min(trace.length - 1, Math.floor(normalized * trace.length))
+      if (index !== lastTraceIndexRef.current) {
+        lastTraceIndexRef.current = index
+        setDisplayTemp(trace[index] ?? fixture.temperature)
       }
-      raf = requestAnimationFrame(loop)
+      return
     }
-    raf = requestAnimationFrame(loop)
-    return () => {
-      cancelled = true
-      cancelAnimationFrame(raf)
+    if (!lockedRef.current) {
+      lockedRef.current = true
+      setDisplayTemp(fixture.temperature)
+      setLocked(true)
     }
-  }, [progress, fixture])
+  })
 
   const opacity = useTransform(progress, [0.4, 0.68], [0, 1])
   const blur = useTransform(progress, [0.4, 0.66, 0.74], [10, 4, 0], { clamp: true })

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // Rich-content specimen with a LIVING loading state. Before any word exists,
 // the card breathes in organic green: a wellness brand's identity, present in
@@ -17,9 +18,9 @@ const LINES: Seg[][] = [
   [{ t: 'Your morning reset ', b: true, big: true }, { t: '\u{1F33F}', big: true }],
   [{ t: 'Take ' }, { t: 'five quiet minutes', i: true }, { t: ' of daylight, before any screen.' }],
   [
-    { t: 'Hydrate', b: true, c: '#1F9D6B' },
+    { t: 'Hydrate', b: true, c: '#177A52' },
     { t: ', then one slow breath. Your focus is a ' },
-    { t: 'renewable', b: true, c: '#1F9D6B' },
+    { t: 'renewable', b: true, c: '#177A52' },
     { t: ' resource.' },
   ],
   [{ t: 'Spend it like it is scarce, and it lasts all day.', i: true, muted: true }],
@@ -61,14 +62,12 @@ export function RichContentDemo({ className = '' }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [revealed, setRevealed] = useState(0)
   const [phase, setPhase] = useState<Phase>('loading')
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
-    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    setReduced(isReduced)
     const el = ref.current
     if (!el) return
-    if (isReduced) {
+    if (reduced) {
       setPhase('hold')
       setRevealed(FLAT_COUNT)
       return
@@ -132,7 +131,7 @@ export function RichContentDemo({ className = '' }: { className?: string }) {
       io.disconnect()
       document.removeEventListener('visibilitychange', onVis)
     }
-  }, [])
+  }, [reduced])
 
   return (
     <div
@@ -174,7 +173,7 @@ export function RichContentDemo({ className = '' }: { className?: string }) {
                   style={{
                     fontWeight: seg.b ? 700 : 400,
                     fontStyle: seg.i ? 'italic' : 'normal',
-                    color: seg.c ?? (seg.muted ? '#8A8A8A' : undefined),
+                    color: seg.c ?? (seg.muted ? '#666666' : undefined),
                     fontSize: seg.big ? '1.15em' : undefined,
                     opacity: isOn ? 1 : 0,
                     filter: isOn ? 'blur(0px)' : 'blur(7px)',

@@ -56,4 +56,22 @@ describe('useDiffusionChoreography', () => {
     })
     expect(result.current.isComplete).toBe(true)
   })
+
+  it('completes reduced motion against the fallback timeline', () => {
+    const onResolved = vi.fn()
+    const { result } = renderHook(() =>
+      useDiffusionChoreography({
+        words: measure(100),
+        strategy: mycelium,
+        trigger: 'manual',
+        reduced: true,
+        onResolved,
+      }),
+    )
+    act(() => result.current.play())
+    act(() => vi.advanceTimersByTime(20))
+    expect(result.current.isComplete).toBe(true)
+    expect(result.current.progress.get()).toBe(1)
+    expect(onResolved).toHaveBeenCalledTimes(1)
+  })
 })

@@ -9,10 +9,9 @@ import { useEffect, useRef } from 'react'
 // answer's layout being computed, formatted, and refined in real time. The
 // content loops; the frame and grid persist (the container is constant, the
 // answer re-diffuses inside it). Canvas-based, on-screen-gated, reduced-motion
-// safe. Mirrors the lifecycle pattern in crosshair-wave.tsx.
+// safe. Uses the shared on-screen-gated rAF lifecycle used by the specimen set.
 
 const BG = '#F4F3EE'
-const INK = '#111111'
 
 // Paragraph-like line widths (fraction of content width), ragged right.
 const LINES = [0.97, 0.86, 0.94, 0.6]

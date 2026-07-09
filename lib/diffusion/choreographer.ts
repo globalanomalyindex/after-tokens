@@ -20,7 +20,6 @@ type ChoreographyAPI = {
   isComplete: boolean
   play: () => void
   replay: () => void
-  pause: () => void
 }
 
 export function useDiffusionChoreography({
@@ -35,7 +34,13 @@ export function useDiffusionChoreography({
     return reduced ? strategy.reducedMotionFallback(words) : strategy.computeTimeline(words)
   }, [words, strategy, reduced])
 
-  const totalDuration = useMemo(() => strategy.totalDuration(words), [words, strategy])
+  // Reduced-motion timelines are intentionally short. Completion and dependent
+  // sequences must follow that active timeline, not the multi-second visual
+  // strategy duration, or the UI appears finished while callbacks keep waiting.
+  const totalDuration = useMemo(() => {
+    if (!reduced) return strategy.totalDuration(words)
+    return events.reduce((latest, event) => Math.max(latest, event.t), 0)
+  }, [words, strategy, events, reduced])
 
   const [wordStates, setWordStates] = useState<Map<number, WordState>>(() => {
     const m = new Map<number, WordState>()
@@ -50,6 +55,7 @@ export function useDiffusionChoreography({
   const pausedAtRef = useRef<number | null>(null)
   const pauseOffsetRef = useRef<number>(0)
   const onResolvedRef = useRef(onResolved)
+  const reducedRef = useRef(reduced)
   onResolvedRef.current = onResolved
 
   const tick = useCallback(() => {
@@ -121,6 +127,26 @@ export function useDiffusionChoreography({
     if (trigger === 'immediate') play()
   }, [trigger, play])
 
+  // If the preference changes during a run, restart against the newly selected
+  // timeline. This avoids leaving an old rAF closure driving the wrong event set.
+  useEffect(() => {
+    if (reducedRef.current === reduced) return
+    reducedRef.current = reduced
+    if (startedAtRef.current == null || isComplete) return
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    setWordStates(() => {
+      const next = new Map<number, WordState>()
+      for (const word of words) next.set(word.index, 'pending')
+      return next
+    })
+    progress.set(0)
+    setIsComplete(false)
+    startedAtRef.current = null
+    pausedAtRef.current = null
+    pauseOffsetRef.current = 0
+    queueMicrotask(play)
+  }, [reduced, isComplete, words, progress, play])
+
   // rAF cancellation lives in its own unmount-only effect. The previous setup
   // tied it to the trigger='immediate' effect, which meant every `play`
   // identity change (caused by `measured` updating mid-animation) would
@@ -158,5 +184,5 @@ export function useDiffusionChoreography({
     return () => document.removeEventListener('visibilitychange', onVisibility)
   }, [pause, tick, isComplete])
 
-  return { wordStates, progress, isComplete, play, replay, pause }
+  return { wordStates, progress, isComplete, play, replay }
 }

@@ -1,8 +1,9 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
-type Item = { id: string; label: string; isAuto?: boolean }
+type Item = { id: string; label: string; isAuto?: boolean; badge?: string }
 
 type Props = {
   label: string
@@ -11,19 +12,8 @@ type Props = {
   onSelect: (id: string) => void
 }
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-  return reduced
-}
-
 export function ToggleRail({ label, items, activeId, onSelect }: Props) {
+  const labelId = useId()
   // A transient "just-committed" id drives the tactile press: on activation the
   // pill snaps to scale(0.96) for one frame, then releases to 1 over ~140ms.
   // Self-contained so it fires on click AND on keyboard activation (Enter/Space),
@@ -85,16 +75,17 @@ export function ToggleRail({ label, items, activeId, onSelect }: Props) {
   return (
     <div className="grid grid-cols-[88px_1fr] gap-4 items-center">
       <span
-        id={`rail-${label}`}
+        id={labelId}
         className="text-[9.5px] uppercase tracking-[0.16em]"
         style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
       >
         {label}
       </span>
-      <div role="radiogroup" aria-labelledby={`rail-${label}`} className="flex flex-wrap gap-1.5">
+      <div role="radiogroup" aria-labelledby={labelId} className="flex flex-wrap gap-1.5">
         {items.map((item, index) => {
           const isActive = item.id === activeId
           const isPressed = item.id === pressedId
+          const badge = item.badge ?? (item.isAuto ? 'auto' : null)
           return (
             <button
               key={item.id}
@@ -132,7 +123,7 @@ export function ToggleRail({ label, items, activeId, onSelect }: Props) {
                 }}
               />
               {item.label}
-              {item.isAuto && (
+              {badge && (
                 <span
                   className="ml-1 text-[8.5px] uppercase tracking-[0.14em]"
                   style={{
@@ -145,7 +136,7 @@ export function ToggleRail({ label, items, activeId, onSelect }: Props) {
                       : 'var(--muted)',
                   }}
                 >
-                  auto
+                  {badge}
                 </span>
               )}
             </button>

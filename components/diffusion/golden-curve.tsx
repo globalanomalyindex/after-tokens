@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // An instrument-panel visualizer for the golden-ratio motion the mycelium mode
 // runs on. A reticle (box + crosshair) glides along a cubic-bezier that holds
@@ -36,12 +37,6 @@ const PH = H - PAD.t - PAD.b
 const X = (n: number) => PAD.l + n * PW
 const Y = (n: number) => PAD.t + (1 - n) * PH
 
-// Cubic bezier component (P0 = 0, P3 = 1; a = P1, b = P2) at parameter t.
-function bez(t: number, a: number, b: number): number {
-  const u = 1 - t
-  return 3 * u * u * t * a + 3 * u * t * t * b + t * t * t
-}
-
 // Lock cadence: gaps shrink by 1/φ each step, normalized to [0,1]. Ticks bunch
 // toward the end — the "drilling, then flooded" acceleration.
 const LOCK_TICKS: number[] = (() => {
@@ -76,21 +71,13 @@ function easeInOut(t: number): number {
 }
 
 export function GoldenCurve() {
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const playedRef = useRef<SVGGElement | null>(null)
   const reticleRef = useRef<SVGGElement | null>(null)
   const pulseRef = useRef<SVGGElement | null>(null)
   const trailRef = useRef<SVGPathElement | null>(null)
   const tickRefs = useRef<(SVGLineElement | null)[]>([])
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const on = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', on)
-    return () => mq.removeEventListener('change', on)
-  }, [])
 
   useEffect(() => {
     const trail = trailRef.current
@@ -302,7 +289,7 @@ export function GoldenCurve() {
 
       <div
         className="flex items-center justify-between mt-3 text-[10px] lowercase tracking-[0.16em]"
-        style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 45%, transparent)' }}
+        style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}
       >
         <span>cubic-bezier(.7, 0, .18, 1)</span>
         <span>interval ×= 1 / φ ≈ 0.618</span>

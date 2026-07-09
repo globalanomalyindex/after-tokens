@@ -22,7 +22,7 @@ import { Fragment, useEffect, useRef } from 'react'
 //  - prefers-reduced-motion renders the final settled state statically.
 //  - All rAF / observers / listeners are torn down on unmount.
 //
-// This mirrors the structure of crosshair-wave.tsx (the canonical pattern).
+// Uses the shared on-screen-gated rAF lifecycle used by the specimen set.
 // ---------------------------------------------------------------------------
 
 const ANSWER = 'Here are three calmer ways to start your morning, based on your notes.'

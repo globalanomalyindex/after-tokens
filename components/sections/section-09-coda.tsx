@@ -23,24 +23,22 @@ const brandIds: BrandId[] = ['after-tokens', 'halcyon', 'felt', 'pulse', 'voltag
 
 const strategies: Record<ModeStrategy['name'], ModeStrategy> = { mycelium, fog, aurora, mitosis }
 
-type ThinkingLevel = 'instant' | 'low' | 'med' | 'high'
+type RevealPace = 'instant' | 'low' | 'med' | 'high'
 
-// Map thinking-level to a duration multiplier on the strategy's native
-// total duration. Instant is for non-thinking diffusion (the answer arrives
-// in a split second, almost no pre-roll); low/med/high stretch the window
-// so the visible refinement reads as deliberation.
-const thinkingScale: Record<ThinkingLevel, number> = {
+// Presentation-only duration controls. They change the authored reveal window,
+// not inference time or model effort.
+const revealScale: Record<RevealPace, number> = {
   instant: 0.35,
   low: 1.5,
   med: 3.0,
   high: 4.6,
 }
 
-const thinkingName: Record<ThinkingLevel, string> = {
-  instant: 'Instant',
-  low: 'Low',
-  med: 'Med',
-  high: 'High',
+const revealName: Record<RevealPace, string> = {
+  instant: 'Fast',
+  low: 'Short',
+  med: 'Medium',
+  high: 'Long',
 }
 
 // Derive the real settle time for a (response, mode, scale) combination so the
@@ -67,7 +65,7 @@ export function SectionCoda() {
   const activePrompt = useMemo(() => codaPrompts.find((p) => p.id === activePromptId)!, [activePromptId])
   const [mode, setMode] = useState<ModeStrategy['name']>(activePrompt.defaultMode)
   const [brandId, setBrandId] = useState<BrandId>('after-tokens')
-  const [thinking, setThinking] = useState<ThinkingLevel>('low')
+  const [revealPace, setRevealPace] = useState<RevealPace>('low')
   const [replayKey, setReplayKey] = useState(0)
 
   useEffect(() => {
@@ -95,28 +93,27 @@ export function SectionCoda() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const durationScale = thinkingScale[thinking]
+  const durationScale = revealScale[revealPace]
 
-  // Rail labels: the response is what diffuses, so derive each thinking level's
-  // settle time from the active prompt's response under the current mode.
-  const thinkingLabels = useMemo(() => {
-    const out = {} as Record<ThinkingLevel, string>
+  // Derive each presentation duration from the active response and mode.
+  const revealLabels = useMemo(() => {
+    const out = {} as Record<RevealPace, string>
     ;(['instant', 'low', 'med', 'high'] as const).forEach((t) => {
-      out[t] = `${thinkingName[t]} · ${settleLabel(activePrompt.response, mode, thinkingScale[t])}`
+      out[t] = `${revealName[t]} · ${settleLabel(activePrompt.response, mode, revealScale[t])}`
     })
     return out
   }, [activePrompt.response, mode])
 
   return (
-    <Section id="coda" n={6} act="III" title="Read your intent" eyebrow={['Coda', 'The system reads you']}>
+    <Section id="coda" n={5} act="III" title="Intent mapping" eyebrow={['Application', 'Fixture-authored mapping']}>
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-4 max-w-3xl">
-        <span className="title-index">vi.</span>the system reads your intent
+        <span className="title-index">v.</span>map response intent to a reveal
       </h2>
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
-          Pick a prompt. Each is tagged with the reveal it reads as: an analytic question settles
-          in order, a creative one drifts in. A production system would classify live; here the
-          tags are set by hand, so the demo stays honest. Override one and watch the read change.
+          Pick a response fixture. I tagged each one with a reveal hypothesis—structured answers
+          lock in clusters; open-ended answers drift in. The mapping is authored, not inferred.
+          Override it to compare how presentation changes the read without pretending the model chose it.
         </Highlight>
       </p>
 
@@ -155,18 +152,22 @@ export function SectionCoda() {
       >
         <ToggleRail
           label="Mode"
-          items={modes.map((m) => ({ id: m, label: cap(m), isAuto: m === activePrompt.defaultMode && m === mode }))}
+          items={modes.map((m) => ({
+            id: m,
+            label: cap(m),
+            badge: m === activePrompt.defaultMode && m === mode ? 'fixture' : undefined,
+          }))}
           activeId={mode}
           onSelect={(id) => setMode(id as ModeStrategy['name'])}
         />
         <ToggleRail
-          label="Thinking"
+          label="Reveal time"
           items={(['instant', 'low', 'med', 'high'] as const).map((t) => ({
             id: t,
-            label: thinkingLabels[t],
+            label: revealLabels[t],
           }))}
-          activeId={thinking}
-          onSelect={(id) => setThinking(id as ThinkingLevel)}
+          activeId={revealPace}
+          onSelect={(id) => setRevealPace(id as RevealPace)}
         />
         <ToggleRail
           label="Brand"

@@ -1,25 +1,14 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useRef, useState, type KeyboardEvent } from 'react'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-  return reduced
-}
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 const modeAbbrev: Record<CodaPrompt['defaultMode'], string> = {
-  mycelium: 'Anlt',
-  fog: 'Crtv',
-  aurora: 'Smry',
-  mitosis: 'Wild',
+  mycelium: 'Myc',
+  fog: 'Fog',
+  aurora: 'Aur',
+  mitosis: 'Mts',
 }
 
 type Props = {
