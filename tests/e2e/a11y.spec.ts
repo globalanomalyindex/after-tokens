@@ -12,7 +12,7 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
   // demo content rather than only the first-screen placeholders.
   await page.locator('#coda').scrollIntoViewIfNeeded()
   await expect(page.locator('#coda .diffusion-text')).toBeVisible()
-  await page.locator('#widget').scrollIntoViewIfNeeded()
+  await page.locator('#widget [data-demo]').scrollIntoViewIfNeeded()
   await expect(page.locator('#widget [data-widget="weather"]')).toBeVisible()
   await page.locator('#brand-variations').scrollIntoViewIfNeeded()
   await expect(page.locator('#brand-variations .tile-enter[data-in-view="true"]')).toHaveCount(4)

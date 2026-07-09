@@ -20,8 +20,11 @@ test.describe('reduced motion full audit', () => {
       'playground',
       'close',
     ]
+    await expect(page.locator('[data-section]')).toHaveCount(sectionIds.length)
     for (const id of sectionIds) {
-      await page.locator(`#${id}`).scrollIntoViewIfNeeded()
+      const section = page.locator(`#${id}`)
+      await expect(section).toBeAttached()
+      await section.scrollIntoViewIfNeeded()
       const words = page.locator(`#${id} .diffusion-text [data-state]`)
       if (id !== 'hook' && id !== 'close') {
         await expect.poll(() => words.count(), { message: `section ${id} should render diffusion words` }).toBeGreaterThan(0)

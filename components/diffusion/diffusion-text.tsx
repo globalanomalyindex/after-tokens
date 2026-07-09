@@ -83,6 +83,9 @@ export function DiffusionText({
   const [measured, setMeasured] = useState<MeasuredAtom[]>([])
   const reduced = usePrefersReducedMotion()
   const [active, setActive] = useState(trigger === 'immediate')
+  // Reduced-motion users get the final readable content immediately instead
+  // of waiting for each offscreen IntersectionObserver to activate.
+  const shouldPlay = active || reduced
   const [cycleTick, setCycleTick] = useState(0)
   const [unblurred, setUnblurred] = useState(false)
 
@@ -152,6 +155,7 @@ export function DiffusionText({
   }, [atoms])
 
   useEffect(() => {
+    if (reduced) return
     if (trigger !== 'inView' || !containerRef.current) return
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -164,7 +168,7 @@ export function DiffusionText({
     )
     observer.observe(containerRef.current)
     return () => observer.disconnect()
-  }, [trigger])
+  }, [trigger, reduced])
 
   const baseStrategy = strategies[mode]!
   // Wrap the strategy in a duration-scaled adapter when the caller wants a
@@ -233,8 +237,8 @@ export function DiffusionText({
   })
 
   useEffect(() => {
-    if (active && measured.length > 0) play()
-  }, [active, measured.length, play])
+    if (shouldPlay && measured.length > 0) play()
+  }, [shouldPlay, measured.length, play])
 
   // Global unblur once progress crosses threshold — drives the "final reveal" beat.
   useMotionValueEvent(progress, 'change', (p) => {
@@ -292,12 +296,12 @@ export function DiffusionText({
   }, [atoms, wordStates])
   useEffect(() => {
     // Decode styles drive their own glyph churn from progress; no cycle tick.
-    if (!active || !hasPending || reduced || isDecode) return
+    if (!shouldPlay || !hasPending || reduced || isDecode) return
     const id = setInterval(() => {
       setCycleTick((t) => t + 1)
     }, CYCLE_INTERVAL_MS)
     return () => clearInterval(id)
-  }, [active, hasPending, reduced, isDecode])
+  }, [shouldPlay, hasPending, reduced, isDecode])
 
   const Overlay = strategy.renderOverlay
 
@@ -308,7 +312,7 @@ export function DiffusionText({
       data-mode={mode}
       data-glyph={glyphStyle}
       data-unblurred={unblurred ? 'true' : 'false'}
-      data-active={active ? 'true' : 'false'}
+      data-active={shouldPlay ? 'true' : 'false'}
       data-complete={isComplete ? 'true' : 'false'}
       data-reduced-motion={reduced ? 'true' : 'false'}
       // Decode styles render in monospace so every stage glyph (block, braille,
@@ -391,7 +395,7 @@ export function DiffusionText({
                 atomIndex={atom.index}
                 finalText={atom.text}
                 candidates={candidatesPerAtom[i] ?? []}
-                state={active ? state : 'pending'}
+                state={shouldPlay ? state : 'pending'}
                 cycleTick={cycleTick}
                 slotWidth={slotWidth}
                 reduced={reduced}
@@ -416,10 +420,10 @@ export function DiffusionText({
             fontFamily: 'var(--font-mono)',
             color: 'color-mix(in oklab, currentColor 62%, transparent)',
           }}
-          data-prototype-status={isComplete ? 'resolved' : active ? 'resolving' : 'ready'}
+          data-prototype-status={isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         >
-          <span aria-hidden="true">{isComplete ? '●' : active ? '◐' : '○'}</span>
-          authored prototype · {isComplete ? 'resolved' : active ? 'resolving' : 'ready'}
+          <span aria-hidden="true">{isComplete ? '●' : shouldPlay ? '◐' : '○'}</span>
+          authored prototype · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         </div>
       )}
     </div>
