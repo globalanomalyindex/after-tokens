@@ -287,7 +287,7 @@ function Panel({
           style={{ fontFamily: 'var(--font-mono)' }}
         >
           <span style={{ color: 'color-mix(in oklab, var(--stage-text) 82%, transparent)' }}>{label}</span>
-          <span style={{ color: 'color-mix(in oklab, var(--stage-text) 45%, transparent)' }}>{sub}</span>
+          <span style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>{sub}</span>
         </div>
         <div className="xhair-strip" aria-hidden="true">
           {Array.from({ length: N }).map((_, i) => (

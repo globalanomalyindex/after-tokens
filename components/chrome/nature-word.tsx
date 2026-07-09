@@ -5,8 +5,9 @@ import { naturePalette, type NatureKind } from '@/lib/nature/palettes'
 // color per letter — no clipped gradient — so it matches the rainbow name/title
 // already in the piece. Pure render (no hooks), usable in server or client trees.
 //
-// The whole word carries an aria-label so assistive tech reads the word, not the
-// letter spans; inheriting weight/size means it sits naturally in body or display.
+// Assistive tech gets one visually hidden copy of the word while the painted
+// letter spans stay decorative. This avoids both character-by-character reading
+// and an aria-label on a generic span (which is prohibited without a valid role).
 export function NatureWord({
   kind,
   children,
@@ -22,16 +23,19 @@ export function NatureWord({
   const colors = naturePalette(kind, visibleCount)
   let ci = 0
   return (
-    <span aria-label={text} className={className} data-nature={kind}>
-      {letters.map((ch, i) =>
-        ch === ' ' ? (
-          ' '
-        ) : (
-          <span key={i} aria-hidden="true" style={{ color: colors[ci++] }}>
-            {ch}
-          </span>
-        ),
-      )}
+    <span className={className} data-nature={kind}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {letters.map((ch, i) =>
+          ch === ' ' ? (
+            ' '
+          ) : (
+            <span key={i} style={{ color: colors[ci++] }}>
+              {ch}
+            </span>
+          ),
+        )}
+      </span>
     </span>
   )
 }

@@ -289,7 +289,7 @@ export function GoldenCurve() {
 
       <div
         className="flex items-center justify-between mt-3 text-[10px] lowercase tracking-[0.16em]"
-        style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 45%, transparent)' }}
+        style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}
       >
         <span>cubic-bezier(.7, 0, .18, 1)</span>
         <span>interval ×= 1 / φ ≈ 0.618</span>
