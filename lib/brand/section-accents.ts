@@ -4,8 +4,8 @@
 // stays ink + the nature multicolor. A tight, cycling set reads as one system,
 // not a random hue per section.
 //
-// Saturated but kept at L <= 0.58 so cream text sits legibly on the colored
-// eyebrow tag. Deliberately no high-lightness yellow-green.
+// Saturated, with each hue darkened enough for cream text to clear WCAG AA on
+// the compact eyebrow tags. Deliberately no high-lightness yellow-green.
 const ACCENTS = [
   'oklch(0.55 0.19 252)', // blue
   'oklch(0.52 0.21 300)', // violet
@@ -14,7 +14,7 @@ const ACCENTS = [
   'oklch(0.57 0.12 196)', // teal
   'oklch(0.54 0.14 158)', // deep green
   'oklch(0.5 0.19 282)', // indigo
-  'oklch(0.58 0.14 60)', // amber
+  'oklch(0.5 0.14 60)', // amber
 ]
 
 export function sectionAccent(n: number): string {
