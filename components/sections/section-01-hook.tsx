@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useMotionTemplate, useScroll, useTransform } from 'motion/react'
 import { HeroTitle } from '@/components/hero/hero-title'
 import { RegistrationFrame } from '@/components/chrome/registration'
 import { IntroGate } from '@/components/intro/intro-gate'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // The entrance. The whole site argues that token-by-token is not the only way
 // to render text, so the site opens by NOT typing token-by-token: a cinematic
@@ -23,23 +24,15 @@ import { IntroGate } from '@/components/intro/intro-gate'
 // Stakes first, in two beats: what each rendering model is telling you to do.
 // Streaming asks you to watch it type; diffusion asks you to watch it settle.
 // The reveal is not decoration — it signals the SHAPE of the answer so a reader
-// can calibrate trust in provisional output.
+// can distinguish an authored resolving state from a settled one.
 const SUBTITLE = 'streaming says watch me type. diffusion says watch me settle.'
 // The thesis verbs, pulled to full brightness while the rest sits muted — the
 // eye lands on "type" vs "settle", the whole argument in two words.
 const BRIGHT = new Set(['type.', 'settle.'])
 
 export function SectionHook() {
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
   const heroRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
 
   // Scroll handoff: from the hero pinned at the top (0) to scrolled one viewport
   // up (1). The content blurs, lifts, and fades as it leaves; the fog bridge at

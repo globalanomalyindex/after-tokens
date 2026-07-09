@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // Reusable chat-bubble primitives shared by every "answer demo" stage in the
 // case study. Putting prompts in front of the diffused responses makes the
@@ -22,14 +23,15 @@ type PromptBubbleProps = {
 }
 
 export function PromptBubble({ children, label = 'You asked' }: PromptBubbleProps) {
+  const reduced = usePrefersReducedMotion()
   return (
     <motion.div
       className="self-end max-w-[88%] rounded-2xl rounded-br-md px-4 py-3 text-sm leading-snug"
       // Pops in like a message the user just sent — a snappy spring scale,
       // not a fade. This is the "send" beat of the exchange.
-      initial={{ opacity: 0, y: 10, scale: 0.94 }}
+      initial={reduced ? false : { opacity: 0, y: 10, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 520, damping: 30, mass: 0.8 }}
+      transition={reduced ? { duration: 0 } : { type: 'spring', stiffness: 520, damping: 30, mass: 0.8 }}
       style={{
         background: 'color-mix(in oklab, var(--stage-text) 14%, transparent)',
         color: 'var(--stage-text)',
@@ -72,6 +74,7 @@ export function AnswerBubble({
   delay = 0.08,
   growMs = 2400,
 }: AnswerBubbleProps) {
+  const reduced = usePrefersReducedMotion()
   const innerRef = useRef<HTMLDivElement>(null)
   const [naturalHeight, setNaturalHeight] = useState<number | null>(null)
   const [grown, setGrown] = useState(false)
@@ -79,11 +82,8 @@ export function AnswerBubble({
   // contains a fixed-size element (like a weather widget) that needs to be
   // visible during its own diffusion rather than clipped behind a growing
   // overflow window.
-  const enableGrow = growMs > 0
+  const enableGrow = growMs > 0 && !reduced
 
-  // Keep dep array sizes stable across renders — `enableGrow` is captured
-  // by closure rather than declared as a dep so React's HMR doesn't see
-  // the dep-list size change across module reloads.
   useLayoutEffect(() => {
     if (!innerRef.current) return
     const el = innerRef.current
@@ -102,8 +102,7 @@ export function AnswerBubble({
       cancelAnimationFrame(raf)
       ro.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [enableGrow])
 
   useEffect(() => {
     if (!enableGrow) {
@@ -113,7 +112,7 @@ export function AnswerBubble({
     if (naturalHeight == null) return
     const t = setTimeout(() => setGrown(true), growMs + 80)
     return () => clearTimeout(t)
-  }, [naturalHeight, growMs])
+  }, [naturalHeight, growMs, enableGrow])
 
   const target = enableGrow ? (naturalHeight ?? COMPACT_HEIGHT) : 9999
 
@@ -127,14 +126,18 @@ export function AnswerBubble({
         overflow: grown ? 'visible' : 'hidden',
         fontFamily: 'var(--font-ui)',
       }}
-      initial={{ opacity: 0, y: 8, filter: 'blur(4px)', maxHeight: enableGrow ? COMPACT_HEIGHT : 9999 }}
+      initial={
+        reduced
+          ? false
+          : { opacity: 0, y: 8, filter: 'blur(4px)', maxHeight: enableGrow ? COMPACT_HEIGHT : 9999 }
+      }
       animate={{
         opacity: 1,
         y: 0,
         filter: 'blur(0px)',
         maxHeight: grown ? 9999 : target,
       }}
-      transition={{
+      transition={reduced ? { duration: 0 } : {
         opacity: { duration: 0.36, ease: [0.23, 1, 0.32, 1], delay },
         y: { duration: 0.36, ease: [0.23, 1, 0.32, 1], delay },
         filter: { duration: 0.36, ease: [0.23, 1, 0.32, 1], delay },

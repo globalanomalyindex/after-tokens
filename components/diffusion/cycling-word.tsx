@@ -10,6 +10,7 @@ type Props = {
   state: WordState
   cycleTick: number
   slotWidth: number
+  reduced?: boolean
 }
 
 export function CyclingWord({
@@ -19,6 +20,7 @@ export function CyclingWord({
   state,
   cycleTick,
   slotWidth,
+  reduced = false,
 }: Props) {
   // pending → cycle through candidates with a per-word phase offset.
   // resolved & resolving → show final text. (Resolving means "locked but still blurred"
@@ -50,10 +52,10 @@ export function CyclingWord({
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={display}
-          initial={{ opacity: 0, filter: 'blur(7px)', y: 1 }}
+          initial={reduced ? false : { opacity: 0, filter: 'blur(7px)', y: 1 }}
           animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-          exit={{ opacity: 0, filter: 'blur(7px)', y: -1 }}
-          transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+          exit={reduced ? undefined : { opacity: 0, filter: 'blur(7px)', y: -1 }}
+          transition={reduced ? { duration: 0 } : { duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
           style={{ display: 'inline-block' }}
         >
           {display}

@@ -27,7 +27,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11.7.0
 
       - uses: actions/setup-node@v4
         with:
@@ -35,6 +35,15 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+
+      # Verify the canonical root build and its browser behavior before export.
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e:chromium
 
       # GITHUB_PAGES switches next.config into static export + /after-tokens base path
       - run: pnpm build
@@ -47,6 +56,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore
 
   deploy:
     needs: build

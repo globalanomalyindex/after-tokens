@@ -29,9 +29,9 @@ export function SectionPlayground() {
       </h2>
       <p className="text-base leading-relaxed max-w-prose mb-4">
         The coda let the system read you. Here you drive every axis yourself. Set the motion, the
-        glyph vocabulary, the thinking budget, and the color, then read how each choice changes
-        what the reveal tells you about the answer. One contract underneath, wearing whatever you
-        put on it.
+        glyph vocabulary, reveal duration, and color. Every axis is presentation-only in this
+        build; none is labeled as model confidence or inference effort. One contract underneath,
+        wearing whatever you put on it.
       </p>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-14">
         <Highlight>

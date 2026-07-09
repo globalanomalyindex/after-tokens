@@ -20,14 +20,14 @@ export const codaPrompts: CodaPrompt[] = [
     prompt: 'Explain how diffusion text generation works.',
     defaultMode: 'mycelium',
     response:
-      'Diffusion models start with noise spread across the full response area. Each pass refines the noise into more confident tokens. After a fixed number of passes, the model commits to its best estimate of the whole answer at once.',
+      'Masked diffusion language models begin with masked positions, predict many positions during each denoising step, and may re-mask uncertain positions before the final sequence is returned.',
   },
   {
     id: 'research-summary',
     prompt: 'Summarize the last three years of model research.',
     defaultMode: 'aurora',
     response:
-      'Parallelism beat depth. Diffusion caught up to autoregressive on quality. Latency dropped by an order of magnitude. The interface became the bottleneck.',
+      'Recent masked diffusion research showed that high-quality language generation does not have to be exclusively left-to-right. That opens a new interface question: how should an iterative, non-sequential answer arrive?',
   },
   {
     id: 'heron-poem',

@@ -5,6 +5,7 @@ test.describe('reduced motion full audit', () => {
 
   test('all sections resolve their content without overlay animations', async ({ page }) => {
     await page.goto('/')
+    await expect(page.locator('[data-intro]')).toHaveCount(0)
     // 10-section cut: the old 'assumptions' beat folded into 'primer', and the
     // old 'fog' + 'aurora' sections folded into 'mycelium' (one engine, many naturals).
     const sectionIds = [
@@ -12,20 +13,19 @@ test.describe('reduced motion full audit', () => {
       'primer',
       'thesis',
       'mycelium',
-      'brand-variations',
       'coda',
       'widget',
+      'brand-variations',
       'styles',
       'playground',
       'close',
     ]
     for (const id of sectionIds) {
       await page.locator(`#${id}`).scrollIntoViewIfNeeded()
-      await page.waitForTimeout(500)
-      const resolvedWords = page.locator(`#${id} [data-state="resolved"]`)
-      const count = await resolvedWords.count()
+      const words = page.locator(`#${id} .diffusion-text [data-state]`)
       if (id !== 'hook' && id !== 'close') {
-        expect(count, `section ${id} should have resolved words`).toBeGreaterThan(0)
+        await expect.poll(() => words.count(), { message: `section ${id} should render diffusion words` }).toBeGreaterThan(0)
+        await expect(page.locator(`#${id} .diffusion-text [data-state="pending"], #${id} .diffusion-text [data-state="resolving"]`)).toHaveCount(0)
       }
     }
   })

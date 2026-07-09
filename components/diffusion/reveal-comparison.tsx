@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // A live, looping experiment: the same line resolves two ways, finishing at the
 // exact same instant. Both panels share the SAME blur range and the SAME opacity
@@ -103,7 +104,7 @@ function paintStrip(arr: (HTMLSpanElement | null)[], active: number, lit: number
 }
 
 export function RevealComparison() {
-  const [reduced, setReduced] = useState(false)
+  const reduced = usePrefersReducedMotion()
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const leftRefs = useRef<(HTMLSpanElement | null)[]>([])
   const rightRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -111,14 +112,6 @@ export function RevealComparison() {
   const rightLoad = useRef<HTMLDivElement | null>(null)
   const leftXhairs = useRef<(HTMLSpanElement | null)[]>([])
   const rightXhairs = useRef<(HTMLSpanElement | null)[]>([])
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const on = (e: MediaQueryListEvent) => setReduced(e.matches)
-    mq.addEventListener('change', on)
-    return () => mq.removeEventListener('change', on)
-  }, [])
 
   useEffect(() => {
     function paint(e: number) {
@@ -227,8 +220,8 @@ export function RevealComparison() {
     <div ref={wrapRef} className="grid sm:grid-cols-2 gap-4 md:gap-5">
       <Panel label="blur → unblur" sub="linear" wordRefs={leftRefs} loadRef={leftLoad} xhairRefs={leftXhairs} />
       <Panel
-        label="golden ratio"
-        sub="out of order · 1/φ"
+        label="authored cadence"
+        sub="out of order · phi-decay"
         wordRefs={rightRefs}
         loadRef={rightLoad}
         xhairRefs={rightXhairs}

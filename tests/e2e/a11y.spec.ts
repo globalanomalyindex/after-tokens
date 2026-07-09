@@ -3,8 +3,21 @@ import { expect, test } from '@playwright/test'
 
 test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => {
   await page.goto('/')
-  // Wait briefly for initial render
-  await page.waitForTimeout(500)
+  const intro = page.getByRole('dialog', { name: 'After Tokens introduction' })
+  await expect(intro).toBeVisible()
+  await page.getByRole('button', { name: 'skip' }).click()
+  await expect(intro).toBeHidden({ timeout: 3_000 })
+
+  // Trigger lazy/in-view specimens before scanning so axe covers the actual
+  // demo content rather than only the first-screen placeholders.
+  await page.locator('#coda').scrollIntoViewIfNeeded()
+  await expect(page.locator('#coda .diffusion-text')).toBeVisible()
+  await page.locator('#widget').scrollIntoViewIfNeeded()
+  await expect(page.locator('#widget [data-widget="weather"]')).toBeVisible()
+  await page.locator('#brand-variations').scrollIntoViewIfNeeded()
+  await expect(page.locator('#brand-variations .tile-enter[data-in-view="true"]')).toHaveCount(4)
+  await page.locator('#playground').scrollIntoViewIfNeeded()
+  await expect(page.locator('#playground .diffusion-text')).toBeVisible()
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -17,15 +30,6 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
     .exclude('[data-state="pending"]')
     .exclude('[data-state="resolving"]')
     .exclude('.pointer-events-none[aria-hidden="true"]')
-    // Brand variation gallery tiles use intentional brand palettes (Halcyon, Felt, Pulse, Voltage)
-    // whose muted colors do not meet WCAG AA at 9px. These are demo tiles showing brand identity,
-    // not primary content. The user deliberately chose these palettes.
-    // Known violations: Halcyon #7A7569/3.6, Felt #D4C8B2/3.55, Pulse #6A7480/4.06, Voltage #7A7669/4.28
-    .exclude('[data-brand]:not([data-brand="after-tokens"]) .pointer-events-none')
-    .exclude('[data-brand="halcyon"]')
-    .exclude('[data-brand="felt"]')
-    .exclude('[data-brand="pulse"]')
-    .exclude('[data-brand="voltage"]')
     .analyze()
 
   expect(results.violations).toEqual([])

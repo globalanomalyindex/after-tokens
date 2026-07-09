@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { PromptBubble, AnswerBubble } from './chat-bubble'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 type ChatExchangeProps = {
   prompt: ReactNode
@@ -36,6 +37,7 @@ export function ChatExchange({
   className = '',
 }: ChatExchangeProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
   // 0 = idle, 1 = prompt sent (thinking), 2 = answer arriving
   const [phase, setPhase] = useState(0)
 
@@ -51,8 +53,12 @@ export function ChatExchange({
       ([entry]) => {
         if (entry?.isIntersecting) {
           io.disconnect()
-          setPhase(1)
-          beat = setTimeout(() => setPhase(2), thinkingMs)
+          if (reduced) {
+            setPhase(2)
+          } else {
+            setPhase(1)
+            beat = setTimeout(() => setPhase(2), thinkingMs)
+          }
         }
       },
       { threshold: 0.3, rootMargin: '0px 0px -10% 0px' },
@@ -62,7 +68,7 @@ export function ChatExchange({
       io.disconnect()
       clearTimeout(beat)
     }
-  }, [runKey, thinkingMs])
+  }, [runKey, thinkingMs, reduced])
 
   return (
     <div ref={ref} data-demo className={`flex flex-col gap-4 ${className}`}>

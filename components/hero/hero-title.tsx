@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { animate, useMotionValue } from 'motion/react'
 import { DecodingWord } from '@/components/diffusion/decoding-word'
 
@@ -24,16 +24,18 @@ const WORDS: ReadonlyArray<{ text: string; startP: number; endP: number }> = [
 export function HeroTitle({ reduced }: { reduced: boolean }) {
   const progress = useMotionValue(reduced ? 1 : 0)
   const [settled, setSettled] = useState(reduced)
-  const reducedRef = useRef(reduced)
-  reducedRef.current = reduced
 
-  // Run once on mount. Reduced motion jumps straight to the resolved title.
+  // React to the preference after hydration as well as at mount. The server
+  // renders the safe settled state; motion-enabled clients can then begin the
+  // authored entrance while reduced-motion clients stay static.
   useEffect(() => {
-    if (reducedRef.current) {
+    if (reduced) {
       progress.set(1)
       setSettled(true)
       return
     }
+    progress.set(0)
+    setSettled(false)
     const controls = animate(progress, 1, {
       duration: 2.9,
       delay: 0.4,
@@ -42,8 +44,7 @@ export function HeroTitle({ reduced }: { reduced: boolean }) {
       onComplete: () => setSettled(true),
     })
     return () => controls.stop()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [progress, reduced])
 
   return (
     <span aria-hidden="true" className="hero-title block" data-settled={settled ? 'true' : 'false'}>

@@ -11,12 +11,12 @@ import { hueToAccent, spectrumColor } from '@/lib/playground/color'
 import type { ModeName } from '@/lib/diffusion/types'
 
 // The playground is the case study's finale: every axis the piece demonstrated,
-// freed to combine. Motion mode × glyph style × thinking budget × color — all
+// freed to combine. Motion mode × glyph style × reveal duration × color — all
 // composable, all live. Color changes apply in place (CSS var + per-word
 // color), so dragging the wheel recolors the answer without restarting it;
 // anything that changes the choreography or content re-runs the exchange.
 
-type ThinkingId = 'instant' | 'quick' | 'deep' | 'max'
+type DurationId = 'instant' | 'quick' | 'deep' | 'max'
 
 const MODE_ITEMS: { id: ModeName; label: string }[] = [
   { id: 'mycelium', label: 'Mycelium' },
@@ -25,17 +25,16 @@ const MODE_ITEMS: { id: ModeName; label: string }[] = [
   { id: 'mitosis', label: 'Mitosis' },
 ]
 
-const THINKING_ITEMS: { id: ThinkingId; label: string }[] = [
-  { id: 'instant', label: 'Instant' },
-  { id: 'quick', label: 'Quick' },
-  { id: 'deep', label: 'Deep' },
-  { id: 'max', label: 'Max' },
+const DURATION_ITEMS: { id: DurationId; label: string }[] = [
+  { id: 'instant', label: 'Fast' },
+  { id: 'quick', label: 'Short' },
+  { id: 'deep', label: 'Long' },
+  { id: 'max', label: 'Extended' },
 ]
 
-// Multiplier on the strategy's native duration — the same "thinking budget"
-// rail from the coda. Instant nearly skips the pre-roll; Max lets the model
-// deliberate at length.
-const THINKING_SCALE: Record<ThinkingId, number> = {
+// Multiplier on the strategy's authored duration. This is presentation timing,
+// not a proxy for model deliberation.
+const DURATION_SCALE: Record<DurationId, number> = {
   instant: 0.35,
   quick: 1.5,
   deep: 3.0,
@@ -56,7 +55,7 @@ type Preset = {
   label: string
   mode: ModeName
   style: GlyphStyle
-  thinking: ThinkingId
+  duration: DurationId
   spectrum: boolean
   hue: number
 }
@@ -65,10 +64,10 @@ type Preset = {
 // one, then tweak any dial from there — proof the whole language is one
 // contract, not a set of separate effects.
 const PRESETS: Preset[] = [
-  { id: 'spectra', label: 'Spectra', mode: 'fog', style: 'words', thinking: 'quick', spectrum: true, hue: 268 },
-  { id: 'borealis', label: 'Borealis', mode: 'aurora', style: 'words', thinking: 'deep', spectrum: false, hue: 228 },
-  { id: 'console', label: 'Console', mode: 'mitosis', style: 'blocks', thinking: 'deep', spectrum: false, hue: 150 },
-  { id: 'matrix', label: 'Matrix', mode: 'mycelium', style: 'matrix', thinking: 'quick', spectrum: false, hue: 138 },
+  { id: 'spectra', label: 'Spectra', mode: 'fog', style: 'words', duration: 'quick', spectrum: true, hue: 268 },
+  { id: 'borealis', label: 'Borealis', mode: 'aurora', style: 'words', duration: 'deep', spectrum: false, hue: 228 },
+  { id: 'console', label: 'Console', mode: 'mitosis', style: 'blocks', duration: 'deep', spectrum: false, hue: 150 },
+  { id: 'matrix', label: 'Matrix', mode: 'mycelium', style: 'matrix', duration: 'quick', spectrum: false, hue: 138 },
 ]
 
 function getPrompt(id: string) {
@@ -79,16 +78,17 @@ export function Playground() {
   const [promptId, setPromptId] = useState<string>('heron-poem')
   const [mode, setMode] = useState<ModeName>('fog')
   const [style, setStyle] = useState<GlyphStyle>('words')
-  const [thinking, setThinking] = useState<ThinkingId>('quick')
+  const [duration, setDuration] = useState<DurationId>('quick')
   const [hue, setHue] = useState(150)
   const [spectrum, setSpectrum] = useState(false)
   const [replayKey, setReplayKey] = useState(0)
 
   const prompt = useMemo(() => getPrompt(promptId), [promptId])
-  const durationScale = THINKING_SCALE[thinking]
+  const durationScale = DURATION_SCALE[duration]
+  const durationLabel = DURATION_ITEMS.find((item) => item.id === duration)?.label.toLowerCase() ?? duration
 
   // Color is intentionally absent from the run key — see file header.
-  const runKey = `${promptId}-${mode}-${style}-${thinking}-${replayKey}`
+  const runKey = `${promptId}-${mode}-${style}-${duration}-${replayKey}`
 
   // Solid: the chosen hue. Spectrum: the overlay rides a hue offset from the
   // rainbow's origin so the band reads as part of, not against, the wash.
@@ -108,7 +108,7 @@ export function Playground() {
   const applyPreset = useCallback((p: Preset) => {
     setMode(p.mode)
     setStyle(p.style)
-    setThinking(p.thinking)
+    setDuration(p.duration)
     setSpectrum(p.spectrum)
     setHue(p.hue)
     setReplayKey((k) => k + 1)
@@ -121,7 +121,7 @@ export function Playground() {
     setPromptId(pick(PROMPT_ITEMS).id)
     setMode(pick(MODE_ITEMS).id)
     setStyle(pick(GLYPH_STYLE_ITEMS).id)
-    setThinking(pick(THINKING_ITEMS).id)
+    setDuration(pick(DURATION_ITEMS).id)
     setHue(Math.floor(Math.random() * 360))
     setSpectrum(Math.random() < 0.28)
     setReplayKey((k) => k + 1)
@@ -168,6 +168,8 @@ export function Playground() {
               wordColor={wordColor}
               durationScale={durationScale}
               trigger="immediate"
+              announce="on-complete"
+              showStatus
               className="text-base md:text-lg leading-relaxed"
             >
               {prompt.response}
@@ -183,7 +185,7 @@ export function Playground() {
             className="truncate"
             style={{ color: 'color-mix(in oklab, var(--stage-text) 58%, transparent)' }}
           >
-            {mode} · {style} · {thinking} ·{' '}
+            {mode} · {style} · {durationLabel} ·{' '}
             {spectrum ? (
               'spectrum'
             ) : (
@@ -252,7 +254,12 @@ export function Playground() {
           <ToggleRail label="Prompt" items={PROMPT_ITEMS} activeId={promptId} onSelect={setPromptId} />
           <ToggleRail label="Motion" items={MODE_ITEMS} activeId={mode} onSelect={(id) => setMode(id as ModeName)} />
           <ToggleRail label="Style" items={GLYPH_STYLE_ITEMS} activeId={style} onSelect={(id) => setStyle(id as GlyphStyle)} />
-          <ToggleRail label="Thinking" items={THINKING_ITEMS} activeId={thinking} onSelect={(id) => setThinking(id as ThinkingId)} />
+          <ToggleRail
+            label="Reveal time"
+            items={DURATION_ITEMS}
+            activeId={duration}
+            onSelect={(id) => setDuration(id as DurationId)}
+          />
         </div>
 
         {/* Color */}

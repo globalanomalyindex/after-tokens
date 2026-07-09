@@ -26,9 +26,14 @@ export function WeatherAnswer({ fixture, mode, replayKey }: Props) {
       runKey={`${fixture.id}-${activeMode}-${replayKey}`}
     >
       <div className="mb-4">
-        <WeatherWidget fixture={fixture} mode={mode} trigger="immediate" />
+        <WeatherWidget fixture={fixture} mode={mode} trigger="immediate" announce="on-complete" />
       </div>
-      <DiffusionText mode={activeMode} trigger="immediate" className="leading-relaxed">
+      <DiffusionText
+        mode={activeMode}
+        trigger="immediate"
+        showStatus
+        className="leading-relaxed"
+      >
         {fixture.answer}
       </DiffusionText>
     </ChatExchange>

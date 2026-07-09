@@ -13,15 +13,14 @@ describe('standardReducedFallback', () => {
     const events = standardReducedFallback([word(0), word(1), word(2)])
     expect(events.filter((e) => e.state === 'resolved')).toHaveLength(3)
   })
-  it('staggers resolution times monotonically', () => {
+  it('resolves every word in the same frame without stagger', () => {
     const events = standardReducedFallback([word(0), word(1), word(2)])
     const resolvedTimes = events.filter((e) => e.state === 'resolved').map((e) => e.t)
-    expect(resolvedTimes[0]!).toBeLessThan(resolvedTimes[1]!)
-    expect(resolvedTimes[1]!).toBeLessThan(resolvedTimes[2]!)
+    expect(new Set(resolvedTimes)).toEqual(new Set([0]))
   })
-  it('completes inside the reduced-motion budget (300ms)', () => {
-    const events = standardReducedFallback(Array.from({ length: 20 }, (_, i) => word(i)))
+  it('stays immediate for large responses', () => {
+    const events = standardReducedFallback(Array.from({ length: 500 }, (_, i) => word(i)))
     const last = events[events.length - 1]!.t
-    expect(last).toBeLessThanOrEqual(300)
+    expect(last).toBe(0)
   })
 })

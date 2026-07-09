@@ -14,16 +14,16 @@ type NavItem = { id: string; label: string; n: number }
 // Lowercase roman numerals i..x, matching the site's existing convention
 // (components/section.tsx toRoman) for the 10 sections in scroll order.
 const ITEMS: NavItem[] = [
-  { id: 'hook', label: 'hook', n: 1 },
-  { id: 'primer', label: 'primer', n: 2 },
-  { id: 'thesis', label: 'thesis', n: 3 },
-  { id: 'mycelium', label: 'modes', n: 4 },
-  { id: 'brand-variations', label: 'brands', n: 5 },
-  { id: 'coda', label: 'coda', n: 6 },
-  { id: 'widget', label: 'widget', n: 7 },
-  { id: 'styles', label: 'styles', n: 8 },
-  { id: 'playground', label: 'playground', n: 9 },
-  { id: 'close', label: 'close', n: 10 },
+  { id: 'hook', label: 'overview', n: 1 },
+  { id: 'primer', label: 'brief', n: 2 },
+  { id: 'thesis', label: 'hypothesis', n: 3 },
+  { id: 'mycelium', label: 'system', n: 4 },
+  { id: 'coda', label: 'mapping', n: 5 },
+  { id: 'widget', label: 'application', n: 6 },
+  { id: 'brand-variations', label: 'brands', n: 7 },
+  { id: 'styles', label: 'registers', n: 8 },
+  { id: 'playground', label: 'try it', n: 9 },
+  { id: 'close', label: 'evidence', n: 10 },
 ]
 
 const ROMANS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
@@ -31,7 +31,10 @@ const ROMANS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
 export function SectionNav() {
   const [active, setActive] = useState<string>(ITEMS[0]!.id)
   const activeRef = useRef(active)
-  activeRef.current = active
+
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
 
   useEffect(() => {
     const els = ITEMS.map((it) => document.getElementById(it.id)).filter(
@@ -69,6 +72,7 @@ export function SectionNav() {
   useEffect(() => {
     const html = document.documentElement
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const previous = html.style.scrollBehavior
     const apply = () => {
       if (mq.matches) {
         html.style.scrollBehavior = 'auto'
@@ -80,7 +84,10 @@ export function SectionNav() {
     }
     apply()
     mq.addEventListener('change', apply)
-    return () => mq.removeEventListener('change', apply)
+    return () => {
+      mq.removeEventListener('change', apply)
+      html.style.scrollBehavior = previous
+    }
   }, [])
 
   return (

@@ -6,6 +6,7 @@ import { ImageResponse } from 'next/og'
 export const dynamic = 'force-static'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+export const alt = 'After Tokens — product design and engineering case study by Christopher Robin Fiore'
 
 export default function OG() {
   return new ImageResponse(
@@ -24,14 +25,17 @@ export default function OG() {
         }}
       >
         <div style={{ fontSize: 18, color: '#6C685C', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 24 }}>
-          Case study + 2026
+          Product design + engineering
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', fontSize: 140, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
           <span>After</span>
           <span>tokens.</span>
         </div>
         <div style={{ fontSize: 28, color: '#2A2820', marginTop: 24, maxWidth: 800 }}>
-          Designing animation language for AI text diffusion.
+          A reveal system for diffusion-generated answers.
+        </div>
+        <div style={{ fontSize: 18, color: '#6C685C', marginTop: 18 }}>
+          Christopher Robin Fiore
         </div>
       </div>
     ),

@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { hueToAccent, normalizeHue } from '@/lib/playground/color'
+import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 type HueWheelProps = {
-  hue: number // current hue 0..360 (controlled)
+  hue: number // current hue 0..359 (controlled)
   onChange: (hue: number) => void // called continuously during drag + on keyboard
   disabled?: boolean // when true: dimmed, no pointer/keyboard interaction (but still renders the ring)
   size?: number // px diameter of the wheel; default 168
@@ -39,17 +40,7 @@ export function HueWheel({
   const wheelRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // prefers-reduced-motion gate. Defaults to false (motion allowed) on first
-  // render so SSR is stable; corrected on mount.
-  const [reducedMotion, setReducedMotion] = useState(false)
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const apply = () => setReducedMotion(mq.matches)
-    apply()
-    mq.addEventListener('change', apply)
-    return () => mq.removeEventListener('change', apply)
-  }, [])
+  const reducedMotion = usePrefersReducedMotion()
 
   // Geometry. Ring thickness ~20% of size; thumb sits on the ring centerline.
   const thickness = Math.round(size * 0.2)
@@ -153,7 +144,7 @@ export function HueWheel({
       role="slider"
       aria-label="Accent hue"
       aria-valuemin={0}
-      aria-valuemax={360}
+      aria-valuemax={359}
       aria-valuenow={Math.round(hue)}
       aria-disabled={disabled || undefined}
       tabIndex={disabled ? -1 : 0}

@@ -1000,7 +1000,7 @@ html.cursor-fx-on * {
 }
 .playground-pill:active { transform: scale(0.97); }
 
-/* Toggle-pill rails (coda prompt picker + thinking-level rail). The tactile
+/* Toggle-pill rails (coda prompt picker + reveal-duration rail). The tactile
    press scale and base transition are driven inline in the components (JS press
    state), so globals only add what they don't own: a hover lift for parity with
    the playground console pills, and a focus ring that is actually visible. The
@@ -1015,24 +1015,6 @@ html.cursor-fx-on * {
 .toggle-pill:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
-}
-
-/* Broken stream death */
-@keyframes break-jitter {
-  0%, 100% { transform: translateY(0); }
-  20% { transform: translateY(-1px); }
-  45% { transform: translateY(1px); }
-  70% { transform: translateY(-0.5px); }
-}
-.broken-stream { transition: filter 280ms var(--ease-out-strong); }
-.broken-stream[data-broken="true"] { animation: break-jitter 360ms steps(8, end) 1; }
-
-@keyframes cursor-blink { 50% { opacity: 0; } }
-.cursor-blink { animation: cursor-blink 500ms steps(1) infinite; }
-.cursor-blink[data-broken="true"] {
-  animation: none;
-  opacity: 0;
-  transition: opacity 240ms var(--ease-out-strong);
 }
 
 /* --- Mycelium mode: word-level lock visual (no overlay dots) -------------- */
@@ -1161,7 +1143,7 @@ html.cursor-fx-on * {
 /* Reduced motion: keep transitions snappy, kill heavy filters */
 @media (prefers-reduced-motion: reduce) {
   [data-cycling-word] {
-    transition: opacity 180ms var(--ease-out-strong);
+    transition: none;
     filter: none !important;
     animation: none !important;
   }
@@ -1169,6 +1151,19 @@ html.cursor-fx-on * {
   .diffusion-text[data-active="true"]::after { display: none; }
   .diffusion-text[data-unblurred="true"] { animation: none; }
   .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after { display: none; }
+  .tile-enter,
+  .tile-enter[data-in-view="true"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .replay-btn,
+  .replay-btn .replay-glyph,
+  .playground-pill,
+  .toggle-pill {
+    transition: none !important;
+  }
+  .replay-btn:hover .replay-glyph { transform: none; }
 }
 
 /* ===== entrance =========================================================

@@ -12,8 +12,8 @@ type Props = {
   mode: ModeStrategy['name']
   brand: BrandTokens
   isAutoMode: boolean
-  // Optional scale on the strategy's total duration. 1 = native. Used by the
-  // coda's "thinking" rail to slow the diffusion down for low/med/high.
+  // Optional scale on the authored reveal duration. It does not represent
+  // inference time or model effort.
   durationScale?: number
   // External replay nonce. Bumping this from the parent (e.g. the Space-to-
   // replay shortcut on the section) re-runs the choreography from the top,
@@ -40,7 +40,7 @@ export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, repl
         </span>
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
           + {mode}
-          {isAutoMode ? ' (read)' : ''}
+          {isAutoMode ? ' (fixture)' : ''}
         </span>
       </div>
       <div className="px-5 py-7 flex-1 flex items-center">
@@ -54,6 +54,8 @@ export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, repl
             mode={mode}
             trigger="immediate"
             durationScale={durationScale}
+            announce="on-complete"
+            showStatus
             className="text-base md:text-lg leading-relaxed"
           >
             {prompt.response}

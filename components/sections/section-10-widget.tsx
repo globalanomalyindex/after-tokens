@@ -11,7 +11,7 @@ import type { ModeName } from '@/lib/diffusion/types'
 type ModeChoice = ModeName | 'auto'
 
 const modeChoices: { id: ModeChoice; label: string }[] = [
-  { id: 'auto', label: 'Auto' },
+  { id: 'auto', label: 'Fixture' },
   { id: 'mycelium', label: 'Mycelium' },
   { id: 'fog', label: 'Fog' },
   { id: 'aurora', label: 'Aurora' },
@@ -28,63 +28,55 @@ export function SectionWidget() {
   return (
     <Section
       id="widget"
-      n={7}
+      n={6}
       act="III"
       title="Beyond words"
-      eyebrow={['Beyond words', 'Color · graphics · widgets']}
+      eyebrow={['Application', 'Structured answer state']}
     >
       <div className="grid gap-10 lg:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(380px,460px)] items-start">
         <div className="max-w-2xl">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6">
-            <span className="title-index">vii.</span>Diffusion isn&rsquo;t a text trick,{' '}
+            <span className="title-index">vi.</span>the state contract extends beyond text,{' '}
             <em className="not-italic" style={{ color: 'var(--muted)' }}>
               it&rsquo;s a way of arriving
             </em>
           </h2>
           <p className="mb-6 text-base leading-relaxed">
             <Highlight>
-              Streaming says &ldquo;watch me type.&rdquo; Diffusion says &ldquo;watch me settle.&rdquo;
-              The reveal modes that resolve text resolve everything else an answer is made of: color,
-              shape, data, glyphs. Same contract, different material. And the same payoff: you read the
-              shape of the answer before you read its words.
+              An assistant answer can contain color, data, icons, and layout—not only words. This
+              prototype applies the same ready → resolving → resolved contract to the whole response
+              so structured content does not fall back to a generic spinner.
             </Highlight>
           </p>
           <p className="mb-10 text-base leading-relaxed">
             <Highlight>
-              Look right. Ask &ldquo;what&rsquo;s the weather&rdquo; and the assistant answers in one
-              bubble: a widget settles and a sentence follows underneath. The parts that lock first are
-              the parts the system is sure of; the ones still resolving are the ones it is still
-              weighing. Switch cities to watch a different palette commit. Switch modes to watch the
-              same answer arrive a different way.
+              The weather values are static fixtures, and every intermediate value is a deterministic
+              authored trace. Nothing here represents live uncertainty. Switch cities and modes to
+              inspect how one content structure behaves under different presentation strategies.
             </Highlight>
           </p>
 
           <ul className="space-y-3 text-sm leading-relaxed">
             <Bullet label="Color">
               <Highlight>
-                The sky binds first: warm desert, slate Seattle, ice-paper Reykjav&iacute;k.
-                Palette is the first commitment of any visual answer.
+                The fixture&rsquo;s sky palette establishes the widget surface before detailed data appears.
               </Highlight>
             </Bullet>
             <Bullet label="Graphic">
               <Highlight>
-                The icon is observed, not stamped. Stained-glass treatment so the sky still
-                glows through.
+                The icon and background share one staged reveal instead of arriving as unrelated assets.
               </Highlight>
             </Bullet>
             <Bullet label="Data">
               <Highlight>
-                The temperature cycles through plausible neighbors before it locks. Forecast bars
-                wobble, then snap to true heights. The wobble is the system showing its uncertainty:
-                you can see which numbers it is still weighing before it commits.
+                The temperature follows a deterministic fixture-authored trace; forecast bars use the
+                same progress value. This demonstrates coordination, not model uncertainty.
               </Highlight>
             </Bullet>
             <Bullet label="Same engine">
               <Highlight>
-                The diffusion driving this widget is the same mycelium, fog, and aurora grammar from
-                the mode tour, with mitosis available as a fourth treatment. The mycelium halo pulses
-                behind each forecast bar; fog parts to reveal the answer; aurora bands sweep the
-                temperature.
+                The widget uses the same strategy contract as text: all four modes receive measured
+                targets, one progress value, and the same reduced-motion completion path.
               </Highlight>
             </Bullet>
           </ul>
@@ -118,7 +110,7 @@ export function SectionWidget() {
               color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)',
             }}
           >
-            <span>+ Live answer · weather</span>
+            <span>+ Prototype fixture · weather</span>
             <button
               type="button"
               onClick={() => setReplayKey((k) => k + 1)}
@@ -147,7 +139,7 @@ export function SectionWidget() {
           items={modeChoices.map((c) => ({
             id: c.id,
             label: c.label,
-            isAuto: c.id === 'auto',
+            badge: c.id === 'auto' ? 'default' : undefined,
           }))}
           activeId={mode}
           onSelect={(id) => setMode(id as ModeChoice)}

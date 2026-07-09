@@ -1,7 +1,6 @@
 'use client'
 
 import { Section } from '@/components/section'
-import { NatureWord } from '@/components/chrome/nature-word'
 import { Highlight } from '@/components/chrome/highlight'
 import { GeminiSpecimen } from '@/components/diffusion/specimens/gemini-specimen'
 import { MinimalSpecimen } from '@/components/diffusion/specimens/minimal-specimen'
@@ -28,7 +27,7 @@ const SPECIMENS = [
     kind: 'Developer',
     Comp: AsciiSpecimen,
     caption:
-      'A developer tool. The answer materializes out of a field of blocks, as if decoding from latent space.',
+      'A developer tool. A block-to-glyph decode treatment gives the same state contract a technical register.',
   },
   {
     name: 'Registry',
@@ -45,16 +44,15 @@ export function SectionStyles() {
       id="styles"
       n={8}
       act="IV"
-      title="Infinite styles"
-      eyebrow={['Designed', 'Not decorated']}
+      title="Motion registers"
+      eyebrow={['Generalization', 'Different motion, same semantics']}
     >
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-4xl">
-        <span className="title-index">viii.</span>Nothing in <NatureWord kind="nature">nature</NatureWord> is decorative
+        <span className="title-index">viii.</span>nature is the source library, not the proof
       </h2>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-16">
-        Every pattern that survives in nature survives because it earns its energy. This rendering
-        language is built on the same rule, which is what lets it wear any brand and still feel
-        intentional.
+        I borrowed behaviors—branching, dissipation, bands, division—because they gave each mode a
+        coherent verb. That is a creative constraint, not evidence that the interaction works.
       </p>
 
       {/* The thesis. */}
@@ -63,27 +61,25 @@ export function SectionStyles() {
           className="text-[10px] uppercase tracking-[0.18em] mb-5"
           style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
         >
-          + The thesis
+          + The constraint
         </div>
         <div className="space-y-5 text-lg md:text-xl leading-relaxed">
           <p>
-            Nature operates under the highest stakes: survival. A pattern does not persist unless it
-            is hyper-efficient with energy and resources.
+            Every frame has to do one of three jobs: identify the current state, preserve readable
+            content, or express the product&rsquo;s visual voice.
           </p>
           <p>
-            Form follows function so closely that the shape{' '}
-            <Highlight>tells you what the thing does</Highlight>. A reveal can work the same way: its
-            shape can tell you <Highlight>what state the answer is in</Highlight>, what has settled and
-            what is still resolving.
+            If a flourish does none of those jobs, it goes. If it claims to represent model state
+            without a model signal, it is mislabeled. The shipped prototype keeps that distinction visible.
           </p>
           <p>
-            Apply that constraint to a screen, and motion stops being ornament. Every frame{' '}
-            <em className="not-italic font-bold">carries information you can read</em>.
+            Nature helped generate the vocabulary. The design contract, accessibility checks, and
+            eventual user study decide whether it earns a place in a product.
           </p>
         </div>
       </div>
 
-      {/* Proof: one contract, any brand. */}
+      {/* Generalization: one contract, multiple motion registers. */}
       <div
         className="text-[10px] uppercase tracking-[0.18em] mb-2"
         style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
@@ -91,10 +87,9 @@ export function SectionStyles() {
         + One contract, four registers
       </div>
       <p className="text-base leading-relaxed max-w-prose mb-8">
-        The reveal is a contract, not a coat of paint. Earlier, one timeline ran under four different
-        skins. Here the motion itself changes character: a playful sweep, an austere hush, a technical
-        decode, an editorial snap. What never changes is the one job it does, showing you which parts
-        of the answer have settled.
+        The brand tiles above hold motion constant and swap visual tokens. Here I do the inverse:
+        surface stays comparable while motion changes character—a playful sweep, an austere hush, a
+        technical decode, an editorial snap. Every specimen still exposes the same three states.
       </p>
 
       <div className="grid md:grid-cols-2 gap-4 md:gap-5 mb-16 md:mb-24">
@@ -139,11 +134,9 @@ export function SectionStyles() {
           </h3>
           <p className="text-base leading-relaxed max-w-prose">
             <Highlight>
-              Before a single word exists, the answer is already taking shape. A wellness brand loads
-              in living green, earthy and organic, so you read its register in the first frame: the
-              color alone signals the kind of answer that is coming, and on a shared surface carrying
-              many products, that loading frame is branded space, not a blank. And when the words
-              arrive, they carry full weight: bold, italics, scale, color, even an emoji.
+              Structured answers need more than plain-word choreography. This specimen keeps headings,
+              emphasis, color, and emoji intact while the container changes state. It tests whether the
+              engine can preserve hierarchy instead of flattening rich content into a text effect.
             </Highlight>
           </p>
         </div>
@@ -171,10 +164,9 @@ export function SectionStyles() {
           The motion changes character with the brand. The job underneath it does not.
         </p>
         <p className="text-base leading-relaxed max-w-prose mt-5">
-          Spectra sweeps, Quiet barely moves, Console decodes, Registry snaps into alignment. Four
-          registers, four feelings, and in every one you can still read how far along the answer is
-          and which parts have settled. The reveal carries its meaning into any house style, which is
-          what makes it a real system rather than a one-off effect.
+          Spectra sweeps, Quiet barely moves, Console decodes, Registry snaps into alignment. The
+          visual character changes; the state vocabulary stays ready, resolving, resolved. That
+          separation is what makes this a system to evaluate rather than a collection of effects.
         </p>
       </div>
     </Section>

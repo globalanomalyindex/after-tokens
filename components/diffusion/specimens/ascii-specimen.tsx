@@ -27,7 +27,7 @@ import { useEffect, useRef } from 'react'
 // Visual churn is additionally throttled to ~28fps. Phases are derived from an
 // absolute timestamp so pausing (offscreen / hidden tab) and resuming is
 // seamless. Mirrors the IntersectionObserver + visibilitychange + reduced
-// -motion + rAF-cleanup pattern from crosshair-wave.tsx.
+// motion preference and rAF-cleanup pattern used across the specimen set.
 
 const TEXT = 'Connecting the dots between everything you saved this week.'
 

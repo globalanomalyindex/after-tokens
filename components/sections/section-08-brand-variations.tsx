@@ -59,33 +59,30 @@ export function SectionBrandVariations() {
   return (
     <Section
       id="brand-variations"
-      n={5}
+      n={7}
       act="III"
       title="Brand variations"
-      eyebrow={['One grammar', 'Four identities']}
+      eyebrow={['Generalization', 'Same motion, different tokens']}
     >
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6 max-w-3xl">
-        <span className="title-index">v.</span>The reveal grammar is brand-agnostic
+        <span className="title-index">vii.</span>hold the motion constant; change the brand
       </h2>
       <p className="mb-6 text-base max-w-prose">
         <Highlight>
-          One timeline, four identities. Same mode, same timing, same stagger, same tokenization.
-          Only surface, ink, accent, type, and corner radius change. The reveal that tells you how
-          settled an answer is does not belong to any one brand; it is a grammar each one can speak
-          in its own voice. Four here, but the grammar does not care how many.
+          One timeline, four identities. Mode, duration, lock order, and tokenization stay fixed.
+          Only surface, ink, accent, type, and corner radius change. This isolates brand expression
+          from state semantics instead of tuning both at once.
         </Highlight>
       </p>
       <p className="mb-6 text-base max-w-prose">
         <Highlight>
-          Arrival is a brand moment, the way a splash screen or an app icon is. A portfolio of
-          products sharing one system inherits a recognizable way of settling, without flattening
-          what makes each voice its own.
+          Arrival can be a brand moment, but recognition cannot come at the cost of contrast or a
+          truthful state signal. Every palette below uses AA-compliant text tokens.
         </Highlight>
       </p>
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
-          Replay them together and watch the identical timeline run under each skin: the same words
-          lock in the same order at the same beat, only dressed differently.
+          Replay all four to compare the identical timeline under four visual systems.
         </Highlight>
       </p>
       <div className="mb-6 flex items-center gap-4">
