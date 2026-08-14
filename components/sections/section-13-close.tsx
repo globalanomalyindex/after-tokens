@@ -82,7 +82,7 @@ export function SectionClose() {
               <Highlight><strong>Particle flock.</strong> Rebuilt as a chain reaction, liquid-glass orbs, and fireflies. Faster motion reduced legibility; Mycelium did the job with less visual traffic.</Highlight>
             </li>
             <li>
-              <Highlight><strong>The first entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is not craft, it is a toll.</Highlight>
+              <Highlight><strong>The entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is not craft, it is a toll.</Highlight>
             </li>
             <li>
               <Highlight><strong>Abstract line graphs.</strong> Replaced with actual word locks so the comparison demonstrates the interaction instead of describing it from a distance.</Highlight>
