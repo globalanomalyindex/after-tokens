@@ -153,6 +153,28 @@ button:active { transform: scale(0.97); }
   50% { opacity: 0.66; }
 }
 
+/* The settle. A word that locks gets one short, subtle weight-shift of scale, on the
+   strong ease-out curve. Nothing in the real world snaps into place from nothing, and
+   the overshoot is small enough (1.5%) to read as arrival rather than as a bounce.
+   The animation fires once, when the selector starts matching. */
+@keyframes word-settle {
+  0%   { transform: scale(0.994); }
+  55%  { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+[data-cycling-word][data-state='resolved'] {
+  animation: word-settle 260ms var(--ease-out-expo) both;
+}
+
+/* will-change lifecycle: promote blurred words to their own compositor layer only
+   while the reveal is actually animating, and hand the layer back once the whole
+   diffusion is complete. A permanently promoted layer per word is a real memory
+   cost on a page with this many reveals. */
+.diffusion-text[data-active='true'][data-complete='false'] [data-cycling-word] {
+  will-change: filter, opacity;
+}
+.diffusion-text[data-complete='true'] [data-cycling-word] { will-change: auto; }
+
 /* Global unblur — once the diffusion is "settled", clear blur on everything
    regardless of per-word state. */
 .diffusion-text[data-unblurred="true"] [data-cycling-word] {
@@ -733,6 +755,22 @@ main .uppercase {
 .def-window[data-align='right'][data-open='true'] {
   transform: translateX(0) translateY(0) scale(1);
 }
+/* One chip in the glossary is deliberately dark: the von restorff entry, the item
+   that differs from its neighbours. Its window flips the ink mixes toward bone so
+   the same markup stays legible on a dark fill. */
+.def-wrap[data-tone='dark'] .def-chip { color: var(--bone); }
+.def-wrap[data-tone='dark'] .def-window {
+  --on: color-mix(in oklab, var(--bone) 96%, var(--chip));
+  --on-soft: color-mix(in oklab, var(--bone) 78%, var(--chip));
+  --on-faint: color-mix(in oklab, var(--bone) 52%, var(--chip));
+  --note: color-mix(in oklab, var(--bone) 42%, var(--chip));
+  --note-text: color-mix(in oklab, var(--bone) 56%, var(--chip));
+  border-color: color-mix(in oklab, var(--bone) 40%, var(--chip));
+}
+.def-wrap[data-tone='dark'] .def-chip::after {
+  --c: color-mix(in oklab, var(--bone) calc(var(--ant, 0) * 100%), color-mix(in oklab, var(--bone) 55%, transparent));
+}
+.def-wrap[data-tone='dark'] .def-chip:focus-visible { outline-color: var(--bone); }
 /* the kept-from-figma margin note, top-right — the ONLY lightened element.
    Floated absolutely so it never pushes the pronunciation down; framed with
    plus-signs + dashes and a vertical ^|v dimension arrow. The rails flex to
@@ -929,6 +967,15 @@ html.cursor-fx-on * {
   line-height: 1.5;
   color: var(--on);
 }
+.def-src {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-faint);
+}
 .def-x {
   position: absolute;
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -972,7 +1019,7 @@ html.cursor-fx-on * {
 
 /* Replay button — spin metaphor on hover */
 /* The resting dimness is a color-mix alpha on `color` (not base opacity), so an
-   opacity hover was a no-op. Brighten via color instead, matching .intro-skip.
+   opacity hover was a no-op. Brighten via color instead.
    Stage-context buttons (coda-stage, mode-demo, widget, playground) brighten to
    full --stage-text; the lone surface-context button (brand-variations) opts in
    to a darker --ink hover via .replay-btn-on-surface. */
@@ -1148,6 +1195,8 @@ html.cursor-fx-on * {
     animation: none !important;
   }
   [data-cycling-word]::before { display: none; }
+  [data-cycling-word][data-state='resolved'] { animation: none; }
+  .diffusion-text [data-cycling-word] { will-change: auto; }
   .diffusion-text[data-active="true"]::after { display: none; }
   .diffusion-text[data-unblurred="true"] { animation: none; }
   .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after { display: none; }
@@ -1166,170 +1215,10 @@ html.cursor-fx-on * {
   .replay-btn:hover .replay-glyph { transform: none; }
 }
 
-/* ===== entrance =========================================================
-   The cinematic intro overlay (IntroGate) and the hook byline. The intro
-   performs the thesis: one giant word resolves out of a noise field at a time,
-   on the INVERTED dark stage, then the fog rolls in and clears — and as it
-   clears the palette inverts BACK to the standard light site underneath. The
-   overlay sits above the (always-rendered) hook, so there is no flash of the
-   headline before the intro and no flash of the site after; the overlay simply
-   fades to reveal the light page. Reduced-motion users never see it (the CSS
-   guard below hides it pre-hydration; the component also bails). Only
-   transform / opacity / filter animate. ======================================*/
-
-/* Pre-hydration guard: a reduced-motion visitor must never see the dark gate,
-   not even for a frame before JS decides. */
-@media (prefers-reduced-motion: reduce) {
-  [data-intro] { display: none !important; }
-}
-
-/* Lock scroll only while the gate is up; released the instant it unmounts. */
-html.intro-lock,
-html.intro-lock body {
-  overflow: hidden;
-  overscroll-behavior: none;
-  touch-action: none;
-}
-
-.intro-gate {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: grid;
-  place-items: center;
-  padding: 8vmin;
-  background: var(--stage);
-  color: var(--stage-text);
-  cursor: pointer;
-  isolation: isolate;
-  /* fade in over the first beat so the cut to the dark stage isn't a hard slam */
-  animation: intro-rise 520ms var(--ease-out-expo) both;
-}
-@keyframes intro-rise {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* Ambient noise field — the same drifting fog texture as the hero stage, so the
-   overlay and the hook beneath it read as one continuous space. */
-.intro-field {
-  position: absolute;
-  inset: -25%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(40% 54% at 26% 30%, color-mix(in oklab, var(--stage-text) 9%, transparent), transparent 70%),
-    radial-gradient(48% 52% at 74% 70%, color-mix(in oklab, var(--stage-text) 6%, transparent), transparent 72%);
-  filter: blur(44px);
-  opacity: 0.9;
-  animation: hero-fog-drift 26s ease-in-out infinite alternate;
-}
-
-.intro-stage {
-  position: relative;
-  z-index: 1;
-  max-width: 92vw;
-  text-align: center;
-}
-
-/* One giant word at a time, in the editorial display face. The decode cells
-   inherit this font; bold + tight to feel inevitable, not flashy. */
-.intro-word {
-  display: inline-block;
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-feature-settings: "ss01", "ss02", "cv01";
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
-  font-size: clamp(2.6rem, 11vw, 9.5rem);
-  /* a soft bloom so the resolved word sits in light rather than on flat black */
-  text-shadow:
-    0 0 30px color-mix(in oklab, var(--stage-text) 22%, transparent),
-    0 0 80px color-mix(in oklab, var(--stage-text) 9%, transparent);
-}
-/* The decode cells render width-stable; let them ride the display metrics. */
-.intro-word .decoding-word { margin-right: 0; }
-
-/* Fog sheet that parts on handoff: blurs the whole field, lightens to bone, and
-   clears — the fog rolling away to reveal the real (light) site. */
-.intro-fog {
-  position: absolute;
-  inset: -20%;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  background:
-    radial-gradient(60% 60% at 50% 50%, color-mix(in oklab, var(--stage-text) 16%, transparent), transparent 78%);
-  filter: blur(20px);
-}
-
-/* Handoff: the gate lightens to bone, the fog floods in then clears, and the
-   whole gate fades out to reveal the light page beneath. */
-.intro-gate[data-phase="handoff"] {
-  animation: intro-handoff 1500ms var(--ease-out-expo) forwards;
-}
-@keyframes intro-handoff {
-  0% {
-    background: var(--stage);
-    filter: blur(0px);
-    opacity: 1;
-  }
-  /* fog thickens, palette crosses over toward bone */
-  42% {
-    background: color-mix(in oklab, var(--stage) 30%, var(--bone));
-    filter: blur(10px);
-    opacity: 1;
-  }
-  /* fully crossed to light, still veiled */
-  64% {
-    background: var(--bone);
-    filter: blur(7px);
-    opacity: 1;
-  }
-  /* fog clears, gate dissolves into the light site */
-  100% {
-    background: var(--bone);
-    filter: blur(0px);
-    opacity: 0;
-  }
-}
-.intro-gate[data-phase="handoff"] .intro-word {
-  animation: intro-word-out 760ms var(--ease-out-expo) forwards;
-}
-@keyframes intro-word-out {
-  0%   { opacity: 1; transform: scale(1); filter: blur(0px); }
-  100% { opacity: 0; transform: scale(1.04); filter: blur(14px); }
-}
-.intro-gate[data-phase="handoff"] .intro-fog {
-  animation: intro-fog-part 1200ms var(--ease-out-expo) forwards;
-}
-@keyframes intro-fog-part {
-  0%   { opacity: 0; transform: scale(1); }
-  35%  { opacity: 1; transform: scale(1.08); }
-  100% { opacity: 0; transform: scale(1.3); }
-}
-
-/* Skip affordance — quiet, lower-right, mono. Always reachable. */
-.intro-skip {
-  position: absolute;
-  right: clamp(1rem, 3vw, 2.2rem);
-  bottom: clamp(1rem, 3vh, 2rem);
-  z-index: 3;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: lowercase;
-  color: color-mix(in oklab, var(--stage-text) 46%, transparent);
-  background: transparent;
-  border: 0;
-  padding: 0.4em 0.2em;
-  cursor: pointer;
-  opacity: 0;
-  animation: hero-fade 700ms var(--ease-out-expo) 900ms forwards;
-  transition: color 200ms var(--ease-out-strong);
-}
-.intro-skip:hover { color: var(--stage-text); }
-.intro-gate[data-phase="handoff"] .intro-skip { opacity: 0; transition: opacity 240ms; }
+/* ===== hero byline ======================================================
+   The hook byline: the author + role + thesis line, so the first screen
+   reads as a portfolio case study. Mono, dimmed against the dark stage,
+   wraps gracefully. Only transform / opacity / filter animate. ============*/
 
 /* Hook byline: the author + role + thesis line, so the first screen reads as a
    portfolio case study. Mono, dimmed against the dark stage, wraps gracefully. */
@@ -1351,17 +1240,14 @@ html.intro-lock body {
 .hero-byline-role { color: color-mix(in oklab, var(--stage-text) 58%, transparent); }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro-field { animation: none; }
   .hero-byline { animation: none; opacity: 1; }
-  .intro-skip { animation: none; opacity: 1; }
 }
-/* ===== end entrance ====================================================== */
+/* ===== end hero byline ==================================================== */
 /* ===== section nav ===== */
 /* Fixed vertical jump-nav rail, right edge, vertically centered. Desktop only
    (the max-w-5xl content column leaves gutter at >=1100px). Quiet
    instrument-panel chrome, same family as the corner numerals / registration
-   marks — texture first, UI second. Sits BELOW the intro overlay (z-index 80)
-   so the entrance always covers it. */
+   marks: texture first, UI second. */
 .section-nav {
   display: none;
   position: fixed;
@@ -1455,3 +1341,113 @@ html.intro-lock body {
   .section-nav-chip { transition: none; }
 }
 /* ===== end section nav ===== */
+
+/* ===== comparison scrubber ===============================================
+   A timeline scrubber under the A/B comparison panels. Same instrument-panel
+   language as the rest of the page: mono micro-type, no rounded pill chrome,
+   a registration-mark diamond for the thumb instead of a native round handle,
+   the active track carried by --section-accent. Only transform / opacity
+   animate. =================================================================*/
+.scrub-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.scrub-label {
+  color: var(--muted);
+}
+.scrub-readout {
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--ink) 62%, transparent);
+}
+
+/* The range input itself: a hairline track with a rotated-square (registration
+   diamond) thumb, consistent with the page's "+" corner marks. */
+.scrub-range {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  height: 22px;
+  cursor: pointer;
+  margin: 0;
+  display: block;
+}
+.scrub-range::-webkit-slider-runnable-track {
+  height: 1px;
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.scrub-range::-moz-range-track {
+  height: 1px;
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.scrub-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 0;
+  border: 0;
+  background: var(--section-accent);
+  margin-top: -5px; /* centers the 11px thumb on the 1px track */
+  transform: rotate(45deg);
+  transition: transform 140ms var(--ease-out-expo);
+}
+.scrub-range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 0;
+  border: 0;
+  background: var(--section-accent);
+  transform: rotate(45deg);
+  transition: transform 140ms var(--ease-out-expo);
+}
+.scrub-range:active::-webkit-slider-thumb {
+  transform: rotate(45deg) scale(1.15);
+}
+.scrub-range:active::-moz-range-thumb {
+  transform: rotate(45deg) scale(1.15);
+}
+/* The thumb's own focus ring is not reliable cross-browser, so outline the
+   input instead. */
+.scrub-range:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.scrub-resume {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0.2em 0;
+  cursor: pointer;
+  align-self: start;
+  transition: color 140ms var(--ease-out-strong);
+}
+.scrub-resume:hover {
+  color: var(--ink);
+}
+.scrub-resume:active {
+  transform: translateY(1px);
+}
+.scrub-resume:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrub-range::-webkit-slider-thumb,
+  .scrub-range::-moz-range-thumb {
+    transition: none;
+  }
+}
+/* ===== end comparison scrubber ===== */

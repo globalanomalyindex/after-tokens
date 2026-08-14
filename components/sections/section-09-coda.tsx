@@ -10,6 +10,7 @@ import { CodaStage } from '@/components/coda/coda-stage'
 import { PromptPicker } from '@/components/coda/prompt-picker'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { Highlight } from '@/components/chrome/highlight'
+import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { tokenize } from '@/lib/diffusion/tokenize'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
@@ -111,7 +112,7 @@ export function SectionCoda() {
       </h2>
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
-          Pick a response fixture. I tagged each one with a reveal hypothesis—structured answers
+          Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
           lock in clusters; open-ended answers drift in. The mapping is authored, not inferred.
           Override it to compare how presentation changes the read without pretending the model chose it.
         </Highlight>
@@ -146,8 +147,16 @@ export function SectionCoda() {
         </aside>
       </div>
 
+      <p className="mt-10 text-base max-w-prose">
+        <Highlight>
+          Pace is a real variable here, not a taste one. The <DefinitionTerm term="doherty threshold" /> marks
+          roughly where a system stops feeling responsive, so a reveal that outlasts the answer it is describing
+          is a cost, not a flourish. The rail exists so that trade is visible instead of assumed.
+        </Highlight>
+      </p>
+
       <div
-        className="mt-10 grid gap-4 pt-6 border-t"
+        className="mt-6 grid gap-4 pt-6 border-t"
         style={{ borderColor: 'color-mix(in oklab, var(--ink) 25%, transparent)' }}
       >
         <ToggleRail

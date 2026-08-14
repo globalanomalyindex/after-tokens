@@ -31,7 +31,12 @@ export function useDiffusionChoreography({
 }: UseChoreography): ChoreographyAPI {
   const events = useMemo<ResolutionEvent[]>(() => {
     if (words.length === 0) return []
-    return reduced ? strategy.reducedMotionFallback(words) : strategy.computeTimeline(words)
+    const raw = reduced ? strategy.reducedMotionFallback(words) : strategy.computeTimeline(words)
+    // Sort ascending by t so tick() can walk forward with a cursor instead of
+    // rescanning every event each frame. Copy before sorting: never mutate a
+    // strategy's returned array. Array.prototype.sort is spec-guaranteed stable,
+    // so events sharing a `t` keep their original relative order.
+    return [...raw].sort((a, b) => a.t - b.t)
   }, [words, strategy, reduced])
 
   // Reduced-motion timelines are intentionally short. Completion and dependent
@@ -58,21 +63,38 @@ export function useDiffusionChoreography({
   const reducedRef = useRef(reduced)
   onResolvedRef.current = onResolved
 
+  // Sorted-cursor bookkeeping. `events` is sorted ascending by t, so tick() can
+  // walk forward from where it left off instead of rescanning every event on
+  // every frame (was O(events) work plus an unconditional setState at 60fps,
+  // even on frames where nothing changed). `eventsRef` detects when `events`
+  // gets a new identity mid-run (a re-measure) so the cursor can be rewound to
+  // 0 rather than pointing past the end of a fresh array.
+  const cursorRef = useRef(0)
+  const eventsRef = useRef(events)
+
   const tick = useCallback(() => {
     if (startedAtRef.current == null) return
+    if (eventsRef.current !== events) {
+      eventsRef.current = events
+      cursorRef.current = 0
+    }
     const now = performance.now()
     const elapsed = now - startedAtRef.current - pauseOffsetRef.current
 
-    setWordStates((prev) => {
-      let next: Map<number, WordState> | null = null
-      for (const ev of events) {
-        if (ev.t <= elapsed && prev.get(ev.wordIndex) !== ev.state) {
-          if (!next) next = new Map(prev)
-          next.set(ev.wordIndex, ev.state)
-        }
-      }
-      return next ?? prev
-    })
+    const due: ResolutionEvent[] = []
+    while (cursorRef.current < events.length) {
+      const ev = events[cursorRef.current]
+      if (!ev || ev.t > elapsed) break
+      due.push(ev)
+      cursorRef.current += 1
+    }
+    if (due.length > 0) {
+      setWordStates((prev) => {
+        const next = new Map(prev)
+        for (const ev of due) next.set(ev.wordIndex, ev.state)
+        return next
+      })
+    }
 
     const p = totalDuration > 0 ? Math.min(1, elapsed / totalDuration) : 1
     progress.set(p)
@@ -94,6 +116,7 @@ export function useDiffusionChoreography({
     if (startedAtRef.current != null) return
     startedAtRef.current = performance.now()
     pauseOffsetRef.current = 0
+    cursorRef.current = 0
     setIsComplete(false)
     rafRef.current = requestAnimationFrame(tick)
   }, [tick])
@@ -120,6 +143,7 @@ export function useDiffusionChoreography({
     startedAtRef.current = null
     pausedAtRef.current = null
     pauseOffsetRef.current = 0
+    cursorRef.current = 0
     queueMicrotask(play)
   }, [words, play, progress])
 
@@ -144,6 +168,7 @@ export function useDiffusionChoreography({
     startedAtRef.current = null
     pausedAtRef.current = null
     pauseOffsetRef.current = 0
+    cursorRef.current = 0
     queueMicrotask(play)
   }, [reduced, isComplete, words, progress, play])
 

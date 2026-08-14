@@ -5,6 +5,7 @@ import { ModeDemo } from './mode-demo'
 import { Highlight } from '@/components/chrome/highlight'
 import { GoldenCurve } from '@/components/diffusion/golden-curve'
 import { NatureWord } from '@/components/chrome/nature-word'
+import { DefinitionTerm } from '@/components/chrome/definition-term'
 
 export function SectionMycelium() {
   return (
@@ -20,8 +21,8 @@ export function SectionMycelium() {
         }
         intro={
           <>
-            Mycelium turns each answer into a stable, scattered lock sequence. A deterministic hash of the response—not
-            model confidence—sets the order, so every replay is comparable. A soft halo marks each authored lock before
+            Mycelium turns each answer into a stable, scattered lock sequence. A deterministic hash of the response, not
+            model confidence, sets the order, so every replay is comparable. A soft halo marks each authored lock before
             the answer settles uniformly. I kept it after cutting a particle-flock direction that made the same point
             with more motion and less legibility.
           </>
@@ -34,6 +35,15 @@ export function SectionMycelium() {
           { label: 'Evidence', value: 'Prototype only' },
         ]}
       />
+
+      <p className="max-w-2xl mt-10 md:mt-14 text-base leading-relaxed">
+        <Highlight>
+          A locked word gets heavier than its neighbours, not brighter. The{' '}
+          <DefinitionTerm term="von restorff effect" /> is the reason difference registers at all: the item that
+          stands apart from its neighbours is the one that gets read. Which difference you pick, weight or color
+          or scale, is a brand decision. That there has to be one is not.
+        </Highlight>
+      </p>
 
       <div className="max-w-5xl mt-16 md:mt-24">
         <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
@@ -49,7 +59,7 @@ export function SectionMycelium() {
               <Highlight>
                 Branching systems, <NatureWord kind="fog">fog</NatureWord>, <NatureWord kind="aurora">aurora</NatureWord>,
                 and cell division gave me a motion vocabulary. They are references, not cognitive evidence. Product
-                research—not resemblance to nature—has to determine whether any treatment improves comprehension.
+                research, not resemblance to nature, has to determine whether any treatment improves comprehension.
               </Highlight>
             </p>
             <p className="text-base leading-relaxed">

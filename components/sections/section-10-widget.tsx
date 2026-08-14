@@ -43,7 +43,7 @@ export function SectionWidget() {
           </h2>
           <p className="mb-6 text-base leading-relaxed">
             <Highlight>
-              An assistant answer can contain color, data, icons, and layout—not only words. This
+              An assistant answer is not only words: it can carry color, data, icons, and layout. This
               prototype applies the same ready → resolving → resolved contract to the whole response
               so structured content does not fall back to a generic spinner.
             </Highlight>

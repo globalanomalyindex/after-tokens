@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
 // A live, looping experiment: the same line resolves two ways, finishing at the
@@ -23,6 +23,19 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 //
 // One rAF loop writes blur/opacity to the words and opacity to the crosshairs,
 // no per-frame React. Plays only while in view.
+//
+// Below the panels sits a SCRUBBER. The comparison is presented as a study
+// protocol elsewhere in this piece ("after interrupting the sequence at matched
+// timestamps, can a participant identify what is still changing"), and a
+// protocol you cannot interrupt is not checkable. The scrubber turns the
+// looping stimulus into something a reviewer can stop and inspect at any
+// timestamp: a range input, plus a fine-pointer drag directly on the panels as
+// a progressive enhancement. Scrubbing stops the rAF loop entirely (there is no
+// reason to keep requesting frames while pinned) and calls the same `paint`
+// function directly with the chosen timestamp, so the scrubbed frame and the
+// looping frame are pixel-identical, only their driver differs. The scrub range
+// excludes the RUSH seam, since that rewind is a loop artifact, not part of the
+// stimulus being studied.
 
 const PHI = 1.61803398875
 const PHRASE = 'the answer taking shape, region by region, in view'
@@ -35,6 +48,11 @@ const RUSH = 460 // the light rushes back to the start to realign the loop
 const TOTAL = LOAD + REVEAL + HOLD + RUSH
 const WORD_SPAN = 0.15 // fraction of REVEAL a single word takes to sharpen
 
+// The inspectable stimulus window. RUSH is a loop-seam rewind, not part of what
+// the study protocol asks a reviewer to interrupt, so the scrubber never lets
+// you drag into it.
+const SCRUB_MAX = LOAD + REVEAL + HOLD
+
 const N = 24 // crosshairs per strip
 
 // Both panels share the SAME blur range and the SAME opacity floor. The only
@@ -46,6 +64,10 @@ const OP_RANGE = 1 - OP_FLOOR
 
 function clamp01(x: number): number {
   return x < 0 ? 0 : x > 1 ? 1 : x
+}
+
+function clampMs(v: number, max: number): number {
+  return v < 0 ? 0 : v > max ? max : v
 }
 
 function gcd(a: number, b: number): number {
@@ -112,6 +134,26 @@ export function RevealComparison() {
   const rightLoad = useRef<HTMLDivElement | null>(null)
   const leftXhairs = useRef<(HTMLSpanElement | null)[]>([])
   const rightXhairs = useRef<(HTMLSpanElement | null)[]>([])
+  const readoutRef = useRef<HTMLOutputElement | null>(null)
+
+  // null = the loop is running; a number = pinned at that timestamp (scrubbing).
+  const [scrubMs, setScrubMs] = useState<number | null>(null)
+  const scrubRef = useRef<number | null>(null)
+  const inViewRef = useRef(false)
+  const draggingRef = useRef(false)
+
+  // Stable callables so JSX handlers (range input, pointer drag, Escape key,
+  // resume button) can reach into the current effect run without the effect
+  // itself re-subscribing on every render.
+  const paintRef = useRef<(e: number) => void>(() => {})
+  const beginScrubRef = useRef<(v: number) => void>(() => {})
+  const resumeRef = useRef<() => void>(() => {})
+
+  const [finePointer, setFinePointer] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    setFinePointer(window.matchMedia('(hover: hover) and (pointer: fine)').matches)
+  }, [])
 
   useEffect(() => {
     function paint(e: number) {
@@ -176,12 +218,53 @@ export function RevealComparison() {
       const rightA = rushBack >= 0 ? rushBack : meanLocal * (N - 1)
       paintStrip(leftXhairs.current, leftA, lit)
       paintStrip(rightXhairs.current, rightA, lit)
+
+      // The readout while the loop is running is written straight to the DOM,
+      // not React state (that would be a per-frame re-render). While scrubbing,
+      // the <output>'s text is React-controlled instead (see the JSX below), so
+      // skip the imperative write and let that render win.
+      if (readoutRef.current && scrubRef.current === null) {
+        const shown = Math.min(e, SCRUB_MAX)
+        readoutRef.current.textContent = `${(shown / 1000).toFixed(2)}s / ${(SCRUB_MAX / 1000).toFixed(2)}s`
+      }
     }
+    paintRef.current = paint
+
+    // Loop control is mutable so it can be reassigned only in the running
+    // (non-reduced-motion) branch below; beginScrub/resume close over these
+    // by reference, so calling them before reassignment (the reduced-motion
+    // branch, where there is no loop at all) is always a safe no-op.
+    let stopLoop: () => void = () => {}
+    let startLoop: () => void = () => {}
+
+    const beginScrub = (v: number) => {
+      const clamped = clampMs(v, SCRUB_MAX)
+      scrubRef.current = clamped
+      setScrubMs(clamped)
+      stopLoop()
+      paint(clamped)
+    }
+    const resume = () => {
+      if (reduced) return // no loop to resume to; the scrubber stays live
+      scrubRef.current = null
+      setScrubMs(null)
+      if (inViewRef.current) startLoop()
+    }
+    beginScrubRef.current = beginScrub
+    resumeRef.current = resume
 
     if (reduced) {
-      paint(LOAD + REVEAL + 1)
+      // The loop never runs, but the scrubber is fully live: start pinned at
+      // mid-reveal, where the two cadences diverge most, so a reduced-motion
+      // visitor can inspect the whole stimulus on their own terms instead of
+      // only ever seeing the frozen end state.
+      const initial = LOAD + REVEAL * 0.55
+      scrubRef.current = initial
+      setScrubMs(initial)
+      paint(initial)
       return
     }
+
     let raf = 0
     let start: number | null = null
     const frame = (now: number) => {
@@ -189,25 +272,34 @@ export function RevealComparison() {
       paint((now - start) % TOTAL)
       raf = requestAnimationFrame(frame)
     }
-    let io: IntersectionObserver | null = null
-    const startLoop = () => {
+    startLoop = () => {
+      if (scrubRef.current !== null) return // pinned; do not resume on our own
       if (!raf) {
         start = null
         raf = requestAnimationFrame(frame)
       }
     }
-    const stopLoop = () => {
+    stopLoop = () => {
       if (raf) {
         cancelAnimationFrame(raf)
         raf = 0
       }
     }
+
+    let io: IntersectionObserver | null = null
     if (wrapRef.current && 'IntersectionObserver' in window) {
-      io = new IntersectionObserver(([en]) => (en?.isIntersecting ? startLoop() : stopLoop()), {
-        threshold: 0.3,
-      })
+      io = new IntersectionObserver(
+        ([en]) => {
+          const intersecting = en?.isIntersecting ?? false
+          inViewRef.current = intersecting
+          if (intersecting) startLoop()
+          else stopLoop()
+        },
+        { threshold: 0.3 },
+      )
       io.observe(wrapRef.current)
     } else {
+      inViewRef.current = true
       startLoop()
     }
     return () => {
@@ -216,16 +308,79 @@ export function RevealComparison() {
     }
   }, [reduced])
 
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if ((e.target as Element).closest('.scrub-row, .scrub-range')) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    draggingRef.current = true
+    beginScrubRef.current(clamp01((e.clientX - rect.left) / rect.width) * SCRUB_MAX)
+  }
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    beginScrubRef.current(clamp01((e.clientX - rect.left) / rect.width) * SCRUB_MAX)
+  }
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return
+    draggingRef.current = false
+    e.currentTarget.releasePointerCapture(e.pointerId)
+    // Leave the scrub pinned: the reviewer is inspecting a frame, don't yank it away.
+  }
+
+  const rangeValue = scrubMs ?? 0
+
   return (
-    <div ref={wrapRef} className="grid sm:grid-cols-2 gap-4 md:gap-5">
-      <Panel label="blur → unblur" sub="linear" wordRefs={leftRefs} loadRef={leftLoad} xhairRefs={leftXhairs} />
-      <Panel
-        label="authored cadence"
-        sub="out of order · phi-decay"
-        wordRefs={rightRefs}
-        loadRef={rightLoad}
-        xhairRefs={rightXhairs}
+    <div
+      ref={wrapRef}
+      className="flex flex-col gap-3"
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') resumeRef.current()
+      }}
+    >
+      <div
+        className="grid sm:grid-cols-2 gap-4 md:gap-5"
+        onPointerDown={finePointer ? handlePointerDown : undefined}
+        onPointerMove={finePointer ? handlePointerMove : undefined}
+        onPointerUp={finePointer ? handlePointerUp : undefined}
+        onPointerCancel={finePointer ? handlePointerUp : undefined}
+      >
+        <Panel label="blur → unblur" sub="linear" wordRefs={leftRefs} loadRef={leftLoad} xhairRefs={leftXhairs} />
+        <Panel
+          label="authored cadence"
+          sub="out of order · phi-decay"
+          wordRefs={rightRefs}
+          loadRef={rightLoad}
+          xhairRefs={rightXhairs}
+        />
+      </div>
+
+      <div className="scrub-row">
+        <span className="scrub-label">+ scrub the stimulus</span>
+        <output ref={readoutRef} className="scrub-readout" aria-live="off">
+          {(rangeValue / 1000).toFixed(2)}s / {(SCRUB_MAX / 1000).toFixed(2)}s
+        </output>
+      </div>
+      <input
+        type="range"
+        className="scrub-range"
+        min={0}
+        max={SCRUB_MAX}
+        step={10}
+        value={rangeValue}
+        onChange={(e) => beginScrubRef.current(Number(e.currentTarget.value))}
+        aria-label="scrub the reveal timeline"
+        aria-valuetext={`${(rangeValue / 1000).toFixed(2)} seconds of ${(SCRUB_MAX / 1000).toFixed(2)}`}
       />
+      {scrubMs !== null && !reduced && (
+        <button
+          type="button"
+          className="scrub-resume"
+          onClick={() => resumeRef.current()}
+          aria-label="resume the looping comparison"
+        >
+          resume loop
+        </button>
+      )}
     </div>
   )
 }
@@ -252,8 +407,13 @@ function Panel({
       <div className="relative flex-1 min-h-[132px] flex items-center">
         <p aria-hidden="true" className="text-lg md:text-xl leading-relaxed" style={{ fontFamily: 'var(--font-ui)' }}>
           {WORDS.map((w, i) => (
+            // data-stimulus-word: these glyphs spend most of their life
+            // deliberately unreadable (blurred, at the shared opacity floor).
+            // That IS the stimulus, so an automated contrast check has to be
+            // told to skip them; the attribute is the hook it uses.
             <span
               key={i}
+              data-stimulus-word
               ref={(el) => {
                 wordRefs.current[i] = el
               }}

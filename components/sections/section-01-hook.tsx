@@ -4,22 +4,16 @@ import { useRef } from 'react'
 import { motion, useMotionTemplate, useScroll, useTransform } from 'motion/react'
 import { HeroTitle } from '@/components/hero/hero-title'
 import { RegistrationFrame } from '@/components/chrome/registration'
-import { IntroGate } from '@/components/intro/intro-gate'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
-// The entrance. The whole site argues that token-by-token is not the only way
-// to render text, so the site opens by NOT typing token-by-token: a cinematic
-// intro (IntroGate) plays one giant word at a time, each resolving out of noise,
-// then the fog clears to hand off into the real site. Underneath it, the hook
-// itself orients a skimming reviewer in the first screen: the stakes line, the
-// resolving title, the author. The palette is INVERTED — standard surfaces are
-// light (bone/ink), the entrance is the dark stage, the "before order" void.
-// Scrolling out blurs the hero and dissolves it, through a fog bridge, back
-// into the light site below: chaos -> order, made literal.
-//
-// Robustness lives in IntroGate (reduced-motion skip, scroll reset, skip-to-
-// dismiss). This section stays driven by the page's own scroll — no scroll-lock
-// here — so it degrades cleanly if the intro never runs.
+// The first screen. The whole site argues that token-by-token is not the only
+// way to render text, so the first screen does not type itself in: the hero
+// title resolves out of order, all at once, orienting a skimming reviewer with
+// the stakes line, the resolving title, the author. The palette is INVERTED
+// here: standard surfaces are light (bone/ink), the hero is the dark stage,
+// the "before order" void. Scrolling out blurs the hero and dissolves it,
+// through a fog bridge, back into the light site below: chaos -> order, made
+// literal.
 
 // Stakes first, in two beats: what each rendering model is telling you to do.
 // Streaming asks you to watch it type; diffusion asks you to watch it settle.
@@ -57,7 +51,6 @@ export function SectionHook() {
       aria-label="after tokens"
       className="hero-section relative min-h-[100dvh] overflow-hidden"
     >
-      <IntroGate />
       <div aria-hidden="true" className="hero-fog" />
       <RegistrationFrame />
 

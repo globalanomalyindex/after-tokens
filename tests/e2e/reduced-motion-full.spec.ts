@@ -6,7 +6,6 @@ test.describe('reduced motion full audit', () => {
   test('all sections resolve their content without overlay animations', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
-    await expect(page.locator('[data-intro]')).toHaveCount(0)
     // 10-section cut: the old 'assumptions' beat folded into 'primer', and the
     // old 'fog' + 'aurora' sections folded into 'mycelium' (one engine, many naturals).
     const sectionIds = [

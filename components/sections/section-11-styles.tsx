@@ -51,7 +51,7 @@ export function SectionStyles() {
         <span className="title-index">viii.</span>nature is the source library, not the proof
       </h2>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-16">
-        I borrowed behaviors—branching, dissipation, bands, division—because they gave each mode a
+        I borrowed behaviors (branching, dissipation, bands, division) because they gave each mode a
         coherent verb. That is a creative constraint, not evidence that the interaction works.
       </p>
 
@@ -88,7 +88,7 @@ export function SectionStyles() {
       </div>
       <p className="text-base leading-relaxed max-w-prose mb-8">
         The brand tiles above hold motion constant and swap visual tokens. Here I do the inverse:
-        surface stays comparable while motion changes character—a playful sweep, an austere hush, a
+        surface stays comparable while motion changes character: a playful sweep, an austere hush, a
         technical decode, an editorial snap. Every specimen still exposes the same three states.
       </p>
 

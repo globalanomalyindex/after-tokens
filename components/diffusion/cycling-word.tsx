@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { WordState } from '@/lib/diffusion/types'
 
@@ -13,7 +14,7 @@ type Props = {
   reduced?: boolean
 }
 
-export function CyclingWord({
+function CyclingWordImpl({
   atomIndex,
   finalText,
   candidates,
@@ -64,3 +65,26 @@ export function CyclingWord({
     </span>
   )
 }
+
+// cycleTick increments every 440ms while any word is still pending, and it is
+// passed to every CyclingWord in a paragraph. A settled word no longer reads
+// cycleTick (showFinal is already true), so re-rendering it on every tick is
+// wasted work. The one non-obvious rule: cycleTick is deliberately excluded
+// from this comparator, so once a word leaves 'pending' it stops re-rendering
+// on the ticks that keep the still-pending words cycling.
+function areEqual(prev: Props, next: Props): boolean {
+  if (
+    prev.atomIndex !== next.atomIndex ||
+    prev.finalText !== next.finalText ||
+    prev.state !== next.state ||
+    prev.slotWidth !== next.slotWidth ||
+    prev.reduced !== next.reduced ||
+    prev.candidates !== next.candidates
+  ) {
+    return false
+  }
+  return next.state !== 'pending'
+}
+
+export const CyclingWord = memo(CyclingWordImpl, areEqual)
+CyclingWord.displayName = 'CyclingWord'

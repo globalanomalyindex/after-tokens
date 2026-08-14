@@ -1,6 +1,7 @@
 import { Section } from '@/components/section'
 import { Highlight } from '@/components/chrome/highlight'
 import { NatureWord } from '@/components/chrome/nature-word'
+import { DefinitionTerm } from '@/components/chrome/definition-term'
 
 export function SectionClose() {
   return (
@@ -37,6 +38,14 @@ export function SectionClose() {
               <li>No production classifier chooses a mode; fixtures are tagged by hand.</li>
               <li>The glyph system is tuned for English and Latin-script content.</li>
               <li>This is a prototype primitive, not a packaged component library.</li>
+              <li>
+                Reading order is a real cost. This is the strongest argument against the whole approach. While you read
+                one word your eye is already sampling the next one over; <DefinitionTerm term="parafoveal preview" /> is
+                measurable, and text that changes out of order inside that zone should cost a reader time. An honest
+                study has to measure reading time, not only state identification. If revealing out of order slows
+                reading more than it clarifies state, the right answer is to reveal in reading order and carry the
+                state signal some other way, through weight or color rather than position.
+              </li>
             </ul>
           </div>
         </div>
@@ -73,7 +82,7 @@ export function SectionClose() {
               <Highlight><strong>Particle flock.</strong> Rebuilt as a chain reaction, liquid-glass orbs, and fireflies. Faster motion reduced legibility; Mycelium did the job with less visual traffic.</Highlight>
             </li>
             <li>
-              <Highlight><strong>The first entrance.</strong> Removed after it failed reduced motion, replay, and impatient-scroll cases. Rebuilt only after those behaviors became requirements.</Highlight>
+              <Highlight><strong>The first entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is not craft, it is a toll.</Highlight>
             </li>
             <li>
               <Highlight><strong>Abstract line graphs.</strong> Replaced with actual word locks so the comparison demonstrates the interaction instead of describing it from a distance.</Highlight>

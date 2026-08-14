@@ -18,7 +18,7 @@ const breaks = [
   },
   {
     title: 'partial-output trust',
-    body: 'streaming makes earlier text look committed. masked positions can remain provisional—or be masked again—across iterative denoising steps.',
+    body: 'streaming makes earlier text look committed. masked positions can remain provisional, or be masked again, across iterative denoising steps.',
   },
 ]
 
@@ -37,7 +37,7 @@ export function SectionPrimer() {
         </h2>
         <p className="text-lg md:text-xl leading-relaxed max-w-3xl mb-10" style={{ color: 'var(--ink-2)' }}>
           After Tokens asks a product question before it makes a motion argument: if a language model
-          resolves many positions in parallel, what should the interface reveal—and what must it never imply?
+          resolves many positions in parallel, what should the interface reveal, and what must it never imply?
         </p>
 
         <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
