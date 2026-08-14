@@ -16,7 +16,7 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 //           pack a seed head, scattered, never left-to-right.
 //
 // Under each panel runs a row of evenly-spaced crosshairs that lights up like a
-// runway. The travelling mark is driven by how much of THAT panel has actually
+// runway. The traveling mark is driven by how much of THAT panel has actually
 // resolved, so the light and the text stay in sync: the left sweeps at a
 // constant pace, the right holds back then rushes with the flood. Both reach the
 // final mark together; at the loop seam the light rushes back to realign.
@@ -113,7 +113,7 @@ const WORD_START: number[] = (() => {
   return arr
 })()
 
-// Light one crosshair strip: a comet centred on `active` (a float index), each
+// Light one crosshair strip: a comet centered on `active` (a float index), each
 // mark a few shades dimmer per step until it returns to the dark default ~4
 // steps out. `lit` globally scales the glow (0 = dormant track).
 function paintStrip(arr: (HTMLSpanElement | null)[], active: number, lit: number) {

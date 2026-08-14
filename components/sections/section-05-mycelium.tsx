@@ -38,9 +38,9 @@ export function SectionMycelium() {
 
       <p className="max-w-2xl mt-10 md:mt-14 text-base leading-relaxed">
         <Highlight>
-          A locked word gets heavier than its neighbours, not brighter. The{' '}
+          A locked word gets heavier than its neighbors, not brighter. The{' '}
           <DefinitionTerm term="von restorff effect" /> is the reason difference registers at all: the item that
-          stands apart from its neighbours is the one that gets read. Which difference you pick, weight or color
+          stands apart from its neighbors is the one that gets read. Which difference you pick, weight or color
           or scale, is a brand decision. That there has to be one is not.
         </Highlight>
       </p>

@@ -49,7 +49,7 @@ const DISSOLVE_MS = 1500 // text decays back into the block field
 const GAP_MS = 420 // brief full-block beat before re-developing
 const CYCLE_MS = DEVELOP_MS + HOLD_MS + DISSOLVE_MS + GAP_MS
 
-// How long (fraction of the develop window) a single char spends travelling
+// How long (fraction of the develop window) a single char spends traveling
 // through its noise stages once it "starts". Smaller windows resolve crisply;
 // the staggered start times are what spread the reveal across the whole line.
 const RESOLVE_SPAN = 0.46
@@ -161,7 +161,7 @@ export function AsciiSpecimen({ className = '' }: Props) {
 
     // Translate progress p -> { glyph, color } for a char whose final glyph is
     // `target`, at noise tick `tick`. `i` only seeds the per-cell flicker
-    // offset so neighbours don't pulse in lockstep.
+    // offset so neighbors don't pulse in lockstep.
     function resolveChar(target: string, i: number, p: number, tick: number) {
       let glyph: string
       let color: string

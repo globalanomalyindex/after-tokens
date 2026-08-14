@@ -94,7 +94,7 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
       <>
         Which word goes next is not random. The order steps across the line on a stride near n/φ, forced coprime to the
         word count so it visits every word exactly once. φ is the hardest number to approximate with a fraction, and
-        that is precisely why the stride never settles into a repeating pattern and never lands two neighbours back to
+        that is precisely why the stride never settles into a repeating pattern and never lands two neighbors back to
         back. An out-of-order reveal has two failure modes: it can look like a pattern, which reads as mechanical, or it
         can keep landing adjacent words, which quietly turns back into left to right. This is the one stride that avoids
         both at any sentence length with no hand-tuned table of magic numbers. The{' '}
@@ -109,7 +109,7 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
       <>
         The shipped mycelium mode does not use the golden-angle stride, and the difference is deliberate. A fixed stride
         gives every sentence of the same length the identical order, which is correct for a controlled stimulus and
-        wrong for a product: a reader would start recognising the animation instead of the answer. So the order is
+        wrong for a product: a reader would start recognizing the animation instead of the answer. So the order is
         hashed from the response text. The same answer always resolves the same way, different answers resolve
         differently, and nothing about the order pretends to carry model information.
       </>
@@ -133,7 +133,7 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
     body: (
       <>
         Eyeballed, then frozen. Nine pixels is where a short word stops being readable but has not yet bled into its
-        neighbour; the floor is high enough that a pending word holds its slot instead of the line reading as
+        neighbor; the floor is high enough that a pending word holds its slot instead of the line reading as
         half-empty. Neither number is derived from anything and a study could move both without touching the thesis.
         What matters is that both panels above use identical values, which is the only reason that comparison is a fair
         test rather than a strawman.

@@ -52,7 +52,7 @@ const PALETTES: Record<NatureKind, Stop[]> = {
     [0.62, 0.13, 150],
     [0.52, 0.12, 126],
   ],
-  // slate blue-grey of the bird
+  // slate blue-gray of the bird
   heron: [
     [0.52, 0.035, 236],
     [0.6, 0.045, 242],
@@ -73,7 +73,7 @@ const PALETTES: Record<NatureKind, Stop[]> = {
     [0.56, 0.15, 215],
     [0.55, 0.16, 300],
   ],
-  // cool, soft greys
+  // cool, soft grays
   fog: [
     [0.52, 0.03, 250],
     [0.6, 0.025, 242],

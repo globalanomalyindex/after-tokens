@@ -656,7 +656,7 @@ main .uppercase {
 /* ===== Crosshair runway + definition windows (corner note, cursor) ==== */
 /* A row of evenly-spaced registration crosses under each panel: first and last
    flush to the edges, the rest spaced between. A rAF loop drives each mark's
-   opacity to draw a travelling comet — only base styles live here. */
+   opacity to draw a traveling comet — only base styles live here. */
 .xhair-strip {
   display: flex;
   align-items: center;
@@ -675,7 +675,7 @@ main .uppercase {
    WIDE dictionary entry filled with that same solid color — headword + part of
    speech across the top, a phonetic respelling, a dashed rule, then the gloss.
    Dark ink throughout keeps it readable on the bright fill (no drop shadow). The
-   box anchors left / centre / right by where the chip sits, so it never spills
+   box anchors left / center / right by where the chip sits, so it never spills
    off-screen. */
 .def-wrap {
   position: relative;
@@ -756,7 +756,7 @@ main .uppercase {
   transform: translateX(0) translateY(0) scale(1);
 }
 /* One chip in the glossary is deliberately dark: the von restorff entry, the item
-   that differs from its neighbours. Its window flips the ink mixes toward bone so
+   that differs from its neighbors. Its window flips the ink mixes toward bone so
    the same markup stays legible on a dark fill. */
 .def-wrap[data-tone='dark'] .def-chip { color: var(--bone); }
 .def-wrap[data-tone='dark'] .def-window {

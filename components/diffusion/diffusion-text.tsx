@@ -141,15 +141,15 @@ export function DiffusionText({
     ro.observe(containerEl)
 
     // Fonts may swap in after first paint and shift glyph metrics.
-    let cancelled = false
+    let canceled = false
     if (typeof document !== 'undefined' && document.fonts?.ready) {
       document.fonts.ready.then(() => {
-        if (!cancelled) measure()
+        if (!canceled) measure()
       })
     }
 
     return () => {
-      cancelled = true
+      canceled = true
       ro.disconnect()
     }
   }, [atoms])

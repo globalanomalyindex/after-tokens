@@ -8,7 +8,7 @@ import { GLOSSARY } from '@/lib/glossary'
 // the top, a phonetic respelling, a dashed rule, then the gloss and a citation
 // line naming the finding's source. Dark ink throughout so it reads on the
 // bright fill (the one entry with tone: 'dark' inverts those inks via
-// data-tone). The window anchors left / centre / right based on where the chip
+// data-tone). The window anchors left / center / right based on where the chip
 // sits, so a wide box never spills off-screen, and it scales up from that edge.
 // Dismisses on outside-press / Escape.
 export function DefinitionTerm({
