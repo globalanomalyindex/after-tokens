@@ -228,8 +228,8 @@ export function SectionThesis() {
       <RevealComparison />
       <p className="mt-4 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
         Study prompt: after interrupting the sequence at matched timestamps, can a participant identify what is still
-        changing, understand the visible text, and do so without added distraction? Drag the scrubber to stop both
-        panels on the same instant and compare what each one is telling you.
+        changing, understand the visible text, and do so without added distraction? Both panels run the same loop on
+        the same clock, so any instant you catch them at is a matched pair.
       </p>
       <p className="mt-2 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
         An answer that arrives whole gives the eye nothing to track, and <DefinitionTerm term="change blindness" /> is

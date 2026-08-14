@@ -42,7 +42,7 @@ the same contract drives plain text, rich content, brand specimens, and a weathe
 this shipped through cycles of build, audit, and cut.
 
 - a fourth reveal mode (a particle flock) was rebuilt three times and killed: it reduced legibility and duplicated the simpler mycelium mode.
-- the thesis comparison began as abstract line graphs and became word-level locks, so the demo shows the behavior instead of describing it. it now carries a timeline scrubber, so the stimulus can be stopped and inspected at any instant rather than only judged in motion.
+- the thesis comparison began as abstract line graphs and became word-level locks, so the demo shows the behavior instead of describing it. a timeline scrubber was built on top of it and then cut: it turned a thing you glance at into a thing you operate, and the loop already shows both cadences against the same clock.
 - a cinematic entrance was built, broke, was rebuilt around its failure modes, and was then cut entirely. the hero already resolves out of order, and a second performance of the same idea cost a reviewer six seconds before the argument started.
 
 nature supplied a motion vocabulary (branching, dissipation, bands, division) but not proof. the phi-decay cadence is a tuning hypothesis. the case study states exactly what is implemented, what is simulated, and what a user study would need to falsify.
