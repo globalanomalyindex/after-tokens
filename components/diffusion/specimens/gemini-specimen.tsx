@@ -328,7 +328,7 @@ export function GeminiSpecimen({ className = '' }: Props) {
           will-change: transform, opacity, filter;
         }
 
-        /* Solid, readable settled color — the base everyone reads. */
+        /* Solid, readable settled color: the base everyone reads. */
         .gemini-word-ink {
           color: ${INK};
         }
