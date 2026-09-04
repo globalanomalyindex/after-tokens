@@ -19,7 +19,8 @@
     "test:e2e:install": "playwright install",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "traces:index": "node scripts/gen-trace-index.mjs"
   },
   "dependencies": {
     "motion": "^12.40.0",

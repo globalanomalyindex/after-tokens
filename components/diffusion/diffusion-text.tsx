@@ -22,7 +22,11 @@ import { isDecodeStyle, DECODE_WINDOW } from '@/lib/diffusion/decode'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import type { MeasuredAtom, ModeName, ModeStrategy, OverlayProps } from '@/lib/diffusion/types'
 
-const strategies: Record<ModeName, ModeStrategy> = { mycelium, fog, aurora, mitosis }
+// The static table cannot cover 'trace': a recorded trajectory is built from
+// captured data at runtime (see lib/diffusion/traces.ts, traceStrategy), not
+// a fixed formula, so it has no fixed entry here. Callers that want the
+// recorded mode pass a `strategy` prop instead (see DiffusionTextProps).
+const strategies: Record<Exclude<ModeName, 'trace'>, ModeStrategy> = { mycelium, fog, aurora, mitosis }
 
 const CYCLE_INTERVAL_MS = 440
 const GLOBAL_UNBLUR_THRESHOLD = 0.82
@@ -32,7 +36,7 @@ type DiffusionTextProps = {
   mode: ModeName
   trigger?: 'inView' | 'immediate' | 'manual'
   // External activation gate. When set to true, the text begins diffusing
-  // immediately regardless of trigger. Useful for sequencing — e.g. start
+  // immediately regardless of trigger. Useful for sequencing, e.g. start
   // the text only after a sibling widget has finished settling.
   externalActive?: boolean
   // Multiplier on the strategy's totalDuration. 1 = native speed. Used by
@@ -41,7 +45,7 @@ type DiffusionTextProps = {
   durationScale?: number
   // The vocabulary words cycle through while pending. 'words' (default) is the
   // topical near-word noise; 'blocks'/'matrix'/'binary' re-skin the noise as a
-  // terminal decode, matrix rain, or binary stream — composable with any mode.
+  // terminal decode, matrix rain, or binary stream, composable with any mode.
   glyphStyle?: GlyphStyle
   // Optional per-word color for the RESOLVED text. Returning a color makes a
   // word bloom into that color the moment it locks (pending words stay neutral).
@@ -50,11 +54,28 @@ type DiffusionTextProps = {
   // Editorial specimens should not all announce themselves as live updates.
   // Interactive results can opt into one announcement after the reveal ends.
   announce?: 'none' | 'on-complete'
-  // A visible, motion-independent state readout. This also makes the prototype
-  // source explicit: the shipped timelines are authored, not model confidence.
+  // A visible, motion-independent state readout. It also names the source
+  // honestly: authored timelines say so, and the recorded mode says recorded.
   showStatus?: boolean
   onResolved?: () => void
   className?: string
+  // A recorded trajectory (or any other runtime-built strategy) supplied by
+  // the caller. When present it replaces the strategies[mode] lookup
+  // entirely: a recorded trajectory cannot be a static entry in the
+  // strategies table above because it is built from data (which trace, which
+  // sampler config) at runtime, not known at module load.
+  strategy?: ModeStrategy
+  // Fires the raw 0..1 choreography progress on every change, read through a
+  // ref by callers (e.g. a trajectory stage's step readout) that need it
+  // without triggering their own re-renders or restarting playback.
+  onProgress?: (p: number) => void
+  // Real provisional text for a recorded trajectory: the model's own
+  // successive guesses for a word at a given step, keyed by word index and
+  // the current step. When both this and stepCount are given, a pending
+  // word's cycling display is replaced by the sampler's real mind changes
+  // instead of the synthetic near-word noise from buildCandidates.
+  provisionalAt?: (index: number, step: number) => string | undefined
+  stepCount?: number
 }
 
 export function DiffusionText({
@@ -69,6 +90,10 @@ export function DiffusionText({
   showStatus = false,
   onResolved,
   className = '',
+  strategy: strategyProp,
+  onProgress,
+  provisionalAt,
+  stepCount,
 }: DiffusionTextProps) {
   const atoms = useMemo(() => tokenize(children), [children])
   // 'words' cycles topical near-words; the other styles DECODE per character
@@ -104,7 +129,7 @@ export function DiffusionText({
   // the placeholder→CyclingWord render swap, refs are briefly null between
   // unmount and remount. Committing a partial measurement here truncates
   // the `measured` array, which then starves the choreographer of events
-  // for the missing atoms — those words stay 'pending' forever (the user-
+  // for the missing atoms, so those words stay 'pending' forever (the user-
   // visible "stuck cycling at the end" bug).
   useLayoutEffect(() => {
     if (atoms.length === 0 || !containerRef.current) return
@@ -170,7 +195,12 @@ export function DiffusionText({
     return () => observer.disconnect()
   }, [trigger, reduced])
 
-  const baseStrategy = strategies[mode]!
+  // A recorded trajectory replaces the lookup entirely (see `strategy` prop
+  // doc above). Absent that, 'trace' has no static table entry, so it falls
+  // back to mycelium: this cannot happen through the public components (they
+  // always pass `strategy` alongside mode='trace'), but the type must be
+  // sound without a non-null assertion.
+  const baseStrategy = strategyProp ?? (mode === 'trace' ? mycelium : strategies[mode])
   // Wrap the strategy in a duration-scaled adapter when the caller wants a
   // longer presentation window. Scale = 1 returns the original strategy so
   // hot paths stay identity-equal.
@@ -240,14 +270,36 @@ export function DiffusionText({
     if (shouldPlay && measured.length > 0) play()
   }, [shouldPlay, measured.length, play])
 
-  // Global unblur once progress crosses threshold — drives the "final reveal" beat.
+  // onProgress is read through a ref so a caller passing a fresh closure each
+  // render doesn't restart playback or re-subscribe this handler.
+  const onProgressRef = useRef<typeof onProgress>(onProgress)
+  useEffect(() => {
+    onProgressRef.current = onProgress
+  }, [onProgress])
+
+  // Which recorded step a trajectory replay is currently on, for real
+  // provisional text (see provisionalAt doc above). Kept out of a plain
+  // derived value so it updates at most once per step rather than on every
+  // progress tick.
+  const [provisionalStep, setProvisionalStep] = useState(0)
+  const provisionalStepRef = useRef(0)
+
+  // Global unblur once progress crosses threshold, drives the "final reveal" beat.
   useMotionValueEvent(progress, 'change', (p) => {
     if (p >= GLOBAL_UNBLUR_THRESHOLD && !unblurred) setUnblurred(true)
+    onProgressRef.current?.(p)
+    if (stepCount && stepCount > 0) {
+      const nextStep = Math.max(0, Math.min(stepCount - 1, Math.floor(p * (stepCount + 1))))
+      if (nextStep !== provisionalStepRef.current) {
+        provisionalStepRef.current = nextStep
+        setProvisionalStep(nextStep)
+      }
+    }
   })
 
   // Haptic feedback for mycelium: every word lock = short tick, final unblur =
   // longer wave. Android phones with vibration API respect this; iOS Safari
-  // ignores `navigator.vibrate`, which is fine — the visual treatment still
+  // ignores `navigator.vibrate`, which is fine. The visual treatment still
   // carries the lock and the wave on its own.
   const lastResolvedCountRef = useRef(0)
   const lastHapticAtRef = useRef(0)
@@ -268,7 +320,7 @@ export function DiffusionText({
             navigator.vibrate(7)
           }
         } catch {
-          // ignore — feature-detection only catches some misbehavior
+          // ignore, feature-detection only catches some misbehavior
         }
       }
     }
@@ -288,7 +340,7 @@ export function DiffusionText({
 
   // Cycle tick while any atom is still pending.
   // NOTE: Read from atoms (with fallback to 'pending') rather than wordStates'
-  // existing entries — at first mount wordStates is empty even though atoms
+  // existing entries: at first mount wordStates is empty even though atoms
   // visually render as pending, and the cycle would never start.
   const hasPending = useMemo(() => {
     if (atoms.length === 0) return false
@@ -316,7 +368,7 @@ export function DiffusionText({
       data-complete={isComplete ? 'true' : 'false'}
       data-reduced-motion={reduced ? 'true' : 'false'}
       // Decode styles render in monospace so every stage glyph (block, braille,
-      // katakana, letter) occupies one cell — zero layout jitter, like the
+      // katakana, letter) occupies one cell, zero layout jitter, like the
       // static specimens. 'words' keeps the chat-native UI font.
       style={isDecode ? { fontFamily: 'var(--font-mono)' } : undefined}
     >
@@ -399,6 +451,9 @@ export function DiffusionText({
                 cycleTick={cycleTick}
                 slotWidth={slotWidth}
                 reduced={reduced}
+                provisionalText={
+                  provisionalAt && stepCount ? provisionalAt(atom.index, provisionalStep) : undefined
+                }
               />
             </span>
           )
@@ -423,7 +478,7 @@ export function DiffusionText({
           data-prototype-status={isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         >
           <span aria-hidden="true">{isComplete ? '●' : shouldPlay ? '◐' : '○'}</span>
-          authored prototype · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
+          {mode === 'trace' ? 'recorded sampler' : 'authored prototype'} · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         </div>
       )}
     </div>

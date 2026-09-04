@@ -59,13 +59,13 @@ export function SectionBrandVariations() {
   return (
     <Section
       id="brand-variations"
-      n={7}
+      n={8}
       act="III"
       title="Brand variations"
       eyebrow={['Generalization', 'Same motion, different tokens']}
     >
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6 max-w-3xl">
-        <span className="title-index">vii.</span>hold the motion constant; change the brand
+        <span className="title-index">viii.</span>hold the motion constant; change the brand
       </h2>
       <p className="mb-6 text-base max-w-prose">
         <Highlight>

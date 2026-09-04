@@ -11,22 +11,23 @@ import { sectionAccent, RAINBOW_FALLBACK } from '@/lib/brand/section-accents'
 
 type NavItem = { id: string; label: string; n: number }
 
-// Lowercase roman numerals i..x, matching the site's existing convention
-// (components/section.tsx toRoman) for the 10 sections in scroll order.
+// Lowercase roman numerals i..xi, matching the site's existing convention
+// (components/section.tsx toRoman) for the 11 sections in scroll order.
 const ITEMS: NavItem[] = [
   { id: 'hook', label: 'overview', n: 1 },
   { id: 'primer', label: 'brief', n: 2 },
-  { id: 'thesis', label: 'hypothesis', n: 3 },
-  { id: 'mycelium', label: 'system', n: 4 },
-  { id: 'coda', label: 'mapping', n: 5 },
-  { id: 'widget', label: 'application', n: 6 },
-  { id: 'brand-variations', label: 'brands', n: 7 },
-  { id: 'styles', label: 'registers', n: 8 },
-  { id: 'playground', label: 'try it', n: 9 },
-  { id: 'close', label: 'evidence', n: 10 },
+  { id: 'trajectories', label: 'observed', n: 3 },
+  { id: 'thesis', label: 'hypothesis', n: 4 },
+  { id: 'mycelium', label: 'system', n: 5 },
+  { id: 'coda', label: 'mapping', n: 6 },
+  { id: 'widget', label: 'application', n: 7 },
+  { id: 'brand-variations', label: 'brands', n: 8 },
+  { id: 'styles', label: 'registers', n: 9 },
+  { id: 'playground', label: 'try it', n: 10 },
+  { id: 'close', label: 'evidence', n: 11 },
 ]
 
-const ROMANS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
+const ROMANS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi']
 
 export function SectionNav() {
   const [active, setActive] = useState<string>(ITEMS[0]!.id)

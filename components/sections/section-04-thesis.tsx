@@ -6,6 +6,7 @@ import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { RevealComparison } from '@/components/diffusion/reveal-comparison'
+import { TRACE_NUMBERS, DERIVED } from '@/lib/traces/findings'
 
 // The three reasons a region-by-region, phi-spaced reveal is worth testing against
 // a generic linear blur -> unblur, from a comprehension standpoint. Reason 01 ties
@@ -60,9 +61,13 @@ const REASONS: { n: string; lead: string; body: ReactNode }[] = [
 //   derived    - falls out of a property, and the argument for it survives scrutiny
 //   constraint - forced by what the interface has to communicate
 //   tuned      - eyeballed, frozen, and safe to change
-// Every claim here is checkable against the code: lib/diffusion/modes/mycelium.ts
-// holds the cadence and the hash order, components/diffusion/reveal-comparison.tsx
-// holds the golden-angle stride and the shared blur range.
+// Three rows are now corroborated against the recorded trajectories: the 1/φ decay
+// (its ratio still holds, but the recorded cadence is linear, not phi), the growth
+// order (its statistics are fitted to twenty recorded runs), and the 440ms pending
+// cycle (the recorded flip rate lands within about 14 percent of it). Every claim
+// here is checkable against the code: lib/diffusion/modes/mycelium.ts holds the
+// cadence and the growth order, components/diffusion/reveal-comparison.tsx holds
+// the golden-angle stride and the shared blur range.
 type Tag = 'derived' | 'constraint' | 'tuned'
 
 const TAG_COLOR: Record<Tag, string> = {
@@ -83,7 +88,12 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
         resemblance to one. A faster decay spends most of the window on the first gap and then dumps the rest; a slower
         one flattens toward a metronome. This is the balance point that has a definition instead of a preference. The
         series is floored at 45 milliseconds, roughly three frames, because the pure curve runs to zero and two words
-        landing on the same frame is simultaneity, which erases the signal the reveal exists to send.
+        landing on the same frame is simultaneity, which erases the signal the reveal exists to send. The recorded
+        sampler does not decay this way: its word-lock cadence, the median lock fraction by word rank, stays close to a
+        straight line, because the schedule commits a fixed number of tokens per step regardless of confidence. Phi is
+        an authored acceleration, not a description of any sampler measured here. The mycelium chart now draws both
+        curves, and the study in the closing section can compare a linear cadence against phi with real stimuli instead
+        of two authored ones.
       </>
     ),
   },
@@ -103,15 +113,22 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
     ),
   },
   {
-    decision: 'a text-seeded hash for the shipped order',
-    tag: 'constraint',
+    decision: 'a growth order fitted to the recorded sampler',
+    tag: 'derived',
     body: (
       <>
-        The shipped mycelium mode does not use the golden-angle stride, and the difference is deliberate. A fixed stride
-        gives every sentence of the same length the identical order, which is correct for a controlled stimulus and
-        wrong for a product: a reader would start recognizing the animation instead of the answer. So the order is
-        hashed from the response text. The same answer always resolves the same way, different answers resolve
-        differently, and nothing about the order pretends to carry model information.
+        The shipped mycelium mode does not use the golden-angle stride, and it no longer uses a text hash either. A
+        fixed stride or a hash gives every sentence of the same length the identical shape, which is correct for a
+        controlled stimulus and wrong for a product: a reader would start recognizing the animation instead of the
+        answer. So the order is a seeded growth process: it commits adjacent to an already-locked position most of the
+        time ({Math.round(TRACE_NUMBERS.adjacentFrac.lowconfB32 * 100)}% of consecutive commits, matching the recorded
+        sampler) and opens a fresh anchor elsewhere every so often (one new anchor per about{' '}
+        {Math.round(100 / TRACE_NUMBERS.seedsPer100Default)} commits, also matched). Both statistics are fitted to
+        twenty recorded trajectories. The block schedule is deliberately not imitated, because the piece&apos;s position
+        is that the macro order belongs to the schedule and this order models what confidence does inside it. The
+        process is still seeded from the response text, so the same answer always resolves the same way. The recorded
+        mode remains the exception: its order is the sampler&apos;s own, and it is the only order in this piece that
+        carries model information about a specific answer.
       </>
     ),
   },
@@ -137,6 +154,19 @@ const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
         half-empty. Neither number is derived from anything and a study could move both without touching the thesis.
         What matters is that both panels above use identical values, which is the only reason that comparison is a fair
         test rather than a strawman.
+      </>
+    ),
+  },
+  {
+    decision: '440 milliseconds between pending glyphs',
+    tag: 'tuned',
+    body: (
+      <>
+        Set by eye, then measured. The sampler&apos;s provisional guess for a pending token changes every{' '}
+        {DERIVED.msPerFlipRecorded} milliseconds at recorded pace, so the authored churn is within about 14 percent of
+        the real rate and stays. At the 40 millisecond replay pace the recorded mode churns faster still ({DERIVED.msPerFlipReplay}{' '}
+        ms), because the model made the same number of guesses in less time. That is the truth of the process, not a
+        design choice: the recorded mode is not tuned to match the authored cycle, and it does not.
       </>
     ),
   },
@@ -193,7 +223,7 @@ const PIPELINE = [
 
 export function SectionThesis() {
   return (
-    <Section id="thesis" n={3} act="II" title="Hypothesis and system" eyebrow={['Hypothesis', 'Signal, not spectacle']}>
+    <Section id="thesis" n={4} act="II" title="Hypothesis and system" eyebrow={['Hypothesis', 'Signal, not spectacle']}>
       <div className="max-w-3xl mb-16 md:mb-24">
         <div className="text-xs uppercase tracking-[0.16em] mb-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
           + The product position
@@ -205,12 +235,18 @@ export function SectionThesis() {
             showStatus
             className="text-2xl md:text-3xl font-bold tracking-tight leading-tight"
           >
-            {`If a sampler exposes meaningful answer state, the interface should make that state legible. Until then, the reveal is an authored prototype: not evidence about what the model knows.`}
+            {`A sampler exposes real answer state: which positions have committed, in what order, with what confidence. The interface should make that state legible. One mode here replays recorded sampler state. The other four are authored simulations, and they say so.`}
           </DiffusionText>
         </div>
         <p className="text-base leading-relaxed max-w-2xl mt-5">
           The goal is <DefinitionTerm term="trust calibration" />: a reader&apos;s confidence in an answer should track what
           the system has actually settled. A reveal that overstates certainty is worse than no reveal at all.
+        </p>
+        <p className="text-base leading-relaxed max-w-2xl mt-3">
+          The previous section shows what that state looks like in a real sampler. The order is not random and not
+          left to right, and the model&apos;s provisional guess for an uncommitted position changes about{' '}
+          {TRACE_NUMBERS.flipsPerTokenLowconf.toFixed(1)} times before it commits, which is the number an interface
+          has to design against.
         </p>
       </div>
 
@@ -346,7 +382,8 @@ export function SectionThesis() {
             tested in this build
           </div>
           <p className="text-base leading-relaxed">
-            Typed strategy contracts, deterministic replays, reduced-motion completion, screen-reader text, responsive
+            Sixty recorded denoising trajectories from a real masked diffusion model drive the sampler mode; typed
+            strategy contracts, deterministic replays, reduced-motion completion, screen-reader text, responsive
             geometry, unit tests, and browser-level accessibility checks.
           </p>
         </div>

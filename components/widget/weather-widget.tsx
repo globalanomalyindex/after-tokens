@@ -19,7 +19,10 @@ import type { WeatherFixture } from '@/lib/widget/weather-data'
 import { WeatherIcon } from './weather-icon'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
-const strategies: Record<ModeName, ModeStrategy> = {
+// The widget never plays a recorded trajectory (there is no data-fed replay
+// surface here, only the authored strategies), so this table stays total
+// over every mode except 'trace'. Every lookup below narrows the mode first.
+const strategies: Record<Exclude<ModeName, 'trace'>, ModeStrategy> = {
   mycelium,
   fog,
   aurora,
@@ -39,7 +42,7 @@ type WeatherWidgetProps = {
 // (boid targets / lock dots / aurora line groups / mitosis orb targets /
 // fog reveal anchors). The widget content layer reads its element positions
 // from the SAME table so the overlay and the content share coordinates and
-// lock cadence — the overlay literally settles into the widget.
+// lock cadence: the overlay literally settles into the widget.
 const ELEMENTS = [
   { key: 'header', line: 0, cx: 0.5, cy: 0.07, w: 0.7, h: 0.05 },
   { key: 'icon', line: 1, cx: 0.5, cy: 0.27, w: 0.36, h: 0.22 },
@@ -117,7 +120,9 @@ export function WeatherWidget({
   }, [trigger, active])
 
   const activeMode: ModeName = mode ?? fixture.defaultMode
-  const strategy = strategies[activeMode]!
+  // The widget never plays a recorded trajectory; fall back to mycelium if
+  // 'trace' somehow reaches here so the lookup stays type-sound.
+  const strategy = activeMode === 'trace' ? mycelium : strategies[activeMode]
 
   useEffect(() => setComplete(false), [fixture.id, activeMode])
 
@@ -146,7 +151,7 @@ export function WeatherWidget({
       )}
 
       {/*
-        No dark outer card anymore — the widget visually integrates into the
+        No dark outer card anymore. The widget visually integrates into the
         surrounding bubble. The sky gradient (rendered by SkyLayer) IS the
         weather's color identity; we just need an overflow-hidden, rounded
         wrapper so the mode overlay doesn't leak outside the widget area.

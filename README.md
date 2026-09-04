@@ -12,8 +12,8 @@ an independent product design and engineering case study on how text from a diff
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | a reusable `DiffusionText` engine, four reveal modes, brand variants, a structured weather answer, an interactive playground |
-| **status** | working prototype. the comprehension hypothesis has not been validated with users. |
+| **built** | a reusable `DiffusionText` engine, four authored reveal modes plus one driven by recorded sampler trajectories, brand variants, a structured weather answer, an interactive playground |
+| **status** | working prototype. one mode now replays a real model's sampler order; the comprehension hypothesis has not been validated with users. |
 | **stack** | next.js, typescript, motion, tailwind, vitest, playwright, axe-core |
 
 ## the problem
@@ -44,6 +44,7 @@ this shipped through cycles of build, audit, and cut.
 - a fourth reveal mode (a particle flock) was rebuilt three times and killed: it reduced legibility and duplicated the simpler mycelium mode.
 - the thesis comparison began as abstract line graphs and became word-level locks, so the demo shows the behavior instead of describing it. a timeline scrubber was built on top of it and then cut: it turned a thing you glance at into a thing you operate, and the loop already shows both cadences against the same clock.
 - a cinematic entrance was built, broke, was rebuilt around its failure modes, and was then cut entirely. the hero already resolves out of order, and a second performance of the same idea cost a reviewer six seconds before the argument started.
+- the last decision was to stop authoring: sixty real trajectories were captured so one mode could replay a sampler instead of imitating one, and the piece now separates what the sampler does from what a reader can read.
 
 nature supplied a motion vocabulary (branching, dissipation, bands, division) but not proof. the phi-decay cadence is a tuning hypothesis. the case study states exactly what is implemented, what is simulated, and what a user study would need to falsify.
 
@@ -66,6 +67,31 @@ the case study cites eleven findings from cognitive science and reading research
 | von restorff effect | von restorff, 1933 |
 
 parafoveal preview is in there as the counter-argument: while you read one word the eye is already sampling the next one over, so revealing out of order should cost a reader time. an honest study has to measure reading time, not only state identification.
+
+## real trajectories
+
+sixty denoising trajectories were recorded from a real masked diffusion language model, `dllm-hub/qwen3-0.6b-diffusion-mdlm-v0.1` (0.6b parameters, instruction tuned, apache-2.0), run greedily on an apple m3. twenty prompts times three sampler configurations: `lowconf-b32` (llada-style low-confidence remasking in four blocks of 32, the model card default), `random-b32` (the original mdlm random unmasking order, same blocks), and `lowconf-b128` (low-confidence remasking with no block schedule). one reveal mode replays these trajectories directly; the other modes stay authored.
+
+| finding | number |
+| --- | --- |
+| commit order vs reading order (kendall's tau) | +0.96 with blocks, +0.75 random order, +0.38 with no blocks |
+| median jump between consecutive commits | 2.5 positions, vs 36.7 expected from a uniformly random order |
+| provisional-guess changes per token before it commits | 5.3, range 2.1 to 9.4 across prompts |
+| end-of-sequence tail committed before the last word (default schedule) | 95% |
+| median confidence of the token committed at each step | 0.57 |
+
+with the default sampler the answer arrives almost left to right, one block at a time, because the block schedule enforces it, not the confidence rule alone. commits cluster around a handful of confident anchors rather than filling in as a scatter or a strict scan. the model's current best guess for an unfilled position is usually wrong more than once before that position commits. the sequence's end is fixed only shortly before its last words are: the tail sits inside the final block, so the length becomes certain at the 95% mark and the last word lands at the 99% mark. and a meaningful share of commits, nearly two in five, land under even odds, so a lock does not always mean the model was sure.
+
+what changed in the design because of it:
+
+- mycelium's lock order is now a fitted growth process, tuned to the recorded adjacent-commit fraction and jump distribution instead of a text-hash shuffle. the block schedule itself is deliberately not imitated: the macro order belongs to the schedule, and mycelium models what confidence does inside it.
+- the phi-decay cadence chart now plots the recorded, linear word-lock cadence next to the authored curve, rather than implying phi was measured.
+- the authored 440 ms pending-churn rate is corroborated: it sits within about 14% of the sampler's measured rate of provisional-guess changes at recorded pace.
+- the recorded mode shows the model's real provisional guesses as it replays a trajectory, and settles a word dimmer when its weakest token committed under 30% confidence.
+
+a llada-8b-instruct corroboration set (4 runs, τ = +0.90, median jump 3.9 positions) reproduces the block-schedule pattern at 8b.
+
+this is one small model, one sampler family, run greedily on one machine. it shows what a sampler does. it does not show that any reveal helps a reader. see [`data/traces/README.md`](data/traces/README.md) for the full schema and capture method, and [`docs/research-note.md`](docs/research-note.md) for the analysis written up in full.
 
 ## evidence and limits
 

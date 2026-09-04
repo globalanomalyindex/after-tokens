@@ -2,6 +2,7 @@
 
 import { Section } from '@/components/section'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
+import { TRACE_NUMBERS } from '@/lib/traces/findings'
 
 // Two short setup beats folded into one section: how diffusion text actually
 // resolves, then the rendering assumption it quietly breaks. The payoff both
@@ -18,7 +19,7 @@ const breaks = [
   },
   {
     title: 'partial-output trust',
-    body: 'streaming makes earlier text look committed. masked positions can remain provisional, or be masked again, across iterative denoising steps.',
+    body: `streaming makes earlier text look committed. masked positions can remain provisional, or be masked again, across iterative denoising steps. in the recorded trajectories the model's provisional guess for a position changed about ${TRACE_NUMBERS.flipsPerTokenLowconf.toFixed(1)} times before it committed.`,
   },
 ]
 
@@ -44,8 +45,8 @@ export function SectionPrimer() {
           {[
             ['brief', 'Invent an arrival language for masked diffusion responses.'],
             ['role', 'Solo product design and design engineering.'],
-            ['built', 'Reusable engine, four modes, brand tokens, widget, and playground.'],
-            ['status', 'Working prototype. The comprehension hypothesis is not yet validated.'],
+            ['built', 'Reusable engine, four authored modes plus one driven by recorded sampler trajectories, brand tokens, widget, and playground.'],
+            ['status', 'Working prototype. One mode replays a real sampler. The comprehension hypothesis is not yet validated.'],
           ].map(([label, value]) => (
             <div key={label} className="p-5 md:p-6" style={{ background: 'var(--surface)' }}>
               <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
@@ -125,7 +126,7 @@ export function SectionPrimer() {
         </a>. The interface below simulates state; it is not connected to either model.
       </p>
 
-      {/* beat two: the assumption it breaks — token-by-token rendering */}
+      {/* beat two: the assumption it breaks, token-by-token rendering */}
       <div className="mt-16 md:mt-24">
         <h3 className="text-3xl md:text-4xl font-bold tracking-tighter lowercase leading-tight mb-3 max-w-3xl">
           the assumption it breaks: token-by-token rendering

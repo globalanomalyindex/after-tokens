@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Section } from '@/components/section'
 import { BrandProvider } from '@/lib/brand/provider'
 import { useBrand } from '@/lib/brand/provider'
@@ -16,13 +16,21 @@ import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
 import { aurora } from '@/lib/diffusion/modes/aurora'
 import { mitosis } from '@/lib/diffusion/modes/mitosis'
+import { traceStrategy } from '@/lib/diffusion/traces'
+import { loadTrace, type TraceId } from '@/lib/traces'
+import type { TraceCompact } from '@/lib/diffusion/traces'
 import type { BrandId } from '@/lib/brand/types'
 import type { MeasuredAtom, ModeStrategy } from '@/lib/diffusion/types'
 
-const modes: ModeStrategy['name'][] = ['mycelium', 'fog', 'aurora', 'mitosis']
+const modes: ModeStrategy['name'][] = ['mycelium', 'fog', 'aurora', 'mitosis', 'trace']
 const brandIds: BrandId[] = ['after-tokens', 'halcyon', 'felt', 'pulse', 'voltage']
 
-const strategies: Record<ModeStrategy['name'], ModeStrategy> = { mycelium, fog, aurora, mitosis }
+const strategies: Record<Exclude<ModeStrategy['name'], 'trace'>, ModeStrategy> = {
+  mycelium,
+  fog,
+  aurora,
+  mitosis,
+}
 
 type RevealPace = 'instant' | 'low' | 'med' | 'high'
 
@@ -52,13 +60,29 @@ function syntheticAtoms(text: string): MeasuredAtom[] {
   return tokenize(text).map((a) => ({ ...a, bbox: { x: 0, y: 0, w: 0, h: 0 } }))
 }
 
-function settleLabel(response: string, mode: ModeStrategy['name'], scale: number): string {
-  const baseMs = strategies[mode].totalDuration(syntheticAtoms(response))
-  const seconds = (baseMs * scale) / 1000
+function formatSettleSeconds(ms: number): string {
+  const seconds = ms / 1000
   // Sub-second reads as "instant" rather than "~0s"; otherwise round to a
   // friendly resolution that still moves as the budget changes.
   if (seconds < 0.8) return '~0.5s'
   return `~${seconds < 10 ? seconds.toFixed(1) : Math.round(seconds)}s`
+}
+
+function settleLabel(
+  response: string,
+  mode: ModeStrategy['name'],
+  scale: number,
+  trace: TraceCompact | undefined,
+): string {
+  if (mode === 'trace') {
+    // A recorded trajectory's duration comes from the trace itself, not a
+    // formula, so there is nothing to report until it has loaded.
+    if (!trace) return '...'
+    const baseMs = traceStrategy(trace, { msPerStep: 40 }).totalDuration(syntheticAtoms(response))
+    return formatSettleSeconds(baseMs * scale)
+  }
+  const baseMs = strategies[mode].totalDuration(syntheticAtoms(response))
+  return formatSettleSeconds(baseMs * scale)
 }
 
 export function SectionCoda() {
@@ -68,10 +92,34 @@ export function SectionCoda() {
   const [brandId, setBrandId] = useState<BrandId>('after-tokens')
   const [revealPace, setRevealPace] = useState<RevealPace>('low')
   const [replayKey, setReplayKey] = useState(0)
+  const [trace, setTrace] = useState<TraceCompact | undefined>(undefined)
+  const traceCacheRef = useRef(new Map<string, TraceCompact>())
 
   useEffect(() => {
     setMode(activePrompt.defaultMode)
   }, [activePrompt])
+
+  // Load the recorded trajectory for the active prompt. All seven coda fixtures
+  // were captured under lowconf-b32; cache by trace id so switching back to a
+  // prompt already visited does not re-fetch.
+  useEffect(() => {
+    const traceId = `${activePrompt.id}__lowconf-b32` as TraceId
+    const cached = traceCacheRef.current.get(traceId)
+    if (cached) {
+      setTrace(cached)
+      return
+    }
+    setTrace(undefined)
+    let cancelled = false
+    loadTrace(traceId).then((t) => {
+      if (cancelled) return
+      traceCacheRef.current.set(traceId, t)
+      setTrace(t)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [activePrompt.id])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -100,21 +148,23 @@ export function SectionCoda() {
   const revealLabels = useMemo(() => {
     const out = {} as Record<RevealPace, string>
     ;(['instant', 'low', 'med', 'high'] as const).forEach((t) => {
-      out[t] = `${revealName[t]} · ${settleLabel(activePrompt.response, mode, revealScale[t])}`
+      out[t] = `${revealName[t]} · ${settleLabel(activePrompt.response, mode, revealScale[t], trace)}`
     })
     return out
-  }, [activePrompt.response, mode])
+  }, [activePrompt.response, mode, trace])
 
   return (
-    <Section id="coda" n={5} act="III" title="Intent mapping" eyebrow={['Application', 'Fixture-authored mapping']}>
+    <Section id="coda" n={6} act="III" title="Intent mapping" eyebrow={['Application', 'Fixture-authored mapping']}>
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-4 max-w-3xl">
-        <span className="title-index">v.</span>map response intent to a reveal
+        <span className="title-index">vi.</span>map response intent to a reveal
       </h2>
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
           Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
           lock in clusters; open-ended answers drift in. The mapping is authored, not inferred.
           Override it to compare how presentation changes the read without pretending the model chose it.
+          The fifth option replays what a real sampler did for this exact prompt, at 40 milliseconds
+          per step; its answer is the model&apos;s, not mine.
         </Highlight>
       </p>
 
@@ -125,6 +175,7 @@ export function SectionCoda() {
             mode={mode}
             durationScale={durationScale}
             replayKey={replayKey}
+            trace={trace}
           />
         </BrandProvider>
 
@@ -161,11 +212,15 @@ export function SectionCoda() {
       >
         <ToggleRail
           label="Mode"
-          items={modes.map((m) => ({
-            id: m,
-            label: cap(m),
-            badge: m === activePrompt.defaultMode && m === mode ? 'fixture' : undefined,
-          }))}
+          items={modes.map((m) =>
+            m === 'trace'
+              ? { id: m, label: 'Sampler', badge: 'recorded' }
+              : {
+                  id: m,
+                  label: cap(m),
+                  badge: m === activePrompt.defaultMode && m === mode ? 'fixture' : undefined,
+                },
+          )}
           activeId={mode}
           onSelect={(id) => setMode(id as ModeStrategy['name'])}
         />
@@ -194,11 +249,13 @@ function CodaScaffold({
   mode,
   durationScale,
   replayKey,
+  trace,
 }: {
   prompt: CodaPrompt
   mode: ModeStrategy['name']
   durationScale: number
   replayKey: number
+  trace: TraceCompact | undefined
 }) {
   const brand = useBrand()
   return (
@@ -212,6 +269,7 @@ function CodaScaffold({
         isAutoMode={prompt.defaultMode === mode}
         durationScale={durationScale}
         replayKey={replayKey}
+        trace={trace}
       />
     </div>
   )

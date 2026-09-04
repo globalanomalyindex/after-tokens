@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: If you use this software or the recorded trajectories, please cite it as below.
+title: "After Tokens: a reveal language for masked diffusion language models, with recorded sampler trajectories"
+type: software
+authors:
+  - family-names: Fiore
+    given-names: Christopher Robin
+year: 2026
+url: https://after-tokens.vercel.app
+repository-code: https://github.com/globalanomalyindex/after-tokens
+license: MIT

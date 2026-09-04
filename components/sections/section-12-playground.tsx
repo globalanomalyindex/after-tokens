@@ -6,7 +6,7 @@ export function SectionPlayground() {
   return (
     <Section
       id="playground"
-      n={9}
+      n={10}
       act="IV"
       title="Playground"
       eyebrow={['Playground', 'Drive it yourself']}
@@ -14,10 +14,10 @@ export function SectionPlayground() {
       {/* The finale title paints itself across the wheel: one solid hue per
           letter (not a clipped gradient), readable on the bone surface. */}
       <h2
-        aria-label="ix. playground"
+        aria-label="x. playground"
         className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-3xl"
       >
-        <span className="title-index">ix.</span>
+        <span className="title-index">x.</span>
         {'playground'.split('').map((ch, i, all) => (
           <span
             key={i}

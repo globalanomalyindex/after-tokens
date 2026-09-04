@@ -21,7 +21,7 @@ export type OverlayProps = {
   reduced: boolean
 }
 
-export type ModeName = 'mycelium' | 'fog' | 'aurora' | 'mitosis'
+export type ModeName = 'mycelium' | 'fog' | 'aurora' | 'mitosis' | 'trace'
 
 export type ModeStrategy = {
   name: ModeName

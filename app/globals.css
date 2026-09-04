@@ -1070,9 +1070,15 @@ html.cursor-fx-on * {
    inside a soft accent halo that breathes. The contrast resolves at the
    final unblur, where the answer reads uniformly. */
 
+/* The recorded mode (trace) borrows mycelium's lock signal below: both are
+   word level lock reveals with no overlay, and the only difference between
+   them is where the reveal order comes from, authored versus a real model. */
+
 /* Heavier weight on resolving + resolved (the "dotted" words). */
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolving"],
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"] {
+.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolving"],
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
   font-weight: 700;
   animation: mycelium-locked-pulse 2300ms ease-in-out infinite;
   animation-delay: calc(var(--word-index, 0) * -260ms);
@@ -1082,7 +1088,9 @@ html.cursor-fx-on * {
    final unblur. The radial gradient is wider than the word so it reads as
    a soft glow rather than a pill. */
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolving"]::before,
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"]::before {
+.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"]::before,
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolving"]::before,
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"]::before {
   inset: -0.22em -0.4em;
   border-radius: 0.7em;
   background: radial-gradient(ellipse at center,
@@ -1121,7 +1129,8 @@ html.cursor-fx-on * {
 
 /* Completion wave — one sweep, top-left to bottom-right, lit through the
    stage with screen blend so it glows the words it passes over.  */
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after {
+.diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after,
+.diffusion-text[data-mode="trace"][data-unblurred="true"]::after {
   content: '';
   position: absolute;
   inset: -10% -12%;
@@ -1152,13 +1161,15 @@ html.cursor-fx-on * {
    pass (in → out) and then clears entirely, leaving the answer flat.
    Setting `text-shadow: none` statically guarantees the final resting
    state is shadow-free even if the animation is interrupted. */
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word] {
+.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word],
+.diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word] {
   font-weight: inherit;
   text-shadow: none;
   animation: mycelium-rim-glow-pass 2200ms var(--ease-out-expo) 600ms 1 forwards;
   transition: font-weight 200ms var(--ease-out-expo);
 }
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word]::before {
+.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word]::before,
+.diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word]::before {
   opacity: 0;
   background: transparent;
   animation: none;
@@ -1187,6 +1198,49 @@ html.cursor-fx-on * {
   }
 }
 
+/* --- Trace mode: the recorded-trajectory map + stage ---------------------- */
+/* .unmask-map renders a static SVG diagram of a real trajectory's reveal
+   order; nothing in it animates, so it only needs layout and type rules. */
+.unmask-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.unmask-map text {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+.unmask-map-caption {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* .trace-stage gets its surface from the shared stage utilities already;
+   the only addition is a tabular-nums lock on the live step readout so the
+   counter does not jitter in width as it counts steps. */
+.trace-readout {
+  font-variant-numeric: tabular-nums;
+}
+
+/* "+ loading trajectory" placeholder, shown while a trace is fetched. Mono,
+   quiet, breathing very slowly so it reads as waiting rather than broken. */
+.trace-loading {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: color-mix(in oklab, var(--stage-text) 55%, transparent);
+  animation: trace-loading-pulse 2400ms ease-in-out infinite;
+}
+
+@keyframes trace-loading-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
 /* Reduced motion: keep transitions snappy, kill heavy filters */
 @media (prefers-reduced-motion: reduce) {
   [data-cycling-word] {
@@ -1199,7 +1253,8 @@ html.cursor-fx-on * {
   .diffusion-text [data-cycling-word] { will-change: auto; }
   .diffusion-text[data-active="true"]::after { display: none; }
   .diffusion-text[data-unblurred="true"] { animation: none; }
-  .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after { display: none; }
+  .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after,
+  .diffusion-text[data-mode="trace"][data-unblurred="true"]::after { display: none; }
   .tile-enter,
   .tile-enter[data-in-view="true"] {
     opacity: 1;
@@ -1213,6 +1268,10 @@ html.cursor-fx-on * {
     transition: none !important;
   }
   .replay-btn:hover .replay-glyph { transform: none; }
+  .trace-loading {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 /* ===== hero byline ======================================================

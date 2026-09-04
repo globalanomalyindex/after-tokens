@@ -6,11 +6,15 @@ test.describe('reduced motion full audit', () => {
   test('all sections resolve their content without overlay animations', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
-    // 10-section cut: the old 'assumptions' beat folded into 'primer', and the
-    // old 'fog' + 'aurora' sections folded into 'mycelium' (one engine, many naturals).
+    // 11-section cut: the old 'assumptions' beat folded into 'primer', the
+    // old 'fog' + 'aurora' sections folded into 'mycelium' (one engine, many
+    // naturals), and 'trajectories' adds the observed beat: sixty recorded
+    // denoising trajectories from a real masked diffusion model, replayed
+    // rather than authored.
     const sectionIds = [
       'hook',
       'primer',
+      'trajectories',
       'thesis',
       'mycelium',
       'coda',
@@ -23,8 +27,8 @@ test.describe('reduced motion full audit', () => {
     await expect(page.locator('[data-section]')).toHaveCount(sectionIds.length)
 
     // ChatExchange intentionally mounts its answer only when the individual
-    // demo enters the viewport. Exercise every stage—not just each (sometimes
-    // very tall) parent section—so the audit covers all four mode demos, the
+    // demo enters the viewport. Exercise every stage, not just each (sometimes
+    // very tall) parent section, so the audit covers all four mode demos, the
     // intent mapper, the widget, and the playground.
     const demos = page.locator('[data-demo]')
     const demoCount = await demos.count()

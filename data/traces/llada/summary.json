@@ -1,0 +1,19 @@
+{
+ "n": 4,
+ "model": "GSAI-ML/LLaDA-8B-Instruct",
+ "quant": "Q4_K_S via llama.cpp on Metal",
+ "sampler": "low-confidence remasking, blocks of 32, greedy",
+ "tau": 0.9,
+ "meanJump": 3.9,
+ "randomExpected": 36.0,
+ "adjacentFrac": 0.337,
+ "tailFirstFrac": 0.25,
+ "msPerStep": 1504,
+ "contentTokens": 108,
+ "ids": [
+  "diffusion-explain__llada8b-lowconf-b32",
+  "heron-poem__llada8b-lowconf-b32",
+  "travel__llada8b-lowconf-b32",
+  "weather__llada8b-lowconf-b32"
+ ]
+}

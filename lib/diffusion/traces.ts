@@ -1,0 +1,196 @@
+import type { MeasuredAtom, ModeStrategy, ResolutionEvent } from './types'
+import { standardReducedFallback } from './reduced-motion'
+
+// A recorded denoising trajectory from a real masked diffusion language model,
+// in the compact shape the site loads (see data/traces/README.md for the full
+// schema and how it was captured). This is the one signal source in the piece
+// that is not authored: every lock time below comes from the step at which the
+// sampler actually committed that word.
+
+export type TraceSamplerConfig = {
+  id: string
+  remasking: 'low_confidence' | 'random'
+  block_size: number
+  steps: number
+  max_new_tokens: number
+  temperature: number
+  note: string
+}
+
+export type TraceWord = {
+  index: number
+  text: string
+  /** generated token positions that overlap this whitespace word */
+  tokens: number[]
+  /** the denoising step at which the LAST of its tokens committed */
+  lock_step: number
+  /** the step at which the FIRST of its tokens committed */
+  first_step: number
+  /** the lowest commit confidence among its tokens */
+  conf: number
+  /** the provisional text the model would have shown for this word, as
+   *  [step, text] pairs at every step where it changed; the last entry is the
+   *  committed word. These are the model's real mind changes, not noise. */
+  changes: [number, string][]
+}
+
+export type TraceToken = {
+  pos: number
+  text: string
+  step: number
+  /** softmax probability of the committed token at the moment it committed */
+  conf: number
+  /** how many times the provisional argmax changed before this position committed */
+  flips: number
+  /** end-of-sequence / padding positions after the content */
+  tail: boolean
+}
+
+export type TraceStats = Record<string, number | boolean | null>
+
+export type TraceCompact = {
+  id: string
+  prompt_id: string
+  prompt: string
+  model: string
+  sampler: TraceSamplerConfig
+  answer: string
+  words: TraceWord[]
+  tokens: TraceToken[]
+  /** wall-clock milliseconds per denoising step on the capture machine */
+  step_ms: number[]
+  /** the step at which every end-of-sequence position had committed, i.e. the
+   *  answer's length became fixed; null when the answer filled every position */
+  tail_done_step: number | null
+  stats: TraceStats
+}
+
+/** Replay pace when not playing at recorded speed. 40ms per step makes a
+ *  128-step trajectory land in ~5 seconds, which is a chat-plausible wait. */
+export const TRACE_DEFAULT_MS_PER_STEP = 40
+
+const RESOLVING_TO_RESOLVED_MS = 90
+const TAIL_MS = 260
+
+/** The text the interface should render for a trace: its whitespace words
+ *  joined by single spaces, so tokenize() yields exactly one atom per word
+ *  and atom.index lines up with word.index. */
+export function traceAnswerText(trace: TraceCompact): string {
+  return trace.words.map((w) => w.text).join(' ')
+}
+
+/** Recorded total, with the first step's one-time warmup clamped to the
+ *  median so a replay at recorded speed does not open with a spurious pause. */
+export function traceRealTotalMs(trace: TraceCompact): number {
+  return traceStepEnds(trace).at(-1) ?? 0
+}
+
+/** Cumulative time at which each step has completed. Uniform when msPerStep
+ *  is given; otherwise the recorded wall-clock pace (warmup clamped). */
+export function traceStepEnds(trace: TraceCompact, msPerStep?: number): number[] {
+  const n = trace.step_ms.length
+  if (n === 0) return []
+  if (msPerStep != null) return Array.from({ length: n }, (_, i) => (i + 1) * msPerStep)
+  const sorted = [...trace.step_ms].sort((a, b) => a - b)
+  const median = sorted[Math.floor(n / 2)] ?? 0
+  const ends: number[] = []
+  let acc = 0
+  trace.step_ms.forEach((ms, i) => {
+    acc += i === 0 ? Math.min(ms, median) : ms
+    ends.push(acc)
+  })
+  return ends
+}
+
+export type TraceStrategyOptions = {
+  /** replay pace; omit to play at the recorded wall-clock pace */
+  msPerStep?: number
+}
+
+/**
+ * Build a ModeStrategy from a recorded trajectory. A word enters `resolving`
+ * when its first token commits and `resolved` when its last token commits.
+ * That is literally the sampler's state, not a metaphor for it. Atoms past the
+ * end of the trace (which cannot happen when the text came from
+ * traceAnswerText) are locked at the end so the contract still holds.
+ */
+export function traceStrategy(
+  trace: TraceCompact,
+  opts: TraceStrategyOptions = { msPerStep: TRACE_DEFAULT_MS_PER_STEP },
+): ModeStrategy {
+  const ends = traceStepEnds(trace, opts.msPerStep)
+  const last = ends.at(-1) ?? 0
+  const at = (step: number) => ends[Math.max(0, Math.min(ends.length - 1, step))] ?? last
+
+  function totalDuration(words: MeasuredAtom[]): number {
+    if (words.length === 0) return 0
+    return last + RESOLVING_TO_RESOLVED_MS + TAIL_MS
+  }
+
+  function computeTimeline(words: MeasuredAtom[]): ResolutionEvent[] {
+    if (words.length === 0) return []
+    const events: ResolutionEvent[] = []
+    for (const atom of words) {
+      const w = trace.words[atom.index]
+      const tFirst = w ? at(w.first_step) : last
+      const tLock = w ? at(w.lock_step) : last
+      events.push({ wordIndex: atom.index, state: 'resolving', t: tFirst })
+      events.push({ wordIndex: atom.index, state: 'resolved', t: tLock + RESOLVING_TO_RESOLVED_MS })
+    }
+    return events
+  }
+
+  return {
+    name: 'trace',
+    totalDuration,
+    computeTimeline,
+    // The lock signal lives on the word, as in mycelium: no overlay.
+    renderOverlay: () => null,
+    reducedMotionFallback: standardReducedFallback,
+  }
+}
+
+/** Replay speed relative to the recorded pace, for an honest on-screen label. */
+export function traceSpeedup(trace: TraceCompact, msPerStep: number): number {
+  const real = traceRealTotalMs(trace)
+  const replay = trace.step_ms.length * msPerStep
+  return replay > 0 ? real / replay : 1
+}
+
+/**
+ * Typed boundary for a trace loaded from JSON. A JSON module infers
+ * `sampler.remasking` as `string`, which cannot assign to the union above, so
+ * everything that imports a trajectory passes it through here. The checks are
+ * the invariants the strategy actually depends on; anything else is trusted.
+ */
+export function asTrace(json: unknown): TraceCompact {
+  const t = json as TraceCompact
+  if (!t || !Array.isArray(t.words) || !Array.isArray(t.tokens) || !Array.isArray(t.step_ms)) {
+    throw new Error('asTrace: not a compact trajectory')
+  }
+  if (t.sampler.remasking !== 'low_confidence' && t.sampler.remasking !== 'random') {
+    throw new Error(`asTrace: unknown remasking "${String(t.sampler.remasking)}"`)
+  }
+  return t
+}
+
+/** The step a replay is on at progress p (0..1) over the strategy's timeline.
+ *  The strategy adds a resolving beat and a tail after the last step, so the
+ *  step clamps at the last one once the run is over. */
+export function traceStepAt(trace: TraceCompact, p: number): number {
+  const n = trace.step_ms.length
+  return Math.max(0, Math.min(n - 1, Math.floor(p * (n + 1))))
+}
+
+/** What the model would have shown for a word at a given step: the latest
+ *  recorded change at or before that step, or undefined before its first. */
+export function traceProvisionalText(trace: TraceCompact, wordIndex: number, step: number): string | undefined {
+  const w = trace.words[wordIndex]
+  if (!w) return undefined
+  let out: string | undefined
+  for (const [s, text] of w.changes) {
+    if (s > step) break
+    out = text
+  }
+  return out
+}

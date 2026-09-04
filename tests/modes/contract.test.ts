@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest'
+import diffusionExplainJson from '@/data/traces/compact/diffusion-explain__lowconf-b32.json'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
 import { aurora } from '@/lib/diffusion/modes/aurora'
 import { mitosis } from '@/lib/diffusion/modes/mitosis'
+import { asTrace, traceStrategy } from '@/lib/diffusion/traces'
 import type { MeasuredAtom, ModeStrategy } from '@/lib/diffusion/types'
 
-const strategies: ModeStrategy[] = [mycelium, fog, aurora, mitosis]
+// The recorded trajectory mode runs through the same shared contract as the
+// authored ones: it is a ModeStrategy like any other, just built from data
+// at runtime instead of a formula (see lib/diffusion/traces.ts).
+const strategies: ModeStrategy[] = [
+  mycelium,
+  fog,
+  aurora,
+  mitosis,
+  traceStrategy(asTrace(diffusionExplainJson), { msPerStep: 40 }),
+]
 
 function words(count: number): MeasuredAtom[] {
   return Array.from({ length: count }, (_, index) => ({

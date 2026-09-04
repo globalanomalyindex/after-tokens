@@ -6,14 +6,17 @@ import { Highlight } from '@/components/chrome/highlight'
 import { GoldenCurve } from '@/components/diffusion/golden-curve'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
+import { TRACE_NUMBERS, DERIVED } from '@/lib/traces/findings'
+
+const pct = (x: number) => `${Math.round(x * 100)}%`
 
 export function SectionMycelium() {
   return (
-    <Section id="mycelium" n={4} act="II" title="Four reveal modes" eyebrow={['System', 'Four visual hypotheses']}>
+    <Section id="mycelium" n={5} act="II" title="Four authored modes, one recorded" eyebrow={['System', 'Four visual hypotheses']}>
       <ModeDemo
         mode="mycelium"
         stageSide="right"
-        index="iv."
+        index="v."
         headline={
           <>
             <NatureWord kind="mycelium">Mycelium</NatureWord>, a response-seeded lock order
@@ -21,18 +24,20 @@ export function SectionMycelium() {
         }
         intro={
           <>
-            Mycelium turns each answer into a stable, scattered lock sequence. A deterministic hash of the response, not
-            model confidence, sets the order, so every replay is comparable. A soft halo marks each authored lock before
-            the answer settles uniformly. I kept it after cutting a particle-flock direction that made the same point
-            with more motion and less legibility.
+            Mycelium turns each answer into a stable, scattered lock sequence. A growth process fitted to the
+            recorded sampler sets the order: about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB32)} of commits land next
+            to the previous one and a new anchor opens roughly every {Math.round(100 / TRACE_NUMBERS.seedsPer100Default)} commits,
+            the statistics of a real low-confidence sampler inside a block. The seed is the response text, so every
+            replay is comparable. A soft halo marks each authored lock before the answer settles uniformly. I kept it
+            after cutting a particle-flock direction that made the same point with more motion and less legibility.
           </>
         }
         prompt="How does masked diffusion text generation work?"
         answer={`Masked diffusion language models refine many masked positions across repeated denoising steps instead of emitting only the next token. This interface is an authored simulation of that non-sequential process; it is not connected to live model state.`}
         specs={[
-          { label: 'Signal source', value: 'Deterministic text hash' },
+          { label: 'Signal source', value: 'Growth order fitted to 20 recorded trajectories' },
           { label: 'Use-case hypothesis', value: 'General responses' },
-          { label: 'Evidence', value: 'Prototype only' },
+          { label: 'Evidence', value: 'Order statistics matched; comprehension untested' },
         ]}
       />
 
@@ -64,9 +69,18 @@ export function SectionMycelium() {
             </p>
             <p className="text-base leading-relaxed">
               <Highlight>
-                Mycelium shrinks the interval between locks by 1/φ, creating a deliberate opening and a faster finish.
-                I chose that curve because it produced a distinct cadence at equal total duration. The comparison above
-                is the test stimulus; the result is still unknown.
+                The recorded word cadence is linear: the median lock fraction by word rank stays within about{' '}
+                {pct(DERIVED.cadenceMaxDeviation)} of a straight line, because the schedule commits a fixed number of
+                tokens per step. Phi decay is an authored acceleration; no sampler recorded here produces it. The
+                chart above now shows both curves. Phi stays as a labeled stylization because the comparison in the
+                closing hypothesis section needs a cadence that differs from linear at equal duration.
+              </Highlight>
+            </p>
+            <p className="text-base leading-relaxed">
+              <Highlight>
+                The churn rate is a separate decision. The authored 440 ms cycle between pending glyphs was set by
+                eye. The sampler&apos;s provisional guess changes every {DERIVED.msPerFlipRecorded} ms at recorded pace,
+                within about 14 percent of that value, so it stays.
               </Highlight>
             </p>
           </div>
@@ -89,7 +103,7 @@ export function SectionMycelium() {
             mode="fog"
             stageSide="left"
             compact
-            index="iv.a"
+            index="v.a"
             headline={<><NatureWord kind="fog">Fog</NatureWord>, a soft spatial boundary</>}
             intro="A diagonal boundary clears measured word cells. I tuned it as a quieter register for open-ended responses, but the current build does not infer openness from the prompt."
             prompt="Write a tiny poem about a heron at dawn."
@@ -103,7 +117,7 @@ export function SectionMycelium() {
             mode="aurora"
             stageSide="right"
             compact
-            index="iv.b"
+            index="v.b"
             headline={<><NatureWord kind="aurora">Aurora</NatureWord>, line-level consolidation</>}
             intro="Luminous bands traverse real line groups and resolve the words beneath them. The row structure makes this the most explicit candidate for summaries and recaps."
             prompt="Summarize the design decision."
@@ -117,7 +131,7 @@ export function SectionMycelium() {
             mode="mitosis"
             stageSide="left"
             compact
-            index="iv.c"
+            index="v.c"
             headline="Mitosis, structure dividing into parts"
             intro="One field divides toward measured word positions before a steady lock sequence begins. It extends the system beyond atmospheric metaphors and tests whether a more technical register still preserves the same state contract."
             prompt="Give me four names for an electric blue."

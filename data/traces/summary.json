@@ -1,0 +1,566 @@
+{
+ "n_prompts": 20,
+ "min_content_tokens_for_order_stats": 8,
+ "configs": {
+  "lowconf-b32": {
+   "n_total": 20,
+   "n_used_for_order_stats": 20,
+   "empty_answers": 0,
+   "short_answers_excluded": 0,
+   "kendall_tau_step_vs_position": {
+    "median": 0.9604,
+    "mean": 0.9538,
+    "min": 0.8361,
+    "max": 0.9921,
+    "n": 20
+   },
+   "mean_jump": {
+    "median": 2.465,
+    "mean": 2.5915,
+    "min": 1.48,
+    "max": 6.73,
+    "n": 20
+   },
+   "expected_random_jump": {
+    "median": 36.67,
+    "mean": 37.083,
+    "min": 32.33,
+    "max": 42.33,
+    "n": 20
+   },
+   "adjacent_commit_fraction": {
+    "median": 0.5139,
+    "mean": 0.5203,
+    "min": 0.3398,
+    "max": 0.6667,
+    "n": 20
+   },
+   "median_commit_conf": {
+    "median": 0.5748,
+    "mean": 0.6888,
+    "min": 0.4349,
+    "max": 0.9893,
+    "n": 20
+   },
+   "low_conf_commits_frac": {
+    "median": 0.38,
+    "mean": 0.3505,
+    "min": 0.1032,
+    "max": 0.5865,
+    "n": 20
+   },
+   "first_quartile_stopword_frac": {
+    "median": 0.4615,
+    "mean": 0.4739,
+    "min": 0.3077,
+    "max": 0.7097,
+    "n": 20
+   },
+   "overall_stopword_frac": {
+    "median": 0.4779,
+    "mean": 0.4921,
+    "min": 0.367,
+    "max": 0.7302,
+    "n": 20
+   },
+   "mean_flips_per_token": {
+    "median": 5.3425,
+    "mean": 5.5861,
+    "min": 2.055,
+    "max": 9.384,
+    "n": 20
+   },
+   "tokens_with_any_flip_frac": {
+    "median": 0.9626,
+    "mean": 0.9529,
+    "min": 0.9083,
+    "max": 0.9841,
+    "n": 20
+   },
+   "content_tokens": {
+    "median": 109.0,
+    "mean": 110.25,
+    "min": 96,
+    "max": 126,
+    "n": 20
+   },
+   "words": {
+    "median": 90.5,
+    "mean": 91.9,
+    "min": 72,
+    "max": 123,
+    "n": 20
+   },
+   "ms_per_step_median": {
+    "median": 118.65,
+    "mean": 120.125,
+    "min": 113.7,
+    "max": 132.0,
+    "n": 20
+   },
+   "ms_total": {
+    "median": 15665.3,
+    "mean": 15560.27,
+    "min": 14808.2,
+    "max": 17163.2,
+    "n": 20
+   },
+   "tail_all_committed_by_step": {
+    "median": 122.0,
+    "mean": 121.1,
+    "min": 105,
+    "max": 127,
+    "n": 20
+   },
+   "last_content_committed_step": {
+    "median": 127.0,
+    "mean": 125.4,
+    "min": 95,
+    "max": 127,
+    "n": 20
+   },
+   "tail_before_last_content_frac": 0.95,
+   "tail_present_n": 20
+  },
+  "random-b32": {
+   "n_total": 20,
+   "n_used_for_order_stats": 20,
+   "empty_answers": 0,
+   "short_answers_excluded": 0,
+   "kendall_tau_step_vs_position": {
+    "median": 0.7521,
+    "mean": 0.7475,
+    "min": 0.7004,
+    "max": 0.7639,
+    "n": 20
+   },
+   "mean_jump": {
+    "median": 10.81,
+    "mean": 10.6585,
+    "min": 9.65,
+    "max": 11.57,
+    "n": 20
+   },
+   "expected_random_jump": {
+    "median": 38.67,
+    "mean": 38.25,
+    "min": 33.0,
+    "max": 40.67,
+    "n": 20
+   },
+   "adjacent_commit_fraction": {
+    "median": 0.0708,
+    "mean": 0.0697,
+    "min": 0.0431,
+    "max": 0.0982,
+    "n": 20
+   },
+   "median_commit_conf": {
+    "median": 0.4602,
+    "mean": 0.5137,
+    "min": 0.2608,
+    "max": 0.9655,
+    "n": 20
+   },
+   "low_conf_commits_frac": {
+    "median": 0.5255,
+    "mean": 0.5189,
+    "min": 0.25,
+    "max": 0.7043,
+    "n": 20
+   },
+   "first_quartile_stopword_frac": {
+    "median": 0.5086,
+    "mean": 0.5229,
+    "min": 0.3793,
+    "max": 0.7857,
+    "n": 20
+   },
+   "overall_stopword_frac": {
+    "median": 0.5246,
+    "mean": 0.531,
+    "min": 0.438,
+    "max": 0.7168,
+    "n": 20
+   },
+   "mean_flips_per_token": {
+    "median": 5.9095,
+    "mean": 5.6475,
+    "min": 2.61,
+    "max": 8.872,
+    "n": 20
+   },
+   "tokens_with_any_flip_frac": {
+    "median": 0.9207,
+    "mean": 0.9178,
+    "min": 0.8136,
+    "max": 0.9752,
+    "n": 20
+   },
+   "content_tokens": {
+    "median": 115.0,
+    "mean": 113.75,
+    "min": 98,
+    "max": 121,
+    "n": 20
+   },
+   "words": {
+    "median": 95.0,
+    "mean": 95.25,
+    "min": 86,
+    "max": 108,
+    "n": 20
+   },
+   "ms_per_step_median": {
+    "median": 126.1,
+    "mean": 123.97,
+    "min": 115.6,
+    "max": 128.2,
+    "n": 20
+   },
+   "ms_total": {
+    "median": 15898.65,
+    "mean": 15828.365,
+    "min": 15143.3,
+    "max": 16530.7,
+    "n": 20
+   },
+   "tail_all_committed_by_step": {
+    "median": 127.0,
+    "mean": 126.1,
+    "min": 123,
+    "max": 127,
+    "n": 20
+   },
+   "last_content_committed_step": {
+    "median": 126.0,
+    "mean": 126,
+    "min": 124,
+    "max": 127,
+    "n": 20
+   },
+   "tail_before_last_content_frac": 0.4,
+   "tail_present_n": 20
+  },
+  "lowconf-b128": {
+   "n_total": 20,
+   "n_used_for_order_stats": 11,
+   "empty_answers": 3,
+   "short_answers_excluded": 9,
+   "kendall_tau_step_vs_position": {
+    "median": 0.3833,
+    "mean": 0.3695,
+    "min": -0.3333,
+    "max": 0.8182,
+    "n": 11
+   },
+   "mean_jump": {
+    "median": 2.9,
+    "mean": 2.7464,
+    "min": 1.91,
+    "max": 3.69,
+    "n": 11
+   },
+   "expected_random_jump": {
+    "median": 5.33,
+    "mean": 4.9082,
+    "min": 3.0,
+    "max": 6.33,
+    "n": 11
+   },
+   "adjacent_commit_fraction": {
+    "median": 0.5,
+    "mean": 0.5306,
+    "min": 0.3529,
+    "max": 0.7143,
+    "n": 11
+   },
+   "median_commit_conf": {
+    "median": 0.7563,
+    "mean": 0.7336,
+    "min": 0.5175,
+    "max": 0.8793,
+    "n": 11
+   },
+   "low_conf_commits_frac": {
+    "median": 0.2667,
+    "mean": 0.2456,
+    "min": 0.0,
+    "max": 0.5,
+    "n": 11
+   },
+   "first_quartile_stopword_frac": {
+    "median": 0.5,
+    "mean": 0.4394,
+    "min": 0.0,
+    "max": 1.0,
+    "n": 11
+   },
+   "overall_stopword_frac": {
+    "median": 0.4,
+    "mean": 0.4394,
+    "min": 0.3529,
+    "max": 0.5833,
+    "n": 11
+   },
+   "mean_flips_per_token": {
+    "median": 4.235,
+    "mean": 4.7211,
+    "min": 2.056,
+    "max": 7.909,
+    "n": 11
+   },
+   "tokens_with_any_flip_frac": {
+    "median": 0.75,
+    "mean": 0.752,
+    "min": 0.5333,
+    "max": 1.0,
+    "n": 11
+   },
+   "content_tokens": {
+    "median": 8.5,
+    "mean": 8.65,
+    "min": 0,
+    "max": 18,
+    "n": 20
+   },
+   "words": {
+    "median": 5.5,
+    "mean": 6.85,
+    "min": 0,
+    "max": 17,
+    "n": 20
+   },
+   "ms_per_step_median": {
+    "median": 123.6,
+    "mean": 124.25,
+    "min": 115.9,
+    "max": 138.7,
+    "n": 20
+   },
+   "ms_total": {
+    "median": 15838.45,
+    "mean": 16093.7,
+    "min": 15193.8,
+    "max": 17860.2,
+    "n": 20
+   },
+   "tail_all_committed_by_step": {
+    "median": 118,
+    "mean": 117.8182,
+    "min": 111,
+    "max": 124,
+    "n": 11
+   },
+   "last_content_committed_step": {
+    "median": 127,
+    "mean": 127,
+    "min": 127,
+    "max": 127,
+    "n": 11
+   },
+   "tail_before_last_content_frac": 1.0,
+   "tail_present_n": 11
+  }
+ },
+ "paired": [
+  {
+   "prompt_id": "sky-blue",
+   "tau": {
+    "lowconf-b32": 0.9921,
+    "random-b32": 0.7414,
+    "lowconf-b128": 0.75
+   },
+   "jump": {
+    "lowconf-b32": 1.48,
+    "random-b32": 11.06,
+    "lowconf-b128": 3.0
+   },
+   "flips": {
+    "lowconf-b32": 7.619,
+    "random-b32": 8.872,
+    "lowconf-b128": 6.0
+   }
+  },
+  {
+   "prompt_id": "research-summary",
+   "tau": {
+    "lowconf-b32": 0.98,
+    "random-b32": 0.7623,
+    "lowconf-b128": 0.8182
+   },
+   "jump": {
+    "lowconf-b32": 1.78,
+    "random-b32": 11.01,
+    "lowconf-b128": 1.91
+   },
+   "flips": {
+    "lowconf-b32": 4.661,
+    "random-b32": 3.777,
+    "lowconf-b128": 3.667
+   }
+  },
+  {
+   "prompt_id": "solder-project",
+   "tau": {
+    "lowconf-b32": 0.9604,
+    "random-b32": 0.7595,
+    "lowconf-b128": 0.6762
+   },
+   "jump": {
+    "lowconf-b32": 2.51,
+    "random-b32": 9.71,
+    "lowconf-b128": 3.0
+   },
+   "flips": {
+    "lowconf-b32": 6.638,
+    "random-b32": 6.097,
+    "lowconf-b128": 2.733
+   }
+  },
+  {
+   "prompt_id": "capital",
+   "tau": {
+    "lowconf-b32": 0.9791,
+    "random-b32": 0.756,
+    "lowconf-b128": 0.6571
+   },
+   "jump": {
+    "lowconf-b32": 2.02,
+    "random-b32": 10.61,
+    "lowconf-b128": 2.07
+   },
+   "flips": {
+    "lowconf-b32": 4.215,
+    "random-b32": 7.068,
+    "lowconf-b128": 4.0
+   }
+  },
+  {
+   "prompt_id": "concise-rewrite",
+   "tau": {
+    "lowconf-b32": 0.9579,
+    "random-b32": 0.7611,
+    "lowconf-b128": -0.3333
+   },
+   "jump": {
+    "lowconf-b32": 2.56,
+    "random-b32": 10.75,
+    "lowconf-b128": 2.38
+   },
+   "flips": {
+    "lowconf-b32": 2.055,
+    "random-b32": 2.991,
+    "lowconf-b128": 3.778
+   }
+  },
+  {
+   "prompt_id": "hash-function",
+   "tau": {
+    "lowconf-b32": 0.981,
+    "random-b32": 0.7308,
+    "lowconf-b128": 0.7255
+   },
+   "jump": {
+    "lowconf-b32": 1.84,
+    "random-b32": 10.8,
+    "lowconf-b128": 3.06
+   },
+   "flips": {
+    "lowconf-b32": 5.243,
+    "random-b32": 7.708,
+    "lowconf-b128": 2.056
+   }
+  },
+  {
+   "prompt_id": "houseplants",
+   "tau": {
+    "lowconf-b32": 0.8894,
+    "random-b32": 0.7607,
+    "lowconf-b128": 0.1429
+   },
+   "jump": {
+    "lowconf-b32": 2.83,
+    "random-b32": 10.16,
+    "lowconf-b128": 3.69
+   },
+   "flips": {
+    "lowconf-b32": 8.721,
+    "random-b32": 7.991,
+    "lowconf-b128": 6.429
+   }
+  },
+  {
+   "prompt_id": "diffusion-explain",
+   "tau": {
+    "lowconf-b32": 0.9259,
+    "random-b32": 0.7272,
+    "lowconf-b128": 0.3676
+   },
+   "jump": {
+    "lowconf-b32": 3.14,
+    "random-b32": 9.65,
+    "lowconf-b128": 2.5
+   },
+   "flips": {
+    "lowconf-b32": 5.573,
+    "random-b32": 7.168,
+    "lowconf-b128": 4.235
+   }
+  },
+  {
+   "prompt_id": "sleep-tips",
+   "tau": {
+    "lowconf-b32": 0.9698,
+    "random-b32": 0.7367,
+    "lowconf-b128": 0.0909
+   },
+   "jump": {
+    "lowconf-b32": 2.16,
+    "random-b32": 10.88,
+    "lowconf-b128": 2.9
+   },
+   "flips": {
+    "lowconf-b32": 7.028,
+    "random-b32": 5.722,
+    "lowconf-b128": 7.909
+   }
+  },
+  {
+   "prompt_id": "heist-plot",
+   "tau": {
+    "lowconf-b32": 0.9505,
+    "random-b32": 0.7004,
+    "lowconf-b128": 0.3833
+   },
+   "jump": {
+    "lowconf-b32": 2.72,
+    "random-b32": 11.55,
+    "lowconf-b128": 3.27
+   },
+   "flips": {
+    "lowconf-b32": 4.466,
+    "random-b32": 5.469,
+    "lowconf-b128": 5.0
+   }
+  },
+  {
+   "prompt_id": "brainstorm",
+   "tau": {
+    "lowconf-b32": 0.8361,
+    "random-b32": 0.7424,
+    "lowconf-b128": -0.2143
+   },
+   "jump": {
+    "lowconf-b32": 6.73,
+    "random-b32": 10.81,
+    "lowconf-b128": 2.43
+   },
+   "flips": {
+    "lowconf-b32": 6.875,
+    "random-b32": 6.615,
+    "lowconf-b128": 6.125
+   }
+  }
+ ]
+}

@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
+import { traceAnswerText, traceSpeedup, traceStrategy, type TraceCompact } from '@/lib/diffusion/traces'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
 import type { ModeStrategy } from '@/lib/diffusion/types'
 import type { BrandTokens } from '@/lib/brand/types'
+
+const TRACE_MS_PER_STEP = 40
 
 type Props = {
   prompt: CodaPrompt
@@ -20,11 +23,42 @@ type Props = {
   // independent of the internal replay button. Folded into the exchange's
   // runKey so the answer re-mounts and the diffusion restarts.
   replayKey?: number
+  // The recorded trajectory for this prompt (lowconf-b32), when mode ===
+  // 'trace'. Undefined while it is still loading.
+  trace?: TraceCompact
 }
 
-export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, replayKey = 0 }: Props) {
+export function CodaStage({
+  prompt,
+  mode,
+  brand,
+  isAutoMode,
+  durationScale,
+  replayKey = 0,
+  trace,
+}: Props) {
   const [localReplay, setLocalReplay] = useState(0)
   const replay = () => setLocalReplay((k) => k + 1)
+  const isTrace = mode === 'trace'
+  const traceReady = isTrace && trace != null
+
+  // Memoized on trace.id: the strategy and answer text only need to change
+  // when the underlying trajectory changes, not on every render.
+  const traceAnswer = useMemo(() => (trace ? traceAnswerText(trace) : ''), [trace])
+  const traceStrat = useMemo(
+    () => (trace ? traceStrategy(trace, { msPerStep: TRACE_MS_PER_STEP }) : undefined),
+    [trace],
+  )
+  // A word whose weakest token committed under thirty percent settles dimmer,
+  // so a low-confidence lock reads visually as less certain than a confident one.
+  const traceWordColor = useMemo(() => {
+    if (!trace) return undefined
+    return (i: number) => {
+      const c = trace.words[i]?.conf ?? 1
+      return c < 0.3 ? 'color-mix(in oklab, var(--stage-text) 58%, transparent)' : undefined
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trace?.id])
 
   return (
     <div
@@ -39,8 +73,7 @@ export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, repl
           Stage
         </span>
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
-          + {mode}
-          {isAutoMode ? ' (fixture)' : ''}
+          {isTrace ? '+ sampler (recorded)' : `+ ${mode}${isAutoMode ? ' (fixture)' : ''}`}
         </span>
       </div>
       <div className="px-5 py-7 flex-1 flex items-center">
@@ -48,18 +81,43 @@ export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, repl
           className="w-full"
           prompt={prompt.prompt}
           thinkingMs={600}
-          runKey={`${prompt.id}-${mode}-${brand.id}-${durationScale ?? 1}-${replayKey}-${localReplay}`}
+          runKey={`${prompt.id}-${mode}-${brand.id}-${durationScale ?? 1}-${replayKey}-${localReplay}-${trace?.id ?? 'none'}`}
         >
-          <DiffusionText
-            mode={mode}
-            trigger="immediate"
-            durationScale={durationScale}
-            announce="on-complete"
-            showStatus
-            className="text-base md:text-lg leading-relaxed"
-          >
-            {prompt.response}
-          </DiffusionText>
+          {isTrace && !traceReady ? (
+            <div
+              className="text-[11px] uppercase tracking-[0.16em]"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)',
+              }}
+            >
+              loading trajectory
+            </div>
+          ) : isTrace && trace && traceStrat ? (
+            <DiffusionText
+              mode={mode}
+              trigger="immediate"
+              durationScale={durationScale}
+              announce="on-complete"
+              showStatus
+              className="text-base md:text-lg leading-relaxed"
+              strategy={traceStrat}
+              wordColor={traceWordColor}
+            >
+              {traceAnswer}
+            </DiffusionText>
+          ) : (
+            <DiffusionText
+              mode={mode}
+              trigger="immediate"
+              durationScale={durationScale}
+              announce="on-complete"
+              showStatus
+              className="text-base md:text-lg leading-relaxed"
+            >
+              {prompt.response}
+            </DiffusionText>
+          )}
         </ChatExchange>
       </div>
       <div
@@ -68,6 +126,7 @@ export function CodaStage({ prompt, mode, brand, isAutoMode, durationScale, repl
       >
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>
           Brand · {brand.name}
+          {isTrace && trace ? ` · replayed ${traceSpeedup(trace, TRACE_MS_PER_STEP).toFixed(1)}x` : ''}
         </span>
         <button
           type="button"

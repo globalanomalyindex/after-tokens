@@ -9,6 +9,9 @@ const modeAbbrev: Record<CodaPrompt['defaultMode'], string> = {
   fog: 'Fog',
   aurora: 'Aur',
   mitosis: 'Mts',
+  // The recorded-trajectory mode: no prompt currently sets this as its
+  // defaultMode, but the label map must stay total over ModeName.
+  trace: 'sampler',
 }
 
 type Props = {

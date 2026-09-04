@@ -2,12 +2,19 @@
 
 import { useEffect, useRef } from 'react'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
+import cadence from '@/data/traces/derived/cadence.json'
 
 // An instrument-panel visualizer for the golden-ratio motion the mycelium mode
 // runs on. A reticle (box + crosshair) glides along a cubic-bezier that holds
-// slow then sweeps — the φ-decay easing. Below the plot, "lock" ticks sit at
-// intervals that shrink by 1/φ; each lights as the reticle passes, so you watch
-// the cadence go from deliberate to a sudden flood, the way an answer resolves.
+// slow then sweeps: the φ-decay easing, an authored acceleration, not a
+// measurement. Alongside it, static and unanimated, is the recorded word-lock
+// cadence from the traced sampler: the median (and 25th-75th band) fraction of
+// words locked by word rank, across 20 runs. That recorded curve is close to
+// linear, because the schedule commits a fixed number of tokens per denoising
+// step; phi is the shape mycelium's cadence chooses to perform instead. Below
+// the plot, "lock" ticks sit at intervals that shrink by 1/φ; each lights as
+// the reticle passes, so you watch the authored cadence go from deliberate to
+// a sudden flood, the way an answer resolves.
 //
 // Motion notes:
 // - Driven along ARC LENGTH (getPointAtLength) at constant velocity, with the
@@ -16,7 +23,7 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 // - A phased loop (draw → hold → fade → reset) dissolves instead of teleporting.
 // - A one-shot WAAPI pulse lands the arrival.
 // - Plays only while in view, restarting from zero on entry.
-// All of it is written straight to the SVG from one rAF loop — no per-frame
+// All of it is written straight to the SVG from one rAF loop , no per-frame
 // React work, no CSS-transform vs viewBox scaling quirks.
 
 const PHI = 1.61803398875
@@ -37,8 +44,58 @@ const PH = H - PAD.t - PAD.b
 const X = (n: number) => PAD.l + n * PW
 const Y = (n: number) => PAD.t + (1 - n) * PH
 
+// Recorded word-lock cadence (lowconf-b32, n=20 runs): median lock fraction by
+// word rank, plus the 25th-75th band. Static, unanimated, built once at module
+// scope from the same X()/Y() mapping the phi curve uses.
+type CadenceSeries = {
+  n: number
+  rank: (number | null)[]
+  lock_fraction_median: (number | null)[]
+  lock_fraction_p25: (number | null)[]
+  lock_fraction_p75: (number | null)[]
+}
+
+const RECORDED_CADENCE = (cadence as Record<string, CadenceSeries>)['lowconf-b32']!
+
+function buildRecordedCadencePaths(series: CadenceSeries): { median: string; band: string } {
+  const medianPts: { x: number; y: number }[] = []
+  for (let i = 0; i < series.rank.length; i++) {
+    const r = series.rank[i]
+    const m = series.lock_fraction_median[i]
+    if (r == null || m == null) continue
+    medianPts.push({ x: X(r), y: Y(m) })
+  }
+  const median = medianPts.length
+    ? `M ${medianPts.map((p) => `${p.x} ${p.y}`).join(' L ')}`
+    : ''
+
+  const upperPts: { x: number; y: number }[] = []
+  const lowerPts: { x: number; y: number }[] = []
+  for (let i = 0; i < series.rank.length; i++) {
+    const r = series.rank[i]
+    const p25 = series.lock_fraction_p25[i]
+    const p75 = series.lock_fraction_p75[i]
+    if (r == null || p25 == null || p75 == null) continue
+    upperPts.push({ x: X(r), y: Y(p75) })
+    lowerPts.push({ x: X(r), y: Y(p25) })
+  }
+  let band = ''
+  if (upperPts.length && lowerPts.length) {
+    const top = `M ${upperPts.map((p) => `${p.x} ${p.y}`).join(' L ')}`
+    const bottom = lowerPts
+      .slice()
+      .reverse()
+      .map((p) => `L ${p.x} ${p.y}`)
+      .join(' ')
+    band = `${top} ${bottom} Z`
+  }
+  return { median, band }
+}
+
+const RECORDED_CADENCE_PATHS = buildRecordedCadencePaths(RECORDED_CADENCE)
+
 // Lock cadence: gaps shrink by 1/φ each step, normalized to [0,1]. Ticks bunch
-// toward the end — the "drilling, then flooded" acceleration.
+// toward the end , the "drilling, then flooded" acceleration.
 const LOCK_TICKS: number[] = (() => {
   const n = 8
   const gaps = Array.from({ length: n }, (_, k) => Math.pow(1 / PHI, k))
@@ -236,7 +293,42 @@ export function GoldenCurve() {
           resolved
         </text>
 
-        {/* full curve, the faint track — always visible */}
+        {/* recorded word-lock cadence (median + p25-p75 band): static, behind
+            everything animated, so the reticle still reads as the subject */}
+        {RECORDED_CADENCE_PATHS.band && (
+          <path d={RECORDED_CADENCE_PATHS.band} fill="var(--muted)" fillOpacity={0.1} stroke="none" />
+        )}
+        {RECORDED_CADENCE_PATHS.median && (
+          <path
+            d={RECORDED_CADENCE_PATHS.median}
+            fill="none"
+            stroke="var(--muted)"
+            strokeWidth={1.25}
+            strokeDasharray="3,3"
+          />
+        )}
+
+        {/* legend */}
+        <g style={{ fontFamily: 'var(--font-mono)', fontSize: 9 }}>
+          <line x1={X(0) + 2} y1={Y(1) + 12} x2={X(0) + 14} y2={Y(1) + 12} stroke="var(--accent)" strokeWidth={1.5} />
+          <text x={X(0) + 18} y={Y(1) + 15} fill={dim} className="lowercase">
+            phi decay, authored
+          </text>
+          <line
+            x1={X(0) + 2}
+            y1={Y(1) + 24}
+            x2={X(0) + 14}
+            y2={Y(1) + 24}
+            stroke="var(--muted)"
+            strokeWidth={1.25}
+            strokeDasharray="3,3"
+          />
+          <text x={X(0) + 18} y={Y(1) + 27} fill={dim} className="lowercase">
+            recorded, median of 20 runs
+          </text>
+        </g>
+
+        {/* full curve, the faint track , always visible */}
         <path d={CURVE_PATH} fill="none" stroke={dim} strokeWidth={1.5} />
 
         {/* the played layer: trail + ticks + reticle, faded in/out as one unit */}

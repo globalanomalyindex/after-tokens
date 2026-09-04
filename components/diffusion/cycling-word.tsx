@@ -12,6 +12,12 @@ type Props = {
   cycleTick: number
   slotWidth: number
   reduced?: boolean
+  // The sampler's own successive guesses for this word, recorded at capture
+  // time (see lib/diffusion/traces.ts, traceProvisionalText). When state is
+  // 'pending' and this is defined, it replaces the cycled candidate: the
+  // pending state in the recorded trajectory mode is not decoration, it is
+  // literally what the model's provisional argmax was at that step.
+  provisionalText?: string
 }
 
 function CyclingWordImpl({
@@ -22,15 +28,19 @@ function CyclingWordImpl({
   cycleTick,
   slotWidth,
   reduced = false,
+  provisionalText,
 }: Props) {
-  // pending → cycle through candidates with a per-word phase offset.
-  // resolved & resolving → show final text. (Resolving means "locked but still blurred"
-  // until the global unblur threshold; the text content matches resolved.)
+  // pending → cycle through candidates with a per-word phase offset, unless a
+  // real recorded provisionalText is supplied, in which case that replaces
+  // the synthetic cycle. resolved & resolving → show final text. (Resolving
+  // means "locked but still blurred" until the global unblur threshold; the
+  // text content matches resolved.)
   const ringIdx = candidates.length > 0
     ? (cycleTick + atomIndex * 3) % candidates.length
     : 0
   const showFinal = state !== 'pending' || candidates.length === 0
-  const display = showFinal ? finalText : (candidates[ringIdx] ?? finalText)
+  const pendingDisplay = provisionalText ?? candidates[ringIdx] ?? finalText
+  const display = showFinal ? finalText : pendingDisplay
   const reservedWidth = slotWidth > 0 ? `${slotWidth}px` : undefined
 
   return (
@@ -71,7 +81,10 @@ function CyclingWordImpl({
 // cycleTick (showFinal is already true), so re-rendering it on every tick is
 // wasted work. The one non-obvious rule: cycleTick is deliberately excluded
 // from this comparator, so once a word leaves 'pending' it stops re-rendering
-// on the ticks that keep the still-pending words cycling.
+// on the ticks that keep the still-pending words cycling. provisionalText
+// gets the same treatment as cycleTick for a settled word (showFinal already
+// ignores it) but, unlike cycleTick, a change to it while still pending must
+// re-render: that's the recorded trajectory's real mind-change crossfade.
 function areEqual(prev: Props, next: Props): boolean {
   if (
     prev.atomIndex !== next.atomIndex ||
@@ -81,6 +94,9 @@ function areEqual(prev: Props, next: Props): boolean {
     prev.reduced !== next.reduced ||
     prev.candidates !== next.candidates
   ) {
+    return false
+  }
+  if (next.state === 'pending' && prev.provisionalText !== next.provisionalText) {
     return false
   }
   return next.state !== 'pending'

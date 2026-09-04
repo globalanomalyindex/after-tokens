@@ -5,10 +5,10 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 
 export function SectionClose() {
   return (
-    <Section id="close" n={10} act="V" title="Evidence and limits" eyebrow={['Evidence', 'What is true now']}>
+    <Section id="close" n={11} act="V" title="Evidence and limits" eyebrow={['Evidence', 'What is true now']}>
       <div className="max-w-4xl">
         <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-tight mb-6">
-          <span className="title-index">x.</span>what shipped, what remains unproven
+          <span className="title-index">xi.</span>what shipped, what remains unproven
         </h2>
         <p className="text-lg leading-relaxed max-w-2xl mb-12" style={{ color: 'var(--ink-2)' }}>
           The prototype is evidence that the system can be designed and engineered. It is not evidence that the central
@@ -21,7 +21,14 @@ export function SectionClose() {
               + evidence in the build
             </p>
             <ul className="space-y-3 text-sm leading-relaxed">
-              <li>One typed engine drives four reveal strategies.</li>
+              <li>
+                Sixty recorded denoising trajectories from a real masked diffusion model (0.6B parameters, greedy,
+                three sampler configurations) drive the sampler mode and are released with the source.
+              </li>
+              <li>
+                One typed engine drives four authored reveal strategies, one of them (mycelium) with its lock order
+                fitted to the recorded commit statistics, and one recorded one.
+              </li>
               <li>Geometry, timing, glyph style, and brand tokens are separable.</li>
               <li>Replays are deterministic; fixture mappings are disclosed.</li>
               <li>Reduced motion resolves immediately and retains a visible state label.</li>
@@ -33,7 +40,10 @@ export function SectionClose() {
               + not evidence yet
             </p>
             <ul className="space-y-3 text-sm leading-relaxed">
-              <li>No live model or calibrated uncertainty signal drives the timelines.</li>
+              <li>
+                Only one mode is driven by a sampler, and that sampler is a 0.6-billion-parameter research model run
+                greedily on a laptop. Larger models and other samplers may order differently.
+              </li>
               <li>No user study has shown a comprehension or state-identification gain.</li>
               <li>No production classifier chooses a mode; fixtures are tagged by hand.</li>
               <li>The glyph system is tuned for English and Latin-script content.</li>
@@ -58,7 +68,7 @@ export function SectionClose() {
           <dl className="grid sm:grid-cols-2 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
             {[
               ['hypothesis', 'A region-based reveal improves identification of what is still changing versus a matched linear blur.'],
-              ['method', 'Interrupt both conditions at matched timestamps; randomize order; use identical text, geometry, and duration.'],
+              ['method', 'Interrupt both conditions at matched timestamps; randomize order; use identical text, geometry, and duration. The recorded trajectories can now serve as the stimulus, so the study measures real sampler order rather than an authored one.'],
               ['measure', 'State-identification accuracy, final-text comprehension, time to answer, distraction, and preference.'],
               ['falsified if', 'There is no accuracy benefit, comprehension drops, or participants read authored order as model certainty.'],
             ].map(([label, value]) => (

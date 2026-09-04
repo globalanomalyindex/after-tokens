@@ -24,7 +24,7 @@ function toRoman(n: number): string {
 }
 
 // Total sections in the cut. Drives the quiet "s.NN / TOTAL" chrome.
-const TOTAL = 10
+const TOTAL = 11
 
 type SectionProps = {
   id: string
@@ -44,7 +44,7 @@ export function Section({ id, n, act, title, eyebrow, children }: SectionProps) 
   const parts = eyebrow?.filter((p) => !/^section\b/i.test(p)) ?? []
   const code = `s.${String(n).padStart(2, '0')} / ${TOTAL}`
   const spine = `act ${act} · ${title}`
-  // Repeating tag rail along the section's base — over-filled so it always spans
+  // Repeating tag rail along the section's base, over-filled so it always spans
   // the full page width edge to edge, then clipped.
   const rail = Array.from({ length: 80 }, () => id).join(' ▸ ')
 
@@ -57,7 +57,7 @@ export function Section({ id, n, act, title, eyebrow, children }: SectionProps) 
       className="section-shell relative py-16 md:py-24 px-6 md:px-16"
       style={{ ['--section-accent' as string]: isRainbow ? RAINBOW_FALLBACK : accent } as CSSProperties}
     >
-      {/* technical-color edge rule — rainbow on the spectrum section */}
+      {/* technical-color edge rule, rainbow on the spectrum section */}
       <div
         aria-hidden="true"
         className="section-topbar"

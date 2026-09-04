@@ -28,7 +28,7 @@ export function SectionWidget() {
   return (
     <Section
       id="widget"
-      n={6}
+      n={7}
       act="III"
       title="Beyond words"
       eyebrow={['Application', 'Structured answer state']}
@@ -36,7 +36,7 @@ export function SectionWidget() {
       <div className="grid gap-10 lg:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(380px,460px)] items-start">
         <div className="max-w-2xl">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6">
-            <span className="title-index">vi.</span>the state contract extends beyond text,{' '}
+            <span className="title-index">vii.</span>the state contract extends beyond text,{' '}
             <em className="not-italic" style={{ color: 'var(--muted)' }}>
               it&rsquo;s a way of arriving
             </em>
@@ -91,7 +91,7 @@ export function SectionWidget() {
           }}
         >
           {/*
-            Key on WeatherAnswer (no AnimatePresence wait-wrap) — settings
+            Key on WeatherAnswer (no AnimatePresence wait-wrap): settings
             changes need to instantly remount the canvas so the new diffusion
             starts immediately. The exit fade was hiding the replay behind
             a 600ms wait that read as "nothing happened."

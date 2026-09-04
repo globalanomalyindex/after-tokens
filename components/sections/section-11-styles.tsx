@@ -42,13 +42,13 @@ export function SectionStyles() {
   return (
     <Section
       id="styles"
-      n={8}
+      n={9}
       act="IV"
       title="Motion registers"
       eyebrow={['Generalization', 'Different motion, same semantics']}
     >
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-4xl">
-        <span className="title-index">viii.</span>nature is the source library, not the proof
+        <span className="title-index">ix.</span>nature is the source library, not the proof
       </h2>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-16">
         I borrowed behaviors (branching, dissipation, bands, division) because they gave each mode a
