@@ -38,18 +38,20 @@ export function UnmaskMap({ trace, compact = false, label, live = false, ref }: 
   // size once the SVG is laid out at typical figure widths, per the
   // width-100%, aspect-~1.15:1 spec. Compact drops the margins entirely.
   const W = compact ? 260 : 600
-  const marginLeft = compact ? 0 : 40
-  const marginBottom = compact ? 0 : 30
+  const marginLeft = compact ? 0 : 44
+  const marginTop = compact ? 0 : 16
+  const marginBottom = compact ? 0 : 34
   const flipsAvailable =
     !compact && trace.tokens.length > 0 && trace.tokens.every((t) => typeof t.flips === 'number')
   const flipsGap = 8
   const flipsH = flipsAvailable ? 56 : 0
-  const H = compact ? W : Math.round(W / 1.15) + marginBottom + (flipsAvailable ? flipsH + flipsGap + 12 : 0)
+  const flipsBlock = flipsAvailable ? flipsH + flipsGap + 12 : 0
+  const gridW = W - marginLeft
+  const gridH = compact ? W : Math.round(gridW / 1.15)
+  const H = marginTop + gridH + marginBottom + flipsBlock
 
   const gridX0 = marginLeft
-  const gridY0 = 0
-  const gridW = W - marginLeft
-  const gridH = H - marginBottom - (flipsAvailable ? flipsH + flipsGap + 12 : 0)
+  const gridY0 = marginTop
   const cellW = cols > 0 ? gridW / cols : 0
   const cellH = rows > 0 ? gridH / rows : 0
 
@@ -96,6 +98,19 @@ export function UnmaskMap({ trace, compact = false, label, live = false, ref }: 
         role="img"
         aria-label={ariaLabel}
       >
+        {/* the typewriter line: position i committing at step i. A staircase that
+            hugs it is left to right; a cloud away from it is out of order. */}
+        <line
+          x1={gridX0}
+          y1={gridY0}
+          x2={gridX0 + gridW}
+          y2={gridY0 + gridH}
+          stroke={ruleStroke}
+          strokeWidth={compact ? 0.6 : 1}
+          strokeDasharray={compact ? '2 3' : '4 4'}
+          vectorEffect="non-scaling-stroke"
+        />
+
         {/* content and tail commits */}
         {trace.tokens.map((t) => {
           if (t.step < 0) return null
@@ -103,14 +118,53 @@ export function UnmaskMap({ trace, compact = false, label, live = false, ref }: 
           const y = gridY0 + t.step * cellH
           const w = Math.max(0.4, cellW * 0.86)
           const h = Math.max(0.4, cellH * 0.86)
+          const rx = compact ? 0 : Math.min(w, h) * 0.22
           if (t.tail) {
-            return <rect key={t.pos} x={x} y={y} width={w} height={h} fill="var(--muted)" opacity={0.28} />
+            return <rect key={t.pos} x={x} y={y} width={w} height={h} rx={rx} fill="var(--muted)" opacity={0.28} />
           }
           const opacity = 0.35 + 0.65 * Math.max(0, Math.min(1, t.conf))
           return (
-            <rect key={t.pos} x={x} y={y} width={w} height={h} fill="var(--section-accent)" opacity={opacity} />
+            <rect key={t.pos} x={x} y={y} width={w} height={h} rx={rx} fill="var(--section-accent)" opacity={opacity} />
           )
         })}
+
+        {/* ticks: positions along the bottom, steps down the left, block labels on top */}
+        {!compact && (
+          <g fontFamily="var(--font-mono)" fontSize={8.5} fill="var(--muted)">
+            {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+              <text key={`px${f}`} x={gridX0 + f * gridW} y={gridY0 + gridH + 11} textAnchor={f === 0 ? 'start' : f === 1 ? 'end' : 'middle'}>
+                {Math.round(f * cols)}
+              </text>
+            ))}
+            {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+              <text key={`st${f}`} x={gridX0 - 6} y={gridY0 + f * gridH + (f === 0 ? 7 : f === 1 ? 0 : 3)} textAnchor="end">
+                {Math.round(f * rows)}
+              </text>
+            ))}
+            {hasBlocks &&
+              Array.from({ length: Math.ceil(cols / blockSize) }, (_, b) => (
+                <text
+                  key={`b${b}`}
+                  x={gridX0 + (b + 0.5) * blockSize * cellW}
+                  y={gridY0 - 5}
+                  textAnchor="middle"
+                  letterSpacing="0.08em"
+                >
+                  block {b + 1}
+                </text>
+              ))}
+            <text
+              x={gridX0 + gridW * 0.3}
+              y={gridY0 + gridH * 0.3 - 9}
+              fill="var(--muted)"
+              opacity={0.85}
+              transform={`rotate(${(Math.atan2(gridH, gridW) * 180) / Math.PI} ${gridX0 + gridW * 0.3} ${gridY0 + gridH * 0.3 - 9})`}
+              letterSpacing="0.08em"
+            >
+              left to right, for reference
+            </text>
+          </g>
+        )}
 
         {/* live veil and playhead: the rows the replay has not reached yet */}
         {live && (
@@ -156,18 +210,19 @@ export function UnmaskMap({ trace, compact = false, label, live = false, ref }: 
           <g>
             <text
               x={gridX0}
-              y={gridY0 + gridH + flipsGap - 2}
+              y={gridY0 + gridH + marginBottom + flipsGap - 2}
               fontFamily="var(--font-mono)"
               fontSize={9}
               fill="var(--muted)"
+              letterSpacing="0.1em"
             >
-              provisional guess changes
+              provisional guess changes per position
             </text>
             {trace.tokens.map((t) => {
               if (t.step < 0) return null
               const x = gridX0 + t.pos * cellW
               const barW = Math.max(0.4, cellW * 0.86)
-              const stripY0 = gridY0 + gridH + flipsGap + 10
+              const stripY0 = gridY0 + gridH + marginBottom + flipsGap + 10
               const barH = Math.max(0.5, (t.flips / maxFlips) * flipsH)
               return (
                 <rect
@@ -184,32 +239,55 @@ export function UnmaskMap({ trace, compact = false, label, live = false, ref }: 
           </g>
         )}
 
-        {/* micro axis labels */}
+        {/* axis titles */}
         {!compact && (
           <>
             <text
-              x={gridX0}
-              y={H - 4}
+              x={gridX0 + gridW}
+              y={gridY0 + gridH + 26}
               fontFamily="var(--font-mono)"
               fontSize={9}
               fill="var(--muted)"
+              textAnchor="end"
+              letterSpacing="0.1em"
             >
-              position →
+              position in the answer →
             </text>
             <text
-              x={12}
+              x={10}
               y={gridY0 + gridH / 2}
               fontFamily="var(--font-mono)"
               fontSize={9}
               fill="var(--muted)"
               textAnchor="middle"
-              transform={`rotate(-90 12 ${gridY0 + gridH / 2})`}
+              letterSpacing="0.1em"
+              transform={`rotate(-90 10 ${gridY0 + gridH / 2})`}
             >
-              step ↓
+              denoising step, 0 at the top
             </text>
           </>
         )}
       </svg>
+      {!compact && (
+        <div
+          className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[10px] tracking-[0.1em] lowercase"
+          style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+          aria-hidden="true"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-[2px]" style={{ background: 'var(--section-accent)' }} />
+            content commit, darker where the model was surer
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-[2px]" style={{ background: 'var(--muted)', opacity: 0.35 }} />
+            end-of-sequence tail
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-4 border-t border-dashed" style={{ borderColor: 'color-mix(in oklab, var(--ink) 40%, transparent)' }} />
+            left to right, for reference
+          </span>
+        </div>
+      )}
       {label && (
         <figcaption
           className="mt-2 text-[10px] uppercase tracking-[0.14em]"

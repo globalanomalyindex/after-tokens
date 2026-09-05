@@ -275,14 +275,15 @@ export function GoldenCurve() {
           <line key={`h${n}`} x1={X(0)} y1={Y(n)} x2={X(1)} y2={Y(n)} stroke={faint} strokeWidth={1} />
         ))}
 
-        {/* axis labels */}
+        {/* axis titles and ticks */}
         <text
-          x={X(0)}
-          y={Y(0) + 26}
+          x={X(1)}
+          y={Y(0) + 32}
+          textAnchor="end"
           style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em' }}
           fill={dim}
         >
-          time →
+          share of the run →
         </text>
         <text
           x={X(0) - 8}
@@ -290,8 +291,32 @@ export function GoldenCurve() {
           style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em' }}
           fill={dim}
         >
-          resolved
+          words locked ↑
         </text>
+        {[0, 0.5, 1].map((n) => (
+          <text
+            key={`xt${n}`}
+            x={X(n)}
+            y={Y(0) + 22}
+            textAnchor={n === 0 ? 'start' : n === 1 ? 'end' : 'middle'}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5 }}
+            fill={dim}
+          >
+            {Math.round(n * 100)}%
+          </text>
+        ))}
+        {[0, 0.5, 1].map((n) => (
+          <text
+            key={`yt${n}`}
+            x={X(0) - 6}
+            y={Y(n) + (n === 0 ? 0 : n === 1 ? 8 : 3)}
+            textAnchor="end"
+            style={{ fontFamily: 'var(--font-mono)', fontSize: 8.5 }}
+            fill={dim}
+          >
+            {Math.round(n * 100)}%
+          </text>
+        ))}
 
         {/* recorded word-lock cadence (median + p25-p75 band): static, behind
             everything animated, so the reticle still reads as the subject */}

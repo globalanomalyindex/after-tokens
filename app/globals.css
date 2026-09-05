@@ -478,6 +478,27 @@ button:active { transform: scale(0.97); }
   color: color-mix(in oklab, var(--stage-text) 44%, transparent);
 }
 
+/* ===== Section entrances ================================================= */
+/* Headlines rise into place as they enter the viewport, driven by the scroll
+   position itself (no observer, no JS): each h2 travels its own height of
+   scroll from 16px below and transparent to settled. Progressive: engines
+   without view() timelines render the settled state, and reduced motion
+   never animates. */
+@keyframes section-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@supports (animation-timeline: view()) {
+  .section-shell h2 {
+    animation: section-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-shell h2 { animation: none; }
+}
+
 /* ===== Section chrome: technical-color layer + density ================== */
 /* A per-section accent (set inline as --section-accent) threads through a top
    rule, an edge spine, and corner data marks: color across the whole run, and

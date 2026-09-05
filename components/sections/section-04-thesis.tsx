@@ -97,6 +97,14 @@ const PIPELINE = [
 export function SectionThesis() {
   return (
     <Section id="thesis" n={4} act="II" title="Hypothesis and design" eyebrow={['Hypothesis', 'Legible state']}>
+      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-4xl">
+        <span className="title-index">iv.</span>the hypothesis, and the reveal built on it
+      </h2>
+      <p className="text-lg md:text-xl leading-relaxed max-w-3xl mb-12 md:mb-16" style={{ color: 'var(--ink-2)' }}>
+        The sampler exposes real state. The reveal makes it legible, decision by decision, each one traced to a
+        principle from how people read and a measurement from the recorded runs. The hypothesis is then three claims
+        a study can break.
+      </p>
       <div className="max-w-3xl mb-16 md:mb-24">
         <div className="text-xs uppercase tracking-[0.16em] mb-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
           + The product position

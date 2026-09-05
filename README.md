@@ -46,8 +46,8 @@ every rendering decision in the shipped reveal traces back to a named psychology
 | a pending word stays blurred, in a slot of its final width | parafoveal preview · zeigarnik effect | churn to the side of the eye stays illegible, so it costs no reading time, and the open slot holds the answer's extent and the reader's attention |
 | the pending glyphs change every 390 milliseconds | doherty threshold · finding 04 | matches the sampler's measured 387 ms flip rate, so every visible change lands inside the window where attention holds |
 | the model's guess renders only above a probability of 0.25 | predictive coding · prediction error | below the floor the guess is the corpus prior; above it, a real prediction |
-| words arrive in local clusters from a few anchors | finding 02 · change blindness | staged, neighboring change is perceivable where scattered, simultaneous change gets missed |
-| the cadence is linear, with no gap longer than 400 milliseconds | finding 01 · doherty threshold | the recorded sampler commits at a steady rate, so the reader never waits past the threshold for the next change |
+| words lock in several places at once, each cluster growing outward from its seed | finding 01 · finding 02 · change blindness | the block schedule is a product decision the reveal does not inherit; without it the sampler grows a few clusters at once, and staged local change is what the eye can follow |
+| commits arrive in steps of several words, 140 to 260 milliseconds apart | finding 01 · doherty threshold | a fast decoder commits several positions per step; the average rate stays linear and no wait runs past the threshold |
 | a locked word gets heavier than its neighbors | von restorff effect | the lock is the one difference in the field, so it is the thing that registers |
 | a lock settles with an overshoot sized to its confidence | dopamine · finding 05 | the resolution beat is a reward signal, scaled to how sure the commit was |
 | a weak commit stays slightly dimmer | trust calibration · finding 05 | 38% of commits went in under even odds; the render shows certainty as certainty and leaves the rest to read as provisional |
@@ -65,7 +65,7 @@ this shipped through cycles of build, audit, and cut.
 - a cinematic entrance was built, broke, was rebuilt around its failure modes, and was then cut entirely. the hero already resolves out of order, and a second performance of the same idea cost a reviewer six seconds before the argument started.
 - the last decision was to stop authoring: sixty real trajectories were captured so one mode could replay a sampler instead of imitating one, and the piece now separates what the sampler does from what a reader can read.
 
-nature supplied a motion vocabulary (branching, dissipation, bands, division). it did not supply proof. the shipped cadence is linear now, fitted to the recorded sampler; phi decay is retired to the comparison stimulus. the case study states exactly what is implemented, what is simulated, and what a user study would need to falsify.
+nature supplied a motion vocabulary (branching, dissipation, bands, division). it did not supply proof. the shipped cadence is linear on average now, batched in steps the way a decoder commits; phi decay is retired to the comparison stimulus. the case study states exactly what is implemented, what is simulated, and what a user study would need to falsify.
 
 ## research
 
@@ -103,7 +103,7 @@ with the default sampler the answer arrives almost left to right, one block at a
 
 what changed in the design because of it (the reasoning in order is `docs/redesign.md`):
 
-- the shipped reveal was rebuilt from the principles and the measurements together. a pending word is an illegible blur in a slot of its final width; the pending glyphs change every 390 ms (the sampler's measured rate was 387); the model's guess is shown only above a probability of 0.25, because below it the guess is the corpus prior and reads "the" in every slot; words lock in local clusters from a few anchors on a linear cadence of 45 to 80 ms per word; a lock is crisp at once, heavier, with a settle sized to its probability and a halo that is gone within a second; a weak commit rests dimmer; the field moves as a whole once, at the last lock.
+- the shipped reveal was rebuilt from the principles and the measurements together. a pending word is an illegible blur in a slot of its final width; the pending glyphs change every 390 ms (the sampler's measured rate was 387); the model's guess is shown only above a probability of 0.25, because below it the guess is the corpus prior and reads "the" in every slot; words lock in several places at once, each cluster growing from its seed, in steps of several words 140 to 260 ms apart; a lock is crisp at once, heavier, with a settle sized to its probability and a halo that is gone within a second; a weak commit rests dimmer; the field moves as a whole once, at the last lock.
 - four earlier choices were retired by the data: the phi cadence (kept only as the comparison stimulus), a field-wide sweep during the reveal, a halo left on every locked word, and a closing beat at a fixed 82% of the run that unblurred still-pending noise.
 - the hypothesis is now three claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3). the recorded trajectories are the stimuli for all three.
 - a llada-8b-instruct corroboration set (4 runs, tau +0.90, median jump 3.9) reproduces the block-schedule pattern at 8b; llama.cpp exposes order and timing but not confidence.

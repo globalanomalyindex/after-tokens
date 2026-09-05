@@ -33,7 +33,7 @@ Sixty recorded trajectories (one 0.6B model, three samplers, greedy) and a four-
 
 A word has four stages. **Open:** an illegible blurred noise word (4.2 px at body size erases letterforms, keeps word shape) in a slot of its final width, low opacity, churning at 390 ms. **Belief** (recorded mode): the model's guess above the floor, less blurred and steadier, still short of readable, crossfading on each change. **Lock:** crisp at once, heavier, a settle sized to probability, a halo that blooms and is gone within 900 ms. **Close:** at the last lock, one wave, the slot markers drop, weights return to uniform, the answer reads finished.
 
-Order in the authored mode is a growth process fitted to the recorded adjacency and anchor rates. Cadence is linear at 45 to 80 milliseconds per word with a 320 millisecond pre-roll. The recorded mode plays the sampler's own order and, at 40 ms per step, its own beliefs.
+Order in the authored mode is parallel growth: the first step seeds the whole span, later commits extend live clusters with the jump distribution of the recorded schedule-free sampler or open a seed in the largest gap. The block schedule that makes the default sampler read left to right is a product decision the reveal does not inherit. Cadence is batched in steps, about twenty per answer, 140 to 260 milliseconds apart after a 320 millisecond pre-roll, linear on average. The recorded mode plays the sampler's own order and, at 40 ms per step, its own beliefs.
 
 What this removed from the earlier build, with the reason: the phi-decay cadence (the measured cadence is linear; phi stays as the comparison stimulus); the glass sweep that ran field-wide for the length of the reveal (change blindness); the halo that stayed on every locked word until the end (von Restorff); the closing beat at an arbitrary 82% of the run, which unblurred still-pending noise as if it were text (it now fires at the last lock); semi-legible pending noise at 2.2 px (parafoveal preview).
 
@@ -47,4 +47,4 @@ The recorded trajectories are the stimuli for all three.
 
 ## 6. What is authored and what is measured
 
-The order model, the cadence bounds, the churn rate, the guess floor, and the confidence scaling are fitted to or set by the data. The blur radius, the opacity floor, and the settle sizes are tuned by eye and labeled so. Nothing here shows that the reveal helps a reader; that is what the study is for.
+The order model, the cadence bounds, the churn rate, the guess floor, and the confidence scaling are fitted to or set by the data. The blur radius, the opacity floor, the settle sizes, the step count, and the within-step spread are tuned by eye and labeled so. Nothing here shows that the reveal helps a reader; that is what the study is for.

@@ -3,25 +3,36 @@ import { standardReducedFallback } from '../reduced-motion'
 import { MyceliumOverlay } from '@/components/diffusion/mycelium-overlay'
 import orderModel from '@/data/traces/derived/order-model.json'
 
-// Cadence. The recorded sampler's word-lock rate is linear, not accelerating:
-// the block schedule commits a fixed number of tokens per denoising step, so
-// successive word locks land at close to equal intervals (see
-// lib/traces/findings.ts, DERIVED.cadenceMaxDeviation, a median deviation of
-// 0.057 from a straight line across the 20 traces). The shipped cadence below
-// is linear for the same reason and bounded by the Doherty threshold: no gap
-// between visible changes should run past the point where attention drifts,
-// so every interval clamps to at most MYCELIUM_MAX_GAP_MS. The order those
-// locks land in is a separate question, the fitted growth process in
-// computeLockOrder below, untouched by this change.
+// Mycelium: parallel growth from several seeds, committed in steps.
 //
-// Phi's acceleration is retired from this cadence. It remains, labeled as the
-// retired comparison curve, as the stimulus in reveal-comparison.tsx and the
-// golden-curve chart, so the difference between the authored guess and the
-// measured cadence stays visible rather than implied.
+// The order. A diffusion sampler is free to commit anywhere in the field.
+// The recorded default sampler reads nearly left to right only because its
+// block schedule says which 32 positions are open at a time (finding 01);
+// the same confidence rule with no schedule grows a few clusters at once,
+// each one local (finding 02: 50% of consecutive commits adjacent, a fresh
+// anchor about every 3.5 commits, see data/traces/derived/order-model.json,
+// entry "lowconf-b128"). The schedule is a product decision, and the reveal
+// does not inherit it: this mode performs the schedule-free order. Several
+// seeds open across the whole answer, every live front grows outward with
+// the recorded jump distribution, and new seeds open in the largest gap
+// left, so the answer resolves in parallel from many places and closes
+// where the fronts meet.
+//
+// The cadence. A fast diffusion decoder commits several positions per
+// denoising step, so the locks here arrive in steps too: about
+// MYCELIUM_TARGET_STEPS per answer, each step inside the Doherty threshold
+// (no wait past MYCELIUM_STEP_MS_MAX between visible bursts) and no faster
+// than MYCELIUM_STEP_MS_MIN so a burst registers as one. Within a step the
+// words land across a MYCELIUM_STEP_JITTER_MS spread, which keeps a step from
+// reading as a machine tick. The average rate is linear, which is what the
+// recorded word cadence is (DERIVED.cadenceMaxDeviation); the phi
+// acceleration that came first is retired to the comparison stimulus.
 export const MYCELIUM_PRE_ROLL_MS = 320
-export const MYCELIUM_MAX_GAP_MS = 80
-export const MYCELIUM_MIN_GAP_MS = 45
 export const MYCELIUM_BUDGET_MS = 5200
+export const MYCELIUM_TARGET_STEPS = 20
+export const MYCELIUM_STEP_MS_MIN = 140
+export const MYCELIUM_STEP_MS_MAX = 260
+export const MYCELIUM_STEP_JITTER_MS = 70
 
 const RESOLVING_TO_RESOLVED_MS = 90
 const TAIL_MS = 260
@@ -30,42 +41,52 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
-/** The interval between successive word locks: the reveal's time budget
- *  spread evenly across the answer's words, bounded so a short answer never
- *  waits past the Doherty threshold between locks and a long one never
- *  flickers faster than the eye can register a change as a change. */
-export function wordInterval(n: number): number {
-  if (n <= 0) return MYCELIUM_MAX_GAP_MS
-  return clamp(MYCELIUM_BUDGET_MS / n, MYCELIUM_MIN_GAP_MS, MYCELIUM_MAX_GAP_MS)
+/** Words committed per step: the answer spread over about
+ *  MYCELIUM_TARGET_STEPS steps, never fewer than one word per step. */
+export function wordsPerStep(n: number): number {
+  if (n <= 0) return 1
+  return Math.max(1, Math.ceil(n / MYCELIUM_TARGET_STEPS))
 }
 
+/** Steps an answer of n words takes. */
+export function stepCount(n: number): number {
+  if (n <= 0) return 0
+  return Math.ceil(n / wordsPerStep(n))
+}
+
+/** Milliseconds between steps: the budget spread evenly over the steps,
+ *  bounded by the threshold above and legibility below. */
+export function stepInterval(n: number): number {
+  const steps = stepCount(n)
+  if (steps <= 0) return MYCELIUM_STEP_MS_MAX
+  return clamp(MYCELIUM_BUDGET_MS / steps, MYCELIUM_STEP_MS_MIN, MYCELIUM_STEP_MS_MAX)
+}
+
+/** Lock time by commit rank, before the within-step jitter: every word of a
+ *  step shares the step's time. Rank i is in step floor(i / wordsPerStep). */
 export function computeWordLockTimes(wordCount: number): number[] {
   const times: number[] = []
   if (wordCount === 0) return times
-  const gap = wordInterval(wordCount)
-  let t = MYCELIUM_PRE_ROLL_MS
-  times.push(t)
-  for (let i = 1; i < wordCount; i++) {
-    t += gap
-    times.push(t)
+  const k = wordsPerStep(wordCount)
+  const gap = stepInterval(wordCount)
+  for (let i = 0; i < wordCount; i++) {
+    times.push(MYCELIUM_PRE_ROLL_MS + Math.floor(i / k) * gap)
   }
   return times
 }
 
-// Jump-distance histogram fitted to the default sampler (lowconf, block
-// size 32) over its 20 recorded runs: data/traces/derived/order-model.json,
-// entry "lowconf-b32". A commit at distance 1 from the previous one happens
-// 51.9% of the time there, which is what produces an adjacent-commit
-// fraction of about 0.514 across a run; a fresh, unrelated anchor happens
-// about 22.5 times per 100 content tokens. Both numbers come straight from
-// that file; nothing here is eyeballed.
+// Jump-distance histogram of the schedule-free sampler (low-confidence
+// remasking, one 128-position field), fitted over its usable recorded runs:
+// data/traces/derived/order-model.json, entry "lowconf-b128". A commit at
+// distance 1 from the front it grows from happens 51.4% of the time; a jump
+// of 11 or more, which reads as a fresh seed, 4.3%.
 type JumpClass = '1' | '2' | '3-5' | '6-10' | '11+'
-const JUMP_HIST = orderModel['lowconf-b32'].jump_hist as Record<JumpClass, number>
+const JUMP_HIST = orderModel['lowconf-b128'].jump_hist as Record<JumpClass, number>
 const JUMP_CLASSES: JumpClass[] = ['1', '2', '3-5', '6-10', '11+']
 
 // A small deterministic PRNG (mulberry32) seeded from the FNV-1a hash of the
-// text, so the growth process below is reproducible per input and nothing
-// else in the render path needs to carry random state.
+// text, so the growth process is reproducible per input and nothing else in
+// the render path needs to carry random state.
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0
   return function next() {
@@ -106,119 +127,142 @@ function jumpDistance(cls: JumpClass, rng: () => number): number {
     case '6-10':
       return 6 + Math.floor(rng() * 5) // 6..10
     case '11+':
-      return -1 // signals "fresh anchor" to the caller
+      return -1 // a fresh seed
   }
 }
 
+export type LockSchedule = {
+  /** word indices in commit order */
+  order: number[]
+  /** the step each rank commits in, same length as order */
+  stepOf: number[]
+  /** within-step spread for each rank, 0..1, same length as order */
+  jitter: number[]
+}
+
 /**
- * Build a deterministic growth process over the word indices, fitted to how
- * the default sampler actually commits tokens (see the JUMP_HIST comment
- * above). This deliberately does NOT imitate the sampler's block schedule:
- * the piece's position is that the macro order (which block fills when)
- * belongs to the schedule, and mycelium is a model of what confidence does
- * inside a block, replayed as one continuous growth from a few seeds. Same
- * input text always produces the same order; different text produces a
- * different one.
- *
- * The process: seed a PRNG from the text hash, commit a random first index
- * (the sampler's real first commit is its single surest token, which an
- * authored mode cannot know without the model in the loop, so a seeded pick
- * is the honest stand-in), then repeatedly draw a jump class and try to
- * land the next commit at that distance from the previous one, walking
- * outward if the exact spot is already taken, and falling back to a fresh
- * anchor when nothing nearby is left.
+ * The growth process, deterministic per text. Step 0 opens one seed per
+ * commit of the step, spread across the answer (one in each equal slice,
+ * at a seeded spot inside it), the way a decoder's first step commits its
+ * surest tokens wherever they are. Every later commit either extends a live
+ * front (a committed word with an open neighbor, chosen uniformly, so every
+ * cluster grows at the same rate whatever its size) by a distance drawn
+ * from the recorded jump distribution, walking outward when the exact spot
+ * is taken, or, on a long jump, opens a fresh seed near the middle of the
+ * largest open gap. Fronts die where they meet. Same text, same schedule.
  */
-export function computeLockOrder(words: MeasuredAtom[]): number[] {
+export function computeLockSchedule(words: MeasuredAtom[]): LockSchedule {
   const n = words.length
-  if (n === 0) return []
+  if (n === 0) return { order: [], stepOf: [], jitter: [] }
 
-  const seedStr = words.map((w) => w.text).join('|')
-  const rng = mulberry32(fnv1a(seedStr))
+  const rng = mulberry32(fnv1a(words.map((w) => w.text).join('|')))
+  const k = wordsPerStep(n)
 
-  // Work entirely in array positions (0..n-1); words[i].index === i for
-  // every tokenized atom (see lib/diffusion/tokenize.ts), so the word index
-  // is only looked up once, at commit time.
+  // Work in array positions (0..n-1); words[i].index === i for every
+  // tokenized atom (see lib/diffusion/tokenize.ts).
   const committed = new Array<boolean>(n).fill(false)
   const order: number[] = []
-  const positions: number[] = []
+  const stepOf: number[] = []
+  const jitter: number[] = []
 
-  const commit = (pos: number) => {
+  const isOpen = (p: number) => p >= 0 && p < n && !committed[p]
+  const commit = (pos: number, step: number) => {
     committed[pos] = true
-    positions.push(pos)
     order.push(words[pos]!.index)
+    stepOf.push(step)
+    jitter.push(rng())
   }
-
-  const uncommittedIndices = (): number[] => {
+  const frontier = (): number[] => {
     const out: number[] = []
-    for (let i = 0; i < n; i++) if (!committed[i]) out.push(i)
+    for (let p = 0; p < n; p++) if (committed[p] && (isOpen(p - 1) || isOpen(p + 1))) out.push(p)
     return out
   }
-
-  const freshAnchor = (): number => {
-    const pool = uncommittedIndices()
-    return pool[Math.floor(rng() * pool.length)]!
+  // A seed near the middle of the largest run of open positions.
+  const seedInLargestGap = (): number => {
+    let bestStart = -1
+    let bestLen = 0
+    let p = 0
+    while (p < n) {
+      if (committed[p]) {
+        p++
+        continue
+      }
+      let q = p
+      while (q < n && !committed[q]) q++
+      if (q - p > bestLen) {
+        bestLen = q - p
+        bestStart = p
+      }
+      p = q
+    }
+    const spread = Math.floor(bestLen / 4)
+    const mid = bestStart + Math.floor(bestLen / 2)
+    return clamp(mid + Math.floor((rng() * 2 - 1) * spread), bestStart, bestStart + bestLen - 1)
   }
 
-  // First commit: a text-seeded random index.
-  commit(freshAnchor())
+  // Step 0: one seed per slice of the answer.
+  const firstK = Math.min(k, n)
+  for (let i = 0; i < firstK; i++) {
+    const lo = Math.floor((i * n) / firstK)
+    const hi = Math.floor(((i + 1) * n) / firstK) - 1
+    commit(lo + Math.floor(rng() * (hi - lo + 1)), 0)
+  }
 
+  let step = 1
   while (order.length < n) {
-    const prevPos = positions[positions.length - 1]!
-    const cls = pickJumpClass(rng)
-    const d = jumpDistance(cls, rng)
-
-    if (d === -1) {
-      commit(freshAnchor())
-      continue
-    }
-
-    const firstSign = rng() < 0.5 ? 1 : -1
-    const posA = prevPos + firstSign * d
-    const posB = prevPos - firstSign * d
-
-    let landed = -1
-    if (posA >= 0 && posA < n && !committed[posA]) {
-      landed = posA
-    } else if (posB >= 0 && posB < n && !committed[posB]) {
-      landed = posB
-    } else {
-      // Neither exact spot is free. Walk outward from prev itself (not
-      // from the rolled distance) toward the nearest uncommitted index,
-      // chosen side first, then the other side.
-      for (let k = 1; landed === -1; k++) {
-        const p = prevPos + firstSign * k
-        if (p < 0 || p >= n) break
-        if (!committed[p]) landed = p
+    for (let j = 0; j < k && order.length < n; j++) {
+      const cls = pickJumpClass(rng)
+      const d = jumpDistance(cls, rng)
+      const fronts = frontier()
+      if (d === -1 || fronts.length === 0) {
+        commit(seedInLargestGap(), step)
+        continue
       }
-      if (landed === -1) {
-        for (let k = 1; landed === -1; k++) {
-          const p = prevPos - firstSign * k
+      const base = fronts[Math.floor(rng() * fronts.length)]!
+      const bothOpen = isOpen(base - 1) && isOpen(base + 1)
+      const dir = bothOpen ? (rng() < 0.5 ? 1 : -1) : isOpen(base + 1) ? 1 : -1
+      let target = base + dir * d
+      if (!isOpen(target)) {
+        target = -1
+        for (let q = 1; ; q++) {
+          const p = base + dir * q
           if (p < 0 || p >= n) break
-          if (!committed[p]) landed = p
+          if (!committed[p]) {
+            target = p
+            break
+          }
         }
       }
+      commit(target === -1 ? seedInLargestGap() : target, step)
     }
-
-    commit(landed === -1 ? freshAnchor() : landed)
+    step++
   }
 
-  return order
+  return { order, stepOf, jitter }
+}
+
+/** The commit order alone. */
+export function computeLockOrder(words: MeasuredAtom[]): number[] {
+  return computeLockSchedule(words).order
+}
+
+function lastLockMs(n: number): number {
+  if (n === 0) return 0
+  return MYCELIUM_PRE_ROLL_MS + (stepCount(n) - 1) * stepInterval(n) + MYCELIUM_STEP_JITTER_MS
 }
 
 function totalDuration(words: MeasuredAtom[]): number {
   if (words.length === 0) return 0
-  const times = computeWordLockTimes(words.length)
-  const lastLock = times[times.length - 1] ?? 0
-  return lastLock + RESOLVING_TO_RESOLVED_MS + TAIL_MS
+  return lastLockMs(words.length) + RESOLVING_TO_RESOLVED_MS + TAIL_MS
 }
 
 function computeTimeline(words: MeasuredAtom[]): ResolutionEvent[] {
   if (words.length === 0) return []
-  const order = computeLockOrder(words)
-  const times = computeWordLockTimes(words.length)
+  const { order, stepOf, jitter } = computeLockSchedule(words)
+  const gap = stepInterval(words.length)
   const events: ResolutionEvent[] = []
-  order.forEach((wordIndex, orderIdx) => {
-    const t = times[orderIdx] ?? 0
+  order.forEach((wordIndex, rank) => {
+    const t = MYCELIUM_PRE_ROLL_MS + stepOf[rank]! * gap + jitter[rank]! * MYCELIUM_STEP_JITTER_MS
     events.push({ wordIndex, state: 'resolving', t })
     events.push({ wordIndex, state: 'resolved', t: t + RESOLVING_TO_RESOLVED_MS })
   })

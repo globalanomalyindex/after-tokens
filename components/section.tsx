@@ -51,7 +51,7 @@ export function Section({ id, n, act, title, eyebrow, children }: SectionProps) 
       aria-label={title}
       data-section={id}
       data-act={act}
-      className="section-shell relative py-16 md:py-24 px-6 md:px-16"
+      className="section-shell relative py-20 md:py-28 px-6 md:px-16"
       style={{ ['--section-accent' as string]: isRainbow ? RAINBOW_FALLBACK : accent } as CSSProperties}
     >
       {/* technical-color edge rule, rainbow on the spectrum section */}

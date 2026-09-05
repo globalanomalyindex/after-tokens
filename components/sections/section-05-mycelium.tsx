@@ -23,19 +23,21 @@ export function SectionMycelium() {
         }
         intro={
           <>
-            Mycelium turns each answer into a stable, scattered lock sequence. A growth process fitted to the
-            recorded sampler sets the order: about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB32)} of commits land next
-            to the previous one and a new anchor opens roughly every {Math.round(100 / TRACE_NUMBERS.seedsPer100Default)} commits,
-            the statistics of a real low-confidence sampler inside a block. The seed is the response text, so every
-            replay is comparable. Each lock snaps crisp and heavy with a halo that is gone within a second; the field
-            moves as a whole once, at the last lock. Every one of those choices is a row in the ledger above.
+            Mycelium resolves each answer from several places at once. The first step seeds the whole span;
+            every step after it commits a handful of words, each one growing a live cluster outward with the jump
+            distribution of the recorded schedule-free sampler (about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB128)} land
+            next to a committed word) or opening a new seed in the largest gap left. The block schedule that makes
+            the default sampler read left to right is a product decision the reveal does not inherit. The seed is
+            the response text, so every replay is comparable. Each lock snaps crisp and heavy with a halo that is
+            gone within a second; the field moves as a whole once, at the last lock. Every one of those choices is
+            a row in the ledger above.
           </>
         }
         prompt="How does masked diffusion text generation work?"
         answer={`Masked diffusion language models refine many masked positions across repeated denoising steps instead of emitting only the next token. This interface is an authored simulation of that non-sequential process; it is not connected to live model state.`}
         specs={[
-          { label: 'Signal source', value: 'Growth order fitted to 20 recorded trajectories' },
-          { label: 'Cadence', value: 'Linear, 45 to 80 ms per word, 320 ms pre-roll' },
+          { label: 'Signal source', value: 'Parallel growth, schedule-free sampler statistics' },
+          { label: 'Cadence', value: 'About 20 steps, 140 to 260 ms apart, several words per step' },
           { label: 'Use-case hypothesis', value: 'General responses' },
           { label: 'Evidence', value: 'Order statistics matched; comprehension untested' },
         ]}
@@ -66,8 +68,9 @@ export function SectionMycelium() {
               starting shapes.
             </p>
             <p className="text-base leading-relaxed">
-              The shipped cadence is linear. Each word locks on a per-word interval that scales to the answer&apos;s
-              length, clamped between 45 and 80 milliseconds, after a 320 millisecond pre-roll. The recorded
+              The shipped cadence is linear on average and batched in steps. An answer takes about twenty steps,
+              140 to 260 milliseconds apart after a 320 millisecond pre-roll, and each step commits several words
+              at once across a short spread, the way a fast decoder commits several positions per denoising step. The recorded
               sampler&apos;s own word cadence is linear too: the median lock fraction by word rank stays within about{' '}
               {pct(DERIVED.cadenceMaxDeviation)} of a straight line, because the schedule commits a fixed number of
               tokens per step regardless of confidence. The <DefinitionTerm term="doherty threshold" /> sets the

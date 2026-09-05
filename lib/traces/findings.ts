@@ -37,6 +37,8 @@ export const TRACE_NUMBERS = {
   /** order statistics exclude answers shorter than this many content tokens */
   /** new anchors (commits not adjacent to any committed position) per 100 content tokens, default sampler */
   seedsPer100Default: 22.5,
+  /** the same, schedule-free sampler (usable runs); the authored order grows from this regime */
+  seedsPer100NoBlock: 28.6,
   /** no-block sampler: share of usable runs whose tail committed before the last content token, and when */
   tailFirstFracNoBlock: 1.000,
   tailDoneAtFracNoBlock: 0.922,
@@ -115,11 +117,17 @@ export const DERIVED = {
   /** how far the recorded word cadence (median lock fraction by word rank) strays from a straight line */
   cadenceMaxDeviation: 0.119,
   cadenceMeanDeviation: 0.057,
-  /** fitted growth-process parameters for the authored mycelium order, default sampler, within blocks */
+  /** fitted growth-process parameters, default sampler, within blocks */
   growth: {
     adjacentFrac: 0.514,
     seedsPer100Tokens: 22.5,
     jumpHist: { '1': 0.519, '2': 0.227, '3-5': 0.166, '6-10': 0.05, '11+': 0.039 },
+  },
+  /** the same for the schedule-free sampler (11 usable runs); this is the regime the authored mycelium order grows from */
+  growthNoBlock: {
+    adjacentFrac: 0.5,
+    seedsPer100Tokens: 28.6,
+    jumpHist: { '1': 0.514, '2': 0.164, '3-5': 0.164, '6-10': 0.114, '11+': 0.043 },
   },
 } as const
 
@@ -170,16 +178,16 @@ export const SYNTHESIS: SynthesisRow[] = [
     effect: 'below the floor the argmax is the corpus prior (median 0.065) and would read “the” in every slot; above it the slot shows the model’s real belief, forming, and each change is a prediction error made visible. About one change in thirty clears the floor.',
   },
   {
-    decision: 'words arrive in local clusters from a few anchors',
-    from: 'finding 02 · change blindness',
+    decision: 'words lock in several places at once, each cluster growing outward from its seed',
+    from: 'finding 01 · finding 02 · change blindness',
     tag: 'derived',
-    effect: 'the authored order is a growth process fitted to the recorded adjacency (51%) and anchor rate (one per about four commits). Staged, neighboring change is perceivable; scattered simultaneous change is what the eye misses.',
+    effect: 'the block schedule is what makes the default sampler read left to right, and a schedule is a product decision the reveal does not inherit. Without one the same confidence rule grows a few clusters at once (finding 02), so the order is a growth process: the first step seeds the whole span, every later commit extends a live front with the recorded jump distribution (51% adjacent, schedule-free runs) or opens a new seed in the largest gap left. Growth is staged, local change, which is what the eye can follow; a uniform scatter is what it misses.',
   },
   {
-    decision: 'the cadence is linear, 45 to 80 milliseconds per word, after a 320 millisecond pre-roll',
+    decision: 'commits arrive in steps of several words, 140 to 260 milliseconds apart, after a 320 millisecond pre-roll',
     from: 'finding 01 · doherty threshold',
-    tag: 'derived',
-    effect: 'the recorded word cadence is linear because the schedule commits a fixed number of tokens per step; the bounds keep every wait under the threshold and a long answer from flickering. Phi decay was the first cadence and is retired to the comparison stimulus.',
+    tag: 'tuned',
+    effect: 'a fast diffusion decoder commits several positions per denoising step, so the locks are batched the same way: about twenty steps per answer, each inside the threshold, each landing its words across a 70 millisecond spread so a step reads as a burst rather than a tick. The average rate stays linear, which is the recorded cadence; the step count and the spread are set by eye and labeled so. Phi decay was the first cadence and is retired to the comparison stimulus.',
   },
   {
     decision: 'a lock is crisp at once and the word goes heavier',

@@ -189,7 +189,7 @@ export function SectionTrajectories() {
           + A recorded answer, replayed
         </div>
         <p className="text-base leading-relaxed max-w-3xl mb-8" style={{ color: 'var(--ink-2)' }}>
-          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead. The map beside the stage draws itself as the words lock.
+          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead. Under the default sampler the answer arrives nearly left to right because its block schedule says so; switch the sampler to no blocks to watch the schedule-free order the shipped reveal grows from. The map beside the stage draws itself as the words lock.
         </p>
 
         <div className="mb-6">
