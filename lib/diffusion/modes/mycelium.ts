@@ -33,8 +33,16 @@ export const MYCELIUM_TARGET_STEPS = 20
 export const MYCELIUM_STEP_MS_MIN = 140
 export const MYCELIUM_STEP_MS_MAX = 260
 export const MYCELIUM_STEP_JITTER_MS = 70
+/** The forming lead: a word ghosts in (the final word, blurred and steady)
+ *  this long before it locks, so every lock is preceded by a beat of
+ *  expectation (reward anticipation). About one step, so each burst of
+ *  locks lands as the next burst ghosts in. */
+export const MYCELIUM_FORMING_MS = 300
+/** The swing: alternate step intervals run long and short by this share, so
+ *  the pulse has a lilt (moderate syncopation is the most pleasurable pulse,
+ *  a metronome the least). The average interval is unchanged. */
+export const MYCELIUM_SWING = 0.08
 
-const RESOLVING_TO_RESOLVED_MS = 90
 const TAIL_MS = 260
 
 function clamp(value: number, min: number, max: number): number {
@@ -62,15 +70,21 @@ export function stepInterval(n: number): number {
   return clamp(MYCELIUM_BUDGET_MS / steps, MYCELIUM_STEP_MS_MIN, MYCELIUM_STEP_MS_MAX)
 }
 
+/** When step s lands: evenly spaced after the pre-roll, with every odd step
+ *  pushed late by the swing so the pulse alternates long and short. */
+export function stepTime(step: number, n: number): number {
+  const gap = stepInterval(n)
+  return MYCELIUM_PRE_ROLL_MS + step * gap + (step % 2 === 1 ? MYCELIUM_SWING * gap : 0)
+}
+
 /** Lock time by commit rank, before the within-step jitter: every word of a
  *  step shares the step's time. Rank i is in step floor(i / wordsPerStep). */
 export function computeWordLockTimes(wordCount: number): number[] {
   const times: number[] = []
   if (wordCount === 0) return times
   const k = wordsPerStep(wordCount)
-  const gap = stepInterval(wordCount)
   for (let i = 0; i < wordCount; i++) {
-    times.push(MYCELIUM_PRE_ROLL_MS + Math.floor(i / k) * gap)
+    times.push(stepTime(Math.floor(i / k), wordCount))
   }
   return times
 }
@@ -248,23 +262,25 @@ export function computeLockOrder(words: MeasuredAtom[]): number[] {
 
 function lastLockMs(n: number): number {
   if (n === 0) return 0
-  return MYCELIUM_PRE_ROLL_MS + (stepCount(n) - 1) * stepInterval(n) + MYCELIUM_STEP_JITTER_MS
+  return stepTime(stepCount(n) - 1, n) + MYCELIUM_STEP_JITTER_MS
 }
 
 function totalDuration(words: MeasuredAtom[]): number {
   if (words.length === 0) return 0
-  return lastLockMs(words.length) + RESOLVING_TO_RESOLVED_MS + TAIL_MS
+  return lastLockMs(words.length) + TAIL_MS
 }
 
+// 'resolving' is the forming stage (the word ghosts in), 'resolved' is the
+// lock itself. The lock lands at its step's time plus the word's share of the
+// in-step spread; the forming stage leads it by MYCELIUM_FORMING_MS.
 function computeTimeline(words: MeasuredAtom[]): ResolutionEvent[] {
   if (words.length === 0) return []
   const { order, stepOf, jitter } = computeLockSchedule(words)
-  const gap = stepInterval(words.length)
   const events: ResolutionEvent[] = []
   order.forEach((wordIndex, rank) => {
-    const t = MYCELIUM_PRE_ROLL_MS + stepOf[rank]! * gap + jitter[rank]! * MYCELIUM_STEP_JITTER_MS
-    events.push({ wordIndex, state: 'resolving', t })
-    events.push({ wordIndex, state: 'resolved', t: t + RESOLVING_TO_RESOLVED_MS })
+    const lock = stepTime(stepOf[rank]!, words.length) + jitter[rank]! * MYCELIUM_STEP_JITTER_MS
+    events.push({ wordIndex, state: 'resolving', t: Math.max(0, lock - MYCELIUM_FORMING_MS) })
+    events.push({ wordIndex, state: 'resolved', t: lock })
   })
   return events
 }

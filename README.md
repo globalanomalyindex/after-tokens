@@ -48,7 +48,12 @@ every rendering decision in the shipped reveal traces back to a named psychology
 | the model's guess renders only above a probability of 0.25 | predictive coding · prediction error | below the floor the guess is the corpus prior; above it, a real prediction |
 | words lock in several places at once, each cluster growing outward from its seed | finding 01 · finding 02 · change blindness | the block schedule is a product decision the reveal does not inherit; without it the sampler grows a few clusters at once, and staged local change is what the eye can follow |
 | commits arrive in steps of several words, 140 to 260 milliseconds apart | finding 01 · doherty threshold | a fast decoder commits several positions per step; the average rate stays linear and no wait runs past the threshold |
-| a locked word gets heavier than its neighbors | von restorff effect | the lock is the one difference in the field, so it is the thing that registers |
+| a word forms for one step before it locks: the final word, ghosted, steady | reward anticipation · parafoveal preview | every lock is preceded by a beat of expectation; the ghost never changes, so previewing it costs nothing |
+| a locked word gets heavier than its neighbors, and snaps crisp in one beat | von restorff effect · aha effect | the lock is the one difference in the field, and a sudden gain in fluency reads as insight |
+| the open field recedes as the answer fills | goal gradient · reward anticipation | the noise dims and the slot markers fade as the share of settled words rises, so the approach to completion is visible |
+| a lock that joins two settled neighbors settles harder | gestalt closure · dopamine | a small completion at the scale of a phrase, rewarded on the way to the whole |
+| the steps swing long and short by eight percent | groove · doherty threshold | moderate syncopation is the most pleasurable pulse; the average rate stays linear |
+| the status line counts the words settled while the reveal runs | goal gradient · labor illusion | visible progress pulls toward the goal, and an outcome whose work can be seen is valued more |
 | a lock settles with an overshoot sized to its confidence | dopamine · finding 05 | the resolution beat is a reward signal, scaled to how sure the commit was |
 | a weak commit stays slightly dimmer | trust calibration · finding 05 | 38% of commits went in under even odds; the render shows certainty as certainty and leaves the rest to read as provisional |
 | the whole answer unblurs once at the end | gestalt closure · peak-end rule | the final snap is the moment the sequence is remembered by |
@@ -69,7 +74,7 @@ nature supplied a motion vocabulary (branching, dissipation, bands, division). i
 
 ## research
 
-the case study cites eleven findings from cognitive science and reading research, each placed next to the specific claim it motivates. they are why the hypothesis is worth testing. none of them was measured on this prototype.
+the case study cites eighteen findings from cognitive science, neuroscience, and reading research, each placed next to the specific claim it motivates. they are why the hypothesis is worth testing. none of them was measured on this prototype.
 
 | term | source |
 | --- | --- |
@@ -84,6 +89,13 @@ the case study cites eleven findings from cognitive science and reading research
 | parafoveal preview | rayner, 1998 |
 | doherty threshold | doherty & thadhani, 1982 |
 | von restorff effect | von restorff, 1933 |
+| reward anticipation | howe et al., 2013; salimpoor et al., 2011 |
+| processing fluency | reber, schwarz & winkielman, 2004 |
+| aha effect | topolinski & reber, 2010 |
+| goal gradient | hull, 1932; kivetz, urminsky & zheng, 2006; nunes & drèze, 2006 |
+| labor illusion | buell & norton, 2011 |
+| information gap | loewenstein, 1994; kang et al., 2009 |
+| groove | witek et al., 2014 |
 
 parafoveal preview is in there as the counter-argument: while you read one word the eye is already sampling the next one over, so revealing out of order should cost a reader time. an honest study has to measure reading time. state identification alone would not be enough.
 
@@ -105,7 +117,7 @@ what changed in the design because of it (the reasoning in order is `docs/redesi
 
 - the shipped reveal was rebuilt from the principles and the measurements together. a pending word is an illegible blur in a slot of its final width; the pending glyphs change every 390 ms (the sampler's measured rate was 387); the model's guess is shown only above a probability of 0.25, because below it the guess is the corpus prior and reads "the" in every slot; words lock in several places at once, each cluster growing from its seed, in steps of several words 140 to 260 ms apart; a lock is crisp at once, heavier, with a settle sized to its probability and a halo that is gone within a second; a weak commit rests dimmer; the field moves as a whole once, at the last lock.
 - four earlier choices were retired by the data: the phi cadence (kept only as the comparison stimulus), a field-wide sweep during the reveal, a halo left on every locked word, and a closing beat at a fixed 82% of the run that unblurred still-pending noise.
-- the hypothesis is now three claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3). the recorded trajectories are the stimuli for all three.
+- the hypothesis is now four claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3), and felt quality (h4: the same answer, at the same duration, is rated more satisfying after the reward grammar than after a uniform fade). the recorded trajectories are the stimuli for all four.
 - a llada-8b-instruct corroboration set (4 runs, tau +0.90, median jump 3.9) reproduces the block-schedule pattern at 8b; llama.cpp exposes order and timing but not confidence.
 - three of the twenty default-sampler answers fell into a repetition loop (one phrase repeated 14 to 19 times back to back, covering 77% to 88% of the words), a known failure of greedy decoding at this scale; no run under the other two samplers did. they stay in every statistic and replay as recorded, with the loop named on the stage; the intent-mapping demo replays the same prompt's random-order run in their place. the rule that flags them is `LOOP_RULE` in `scripts/gen-trace-index.mjs`.
 

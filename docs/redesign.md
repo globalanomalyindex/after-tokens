@@ -37,14 +37,29 @@ Order in the authored mode is parallel growth: the first step seeds the whole sp
 
 What this removed from the earlier build, with the reason: the phi-decay cadence (the measured cadence is linear; phi stays as the comparison stimulus); the glass sweep that ran field-wide for the length of the reveal (change blindness); the halo that stayed on every locked word until the end (von Restorff); the closing beat at an arbitrary 82% of the run, which unblurred still-pending noise as if it were text (it now fires at the last lock); semi-legible pending noise at 2.2 px (parafoveal preview).
 
-## 5. The hypothesis, as three claims a study can break
+## 5. The hypothesis, as four claims a study can break
 
 - **H1, state legibility.** Interrupted at matched timestamps, readers identify which words are settled more accurately with the lock reveal than with a uniform blur.
 - **H2, reading cost.** Reading time of the final answer is no worse than after a typewriter reveal. The parafoveal argument predicts it could be worse; if it is, the right design reveals in reading order and carries state some other way.
 - **H3, trust calibration.** Readers' confidence in individual words tracks the sampler's commit probability under the confidence-scaled render and does not under a uniform one.
 
-The recorded trajectories are the stimuli for all three.
+- **H4, felt quality.** The same answer, at the same duration, is rated more satisfying and of higher quality after the reward grammar (section 6) than after a uniform fade.
 
-## 6. What is authored and what is measured
+The recorded trajectories are the stimuli for all four.
 
-The order model, the cadence bounds, the churn rate, the guess floor, and the confidence scaling are fitted to or set by the data. The blur radius, the opacity floor, the settle sizes, the step count, and the within-step spread are tuned by eye and labeled so. Nothing here shows that the reveal helps a reader; that is what the study is for.
+## 6. The reward grammar: why the same answer can feel better
+
+The words are identical either way. What differs is the shape of the wait and the shape of each arrival, and the research says which shapes the brain pays out for.
+
+- **Reward anticipation** (Howe et al. 2013, dopamine ramps as a reward approaches; Salimpoor et al. 2011, anticipation of a musical peak recruits the caudate as the peak recruits the accumbens). So every lock is preceded by an approach: a word forms for one step, the final word ghosted and steady, before it snaps crisp. And the whole field approaches completion visibly: as the share of settled words rises, the noise words dim and their slot markers fade.
+- **Processing fluency** (Reber, Schwarz & Winkielman 2004) and the **aha effect** (Topolinski & Reber 2010, a sudden gain in fluency is felt as insight). So a lock is a snap from ghost to crisp, never a gradual sharpen, and the final answer is the cleanest state on the page.
+- **Gestalt closure** at the scale of a phrase. A lock that joins two settled neighbors closes a gap; its settle gets a small bonus. Parallel growth produces many such closures on the way to the whole, where a scan produces one.
+- **Goal gradient** (Hull 1932; Kivetz, Urminsky & Zheng 2006; Nunes & Drèze 2006, endowed progress) and the **labor illusion** (Buell & Norton 2011). So the first step seeds the whole span, and the status line counts the words settled while they settle.
+- **Groove** (Witek et al. 2014, moderate syncopation is rated most pleasurable; a metronome least). So alternate step intervals run long and short by eight percent, with a short spread inside each step; the average rate stays linear.
+- **Information gap** (Loewenstein 1994; Kang et al. 2009, curiosity recruits reward circuitry). So a pending word holds its final width, and the model's real guess shows when it clears the floor.
+
+These are reasons the same answer could feel better. None of them was measured on this prototype. Together they are the fourth claim: H4, felt quality, that the same answer at the same duration is rated more satisfying after this grammar than after a uniform fade. It is falsified if the ratings do not differ, or if the grammar reads as busier without reading as better.
+
+## 7. What is authored and what is measured
+
+The order model, the cadence bounds, the churn rate, the guess floor, and the confidence scaling are fitted to or set by the data. The blur radius, the opacity floor, the settle sizes, the step count, the within-step spread, the swing, the recede range, and the gap-close bonus are tuned by eye and labeled so. Nothing here shows that the reveal helps a reader; that is what the study is for.

@@ -94,6 +94,86 @@ const PIPELINE = [
   ['06', 'render', 'Brand tokens, glyphs, and overlays'],
 ]
 
+// The reward grammar. Each lever names the mechanism, the research behind
+// it, and the one visible decision it produced. These are reasons the same
+// answer could feel better; none of them was measured on this prototype.
+const REWARD: { n: string; lead: string; body: ReactNode; decision: string }[] = [
+  {
+    n: '01',
+    lead: 'the approach is the pleasure',
+    body: (
+      <>
+        Dopamine does its work before the reward lands: it ramps while a reward approaches, and in music the
+        anticipation of a peak recruits the reward circuit as strongly as the peak itself. That is{' '}
+        <DefinitionTerm term="reward anticipation" />. A reveal that only ever lands words, with nothing on the way,
+        spends every arrival without the approach that makes an arrival feel like one.
+      </>
+    ),
+    decision: 'a word forms for one step before it locks, and the open field recedes as the answer fills',
+  },
+  {
+    n: '02',
+    lead: 'ease is felt as liking',
+    body: (
+      <>
+        <DefinitionTerm term="processing fluency" /> is the most replicated finding in aesthetics: the easier a thing
+        is to perceive, the more it is liked, and the ease is credited to the thing. A sudden jump in ease is stronger
+        still; it reads as insight, the <DefinitionTerm term="aha effect" />, and the suddenness is what makes it.
+      </>
+    ),
+    decision: 'a lock snaps from ghost to crisp in one beat; the final answer is the cleanest state on the page',
+  },
+  {
+    n: '03',
+    lead: 'closing a gap pays out',
+    body: (
+      <>
+        The mind holds an open figure until it closes, and closing it is its own small reward. That is{' '}
+        <DefinitionTerm term="gestalt closure" /> at the scale of a phrase and the{' '}
+        <DefinitionTerm term="zeigarnik effect" /> at the scale of the answer. Growth from several seeds produces many
+        small closures on the way to the whole, where a scan produces one.
+      </>
+    ),
+    decision: 'a lock that joins two settled neighbors settles harder; the last lock carries the strongest beat',
+  },
+  {
+    n: '04',
+    lead: 'progress pulls',
+    body: (
+      <>
+        Effort and pleasure rise as a goal nears, the <DefinitionTerm term="goal gradient" />, and progress handed over
+        at the start makes the rest feel closer. An outcome whose work can be seen is also valued more, the{' '}
+        <DefinitionTerm term="labor illusion" />, even when seeing it means waiting.
+      </>
+    ),
+    decision: 'the first step seeds the whole span, and the status line counts the words settled as they settle',
+  },
+  {
+    n: '05',
+    lead: 'a pulse with a lilt',
+    body: (
+      <>
+        A metronome is the least pleasurable pulse and noise is no better; moderate syncopation is rated highest. That
+        is <DefinitionTerm term="groove" />. The reveal already has a pulse, its steps, and a little irregularity
+        inside them, its spread.
+      </>
+    ),
+    decision: 'alternate step intervals run long and short by eight percent, and each step lands across a short spread',
+  },
+  {
+    n: '06',
+    lead: 'the gap you want closed',
+    body: (
+      <>
+        Curiosity is the pull of an <DefinitionTerm term="information gap" />, and it recruits the same circuits as a
+        reward: anticipating information is itself pleasant. A blurred slot of the right width is a gap the eye wants
+        closed; a half-formed guess is a gap it can almost close.
+      </>
+    ),
+    decision: 'pending words hold their final width, and the model’s real guess shows when it clears the floor',
+  },
+]
+
 export function SectionThesis() {
   return (
     <Section id="thesis" n={4} act="II" title="Hypothesis and design" eyebrow={['Hypothesis', 'Legible state']}>
@@ -102,7 +182,7 @@ export function SectionThesis() {
       </h2>
       <p className="text-lg md:text-xl leading-relaxed max-w-3xl mb-12 md:mb-16" style={{ color: 'var(--ink-2)' }}>
         The sampler exposes real state. The reveal makes it legible, decision by decision, each one traced to a
-        principle from how people read and a measurement from the recorded runs. The hypothesis is then three claims
+        principle from how people read and a measurement from the recorded runs. The hypothesis is then four claims
         a study can break.
       </p>
       <div className="max-w-3xl mb-16 md:mb-24">
@@ -157,6 +237,38 @@ export function SectionThesis() {
         </div>
       </div>
 
+      {/* The reward grammar: why the same answer can feel better, with the
+          research behind each lever and the visual decision it produced. */}
+      <div className="mt-16 md:mt-24">
+        <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+          + Why the same answer can feel better
+        </div>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-4 max-w-2xl">
+          the reward grammar
+        </h3>
+        <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
+          The words are identical either way. What differs is the shape of the wait and the shape of each arrival, and
+          there is a body of research on which shapes the brain pays out for. Six of its findings are built into the
+          reveal, each as one visible decision. The claim they add up to is H4 below, and it is a claim a study can break.
+        </p>
+        <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 max-w-4xl">
+          {REWARD.map((r) => (
+            <div key={r.n}>
+              <div
+                className="mb-2 text-[11px] tracking-[0.18em]"
+                style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--section-accent) 88%, var(--ink))' }}
+              >
+                {r.n} · {r.lead}
+              </div>
+              <p className="text-base leading-relaxed">{r.body}</p>
+              <p className="mt-2 text-[12px] leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+                → {r.decision}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* The decision ledger: the design itself, one row per rendering decision,
           with the principle and the finding that drive it and how the value was
           arrived at. The reasoning in order is docs/redesign.md. */}
@@ -168,7 +280,7 @@ export function SectionThesis() {
           every choice traces to a principle, a measurement, or an admitted guess
         </h3>
         <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
-          Twelve decisions make the shipped reveal. Each row names what drives it and how the value was arrived at: derived
+          {SYNTHESIS.length} decisions make the shipped reveal. Each row names what drives it and how the value was arrived at: derived
           from a measurement or a property, forced by what the interface has to say, tuned by eye and labeled so, or
           retired to the comparison stimulus. Saying which is which is the difference between a system and a look.
         </p>
@@ -204,7 +316,7 @@ export function SectionThesis() {
 
       <div className="mt-16 md:mt-24">
         <div className="text-xs uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-          + The hypothesis, as three claims a study can break
+          + The hypothesis, as four claims a study can break
         </div>
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-8 max-w-2xl">
           legible state, no reading cost, calibrated trust
@@ -297,7 +409,7 @@ export function SectionThesis() {
             still to validate
           </div>
           <p className="text-base leading-relaxed">
-            All three claims. The prototype supplies the stimuli, including real sampler order and real commit
+            All four claims. The prototype supplies the stimuli, including real sampler order and real commit
             probabilities; a study supplies the readers.
           </p>
         </div>

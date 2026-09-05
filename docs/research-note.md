@@ -105,13 +105,19 @@ The shipped reveal was rebuilt from the glossary principles and the findings tog
 
 The first build of the recorded mode rendered the model's provisional argmax for every open position. Every slot read "the". The argmax of a masked position far from commitment is the corpus prior, and rendering it is true and useless: it injects a prediction the reader must discard. The floor at 0.25 (about four times the median prior) restores the intended behavior, a handful of real beliefs per answer and noise otherwise.
 
-### 7.2 Hypotheses
+### 7.2 The reward grammar
+
+Six further decisions concern how the same answer can feel better rather than read better, each tied to a mechanism from the reward literature: a forming stage before each lock (reward anticipation: Howe et al. 2013; Salimpoor et al. 2011), a snap from ghost to crisp (processing fluency: Reber, Schwarz & Winkielman 2004; the aha effect: Topolinski & Reber 2010), a settle bonus for a lock that closes a gap between settled neighbors (gestalt closure), a receding field and a live count of settled words (goal gradient: Hull 1932; Kivetz, Urminsky & Zheng 2006; endowed progress: Nunes & Drèze 2006; the labor illusion: Buell & Norton 2011), an eight percent long-short swing on the step interval (groove: Witek et al. 2014), and slots of final width with real guesses above the floor (information gap: Loewenstein 1994; Kang et al. 2009). The ranges are tuned by eye and labeled so in the ledger. None of these was measured here; they motivate the fourth hypothesis below.
+
+### 7.3 Hypotheses
 
 - **H1, state legibility.** Interrupted at matched timestamps, readers identify which words are settled more accurately with the lock reveal than with a uniform blur.
 - **H2, reading cost.** Reading time of the final answer after the lock reveal is no worse than after a typewriter reveal. If it is worse, the right design reveals in reading order and carries state some other way.
 - **H3, trust calibration.** Readers' confidence in individual words tracks the sampler's commit probability under the confidence-scaled render and does not under a uniform one.
 
-The recorded trajectories are the stimuli for all three.
+- **H4, felt quality.** The same answer, at the same duration, is rated more satisfying and of higher quality after the reward grammar (7.2) than after a uniform fade. Falsified if the ratings do not differ, or if the grammar reads as busier without reading as better.
+
+The recorded trajectories are the stimuli for all four.
 
 ## References
 

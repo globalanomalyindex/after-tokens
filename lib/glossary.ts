@@ -99,6 +99,56 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     src: 'doherty & thadhani, 1982',
     color: 'oklch(0.80 0.14 143)', // mint
   },
+  // The reward vocabulary: why the same answer can feel better.
+  'reward anticipation': {
+    pron: 'ri-ˈwȯrd an-ˌti-sə-ˈpā-shən',
+    pos: 'noun',
+    def: 'dopamine rises while a reward approaches, so the approach itself is felt as pleasure before the reward lands.',
+    src: 'howe et al., 2013; salimpoor et al., 2011',
+    color: 'oklch(0.80 0.12 320)', // lilac
+  },
+  'processing fluency': {
+    pron: 'ˈprä-ˌse-siŋ ˈflü-ən-sē',
+    pos: 'noun',
+    def: 'the easier a thing is to perceive, the more it is liked; the ease is felt as pleasure and credited to the thing.',
+    src: 'reber, schwarz & winkielman, 2004',
+    color: 'oklch(0.82 0.11 10)', // rose
+  },
+  'aha effect': {
+    pron: 'ä-ˈhä i-ˈfekt',
+    pos: 'noun',
+    def: 'a sudden jump in processing ease reads as insight and is felt as pleasure. the suddenness is what makes it.',
+    src: 'topolinski & reber, 2010',
+    color: 'oklch(0.84 0.13 100)', // straw
+  },
+  'goal gradient': {
+    pron: 'ˈgōl ˈgrā-dē-ənt',
+    pos: 'noun',
+    def: 'effort and pleasure rise as a goal nears; visible progress pulls toward completion, even progress handed over at the start.',
+    src: 'hull, 1932; kivetz, urminsky & zheng, 2006; nunes & drèze, 2006',
+    color: 'oklch(0.81 0.10 220)', // sky
+  },
+  'labor illusion': {
+    pron: 'ˈlā-bər i-ˈlü-zhən',
+    pos: 'noun',
+    def: 'an outcome is valued more when the work behind it can be seen, even when seeing it means waiting.',
+    src: 'buell & norton, 2011',
+    color: 'oklch(0.82 0.10 75)', // sand
+  },
+  'information gap': {
+    pron: 'ˌin-fər-ˈmā-shən ˈgap',
+    pos: 'noun',
+    def: 'the space between what you know and what you want to know; curiosity is its pull, and closing it recruits the same circuits as a reward.',
+    src: 'loewenstein, 1994; kang et al., 2009',
+    color: 'oklch(0.78 0.13 285)', // periwinkle
+  },
+  groove: {
+    pron: 'ˈgrüv',
+    pos: 'noun',
+    def: 'a pulse with moderate syncopation is rated more pleasurable than either a metronome or noise.',
+    src: 'witek et al., 2014',
+    color: 'oklch(0.80 0.14 45)', // apricot
+  },
   // The one deliberately dark chip: the effect states that the item differing
   // from its neighbors is the one that registers, so the chip performs its
   // own definition by being the only dark fill in a field of bright ones.

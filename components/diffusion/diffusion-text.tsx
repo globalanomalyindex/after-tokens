@@ -235,19 +235,30 @@ export function DiffusionText({
   // final stretch, which showed illegible text as if it were words. Also
   // remember which word locks last so it can carry the strongest settle
   // (peak-end: the ending is where the memory of the sequence lands).
+  // Also mark every lock that closes a gap: a word whose two neighbors are
+  // already settled when it lands joins two clusters into one, a local
+  // completion the settle rewards a little harder (see --gap in globals.css).
   const closing = useMemo(() => {
-    if (measured.length === 0 || measured.length !== atoms.length) return { at: 1, lastIndex: -1 }
+    const none = { at: 1, lastIndex: -1, gapClosers: new Set<number>() }
+    if (measured.length === 0 || measured.length !== atoms.length) return none
     const total = strategy.totalDuration(measured)
-    if (total <= 0) return { at: 1, lastIndex: -1 }
-    let lastT = -1
-    let lastIndex = -1
-    for (const e of strategy.computeTimeline(measured)) {
-      if (e.state === 'resolved' && e.t > lastT) {
-        lastT = e.t
-        lastIndex = e.wordIndex
-      }
+    if (total <= 0) return none
+    const locks = strategy
+      .computeTimeline(measured)
+      .filter((e) => e.state === 'resolved')
+      .sort((a, b) => a.t - b.t)
+    const locked = new Set<number>()
+    const gapClosers = new Set<number>()
+    for (const e of locks) {
+      if (locked.has(e.wordIndex - 1) && locked.has(e.wordIndex + 1)) gapClosers.add(e.wordIndex)
+      locked.add(e.wordIndex)
     }
-    return { at: lastT < 0 ? 1 : Math.min(1, lastT / total), lastIndex }
+    const last = locks.at(-1)
+    return {
+      at: last ? Math.min(1, last.t / total) : 1,
+      lastIndex: last ? last.wordIndex : -1,
+      gapClosers,
+    }
   }, [strategy, measured, atoms.length])
 
   // For decode styles, derive each word's [startP,endP] decode window from the
@@ -385,6 +396,20 @@ export function DiffusionText({
     return () => clearInterval(id)
   }, [shouldPlay, hasPending, reduced, isDecode])
 
+  // How much of the answer has settled: drives --fill on the container (the
+  // open field recedes as it rises) and the progress readout in the status
+  // line (visible progress toward a goal is itself motivating, and seeing
+  // the work happen makes the result worth more: goal gradient, labor
+  // illusion).
+  const resolvedCount = useMemo(() => {
+    let n = 0
+    wordStates.forEach((st) => {
+      if (st === 'resolved') n += 1
+    })
+    return n
+  }, [wordStates])
+  const fill = atoms.length > 0 ? resolvedCount / atoms.length : 0
+
   const Overlay = strategy.renderOverlay
 
   return (
@@ -400,7 +425,10 @@ export function DiffusionText({
       // Decode styles render in monospace so every stage glyph (block, braille,
       // katakana, letter) occupies one cell, zero layout jitter, like the
       // static specimens. 'words' keeps the chat-native UI font.
-      style={isDecode ? { fontFamily: 'var(--font-mono)' } : undefined}
+      style={{
+        ...(isDecode ? { fontFamily: 'var(--font-mono)' } : {}),
+        ['--fill' as string]: fill.toFixed(3),
+      } as React.CSSProperties}
     >
       {announce === 'on-complete' ? (
         <div role="status" aria-live="polite" aria-atomic="true" className="sr-only select-none">
@@ -475,6 +503,7 @@ export function DiffusionText({
               }}
               data-word-index={atom.index}
               data-last-lock={closing.lastIndex === atom.index ? 'true' : undefined}
+              data-gap-close={closing.gapClosers.has(atom.index) ? 'true' : undefined}
               style={{
                 display: 'inline',
                 color: lockedColor,
@@ -518,6 +547,12 @@ export function DiffusionText({
           data-prototype-status={isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         >
           {mode === 'trace' ? 'recorded sampler' : 'authored prototype'} · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
+          {shouldPlay && !isComplete && atoms.length > 0 ? (
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+              {' · '}
+              {resolvedCount} / {atoms.length} settled
+            </span>
+          ) : null}
         </div>
       )}
     </div>

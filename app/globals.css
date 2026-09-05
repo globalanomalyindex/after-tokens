@@ -162,21 +162,56 @@ button:active { transform: scale(0.97); }
   animation: belief-shift 280ms var(--ease-out-expo) both;
 }
 
-/* resolving: the lock. Crisp immediately; a committed token is committed. */
+/* forming: the word is on its way. The final word, ghosted at 1.6px and
+   steady, one step before it locks. It never changes, so previewing it costs
+   the reader nothing (parafoveal preview is a benefit when the word holds);
+   what it buys is a beat of expectation before each fulfillment (reward
+   anticipation, the ITPRA cycle in music), so every lock lands as something
+   the eye was already waiting for. In the recorded mode this is literally a
+   partly committed word. */
 [data-cycling-word][data-state="resolving"] {
-  color: currentColor;
-  filter: blur(0);
+  color: color-mix(in oklab, currentColor 92%, transparent);
+  filter: blur(1.6px);
+  animation: none;
+  opacity: 0.92;
+  font-weight: 500;
+  /* Quick into the ghost, so the forming stage is seen at rest before the
+     lock rather than spent in transit. */
+  transition:
+    color 140ms var(--ease-out-strong),
+    filter 140ms var(--ease-out-expo),
+    opacity 140ms var(--ease-out-strong),
+    font-weight 200ms var(--ease-out-expo);
 }
 [data-cycling-word][data-state="resolving"]::before {
-  opacity: 0;
+  opacity: 0.55;
 }
 
+/* resolved: the lock. Crisp at once (a sudden gain in fluency reads as
+   insight, and suddenness is what makes it), so the filter snaps here. */
 [data-cycling-word][data-state="resolved"] {
   color: currentColor;
   filter: blur(0);
+  transition:
+    color 320ms var(--ease-out-strong),
+    filter 110ms var(--ease-out-expo),
+    opacity 300ms var(--ease-out-strong);
 }
 [data-cycling-word][data-state="resolved"]::before {
   opacity: 0;
+}
+
+/* The field recedes as the answer fills. --fill is the share of words locked
+   (set by DiffusionText); the noise words dim and their slot markers fade as
+   it rises, so the open field grows quieter while the settled text grows
+   heavier: the approach to completion is visible before completion lands
+   (reward anticipation, goal gradient). Pending words stay illegible
+   throughout; only their brightness moves. */
+[data-cycling-word][data-state="pending"] {
+  color: color-mix(in oklab, currentColor calc(68% - 22% * var(--fill, 0)), transparent);
+}
+[data-cycling-word][data-state="pending"]::before {
+  opacity: calc(1 - 0.55 * var(--fill, 0));
 }
 
 @keyframes cycling-breathe {
@@ -198,7 +233,14 @@ button:active { transform: scale(0.97); }
 }
 [data-cycling-word][data-state='resolved'] {
   animation: word-settle 260ms var(--ease-out-expo) both;
-  --settle: calc(0.005 + (var(--conf, 1) - 0.3) * 0.0142857);
+  /* --gap is 1 on a lock that joins two settled neighbors: a local closure,
+     the kind of small completion the mind rewards (gestalt closure, at the
+     scale of a phrase), so it settles a little harder than a lock that only
+     extends a cluster. */
+  --settle: calc(0.005 + (var(--conf, 1) - 0.3) * 0.0142857 + var(--gap, 0) * 0.008);
+}
+[data-gap-close="true"] [data-cycling-word][data-state='resolved'] {
+  --gap: 1;
 }
 [data-last-lock="true"] [data-cycling-word][data-state='resolved'] {
   --settle: 0.024;
@@ -1096,12 +1138,9 @@ html.cursor-fx-on * {
    settled and open stays readable across the field; the glow does not stay,
    because a halo on every locked word would leave nothing distinct. */
 
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolving"],
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
-.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolving"],
 .diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
   font-weight: 700;
-  transition: font-weight 160ms var(--ease-out-expo);
 }
 
 /* The one-shot lock glow: in fast, out over the rest of the second. */
@@ -1245,6 +1284,7 @@ html.cursor-fx-on * {
   }
   [data-cycling-word]::before { display: none; }
   .belief-shift { animation: none; }
+  [data-cycling-word][data-state="resolving"] { opacity: 1; color: currentColor; }
   [data-cycling-word][data-state='resolved'],
   [data-cycling-word][data-state='resolved']::before { animation: none; }
   .diffusion-text [data-cycling-word] { will-change: auto; }

@@ -12,6 +12,9 @@ import {
   MYCELIUM_STEP_MS_MAX,
   MYCELIUM_STEP_JITTER_MS,
   MYCELIUM_TARGET_STEPS,
+  MYCELIUM_FORMING_MS,
+  MYCELIUM_SWING,
+  stepTime,
 } from '@/lib/diffusion/modes/mycelium'
 import type { MeasuredAtom } from '@/lib/diffusion/types'
 
@@ -67,25 +70,31 @@ describe('mycelium cadence', () => {
     expect(computeWordLockTimes(10)[0]).toBe(MYCELIUM_PRE_ROLL_MS)
   })
 
-  it('lock times are step-batched: words of one step share a time, steps are evenly spaced', () => {
+  it('lock times are step-batched: words of one step share a time, and the steps swing long-short', () => {
     const n = 90
     const k = wordsPerStep(n)
+    const gap = stepInterval(n)
     const times = computeWordLockTimes(n)
     for (let i = 0; i < n; i++) {
-      expect(times[i]).toBe(MYCELIUM_PRE_ROLL_MS + Math.floor(i / k) * stepInterval(n))
+      expect(times[i]).toBe(stepTime(Math.floor(i / k), n))
     }
+    // odd steps land late by the swing; the average interval is the plain gap
+    expect(stepTime(1, n) - stepTime(0, n)).toBeCloseTo(gap * (1 + MYCELIUM_SWING), 6)
+    expect(stepTime(2, n) - stepTime(1, n)).toBeCloseTo(gap * (1 - MYCELIUM_SWING), 6)
+    expect((stepTime(2, n) - stepTime(0, n)) / 2).toBeCloseTo(gap, 6)
   })
 
-  it('a timeline lands each word within the jitter spread of its step', () => {
+  it('a timeline locks each word within the jitter spread of its step, with the forming stage leading it', () => {
     const words = syntheticWords(3)
     const { order, stepOf } = computeLockSchedule(words)
-    const gap = stepInterval(words.length)
     const events = mycelium.computeTimeline(words)
     order.forEach((wordIndex, rank) => {
-      const e = events.find((ev) => ev.wordIndex === wordIndex && ev.state === 'resolving')!
-      const stepT = MYCELIUM_PRE_ROLL_MS + stepOf[rank]! * gap
-      expect(e.t).toBeGreaterThanOrEqual(stepT)
-      expect(e.t).toBeLessThanOrEqual(stepT + MYCELIUM_STEP_JITTER_MS)
+      const lock = events.find((ev) => ev.wordIndex === wordIndex && ev.state === 'resolved')!
+      const forming = events.find((ev) => ev.wordIndex === wordIndex && ev.state === 'resolving')!
+      const stepT = stepTime(stepOf[rank]!, words.length)
+      expect(lock.t).toBeGreaterThanOrEqual(stepT)
+      expect(lock.t).toBeLessThanOrEqual(stepT + MYCELIUM_STEP_JITTER_MS)
+      expect(forming.t).toBeCloseTo(Math.max(0, lock.t - MYCELIUM_FORMING_MS), 6)
     })
   })
 

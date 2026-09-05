@@ -64,8 +64,8 @@ export function SectionClose() {
           <p className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
             + the next test
           </p>
-          <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase mb-6">three claims, and what breaks each</h3>
-          <dl className="grid sm:grid-cols-3 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase mb-6">four claims, and what breaks each</h3>
+          <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
             {HYPOTHESES.map((h) => (
               <div key={h.id} className="p-6" style={{ background: 'var(--surface)' }}>
                 <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>+ {h.id} · {h.lead}</dt>

@@ -190,10 +190,40 @@ export const SYNTHESIS: SynthesisRow[] = [
     effect: 'a fast diffusion decoder commits several positions per denoising step, so the locks are batched the same way: about twenty steps per answer, each inside the threshold, each landing its words across a 70 millisecond spread so a step reads as a burst rather than a tick. The average rate stays linear, which is the recorded cadence; the step count and the spread are set by eye and labeled so. Phi decay was the first cadence and is retired to the comparison stimulus.',
   },
   {
+    decision: 'a word forms for one step before it locks: the final word, ghosted, steady',
+    from: 'reward anticipation · parafoveal preview · finding 03',
+    tag: 'derived',
+    effect: 'every lock is preceded by a beat of expectation. The ghost is the final word and never changes, so previewing it costs the reader nothing (a held word to the right of fixation is the preview benefit, and the cost only comes from words that change); what it buys is an approach before each arrival, which is where the pleasure of a reward is felt. In the recorded mode the forming stage is literal: a word whose first token has committed and whose last has not.',
+  },
+  {
     decision: 'a lock is crisp at once and the word goes heavier',
-    from: 'von restorff effect · state fidelity',
+    from: 'von restorff effect · aha effect · state fidelity',
     tag: 'constraint',
-    effect: 'a committed token is committed, and the weight difference keeps the frontier between settled and open readable across the field.',
+    effect: 'a committed token is committed, and the weight difference keeps the frontier between settled and open readable across the field. The snap from ghost to crisp is a sudden gain in fluency, and sudden gains are what read as insight; a gradual sharpen would spend the same change without the feeling.',
+  },
+  {
+    decision: 'the open field recedes as the answer fills',
+    from: 'goal gradient · reward anticipation · processing fluency',
+    tag: 'tuned',
+    effect: 'the share of words locked drives the brightness of the noise words and their slot markers, from full at the start to about two thirds at the end, so the field grows quieter as the settled text grows heavier and the approach to completion is visible before completion lands. Pending words stay illegible throughout; only their brightness moves. The range is set by eye.',
+  },
+  {
+    decision: 'a lock that joins two settled neighbors settles harder',
+    from: 'gestalt closure · dopamine',
+    tag: 'tuned',
+    effect: 'when a word lands between two settled words it closes a gap and joins two clusters into one, a small completion at the scale of a phrase. Its settle overshoot gets 0.8% on top of the confidence-sized beat, so the reveal rewards its own local closures on the way to the whole. The bonus is set by eye.',
+  },
+  {
+    decision: 'the steps swing: alternate intervals run long and short by eight percent',
+    from: 'groove · doherty threshold',
+    tag: 'tuned',
+    effect: 'a metronome is the least pleasurable pulse; moderate syncopation is the most. The step interval alternates long and short so the reveal has a pulse with a lilt, while the average rate stays linear and every interval stays inside the threshold. Eight percent is set by ear.',
+  },
+  {
+    decision: 'the status line counts the words settled while the reveal runs',
+    from: 'goal gradient · labor illusion',
+    tag: 'constraint',
+    effect: 'visible progress toward a goal pulls toward it, and an outcome whose work can be seen is valued more, so the readout says how much of the answer has settled while it settles. It is a count of real state, never a proxy for model effort.',
   },
   {
     decision: 'the lock glow blooms and is gone within a second',
@@ -233,7 +263,7 @@ export const SYNTHESIS: SynthesisRow[] = [
   },
 ]
 
-// The hypothesis, as three claims a study can break. The recorded trajectories
+// The hypothesis, as four claims a study can break. The recorded trajectories
 // are the stimuli for all three.
 export const HYPOTHESES = [
   {
@@ -253,5 +283,11 @@ export const HYPOTHESES = [
     lead: 'trust calibration',
     claim: 'Readers’ confidence in individual words tracks the sampler’s commit probability under the confidence-scaled render, and does not under a uniform one.',
     falsifiedIf: 'confidence ratings are flat across commit probability, or track it equally well under the uniform render.',
+  },
+  {
+    id: 'H4',
+    lead: 'felt quality',
+    claim: 'The same answer, at the same duration, is rated more satisfying and of higher quality after the reward grammar (forming stage, receding field, closure beats, swing, progress) than after a uniform fade.',
+    falsifiedIf: 'quality and satisfaction ratings do not differ, or the grammar reads as busier without reading as better.',
   },
 ] as const
