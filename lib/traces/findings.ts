@@ -66,17 +66,17 @@ export const FINDINGS: Finding[] = [
     n: '01',
     lead: 'the default sampler is nearly sequential, and the schedule is why',
     stat: `τ = ${N.tau.lowconfB32 >= 0 ? '+' : ''}${N.tau.lowconfB32.toFixed(2)} with blocks · ${N.tau.lowconfB128 >= 0 ? '+' : ''}${N.tau.lowconfB128.toFixed(2)} without`,
-    body: `Under the model card’s default, low-confidence remasking in four blocks of 32, commit order correlates with reading order at τ = ${N.tau.lowconfB32 >= 0 ? '+' : ''}${N.tau.lowconfB32.toFixed(2)}. The answer arrives almost left to right, one block at a time, and only scrambles inside a block. Remove the block schedule and the same rule drops to τ = ${N.tau.lowconfB128 >= 0 ? '+' : ''}${N.tau.lowconfB128.toFixed(2)} on the same prompts. Swap the confidence rule for random order but keep the blocks and τ only falls to ${N.tau.randomB32 >= 0 ? '+' : ''}${N.tau.randomB32.toFixed(2)}. The macro order belongs to the schedule, not the model. An interface that promises out of order has to know which sampler it is drawing.`,
+    body: `Under the model card’s default, low-confidence remasking in four blocks of 32, commit order correlates with reading order at τ = ${N.tau.lowconfB32 >= 0 ? '+' : ''}${N.tau.lowconfB32.toFixed(2)}. The answer arrives almost left to right, one block at a time, and only scrambles inside a block. Remove the block schedule and the same rule drops to τ = ${N.tau.lowconfB128 >= 0 ? '+' : ''}${N.tau.lowconfB128.toFixed(2)} on the same prompts. Swap the confidence rule for random order but keep the blocks and τ only falls to ${N.tau.randomB32 >= 0 ? '+' : ''}${N.tau.randomB32.toFixed(2)}. The schedule sets the macro order; the model only supplies the words that fill it. An interface that promises out of order has to know which sampler it is drawing.`,
   },
   {
     n: '02',
-    lead: 'commits cluster: growth from anchors, not a scatter',
+    lead: 'commits cluster: growth from anchors',
     stat: `${pct(N.adjacentFrac.lowconfB32)} of consecutive commits are neighbors · ${pct(N.adjacentFrac.randomB32)} under random order`,
-    body: `Under the default sampler, ${pct(N.adjacentFrac.lowconfB32)} of consecutive commits land on a neighbor of the previous one, and the median jump between commits is ${N.meanJump.lowconfB32.toFixed(1)} positions where a uniformly random order would give about ${N.meanJump.randomExpected.toFixed(0)}. Swap in random order and the neighbor rate falls to ${pct(N.adjacentFrac.randomB32)}. With no block schedule the picture holds on the eleven answers long enough to measure: ${pct(N.adjacentFrac.lowconfB128)} neighbors, a median jump of ${N.meanJump.lowconfB128.toFixed(1)}. High-confidence words anchor first and the rest fills in around them, about one new anchor every ${Math.round(100 / N.seedsPer100Default)} commits. That is neither a typewriter nor a scatter. It is local growth from several seeds at once, which is the shape the authored mycelium mode guessed at before any of this was measured.`,
+    body: `Under the default sampler, ${pct(N.adjacentFrac.lowconfB32)} of consecutive commits land on a neighbor of the previous one, and the median jump between commits is ${N.meanJump.lowconfB32.toFixed(1)} positions where a uniformly random order would give about ${N.meanJump.randomExpected.toFixed(0)}. Swap in random order and the neighbor rate falls to ${pct(N.adjacentFrac.randomB32)}. With no block schedule the picture holds on the eleven answers long enough to measure: ${pct(N.adjacentFrac.lowconfB128)} neighbors, a median jump of ${N.meanJump.lowconfB128.toFixed(1)}. High-confidence words anchor first and the rest fills in around them, about one new anchor every ${Math.round(100 / N.seedsPer100Default)} commits. It is local growth from several seeds at once, which is the shape the authored mycelium mode guessed at before any of this was measured.`,
   },
   {
     n: '03',
-    lead: 'the end is decided before the last words, but not early',
+    lead: 'the end is decided just before the last words',
     stat: `tail complete at the ${pct(N.tailDoneAtFrac)} mark · last word at ${pct(N.lastContentAtFrac)}`,
     body: `In ${pct(N.tailFirstFrac)} of default-sampler runs every end-of-sequence position committed before the last content word, but only just: the block schedule keeps the tail inside the final block, so the length becomes certain at the ${pct(N.tailDoneAtFrac)} mark and the last word lands at the ${pct(N.lastContentAtFrac)} mark. Remove the blocks and the sampler spends most of its steps committing the empty tail first, then writes the words in the last stretch; the tail finished before the last word in every usable no-block run, at the ${pct(N.tailDoneAtFracNoBlock)} mark. Under both schedules the answer’s extent is a real signal, and under both it arrives late. An interface should draw the length when the sampler knows it and not before, which for these samplers is shortly before the words themselves.`,
   },
@@ -90,7 +90,7 @@ export const FINDINGS: Finding[] = [
     n: '05',
     lead: 'commits are less confident than they look',
     stat: `median p = ${N.medianCommitConf.toFixed(2)} · ${pct(N.lowConfCommitFrac)} under even odds`,
-    body: `The token committed at each step had a median probability of ${N.medianCommitConf.toFixed(2)}, and ${pct(N.lowConfCommitFrac)} of commits, nearly two in five, went in under even odds, greedy decoding or not: low-confidence remasking takes the surest of what remains, and late in a block what remains is not sure. A reveal that treats every lock as equally certain overstates on a large minority of words. Confidence at commit is a per-word signal the sampler already computes, and in the recorded mode a word whose weakest token committed under thirty percent settles dimmer than its neighbors: the clearly weak commits, about one word in seven, rather than the large minority, so that the difference still reads as a difference.`,
+    body: `The token committed at each step had a median probability of ${N.medianCommitConf.toFixed(2)}, and ${pct(N.lowConfCommitFrac)} of commits, nearly two in five, went in under even odds, greedy decoding or not: low-confidence remasking takes the surest of what remains, and late in a block what remains is not sure. A reveal that treats every lock as equally certain overstates on a large minority of words. Confidence at commit is a per-word signal the sampler already computes, and in the recorded mode a word whose weakest token committed under thirty percent settles dimmer than its neighbors. That step dims the clearly weak commits, about one word in seven, and leaves the larger minority alone, so the difference still reads as a difference.`,
   },
 ]
 
@@ -137,3 +137,108 @@ export const LLADA = {
   msPerStep: 1504,
   contentTokens: 108,
 } as const
+
+// The synthesis. Every rendering decision in the shipped reveal, with the
+// principle from the glossary and the finding from the data that drive it,
+// and how the value was arrived at. This is the design, row by row; the
+// reasoning behind it in order is docs/redesign.md.
+export type SynthesisTag = 'derived' | 'constraint' | 'tuned' | 'retired'
+export type SynthesisRow = { decision: string; from: string; tag: SynthesisTag; effect: string }
+
+export const SYNTHESIS: SynthesisRow[] = [
+  {
+    decision: 'a pending word is an illegible blur in a slot of its final width',
+    from: 'parafoveal preview · zeigarnik effect',
+    tag: 'constraint',
+    effect: 'nothing crisp appears to the right of the eye before it is committed, so watching costs no reading time; the open slot holds the answer’s extent and the reader’s attention on the whole of it. 4.2 pixels at body size erases letterforms and keeps word shape.',
+  },
+  {
+    decision: 'the pending glyphs change every 390 milliseconds',
+    from: 'doherty threshold · finding 04',
+    tag: 'derived',
+    effect: 'the sampler changed its mind about a pending token every 387 milliseconds at recorded pace; 390 keeps every visible change inside the window where attention holds. The value was 440, set by eye, before it was measured.',
+  },
+  {
+    decision: 'the model’s guess is shown only above a probability of 0.25',
+    from: 'predictive coding · prediction error · finding 04',
+    tag: 'derived',
+    effect: 'below the floor the argmax is the corpus prior (median 0.065) and would read “the” in every slot; above it the slot shows the model’s real belief, forming, and each change is a prediction error made visible. About one change in thirty clears the floor.',
+  },
+  {
+    decision: 'words arrive in local clusters from a few anchors',
+    from: 'finding 02 · change blindness',
+    tag: 'derived',
+    effect: 'the authored order is a growth process fitted to the recorded adjacency (51%) and anchor rate (one per about four commits). Staged, neighboring change is perceivable; scattered simultaneous change is what the eye misses.',
+  },
+  {
+    decision: 'the cadence is linear, 45 to 80 milliseconds per word, after a 320 millisecond pre-roll',
+    from: 'finding 01 · doherty threshold',
+    tag: 'derived',
+    effect: 'the recorded word cadence is linear because the schedule commits a fixed number of tokens per step; the bounds keep every wait under the threshold and a long answer from flickering. Phi decay was the first cadence and is retired to the comparison stimulus.',
+  },
+  {
+    decision: 'a lock is crisp at once and the word goes heavier',
+    from: 'von restorff effect · state fidelity',
+    tag: 'constraint',
+    effect: 'a committed token is committed, and the weight difference keeps the frontier between settled and open readable across the field.',
+  },
+  {
+    decision: 'the lock glow blooms and is gone within a second',
+    from: 'von restorff effect · change blindness',
+    tag: 'constraint',
+    effect: 'a lock is distinctive at the moment it happens. A halo left on every locked word until the end made none of them distinct and kept the whole field in motion; that halo is retired.',
+  },
+  {
+    decision: 'the settle overshoot is sized to the commit’s probability',
+    from: 'dopamine · trust calibration · finding 05',
+    tag: 'derived',
+    effect: 'the resolution beat is a reward signal, so it scales with how sure the commit was: half a percent at a probability of 0.3, one and a half at 1. In the authored modes, with no probability, every lock settles as if sure, and the status line says the timeline is authored.',
+  },
+  {
+    decision: 'a weak commit rests dimmer',
+    from: 'trust calibration · finding 05',
+    tag: 'derived',
+    effect: 'thirty-eight percent of commits went in under even odds; a committed word’s resting opacity follows its probability, and a word whose weakest token committed under thirty percent steps down further.',
+  },
+  {
+    decision: 'the field moves as a whole exactly once, at the last lock',
+    from: 'gestalt closure · peak-end rule · finding 03',
+    tag: 'constraint',
+    effect: 'the last word carries the strongest settle, one wave crosses the field, the slot markers drop, and the answer reads finished. The closing beat used to fire at 82% of the run and unblurred still-pending noise as if it were text; it now fires when the last word locks.',
+  },
+  {
+    decision: 'nine pixels of blur and a 0.32 opacity floor in the comparison',
+    from: 'the comparison stimulus',
+    tag: 'tuned',
+    effect: 'set by eye and shared identically by both panels, which is what makes the comparison fair. A study could move both without touching the thesis.',
+  },
+  {
+    decision: 'the 1/φ decay, in the comparison only',
+    from: 'the comparison stimulus',
+    tag: 'retired',
+    effect: 'the ratio’s property holds (each gap equals the sum of the next two) and it remains the authored acceleration the comparison tests against a linear ramp. The shipped reveal no longer uses it, because no recorded sampler does.',
+  },
+]
+
+// The hypothesis, as three claims a study can break. The recorded trajectories
+// are the stimuli for all three.
+export const HYPOTHESES = [
+  {
+    id: 'H1',
+    lead: 'state legibility',
+    claim: 'Interrupted at matched timestamps, readers identify which words are settled more accurately with the lock reveal than with a uniform blur.',
+    falsifiedIf: 'accuracy is no better, or readers read authored order as model certainty.',
+  },
+  {
+    id: 'H2',
+    lead: 'reading cost',
+    claim: 'Reading time of the final answer after the lock reveal is no worse than after a typewriter reveal.',
+    falsifiedIf: 'it is worse. The parafoveal argument predicts it could be; then the right design reveals in reading order and carries state some other way.',
+  },
+  {
+    id: 'H3',
+    lead: 'trust calibration',
+    claim: 'Readers’ confidence in individual words tracks the sampler’s commit probability under the confidence-scaled render, and does not under a uniform one.',
+    falsifiedIf: 'confidence ratings are flat across commit probability, or track it equally well under the uniform render.',
+  },
+] as const

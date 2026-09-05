@@ -6,9 +6,9 @@ import { useEffect, useRef } from 'react'
 // chat answer that MATERIALIZES out of a field of solid blocks into clean
 // monospace text, holds, then dissolves back, forever (while on screen).
 //
-// The decode is true diffusion, not left-to-right typing: every character is
-// resolving in PARALLEL but each reaches its final glyph at a different,
-// SEEDED time, so you watch the whole line emerge out of noise at once.
+// The decode is true diffusion: every character is resolving in PARALLEL but
+// each reaches its final glyph at a different, SEEDED time, so you watch the
+// whole line emerge out of noise at once, rather than typing left to right.
 //
 // Per-character resolve stages (early -> late), all driven by one progress
 // value p in [0,1] measured against that char's seeded threshold:
@@ -60,8 +60,8 @@ const FRAME_MS = 1000 / 28
 
 const NOISE_FRAME_MS = 70 // how often a still-noisy char picks a new glyph
 
-// Deterministic per-char seed -> [0,1). Cheap hash so the reveal order is
-// fixed run-to-run (looks authored, not random each loop).
+// Deterministic per-char seed -> [0,1). Cheap hash so the reveal order
+// repeats identically run-to-run, which is what gives it an authored look.
 function seeded(i: number): number {
   const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453
   return x - Math.floor(x)
@@ -267,8 +267,8 @@ export function AsciiSpecimen({ className = '' }: Props) {
       return // no observers, no loop
     }
 
-    // Paint a full-block field immediately so the first visible frame is the
-    // "noise" state, not blank cells, even before the loop starts.
+    // Paint a full-block field immediately so the first visible frame is
+    // already the "noise" state, before the loop itself starts.
     for (let i = 0; i < chars.length; i++) {
       const span = spans[i]
       if (!span || chars[i] === ' ') continue

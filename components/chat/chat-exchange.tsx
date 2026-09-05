@@ -25,7 +25,7 @@ type ChatExchangeProps = {
 // view the prompt "sends" (pops in), a typing indicator holds for a beat, then
 // the answer bubble arrives and its contents begin to diffuse. Because the
 // answer content only mounts at the answer phase, any DiffusionText/widget
-// inside it should use trigger="immediate" — it starts exactly on arrival.
+// inside it should use trigger="immediate", it starts exactly on arrival.
 export function ChatExchange({
   prompt,
   children,
@@ -83,7 +83,7 @@ export function ChatExchange({
   )
 }
 
-// The "assistant is typing" bubble — three pulsing dots, shown in the beat
+// The "assistant is typing" bubble, three pulsing dots, shown in the beat
 // between the prompt and the answer.
 function ThinkingBubble() {
   return (

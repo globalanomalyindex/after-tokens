@@ -34,8 +34,8 @@ const strategies: Record<Exclude<ModeStrategy['name'], 'trace'>, ModeStrategy> =
 
 type RevealPace = 'instant' | 'low' | 'med' | 'high'
 
-// Presentation-only duration controls. They change the authored reveal window,
-// not inference time or model effort.
+// Presentation-only duration controls. They change the authored reveal window;
+// inference time and model effort stay fixed.
 const revealScale: Record<RevealPace, number> = {
   instant: 0.35,
   low: 1.5,
@@ -75,8 +75,8 @@ function settleLabel(
   trace: TraceCompact | undefined,
 ): string {
   if (mode === 'trace') {
-    // A recorded trajectory's duration comes from the trace itself, not a
-    // formula, so there is nothing to report until it has loaded.
+    // A recorded trajectory's duration comes from the trace itself, so there
+    // is nothing to report until it has loaded.
     if (!trace) return '...'
     const baseMs = traceStrategy(trace, { msPerStep: 40 }).totalDuration(syntheticAtoms(response))
     return formatSettleSeconds(baseMs * scale)
@@ -161,10 +161,10 @@ export function SectionCoda() {
       <p className="mb-10 text-base max-w-prose">
         <Highlight>
           Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
-          lock in clusters; open-ended answers drift in. The mapping is authored, not inferred.
+          lock in clusters; open-ended answers drift in. The mapping is authored by hand.
           Override it to compare how presentation changes the read without pretending the model chose it.
           The fifth option replays what a real sampler did for this exact prompt, at 40 milliseconds
-          per step; its answer is the model&apos;s, not mine.
+          per step; the answer belongs to the model.
         </Highlight>
       </p>
 
@@ -200,9 +200,9 @@ export function SectionCoda() {
 
       <p className="mt-10 text-base max-w-prose">
         <Highlight>
-          Pace is a real variable here, not a taste one. The <DefinitionTerm term="doherty threshold" /> marks
+          Pace is a measured variable here. The <DefinitionTerm term="doherty threshold" /> marks
           roughly where a system stops feeling responsive, so a reveal that outlasts the answer it is describing
-          is a cost, not a flourish. The rail exists so that trade is visible instead of assumed.
+          is a cost. The rail exists so that trade is visible instead of assumed.
         </Highlight>
       </p>
 

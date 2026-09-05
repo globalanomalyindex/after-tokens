@@ -5,7 +5,7 @@
 //
 // The colors are flat, high-chroma graphic solids: a punchy technical palette
 // that pops on the bone surface with dark ink text sitting legibly on top. The
-// green is a clean emerald (hue ~165), never a vivid electric lime.
+// green is a clean emerald, hue ~165, staying well clear of electric lime.
 //
 // One entry, von restorff effect, is deliberately the only dark chip in this
 // bright field: the effect it names says the item differing from its
@@ -67,7 +67,7 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
   'peak-end rule': {
     pron: 'ˈpēk-ˌend ˈrül',
     pos: 'noun',
-    def: 'we judge an experience by its most intense moment and its ending, not its average.',
+    def: 'we judge an experience by its most intense moment and its ending.',
     src: 'kahneman et al., 1993',
     color: 'oklch(0.77 0.15 165)', // emerald
   },

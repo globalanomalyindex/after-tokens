@@ -29,9 +29,12 @@ export type TraceWord = {
   /** the lowest commit confidence among its tokens */
   conf: number
   /** the provisional text the model would have shown for this word, as
-   *  [step, text] pairs at every step where it changed; the last entry is the
-   *  committed word. These are the model's real mind changes, not noise. */
-  changes: [number, string][]
+   *  [step, text, p] triples at every step where it changed, where p is the
+   *  probability of the guess (its weakest uncommitted token's max-prob at that
+   *  step). The last entry is the committed word. These are the model's real
+   *  mind changes. Most of them are the corpus prior at p around 0.06, which
+   *  decodes as "the"; see PROVISIONAL_FLOOR. */
+  changes: [number, string, number][]
 }
 
 export type TraceToken = {
@@ -182,15 +185,35 @@ export function traceStepAt(trace: TraceCompact, p: number): number {
   return Math.max(0, Math.min(n - 1, Math.floor(p * (n + 1))))
 }
 
-/** What the model would have shown for a word at a given step: the latest
- *  recorded change at or before that step, or undefined before its first. */
-export function traceProvisionalText(trace: TraceCompact, wordIndex: number, step: number): string | undefined {
+/**
+ * A prediction earns rendering only when it is a prediction. Before a masked
+ * position is anywhere near commitment the model's argmax is the corpus prior
+ * (median probability 0.065 across the recorded runs, decoding as "the"), and
+ * an interface that showed it would show the same word in every slot. Above
+ * this floor the guess is the model's real current belief and is shown; below
+ * it the slot falls back to the authored noise. About one change in thirty
+ * clears the floor under the default sampler, so a typical answer shows a
+ * handful of real guesses and noise the rest of the time.
+ */
+export const PROVISIONAL_FLOOR = 0.25
+
+/** What the interface should show for a word at a given step: the committed
+ *  word once it is committed; before that, the latest recorded guess at or
+ *  before that step if its probability clears PROVISIONAL_FLOOR; otherwise
+ *  undefined, which tells the engine to show its authored noise instead. */
+export function traceProvisionalText(
+  trace: TraceCompact,
+  wordIndex: number,
+  step: number,
+  floor: number = PROVISIONAL_FLOOR,
+): string | undefined {
   const w = trace.words[wordIndex]
   if (!w) return undefined
+  if (step >= w.lock_step) return w.text
   let out: string | undefined
-  for (const [s, text] of w.changes) {
+  for (const [s, text, p] of w.changes) {
     if (s > step) break
-    out = text
+    out = p >= floor ? text : undefined
   }
   return out
 }

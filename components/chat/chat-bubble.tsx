@@ -27,7 +27,7 @@ export function PromptBubble({ children, label = 'You asked' }: PromptBubbleProp
   return (
     <motion.div
       className="self-end max-w-[88%] rounded-2xl rounded-br-md px-4 py-3 text-sm leading-snug"
-      // Pops in like a message the user just sent — a snappy spring scale,
+      // Pops in like a message the user just sent, a snappy spring scale,
       // not a fade. This is the "send" beat of the exchange.
       initial={reduced ? false : { opacity: 0, y: 10, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}

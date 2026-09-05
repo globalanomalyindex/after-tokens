@@ -12,7 +12,7 @@ export function SectionPlayground() {
       eyebrow={['Playground', 'Drive it yourself']}
     >
       {/* The finale title paints itself across the wheel: one solid hue per
-          letter (not a clipped gradient), readable on the bone surface. */}
+          letter, readable on the bone surface. */}
       <h2
         aria-label="x. playground"
         className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-3xl"

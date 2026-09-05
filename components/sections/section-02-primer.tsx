@@ -37,9 +37,27 @@ export function SectionPrimer() {
           <span className="title-index">ii.</span>a rendering system for answers that do not arrive left to right
         </h2>
         <p className="text-lg md:text-xl leading-relaxed max-w-3xl mb-10" style={{ color: 'var(--ink-2)' }}>
-          After Tokens asks a product question before it makes a motion argument: if a language model
-          resolves many positions in parallel, what should the interface reveal, and what must it never imply?
+          After Tokens asks a product question before it makes a motion argument. A diffusion model resolves many
+          positions in parallel, and the same final text can arrive on screen in any order and at any pace. How
+          does that arrival look good, feel like a better answer even when the words are identical, stay worth
+          watching, and take on the identity of whatever product it lands in?
         </p>
+
+        <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border mb-8" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+          {[
+            ['looks good', 'Every frame carries state. A reveal is designed the way a gauge is designed: the motion is the reading. Sections iii to v.'],
+            ['feels like a better answer', 'The reader can see which words are settled and how sure the sampler was, so trust in the answer is earned by the reveal instead of assumed from it. Section iv.'],
+            ['worth watching', 'Each beat means something: a lock, a belief forming, the field closing once. Meaning is what makes motion hold attention past the first time. Sections v and vi.'],
+            ['brand-able', 'One state contract, any register. The same timeline runs under four identities, and four specimens change the motion’s character without changing what it reports. Sections viii and ix.'],
+          ].map(([label, value]) => (
+            <div key={label} className="p-5 md:p-6" style={{ background: 'var(--surface)' }}>
+              <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--section-accent) 88%, var(--ink))' }}>
+                + {label}
+              </dt>
+              <dd className="text-sm leading-relaxed">{value}</dd>
+            </div>
+          ))}
+        </dl>
 
         <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
           {[

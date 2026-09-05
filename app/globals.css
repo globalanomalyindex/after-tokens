@@ -29,7 +29,7 @@
   /* Product-UI sans for the demo/preview surfaces. The diffusion stages
      simulate real chat product UI, so the message text reads in the native
      system UI font (SF Pro on Apple, Segoe/Roboto elsewhere) rather than the
-     editorial display face — the register people actually expect in a chatbot. */
+     editorial display face, the register people actually expect in a chatbot. */
   --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
@@ -59,7 +59,7 @@
    - Sligoil = EXPRESSIVE: headlines + the model's own "voice" (the diffusion
      demo text). Characterful, art-directed, used at large sizes.
    - JetBrains Mono = READING: body copy, labels, captions, UI. Clean and
-     legible — the instrument-panel annotation layer.
+     legible, the instrument-panel annotation layer.
    Fallback chains are spelled out (no self-referential var()) so next/font
    values win. */
 body { font-family: var(--font-mono), ui-monospace, monospace; }
@@ -69,7 +69,7 @@ h1, h2, h3, h4, .font-display {
 }
 code, pre, .mono { font-family: var(--font-mono), ui-monospace, monospace; }
 /* The diffusion demo text simulates real chat product UI, so it renders in the
-   familiar system UI sans — NOT the editorial Sligoil. Sligoil stays the voice
+   familiar system UI sans, NOT the editorial Sligoil. Sligoil stays the voice
    of the case study itself (headlines); the previews look like real product. */
 .diffusion-text { font-family: var(--font-ui); }
 
@@ -89,55 +89,75 @@ button:focus-visible {
 button { transition: transform 140ms var(--ease-out-strong); }
 button:active { transform: scale(0.97); }
 
-/* --- DiffusionText cycling-word states ----------------------------------- */
-/* Each word slot transitions color + filter together as state changes.
-   The global unblur attribute on the container clears blur across all words
-   for the final reveal moment. */
+/* --- DiffusionText word states ------------------------------------------ */
+/* Four stages in a word's life, each rendered so the state is readable at a
+   glance and nothing crisp appears before it is committed (parafoveal preview:
+   crisp text to the right of the eye that later changes costs reading time).
+     open      masked, no belief: an illegible blurred noise word in a slot of
+               its final width (the slot holds the answer's extent, zeigarnik)
+     belief    masked, the model holds a real guess (recorded mode only, above
+               PROVISIONAL_FLOOR): less blurred, brighter, still unreadable
+     resolving the lock itself, crisp at once, heavier
+     resolved  committed: crisp, heavier, a one-shot settle sized to confidence,
+               then quiet. The distinctiveness of a lock lives at the moment it
+               happens (von restorff); a halo left on every locked word would
+               make none of them distinct. */
 
 [data-cycling-word] {
   position: relative;
   transition:
-    color 380ms var(--ease-out-strong),
-    filter 360ms var(--ease-out-expo);
+    color 320ms var(--ease-out-strong),
+    filter 300ms var(--ease-out-expo),
+    opacity 300ms var(--ease-out-strong);
 }
 
-/* Liquid-glass pill behind each word. Visible only while pending/resolving. */
+/* The slot marker: a faint pill so the field's extent reads as slots, cheap
+   (no backdrop-filter, one per word on a page full of reveals). */
 [data-cycling-word]::before {
   content: '';
   position: absolute;
-  inset: -0.08em -0.18em;
-  border-radius: 0.42em;
-  background: color-mix(in oklab, currentColor 7%, transparent);
-  backdrop-filter: blur(6px) saturate(1.05);
-  -webkit-backdrop-filter: blur(6px) saturate(1.05);
-  border: 0.5px solid color-mix(in oklab, currentColor 14%, transparent);
+  inset: -0.06em -0.16em;
+  border-radius: 0.4em;
+  background: color-mix(in oklab, currentColor 6%, transparent);
   z-index: -1;
-  transition:
-    opacity 360ms var(--ease-out-strong),
-    background 360ms var(--ease-out-strong),
-    backdrop-filter 360ms var(--ease-out-strong);
+  transition: opacity 320ms var(--ease-out-strong), background 320ms var(--ease-out-strong);
 }
 
+/* open: unreadable by design. 4.2px at body size erases letterforms while
+   keeping word shape and length, so the slot says "a word this long is
+   coming" and nothing more. The slow breathe stays low in amplitude so the
+   field reads as alive without raising the noise floor a lock must clear
+   (change blindness). */
 [data-cycling-word][data-state="pending"] {
-  color: color-mix(in oklab, currentColor 82%, transparent);
-  filter: blur(2.2px);
+  color: color-mix(in oklab, currentColor 68%, transparent);
+  filter: blur(4.2px);
   animation: cycling-breathe 2400ms ease-in-out infinite;
-  /* Desync per-word breathing — gives the field a wandering, "exploring" feel
-     instead of every word pulsing in lockstep. Index counted in via inline
-     custom property on each word slot. */
   animation-delay: calc(var(--word-index, 0) * -190ms);
 }
 [data-cycling-word][data-state="pending"]::before {
   opacity: 1;
 }
 
+/* belief: the model has a guess worth showing (recorded mode). Forming, so
+   less blurred and steadier than noise, still short of readable. Each change
+   of belief crossfades (the prediction error, made visible). */
+[data-cycling-word][data-state="pending"][data-belief="true"] {
+  color: color-mix(in oklab, currentColor 88%, transparent);
+  filter: blur(2px);
+  animation: none;
+  opacity: 0.82;
+}
+[data-cycling-word][data-state="pending"][data-belief="true"]::before {
+  background: color-mix(in oklab, currentColor 10%, transparent);
+}
+
+/* resolving: the lock. Crisp immediately; a committed token is committed. */
 [data-cycling-word][data-state="resolving"] {
-  color: color-mix(in oklab, currentColor 92%, transparent);
-  filter: blur(0.8px);
+  color: currentColor;
+  filter: blur(0);
 }
 [data-cycling-word][data-state="resolving"]::before {
-  opacity: 0.6;
-  background: color-mix(in oklab, currentColor 4%, transparent);
+  opacity: 0;
 }
 
 [data-cycling-word][data-state="resolved"] {
@@ -149,21 +169,29 @@ button:active { transform: scale(0.97); }
 }
 
 @keyframes cycling-breathe {
-  0%, 100% { opacity: 0.88; }
-  50% { opacity: 0.66; }
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.5; }
 }
 
-/* The settle. A word that locks gets one short, subtle weight-shift of scale, on the
-   strong ease-out curve. Nothing in the real world snaps into place from nothing, and
-   the overshoot is small enough (1.5%) to read as arrival rather than as a bounce.
-   The animation fires once, when the selector starts matching. */
+/* The settle. A lock gets one short weight-shift of scale on the strong
+   ease-out curve; nothing in the real world snaps into place from nothing.
+   The overshoot is sized to the commit's probability (finding 05, dopamine as
+   a reward signal scaled to how sure the commit was): 0.5% at p 0.3 up to
+   1.5% at p 1. The last word to lock gets the strongest beat (peak-end): the
+   ending is where the reader's memory of the sequence settles. Fires once,
+   when the selector starts matching. */
 @keyframes word-settle {
   0%   { transform: scale(0.994); }
-  55%  { transform: scale(1.015); }
+  55%  { transform: scale(calc(1 + var(--settle, 0.015))); }
   100% { transform: scale(1); }
 }
 [data-cycling-word][data-state='resolved'] {
   animation: word-settle 260ms var(--ease-out-expo) both;
+  --settle: calc(0.005 + (var(--conf, 1) - 0.3) * 0.0142857);
+}
+[data-last-lock="true"] [data-cycling-word][data-state='resolved'] {
+  --settle: 0.024;
+  animation-duration: 340ms;
 }
 
 /* will-change lifecycle: promote blurred words to their own compositor layer only
@@ -175,22 +203,20 @@ button:active { transform: scale(0.97); }
 }
 .diffusion-text[data-complete='true'] [data-cycling-word] { will-change: auto; }
 
-/* Global unblur — once the diffusion is "settled", clear blur on everything
-   regardless of per-word state. */
+/* The closing beat. data-unblurred is set at the LAST lock (see
+   DiffusionText), so every word is already committed and crisp when it lands;
+   nothing here reveals pending text. It only quiets the field: slot markers
+   drop and the answer reads flat and finished (gestalt closure). */
 .diffusion-text[data-unblurred="true"] [data-cycling-word] {
-  filter: blur(0);
   animation: none;
   opacity: 1;
-}
-.diffusion-text[data-unblurred="true"] [data-cycling-word][data-state="resolving"] {
-  color: currentColor;
 }
 .diffusion-text[data-unblurred="true"] [data-cycling-word]::before {
   opacity: 0;
 }
 
-/* Settle pulse — one-shot glow when the whole answer unblurs. Uniform across
-   modes — the "this is the final shape" beat. GLOW ONLY: no transform on the
+/* Settle pulse, one-shot glow when the whole answer unblurs. Uniform across
+   modes, the "this is the final shape" beat. GLOW ONLY: no transform on the
    layout container, since scaling the text box re-rasterizes every glyph and
    shimmers the most important beat at the sub-pixel level. The multi-layer
    shadow carries the moment; the long mid hold lets the halo land before it
@@ -216,35 +242,17 @@ button:active { transform: scale(0.97); }
 .diffusion-text[data-unblurred="true"] {
   animation: settle-pulse 1080ms var(--ease-out-expo) 1;
 }
+/* mycelium and the recorded mode close with the wave instead; two beats at the
+   end would split the peak. */
+.diffusion-text[data-mode="mycelium"][data-unblurred="true"],
+.diffusion-text[data-mode="trace"][data-unblurred="true"] {
+  animation: none;
+}
 
-/* Liquid-glass sweep across the WHOLE stage container while loading.
-   The diffusion-text emits a ::after layer that paints a soft moving highlight
-   bouncing edge-to-edge with the φ-derived sweep curve. */
-.diffusion-text[data-active="true"][data-unblurred="false"]::after {
-  content: '';
-  position: absolute;
-  inset: -8% -10%;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 30%,
-    color-mix(in oklab, currentColor 5%, transparent) 45%,
-    color-mix(in oklab, currentColor 18%, transparent) 50%,
-    color-mix(in oklab, currentColor 5%, transparent) 55%,
-    transparent 70%
-  );
-  background-size: 220% 100%;
-  background-repeat: no-repeat;
-  animation: glass-sweep 3400ms var(--ease-phi-sweep) infinite alternate;
-  opacity: 0.7;
-  mix-blend-mode: plus-lighter;
-  z-index: 0;
-  border-radius: inherit;
-}
-@keyframes glass-sweep {
-  0% { background-position: -25% 50%; }
-  100% { background-position: 125% 50%; }
-}
+/* (Cut) A whole-field glass sweep used to run for the length of the reveal.
+   Continuous field-wide motion is exactly what change blindness says masks a
+   local change, and the locks are the signal. The reveal now moves the whole
+   field once, at the close. */
 
 /* Keep the words above both the sweep and the pill backgrounds */
 .diffusion-text > span[aria-hidden] {
@@ -299,9 +307,9 @@ button:active { transform: scale(0.97); }
   }
 }
 
-/* ============ Hero / Section 01 — the inverted entrance =================
+/* ============ Hero / Section 01, the inverted entrance =================
    The site opens on its own thesis. Standard surfaces are light (bone/ink);
-   the entrance INVERTS to the dark stage — the "before order" void. The title
+   the entrance INVERTS to the dark stage, the "before order" void. The title
    "after tokens" does not type left-to-right (token-by-token): it resolves out
    of a chaotic block-and-braille noise field into crisp letters, one giant word
    at a time (see HeroTitle / DecodingWord). Scrolling out blurs the hero and
@@ -313,7 +321,7 @@ button:active { transform: scale(0.97); }
   isolation: isolate;
 }
 
-/* Ambient drifting fog on the dark stage — the field is never quite still. */
+/* Ambient drifting fog on the dark stage, the field is never quite still. */
 .hero-fog {
   position: absolute;
   inset: -25%;
@@ -404,7 +412,7 @@ button:active { transform: scale(0.97); }
   );
 }
 
-/* Scroll cue, ink on the light band — invites the descent into the site. */
+/* Scroll cue, ink on the light band, invites the descent into the site. */
 .hero-scroll-cue {
   position: absolute;
   left: 50%;
@@ -461,7 +469,7 @@ button:active { transform: scale(0.97); }
 
 /* ===== Section chrome: technical-color layer + density ================== */
 /* A per-section accent (set inline as --section-accent) threads through a top
-   rule, an edge spine, corner data marks, and a base tag rail — color across
+   rule, an edge spine, corner data marks, and a base tag rail, color across
    the whole run, and content in the wide-screen gutters that used to be empty. */
 .section-topbar {
   position: absolute;
@@ -545,7 +553,7 @@ button:active { transform: scale(0.97); }
   }
 }
 
-/* Faint technical grid on the cream — gives the open field a measured drafting
+/* Faint technical grid on the cream, gives the open field a measured drafting
    texture instead of blank space. Sits under everything; dark panels and the
    hero paint over it. */
 body {
@@ -556,7 +564,7 @@ body {
   background-position: -1px -1px;
 }
 
-/* Dark content panels get a glow in their section's accent — color bleeding off
+/* Dark content panels get a glow in their section's accent, color bleeding off
    the panel edge instead of sitting on dead cream. */
 .panel-accent {
   box-shadow: 0 30px 80px -52px color-mix(in oklab, var(--section-accent) 78%, transparent);
@@ -595,7 +603,7 @@ body {
    restored to uppercase. */
 /* Clip decorative bleed (hero-fog inset:-25%, gemini-aura inset:-25%, section
    rail overrun) on the x-axis only. `clip` rather than `hidden` so we do NOT
-   create a scroll container — `hidden` would break the position:sticky asides
+   create a scroll container, `hidden` would break the position:sticky asides
    in coda/widget and the hero scroll math. overflow-y stays visible. */
 html,
 body {
@@ -620,7 +628,7 @@ main .uppercase {
 }
 
 /* ===== Dotted exoskeleton frame ========================================= */
-/* A faint dotted rectangle registering each section's content column — the
+/* A faint dotted rectangle registering each section's content column, the
    structural skeleton the content sits inside, paired with the background grid
    and the corner marks. */
 .exo-frame {
@@ -635,7 +643,7 @@ main .uppercase {
   pointer-events: none;
 }
 
-/* Typing indicator — three dots that pulse while the assistant "thinks",
+/* Typing indicator, three dots that pulse while the assistant "thinks",
    shown in the beat between the prompt sending and the answer arriving. */
 .thinking-dot {
   width: 6px;
@@ -656,7 +664,7 @@ main .uppercase {
 /* ===== Crosshair runway + definition windows (corner note, cursor) ==== */
 /* A row of evenly-spaced registration crosses under each panel: first and last
    flush to the edges, the rest spaced between. A rAF loop drives each mark's
-   opacity to draw a traveling comet — only base styles live here. */
+   opacity to draw a traveling comet, only base styles live here. */
 .xhair-strip {
   display: flex;
   align-items: center;
@@ -672,7 +680,7 @@ main .uppercase {
 
 /* ===== Definition terms (inline chip + dictionary window) =============== */
 /* A keyword sits in a flat, bright, sharp-cornered chip; opening it reveals a
-   WIDE dictionary entry filled with that same solid color — headword + part of
+   WIDE dictionary entry filled with that same solid color, headword + part of
    speech across the top, a phonetic respelling, a dashed rule, then the gloss.
    Dark ink throughout keeps it readable on the bright fill (no drop shadow). The
    box anchors left / center / right by where the chip sits, so it never spills
@@ -771,7 +779,7 @@ main .uppercase {
   --c: color-mix(in oklab, var(--bone) calc(var(--ant, 0) * 100%), color-mix(in oklab, var(--bone) 55%, transparent));
 }
 .def-wrap[data-tone='dark'] .def-chip:focus-visible { outline-color: var(--bone); }
-/* the kept-from-figma margin note, top-right — the ONLY lightened element.
+/* the kept-from-figma margin note, top-right, the ONLY lightened element.
    Floated absolutely so it never pushes the pronunciation down; framed with
    plus-signs + dashes and a vertical ^|v dimension arrow. The rails flex to
    fill, so the frame sizes itself dynamically; the text stays on one line. */
@@ -875,7 +883,7 @@ html.cursor-fx-on * {
   transition: opacity 180ms ease;
   will-change: transform;
 }
-/* the "+" crosshair — cool gray, brightening + growing with proximity */
+/* the "+" crosshair, cool gray, brightening + growing with proximity */
 .cursor-cross::before,
 .cursor-cross::after {
   content: '';
@@ -1017,7 +1025,7 @@ html.cursor-fx-on * {
   transform: translateY(0);
 }
 
-/* Replay button — spin metaphor on hover */
+/* Replay button, spin metaphor on hover */
 /* The resting dimness is a color-mix alpha on `color` (not base opacity), so an
    opacity hover was a no-op. Brighten via color instead.
    Stage-context buttons (coda-stage, mode-demo, widget, playground) brighten to
@@ -1033,7 +1041,7 @@ html.cursor-fx-on * {
 }
 .replay-btn:hover .replay-glyph { transform: rotate(-90deg); }
 
-/* Playground console pills — pressable, with tactile feedback */
+/* Playground console pills, pressable, with tactile feedback */
 .playground-pill {
   transition:
     background-color 180ms var(--ease-out-strong),
@@ -1064,71 +1072,62 @@ html.cursor-fx-on * {
   outline-offset: 2px;
 }
 
-/* --- Mycelium mode: word-level lock visual (no overlay dots) -------------- */
-/* The mycelium overlay is empty now. Lock signal lives entirely on the
-   word: locked words become HEAVIER than their unlocked neighbors and sit
-   inside a soft accent halo that breathes. The contrast resolves at the
-   final unblur, where the answer reads uniformly. */
+/* --- The lock treatment (mycelium and the recorded mode) ------------------ */
+/* Both are word-level lock reveals with no overlay; they differ only in where
+   the order comes from. The lock is an EVENT: the word snaps crisp and heavy,
+   a halo blooms and fades within a second, and then the word rests quiet.
+   Locked words keep their weight until the close so the frontier between
+   settled and open stays readable across the field; the glow does not stay,
+   because a halo on every locked word would leave nothing distinct. */
 
-/* The recorded mode (trace) borrows mycelium's lock signal below: both are
-   word level lock reveals with no overlay, and the only difference between
-   them is where the reveal order comes from, authored versus a real model. */
-
-/* Heavier weight on resolving + resolved (the "dotted" words). */
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolving"],
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
 .diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolving"],
 .diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
   font-weight: 700;
-  animation: mycelium-locked-pulse 2300ms ease-in-out infinite;
-  animation-delay: calc(var(--word-index, 0) * -260ms);
+  transition: font-weight 160ms var(--ease-out-expo);
 }
 
-/* Accent-tinted halo behind each locked word — breathes subtly until the
-   final unblur. The radial gradient is wider than the word so it reads as
-   a soft glow rather than a pill. */
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolving"]::before,
+/* The one-shot lock glow: in fast, out over the rest of the second. */
+.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
+  animation:
+    word-settle 260ms var(--ease-out-expo) both,
+    lock-glow 900ms var(--ease-out-expo) both;
+}
+@keyframes lock-glow {
+  0% {
+    text-shadow:
+      0 0 6px color-mix(in oklab, var(--accent) 55%, transparent),
+      0 0 16px color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+  100% {
+    text-shadow:
+      0 0 0 transparent,
+      0 0 0 transparent;
+  }
+}
+
+/* The halo behind a fresh lock: wider than the word so it reads as a bloom,
+   then gone. */
 .diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"]::before,
-.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolving"]::before,
 .diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"]::before {
   inset: -0.22em -0.4em;
   border-radius: 0.7em;
   background: radial-gradient(ellipse at center,
-    color-mix(in oklab, var(--accent) 22%, transparent),
+    color-mix(in oklab, var(--accent) 24%, transparent),
     color-mix(in oklab, var(--accent) 0%, transparent) 70%
   );
   border: 0;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  opacity: 1;
-  animation: mycelium-halo-breathe 2400ms ease-in-out infinite;
-  animation-delay: calc(var(--word-index, 0) * -260ms);
+  animation: halo-once 900ms var(--ease-out-expo) both;
+}
+@keyframes halo-once {
+  0%   { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0;   transform: scale(1.1); }
 }
 
-@keyframes mycelium-locked-pulse {
-  0%, 100% {
-    text-shadow: 0 0 4px color-mix(in oklab, var(--accent) 22%, transparent);
-  }
-  50% {
-    text-shadow:
-      0 0 7px color-mix(in oklab, var(--accent) 48%, transparent),
-      0 0 14px color-mix(in oklab, var(--accent) 22%, transparent);
-  }
-}
-
-@keyframes mycelium-halo-breathe {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  50% {
-    transform: scale(1.06);
-    opacity: 0.85;
-  }
-}
-
-/* Completion wave — one sweep, top-left to bottom-right, lit through the
-   stage with screen blend so it glows the words it passes over.  */
+/* The close: one wave across the field, then everything rests uniform. This
+   is the only whole-field motion in the reveal (gestalt closure, peak-end). */
 .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after,
 .diffusion-text[data-mode="trace"][data-unblurred="true"]::after {
   content: '';
@@ -1149,54 +1148,29 @@ html.cursor-fx-on * {
   filter: blur(3px);
   animation: mycelium-final-wave 1500ms var(--ease-out-expo) 1 forwards;
 }
-
 @keyframes mycelium-final-wave {
   0%   { background-position: -120% 50%; opacity: 0; }
   20%  { opacity: 0.6; }
   80%  { opacity: 0.6; }
   100% { background-position: 220% 50%; opacity: 0; }
 }
-
-/* On unblur — drop weight contrast + halo. The rim glow makes one final
-   pass (in → out) and then clears entirely, leaving the answer flat.
-   Setting `text-shadow: none` statically guarantees the final resting
-   state is shadow-free even if the animation is interrupted. */
 .diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word],
 .diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word] {
   font-weight: inherit;
   text-shadow: none;
-  animation: mycelium-rim-glow-pass 2200ms var(--ease-out-expo) 600ms 1 forwards;
-  transition: font-weight 200ms var(--ease-out-expo);
-}
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word]::before,
-.diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word]::before {
-  opacity: 0;
-  background: transparent;
   animation: none;
-  transition: opacity 500ms var(--ease-out-expo),
-              background 500ms var(--ease-out-expo);
+  transition: font-weight 260ms var(--ease-out-expo) 900ms;
 }
 
-/* Keyframes must use identical shadow layer counts at every step or the
-   browser falls back to discrete (snap) transitions instead of fading.
-   Two transparent layers at 0% and 100% match the two-layer peak at 35%. */
-@keyframes mycelium-rim-glow-pass {
-  0% {
-    text-shadow:
-      0 0 8px transparent,
-      0 0 22px transparent;
-  }
-  35% {
-    text-shadow:
-      0 0 8px color-mix(in oklab, var(--accent) 58%, transparent),
-      0 0 22px color-mix(in oklab, var(--accent) 22%, transparent);
-  }
-  100% {
-    text-shadow:
-      0 0 8px transparent,
-      0 0 22px transparent;
-  }
+/* Finding 05, trust calibration: certainty renders as certainty. A resolved word
+   in the recorded trace carries the model's own confidence at that commit, so a
+   sure word sits at full strength and a shaky one stays visibly lighter. This
+   overrides the global unblur rule above, which resets every word to opacity 1
+   once the field settles; here that reset is what we are deliberately undoing. */
+.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
+  opacity: calc(0.62 + 0.38 * var(--conf, 1));
 }
+
 
 /* --- Trace mode: the recorded-trajectory map + stage ---------------------- */
 /* .unmask-map renders a static SVG diagram of a real trajectory's reveal
@@ -1249,7 +1223,8 @@ html.cursor-fx-on * {
     animation: none !important;
   }
   [data-cycling-word]::before { display: none; }
-  [data-cycling-word][data-state='resolved'] { animation: none; }
+  [data-cycling-word][data-state='resolved'],
+  [data-cycling-word][data-state='resolved']::before { animation: none; }
   .diffusion-text [data-cycling-word] { will-change: auto; }
   .diffusion-text[data-active="true"]::after { display: none; }
   .diffusion-text[data-unblurred="true"] { animation: none; }

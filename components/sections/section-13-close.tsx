@@ -2,6 +2,7 @@ import { Section } from '@/components/section'
 import { Highlight } from '@/components/chrome/highlight'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
+import { HYPOTHESES } from '@/lib/traces/findings'
 
 export function SectionClose() {
   return (
@@ -37,7 +38,7 @@ export function SectionClose() {
           </div>
           <div className="rounded-2xl border p-7 md:p-8" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)' }}>
             <p className="text-[10px] uppercase tracking-[0.18em] mb-5" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-              + not evidence yet
+              + still unproven
             </p>
             <ul className="space-y-3 text-sm leading-relaxed">
               <li>
@@ -47,14 +48,14 @@ export function SectionClose() {
               <li>No user study has shown a comprehension or state-identification gain.</li>
               <li>No production classifier chooses a mode; fixtures are tagged by hand.</li>
               <li>The glyph system is tuned for English and Latin-script content.</li>
-              <li>This is a prototype primitive, not a packaged component library.</li>
+              <li>This is a prototype primitive. Packaging it as a component library is separate work.</li>
               <li>
                 Reading order is a real cost. This is the strongest argument against the whole approach. While you read
                 one word your eye is already sampling the next one over; <DefinitionTerm term="parafoveal preview" /> is
                 measurable, and text that changes out of order inside that zone should cost a reader time. An honest
-                study has to measure reading time, not only state identification. If revealing out of order slows
+                study has to measure reading time alongside state identification. If revealing out of order slows
                 reading more than it clarifies state, the right answer is to reveal in reading order and carry the
-                state signal some other way, through weight or color rather than position.
+                state signal some other way, through weight or color instead of position.
               </li>
             </ul>
           </div>
@@ -64,20 +65,21 @@ export function SectionClose() {
           <p className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
             + the next test
           </p>
-          <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase mb-6">make the hypothesis earn its place</h3>
-          <dl className="grid sm:grid-cols-2 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
-            {[
-              ['hypothesis', 'A region-based reveal improves identification of what is still changing versus a matched linear blur.'],
-              ['method', 'Interrupt both conditions at matched timestamps; randomize order; use identical text, geometry, and duration. The recorded trajectories can now serve as the stimulus, so the study measures real sampler order rather than an authored one.'],
-              ['measure', 'State-identification accuracy, final-text comprehension, time to answer, distraction, and preference.'],
-              ['falsified if', 'There is no accuracy benefit, comprehension drops, or participants read authored order as model certainty.'],
-            ].map(([label, value]) => (
-              <div key={label} className="p-6" style={{ background: 'var(--surface)' }}>
-                <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>+ {label}</dt>
-                <dd className="text-sm leading-relaxed">{value}</dd>
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase mb-6">three claims, and what breaks each</h3>
+          <dl className="grid sm:grid-cols-3 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+            {HYPOTHESES.map((h) => (
+              <div key={h.id} className="p-6" style={{ background: 'var(--surface)' }}>
+                <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>+ {h.id} · {h.lead}</dt>
+                <dd className="text-sm leading-relaxed">{h.claim}</dd>
+                <dd className="mt-3 text-[11px] leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>falsified if {h.falsifiedIf}</dd>
               </div>
             ))}
           </dl>
+          <p className="mt-4 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
+            Method: interrupt matched conditions at matched timestamps, randomize order, hold text, geometry, and duration
+            constant. The recorded trajectories are the stimulus, with real sampler order and real commit probabilities,
+            so the study measures the sampler rather than an authored guess.
+          </p>
         </div>
 
         <div className="mb-16 max-w-2xl">
@@ -92,7 +94,7 @@ export function SectionClose() {
               <Highlight><strong>Particle flock.</strong> Rebuilt as a chain reaction, liquid-glass orbs, and fireflies. Faster motion reduced legibility; Mycelium did the job with less visual traffic.</Highlight>
             </li>
             <li>
-              <Highlight><strong>The entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is not craft, it is a toll.</Highlight>
+              <Highlight><strong>The entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is a toll.</Highlight>
             </li>
             <li>
               <Highlight><strong>Abstract line graphs.</strong> Replaced with actual word locks so the comparison demonstrates the interaction instead of describing it from a distance.</Highlight>

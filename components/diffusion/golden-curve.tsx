@@ -6,8 +6,8 @@ import cadence from '@/data/traces/derived/cadence.json'
 
 // An instrument-panel visualizer for the golden-ratio motion the mycelium mode
 // runs on. A reticle (box + crosshair) glides along a cubic-bezier that holds
-// slow then sweeps: the φ-decay easing, an authored acceleration, not a
-// measurement. Alongside it, static and unanimated, is the recorded word-lock
+// slow then sweeps: the φ-decay easing, authored before any trajectory was
+// recorded. Alongside it, static and unanimated, is the recorded word-lock
 // cadence from the traced sampler: the median (and 25th-75th band) fraction of
 // words locked by word rank, across 20 runs. That recorded curve is close to
 // linear, because the schedule commits a fixed number of tokens per denoising

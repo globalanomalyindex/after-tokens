@@ -106,9 +106,9 @@ export function DecodingWord({
   }
 
   // Baseline paint before the browser paints: measurement (the parent's layout
-  // effect) then reads stable monospace widths, and the first visible frame is a
-  // noise field, never the final text. Child layout effects run before the
-  // parent's, so this lands first.
+  // effect) then reads stable monospace widths, and the first visible frame is
+  // always a noise field. Child layout effects run before the parent's, so
+  // this lands first.
   //
   // Deps are ONLY chars/style/reduced — deliberately NOT startP/endP. A
   // re-measurement (font swap, reflow) recomputes the mode's lock windows, which

@@ -4,7 +4,7 @@ import type { Condition } from '@/lib/widget/weather-data'
 
 // Stained-glass-feeling weather icons. Semi-transparent fills so the sky
 // gradient still glows through the icon. Stroke kept thin and warm to keep
-// the icon feeling observed, not stamped.
+// the icon feeling observed.
 
 type Props = {
   condition: Condition

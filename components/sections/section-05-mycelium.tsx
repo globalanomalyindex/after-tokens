@@ -12,14 +12,14 @@ const pct = (x: number) => `${Math.round(x * 100)}%`
 
 export function SectionMycelium() {
   return (
-    <Section id="mycelium" n={5} act="II" title="Four authored modes, one recorded" eyebrow={['System', 'Four visual hypotheses']}>
+    <Section id="mycelium" n={5} act="II" title="The shipped reveal" eyebrow={['System', 'The reveal, demonstrated']}>
       <ModeDemo
         mode="mycelium"
         stageSide="right"
         index="v."
         headline={
           <>
-            <NatureWord kind="mycelium">Mycelium</NatureWord>, a response-seeded lock order
+            <NatureWord kind="mycelium">Mycelium</NatureWord>, the shipped reveal
           </>
         }
         intro={
@@ -28,14 +28,15 @@ export function SectionMycelium() {
             recorded sampler sets the order: about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB32)} of commits land next
             to the previous one and a new anchor opens roughly every {Math.round(100 / TRACE_NUMBERS.seedsPer100Default)} commits,
             the statistics of a real low-confidence sampler inside a block. The seed is the response text, so every
-            replay is comparable. A soft halo marks each authored lock before the answer settles uniformly. I kept it
-            after cutting a particle-flock direction that made the same point with more motion and less legibility.
+            replay is comparable. Each lock snaps crisp and heavy with a halo that is gone within a second; the field
+            moves as a whole once, at the last lock. Every one of those choices is a row in the ledger above.
           </>
         }
         prompt="How does masked diffusion text generation work?"
         answer={`Masked diffusion language models refine many masked positions across repeated denoising steps instead of emitting only the next token. This interface is an authored simulation of that non-sequential process; it is not connected to live model state.`}
         specs={[
           { label: 'Signal source', value: 'Growth order fitted to 20 recorded trajectories' },
+          { label: 'Cadence', value: 'Linear, 45 to 80 ms per word, 320 ms pre-roll' },
           { label: 'Use-case hypothesis', value: 'General responses' },
           { label: 'Evidence', value: 'Order statistics matched; comprehension untested' },
         ]}
@@ -43,19 +44,20 @@ export function SectionMycelium() {
 
       <p className="max-w-2xl mt-10 md:mt-14 text-base leading-relaxed">
         <Highlight>
-          A locked word gets heavier than its neighbors, not brighter. The{' '}
-          <DefinitionTerm term="von restorff effect" /> is the reason difference registers at all: the item that
-          stands apart from its neighbors is the one that gets read. Which difference you pick, weight or color
-          or scale, is a brand decision. That there has to be one is not.
+          A locked word gets heavier than its neighbors as it locks. The{' '}
+          <DefinitionTerm term="von restorff effect" /> is the reason that difference registers at all: the item that
+          stands apart from its neighbors is the one that gets read. Weight is the channel the shipped mode uses;
+          color or scale could carry the same signal in another register. Which channel carries it is a brand
+          decision. That there has to be one is a constraint the effect sets.
         </Highlight>
       </p>
 
       <div className="max-w-5xl mt-16 md:mt-24">
         <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-          + Timing decision
+          + The cadence
         </div>
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-8 max-w-2xl">
-          phi is a tuning choice, not proof
+          the cadence the data chose
         </h3>
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] gap-8 lg:gap-12 items-center">
           <GoldenCurve />
@@ -63,24 +65,29 @@ export function SectionMycelium() {
             <p className="text-base leading-relaxed">
               <Highlight>
                 Branching systems, <NatureWord kind="fog">fog</NatureWord>, <NatureWord kind="aurora">aurora</NatureWord>,
-                and cell division gave me a motion vocabulary. They are references, not cognitive evidence. Product
-                research, not resemblance to nature, has to determine whether any treatment improves comprehension.
+                and cell division gave me a motion vocabulary for the earlier authored modes. Product research has to
+                determine whether any treatment improves comprehension; resemblance to nature only supplies the
+                starting shapes.
               </Highlight>
             </p>
             <p className="text-base leading-relaxed">
               <Highlight>
-                The recorded word cadence is linear: the median lock fraction by word rank stays within about{' '}
+                The shipped cadence is linear. Each word locks on a per-word interval that scales to the answer&apos;s
+                length, clamped between 45 and 80 milliseconds, after a 320 millisecond pre-roll. The recorded
+                sampler&apos;s own word cadence is linear too: the median lock fraction by word rank stays within about{' '}
                 {pct(DERIVED.cadenceMaxDeviation)} of a straight line, because the schedule commits a fixed number of
-                tokens per step. Phi decay is an authored acceleration; no sampler recorded here produces it. The
-                chart above now shows both curves. Phi stays as a labeled stylization because the comparison in the
-                closing hypothesis section needs a cadence that differs from linear at equal duration.
+                tokens per step regardless of confidence. The <DefinitionTerm term="doherty threshold" /> sets the
+                other bound, so no gap between visible changes runs long enough for attention to drift. Phi decay was
+                the reveal&apos;s first cadence. It now lives on as the comparison stimulus in the hypothesis section
+                and as the golden curve above, drawn beside the recorded median it was meant to anticipate.
               </Highlight>
             </p>
             <p className="text-base leading-relaxed">
               <Highlight>
-                The churn rate is a separate decision. The authored 440 ms cycle between pending glyphs was set by
-                eye. The sampler&apos;s provisional guess changes every {DERIVED.msPerFlipRecorded} ms at recorded pace,
-                within about 14 percent of that value, so it stays.
+                The churn rate is a separate decision. The pending glyphs now change every 390 milliseconds, the
+                sampler&apos;s own measured rate: its provisional guess for a pending token changed every{' '}
+                {DERIVED.msPerFlipRecorded} milliseconds at recorded pace, and 390 rounds that number instead of
+                approximating it.
               </Highlight>
             </p>
           </div>
@@ -92,7 +99,7 @@ export function SectionMycelium() {
           + Same contract, three more registers
         </div>
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-4 max-w-2xl">
-          presentation changes; state semantics do not
+          one state contract, three more registers
         </h3>
         <p className="text-base leading-relaxed max-w-2xl mb-12">
           Each mode exposes the same ready → resolving → resolved contract. The suggested use cases are design hypotheses,

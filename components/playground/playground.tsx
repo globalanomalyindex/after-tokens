@@ -11,7 +11,7 @@ import { hueToAccent, spectrumColor } from '@/lib/playground/color'
 import type { ModeName } from '@/lib/diffusion/types'
 
 // The playground is the case study's finale: every axis the piece demonstrated,
-// freed to combine. Motion mode × glyph style × reveal duration × color — all
+// freed to combine. Motion mode × glyph style × reveal duration × color, all
 // composable, all live. Color changes apply in place (CSS var + per-word
 // color), so dragging the wheel recolors the answer without restarting it;
 // anything that changes the choreography or content re-runs the exchange.
@@ -61,8 +61,8 @@ type Preset = {
 }
 
 // Quick-start recipes that echo the brand specimens from the gallery. Click
-// one, then tweak any dial from there — proof the whole language is one
-// contract, not a set of separate effects.
+// one, then tweak any dial from there: proof the whole language is one
+// contract, expressed through shared dials.
 const PRESETS: Preset[] = [
   { id: 'spectra', label: 'Spectra', mode: 'fog', style: 'words', duration: 'quick', spectrum: true, hue: 268 },
   { id: 'borealis', label: 'Borealis', mode: 'aurora', style: 'words', duration: 'deep', spectrum: false, hue: 228 },
@@ -87,11 +87,11 @@ export function Playground() {
   const durationScale = DURATION_SCALE[duration]
   const durationLabel = DURATION_ITEMS.find((item) => item.id === duration)?.label.toLowerCase() ?? duration
 
-  // Color is intentionally absent from the run key — see file header.
+  // Color is intentionally absent from the run key, see file header.
   const runKey = `${promptId}-${mode}-${style}-${duration}-${replayKey}`
 
   // Solid: the chosen hue. Spectrum: the overlay rides a hue offset from the
-  // rainbow's origin so the band reads as part of, not against, the wash.
+  // rainbow's origin so the band reads as part of the wash.
   const accent = spectrum ? hueToAccent(hue + 36) : hueToAccent(hue)
 
   const wordColor = useMemo(() => {
@@ -129,7 +129,7 @@ export function Playground() {
 
   return (
     <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_396px] items-start">
-      {/* Stage — the dark surface, lifted by a faint glow in the live accent. */}
+      {/* Stage, the dark surface, lifted by a faint glow in the live accent. */}
       <div
         className="relative rounded-2xl overflow-hidden min-h-[520px] flex flex-col"
         style={{
@@ -211,7 +211,7 @@ export function Playground() {
         </div>
       </div>
 
-      {/* Console — controls echo the live accent (active dots, focus rings). */}
+      {/* Console, controls echo the live accent (active dots, focus rings). */}
       <aside
         className="w-full lg:sticky lg:top-24 rounded-2xl border p-5 md:p-6"
         style={{

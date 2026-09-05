@@ -28,7 +28,8 @@ import { Fragment, useEffect, useRef } from 'react'
 const ANSWER = 'Here are three calmer ways to start your morning, based on your notes.'
 
 // Brand signature gradient. Blue -> violet -> magenta, swept through each word
-// on resolve. The SETTLED text is INK (solid, readable), never the gradient.
+// on resolve. The SETTLED text renders in solid, readable INK; the gradient
+// sweep belongs only to the resolve moment.
 const GRAD_BLUE = '#4285F4'
 const GRAD_VIOLET = '#9168C0'
 const GRAD_MAGENTA = '#D96570'

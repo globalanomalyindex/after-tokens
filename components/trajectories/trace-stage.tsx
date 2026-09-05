@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
 import {
@@ -38,8 +38,33 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
     [trace.id, msPerStep],
   )
 
+  const guessesShownRef = useRef<HTMLSpanElement>(null)
+  const seenGuessesRef = useRef<Set<string>>(new Set())
+
+  // Wraps traceProvisionalText to also count how many distinct (word, guess)
+  // pairs the pending state has actually shown, i.e. how many times the
+  // floor in traceProvisionalText let a real model guess through the pending
+  // state instead of falling back to authored noise. Written straight to the
+  // DOM through the same ref path as the step counter below, so counting
+  // costs no re-render.
   const provisionalAt = useCallback(
-    (index: number, step: number) => traceProvisionalText(trace, index, step),
+    (index: number, step: number) => {
+      const text = traceProvisionalText(trace, index, step)
+      const w = trace.words[index]
+      // Only a word still pending counts as a "guess": once step reaches
+      // lock_step, traceProvisionalText returns the committed word itself,
+      // its settled answer instead of a live prediction.
+      if (text !== undefined && w && step < w.lock_step) {
+        const key = `${index}:${text}`
+        if (!seenGuessesRef.current.has(key)) {
+          seenGuessesRef.current.add(key)
+          if (guessesShownRef.current) {
+            guessesShownRef.current.textContent = `guesses shown ${String(seenGuessesRef.current.size).padStart(2, '0')}`
+          }
+        }
+      }
+      return text
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [trace.id],
   )
@@ -56,8 +81,26 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
     [trace.id],
   )
 
+  // The commit confidence itself, fed straight to DiffusionText: it scales
+  // the settle overshoot and, in trace mode, the resolved word's opacity, so
+  // certainty at commit reads as certainty on screen.
+  const wordConf = useCallback(
+    (index: number) => trace.words[index]?.conf,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [trace.id],
+  )
+
   const stepReadoutRef = useRef<HTMLSpanElement>(null)
   const lengthReadoutRef = useRef<HTMLSpanElement>(null)
+
+  // Reset the guess count whenever a new run starts: a new trace, a new
+  // pace, or either replay path (the local button or the section's shortcut).
+  useEffect(() => {
+    seenGuessesRef.current = new Set()
+    if (guessesShownRef.current) {
+      guessesShownRef.current.textContent = 'guesses shown 00'
+    }
+  }, [trace.id, msPerStep, replayKey, localReplay])
 
   const handleProgress = useCallback(
     (p: number) => {
@@ -118,6 +161,7 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
             provisionalAt={provisionalAt}
             stepCount={stepCount}
             wordColor={wordColor}
+            wordConf={wordConf}
             className="text-base md:text-lg leading-relaxed"
           >
             {answer}
@@ -134,6 +178,9 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
           </span>
           <span ref={lengthReadoutRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>
             length open
+          </span>
+          <span ref={guessesShownRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>
+            guesses shown 00
           </span>
         </div>
         <div className="flex flex-col items-end gap-1.5">

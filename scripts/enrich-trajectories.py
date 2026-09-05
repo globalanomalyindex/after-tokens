@@ -25,9 +25,14 @@ for fp in sorted(glob.glob(os.path.join(OUT, "full", "*.json.gz"))):
         for s in range(0, w["lock_step"] + 1):
             am = steps[s]["argmax"]
             # committed piece once committed, else the step's provisional argmax piece
+            pm = steps[s]["pmax"]
             txt = "".join((tokens[q]["text"] if 0 <= tokens[q]["step"] <= s else piece(am[q])) for q in pos).strip()
+            # the guess's probability: the weakest uncommitted token's max-prob at
+            # this step (once everything is committed, the word's commit conf)
+            open_ps = [pm[q] for q in pos if not (0 <= tokens[q]["step"] <= s)]
+            pw = min(open_ps) if open_ps else w["conf"]
             if txt != prev:
-                changes.append([s, txt]); prev = txt
+                changes.append([s, txt, round(float(pw), 3)]); prev = txt
         w["changes"] = changes
         if changes and changes[-1][1] != w["text"]:
             print(f"  warn {compact['id']} word {w['index']}: final provisional {changes[-1][1]!r} != {w['text']!r}")

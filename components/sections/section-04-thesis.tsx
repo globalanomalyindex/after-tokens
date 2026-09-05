@@ -6,14 +6,14 @@ import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { RevealComparison } from '@/components/diffusion/reveal-comparison'
-import { TRACE_NUMBERS, DERIVED } from '@/lib/traces/findings'
+import { TRACE_NUMBERS, SYNTHESIS, HYPOTHESES, type SynthesisTag } from '@/lib/traces/findings'
 
 // The three reasons a region-by-region, phi-spaced reveal is worth testing against
 // a generic linear blur -> unblur, from a comprehension standpoint. Reason 01 ties
-// the cadence to a measured rhythm in nature (framed as a hypothesis, not a law);
-// 02 and 03 carry the cognitive science as inline definition chips you can open.
-// None of this is evidence the reveal works: it is why the hypothesis is worth the
-// study described above.
+// the cadence to a measured rhythm in nature, framed as a hypothesis that could be
+// wrong; 02 and 03 carry the cognitive science as inline definition chips you can
+// open. None of this is evidence the reveal works: it is why the hypothesis is
+// worth the study described above.
 const REASONS: { n: string; lead: string; body: ReactNode }[] = [
   {
     n: '01',
@@ -23,14 +23,14 @@ const REASONS: { n: string; lead: string; body: ReactNode }[] = [
         The rhythm is not arbitrary. It is the 1/φ spacing that lays out{' '}
         <NatureWord kind="nautilus">shells</NatureWord>, <NatureWord kind="sunflower">seed heads</NatureWord>, and the
         spiral of <NatureWord kind="leaves">leaves</NatureWord> up a stem. The bet is that growth the eye evolved
-        alongside reads as ordered, not random, faster than a flat ramp does. That is a hypothesis you can test, not a
-        law nature hands you.
+        alongside reads as ordered, faster than a flat ramp does. That is a hypothesis you can test. Nature hands you
+        a pattern here; whether it reads that way on a screen is the open question.
       </>
     ),
   },
   {
     n: '02',
-    lead: 'a process you can read, not a wait',
+    lead: 'a process you can read while it runs',
     body: (
       <>
         A linear blur gives the eye one job: wait, with no read on how far along the answer is. A region-by-region
@@ -55,144 +55,17 @@ const REASONS: { n: string; lead: string; body: ReactNode }[] = [
   },
 ]
 
-// The rationale ledger. A reveal system is mostly numbers, and a reviewer is right
-// to ask which of them had to be that. Each row is tagged with how the value was
-// arrived at, because the honest answer differs per row:
-//   derived    - falls out of a property, and the argument for it survives scrutiny
-//   constraint - forced by what the interface has to communicate
-//   tuned      - eyeballed, frozen, and safe to change
-// Three rows are now corroborated against the recorded trajectories: the 1/φ decay
-// (its ratio still holds, but the recorded cadence is linear, not phi), the growth
-// order (its statistics are fitted to twenty recorded runs), and the 440ms pending
-// cycle (the recorded flip rate lands within about 14 percent of it). Every claim
-// here is checkable against the code: lib/diffusion/modes/mycelium.ts holds the
-// cadence and the growth order, components/diffusion/reveal-comparison.tsx holds
-// the golden-angle stride and the shared blur range.
-type Tag = 'derived' | 'constraint' | 'tuned'
-
-const TAG_COLOR: Record<Tag, string> = {
+// Tag colors for the decision ledger (SYNTHESIS in lib/traces/findings.ts):
+//   derived    the value falls out of a measurement or a property
+//   constraint forced by what the interface has to communicate
+//   tuned      set by eye, labeled so, safe to change
+//   retired    kept only as the comparison stimulus
+const TAG_COLOR: Record<SynthesisTag, string> = {
   derived: 'color-mix(in oklab, var(--section-accent) 88%, var(--ink))',
   constraint: 'var(--ink-2)',
   tuned: 'var(--muted)',
+  retired: 'var(--muted)',
 }
-
-const RATIONALE: { decision: string; tag: Tag; body: ReactNode }[] = [
-  {
-    decision: 'the 1/φ decay between locks',
-    tag: 'derived',
-    body: (
-      <>
-        Each gap is the previous one divided by φ, so the reveal opens as a breadcrumb and ends as a flood. The ratio
-        is the part worth defending. At 1/φ, and only at 1/φ, every gap equals the sum of the next two: the wait you
-        are in is always exactly as long as the two waits after it combined. That is the defining property of φ, not a
-        resemblance to one. A faster decay spends most of the window on the first gap and then dumps the rest; a slower
-        one flattens toward a metronome. This is the balance point that has a definition instead of a preference. The
-        series is floored at 45 milliseconds, roughly three frames, because the pure curve runs to zero and two words
-        landing on the same frame is simultaneity, which erases the signal the reveal exists to send. The recorded
-        sampler does not decay this way: its word-lock cadence, the median lock fraction by word rank, stays close to a
-        straight line, because the schedule commits a fixed number of tokens per step regardless of confidence. Phi is
-        an authored acceleration, not a description of any sampler measured here. The mycelium chart now draws both
-        curves, and the study in the closing section can compare a linear cadence against phi with real stimuli instead
-        of two authored ones.
-      </>
-    ),
-  },
-  {
-    decision: 'the golden-angle order in the comparison',
-    tag: 'derived',
-    body: (
-      <>
-        Which word goes next is not random. The order steps across the line on a stride near n/φ, forced coprime to the
-        word count so it visits every word exactly once. φ is the hardest number to approximate with a fraction, and
-        that is precisely why the stride never settles into a repeating pattern and never lands two neighbors back to
-        back. An out-of-order reveal has two failure modes: it can look like a pattern, which reads as mechanical, or it
-        can keep landing adjacent words, which quietly turns back into left to right. This is the one stride that avoids
-        both at any sentence length with no hand-tuned table of magic numbers. The{' '}
-        <NatureWord kind="sunflower">seed heads</NatureWord> are why I looked here. The coprimality is why I stayed.
-      </>
-    ),
-  },
-  {
-    decision: 'a growth order fitted to the recorded sampler',
-    tag: 'derived',
-    body: (
-      <>
-        The shipped mycelium mode does not use the golden-angle stride, and it no longer uses a text hash either. A
-        fixed stride or a hash gives every sentence of the same length the identical shape, which is correct for a
-        controlled stimulus and wrong for a product: a reader would start recognizing the animation instead of the
-        answer. So the order is a seeded growth process: it commits adjacent to an already-locked position most of the
-        time ({Math.round(TRACE_NUMBERS.adjacentFrac.lowconfB32 * 100)}% of consecutive commits, matching the recorded
-        sampler) and opens a fresh anchor elsewhere every so often (one new anchor per about{' '}
-        {Math.round(100 / TRACE_NUMBERS.seedsPer100Default)} commits, also matched). Both statistics are fitted to
-        twenty recorded trajectories. The block schedule is deliberately not imitated, because the piece&apos;s position
-        is that the macro order belongs to the schedule and this order models what confidence does inside it. The
-        process is still seeded from the response text, so the same answer always resolves the same way. The recorded
-        mode remains the exception: its order is the sampler&apos;s own, and it is the only order in this piece that
-        carries model information about a specific answer.
-      </>
-    ),
-  },
-  {
-    decision: 'blur, not a fade or a scramble',
-    tag: 'constraint',
-    body: (
-      <>
-        A pending word has to say three things at once: I exist, I am this long, and you cannot read me yet. A fade
-        leaves it readable. A character scramble invents content and changes the length. Blur is the only channel that
-        removes legibility continuously while holding position, length, and word shape, and length is what keeps the
-        line still so the eye can plan ahead into it.
-      </>
-    ),
-  },
-  {
-    decision: 'nine pixels of blur, a 0.32 opacity floor',
-    tag: 'tuned',
-    body: (
-      <>
-        Eyeballed, then frozen. Nine pixels is where a short word stops being readable but has not yet bled into its
-        neighbor; the floor is high enough that a pending word holds its slot instead of the line reading as
-        half-empty. Neither number is derived from anything and a study could move both without touching the thesis.
-        What matters is that both panels above use identical values, which is the only reason that comparison is a fair
-        test rather than a strawman.
-      </>
-    ),
-  },
-  {
-    decision: '440 milliseconds between pending glyphs',
-    tag: 'tuned',
-    body: (
-      <>
-        Set by eye, then measured. The sampler&apos;s provisional guess for a pending token changes every{' '}
-        {DERIVED.msPerFlipRecorded} milliseconds at recorded pace, so the authored churn is within about 14 percent of
-        the real rate and stays. At the 40 millisecond replay pace the recorded mode churns faster still ({DERIVED.msPerFlipReplay}{' '}
-        ms), because the model made the same number of guesses in less time. That is the truth of the process, not a
-        design choice: the recorded mode is not tuned to match the authored cycle, and it does not.
-      </>
-    ),
-  },
-  {
-    decision: 'the word as the unit of state',
-    tag: 'constraint',
-    body: (
-      <>
-        The word is the smallest thing that means anything on its own, so it is the smallest thing whose state is worth
-        reporting. Half a resolved character is noise. A whole resolved line is too coarse to tell you which part of the
-        answer has settled.
-      </>
-    ),
-  },
-  {
-    decision: 'four modes',
-    tag: 'tuned',
-    body: (
-      <>
-        One mode is an effect. Two is a comparison. Four is the smallest set that varies order, spacing, overlay, and
-        glyph treatment independently enough to show the contract is separable from the look. There is nothing special
-        about four.
-      </>
-    ),
-  },
-]
 
 const PRINCIPLES = [
   {
@@ -223,7 +96,7 @@ const PIPELINE = [
 
 export function SectionThesis() {
   return (
-    <Section id="thesis" n={4} act="II" title="Hypothesis and system" eyebrow={['Hypothesis', 'Signal, not spectacle']}>
+    <Section id="thesis" n={4} act="II" title="Hypothesis and design" eyebrow={['Hypothesis', 'Legible state']}>
       <div className="max-w-3xl mb-16 md:mb-24">
         <div className="text-xs uppercase tracking-[0.16em] mb-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
           + The product position
@@ -243,43 +116,20 @@ export function SectionThesis() {
           the system has actually settled. A reveal that overstates certainty is worse than no reveal at all.
         </p>
         <p className="text-base leading-relaxed max-w-2xl mt-3">
-          The previous section shows what that state looks like in a real sampler. The order is not random and not
-          left to right, and the model&apos;s provisional guess for an uncommitted position changes about{' '}
-          {TRACE_NUMBERS.flipsPerTokenLowconf.toFixed(1)} times before it commits, which is the number an interface
-          has to design against.
+          The previous section shows what that state looks like in a real sampler. The order follows the sampler&apos;s
+          confidence inside each block of its schedule, and the model&apos;s provisional guess for an uncommitted
+          position changes about {TRACE_NUMBERS.flipsPerTokenLowconf.toFixed(1)} times before it commits. Those are the
+          numbers the reveal below is designed against.
         </p>
       </div>
 
-      <div className="text-xs uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-        + A testable interaction hypothesis
-      </div>
-      <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-3 max-w-2xl">
-        can a reveal communicate progress better than a uniform blur?
-      </h3>
-      <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
-        Both panels use the same words, blur range, and total duration. One sharpens everything on a flat ramp; the other
-        resolves authored regions out of order. This is a prototype stimulus, not a research result.
-      </p>
-
-      <RevealComparison />
-      <p className="mt-4 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
-        Study prompt: after interrupting the sequence at matched timestamps, can a participant identify what is still
-        changing, understand the visible text, and do so without added distraction? Both panels run the same loop on
-        the same clock, so any instant you catch them at is a matched pair.
-      </p>
-      <p className="mt-2 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
-        An answer that arrives whole gives the eye nothing to track, and <DefinitionTerm term="change blindness" /> is
-        why a large simultaneous change can pass unread. Staging the arrival is what makes the change perceivable at
-        all, which is the part of the hypothesis a study would have to break first.
-      </p>
-
       <div className="mt-16 md:mt-24">
         <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-          + Why the hypothesis is plausible
+          + What a reader needs
         </div>
         <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
-          The mechanisms below are documented findings about how people read and wait. They are why this hypothesis is
-          worth testing, not evidence that it holds. None of them was measured on this prototype.
+          The mechanisms below are documented findings about how people read and wait. They say what a reveal has to
+          respect. None of them was measured on this prototype, and none of them is evidence that the reveal helps.
         </p>
         <div className="grid md:grid-cols-3 gap-8 md:gap-10">
           {REASONS.map((r) => (
@@ -299,43 +149,90 @@ export function SectionThesis() {
         </div>
       </div>
 
-      {/* The rationale ledger. Reason 01 above claims the cadence is not arbitrary,
-          which invites the obvious next question. This answers it in the open, and
-          labels the values that genuinely are arbitrary as arbitrary. */}
+      {/* The decision ledger: the design itself, one row per rendering decision,
+          with the principle and the finding that drive it and how the value was
+          arrived at. The reasoning in order is docs/redesign.md. */}
       <div className="mt-16 md:mt-24">
         <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-          + Defending the arbitrary-looking choices
+          + The reveal, decision by decision
         </div>
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-4 max-w-2xl">
-          every number here is either derived or eyeballed. this is which.
+          every choice traces to a principle, a measurement, or an admitted guess
         </h3>
         <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
-          A reveal system is mostly numbers, and numbers invite the question of whether any of them had to be that.
-          Some did, for reasons that hold up under argument. Some were tuned by eye and would survive being changed.
-          Saying which is which is the difference between a system and a look.
+          Twelve decisions make the shipped reveal. Each row names what drives it and how the value was arrived at: derived
+          from a measurement or a property, forced by what the interface has to say, tuned by eye and labeled so, or
+          retired to the comparison stimulus. Saying which is which is the difference between a system and a look.
         </p>
         <dl className="max-w-4xl" style={{ borderTop: '1px solid color-mix(in oklab, var(--ink) 14%, transparent)' }}>
-          {RATIONALE.map((r) => (
+          {SYNTHESIS.map((row) => (
             <div
-              key={r.decision}
-              className="grid md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] gap-x-8 gap-y-2 py-6"
+              key={row.decision}
+              className="grid md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] gap-x-8 gap-y-2 py-6"
               style={{ borderBottom: '1px solid color-mix(in oklab, var(--ink) 14%, transparent)' }}
             >
               <dt>
-                <span className="block text-base font-semibold lowercase leading-snug">{r.decision}</span>
+                <span className="block text-base font-semibold lowercase leading-snug">{row.decision}</span>
                 <span
                   className="mt-1.5 block text-[10px] uppercase tracking-[0.18em]"
-                  style={{ fontFamily: 'var(--font-mono)', color: TAG_COLOR[r.tag] }}
+                  style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--section-accent) 88%, var(--ink))' }}
                 >
-                  [{r.tag}]
+                  {row.from}
+                </span>
+                <span
+                  className="mt-1 block text-[10px] uppercase tracking-[0.18em]"
+                  style={{ fontFamily: 'var(--font-mono)', color: TAG_COLOR[row.tag] }}
+                >
+                  [{row.tag}]
                 </span>
               </dt>
               <dd className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-                {r.body}
+                {row.effect}
               </dd>
             </div>
           ))}
         </dl>
+      </div>
+
+      <div className="mt-16 md:mt-24">
+        <div className="text-xs uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+          + The hypothesis, as three claims a study can break
+        </div>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-8 max-w-2xl">
+          legible state, no reading cost, calibrated trust
+        </h3>
+        <dl className="grid md:grid-cols-3 gap-px rounded-2xl overflow-hidden border mb-10" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+          {HYPOTHESES.map((h) => (
+            <div key={h.id} className="p-6" style={{ background: 'var(--surface)' }}>
+              <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--section-accent) 88%, var(--ink))' }}>
+                {h.id} · {h.lead}
+              </dt>
+              <dd className="text-sm leading-relaxed">{h.claim}</dd>
+              <dd className="mt-3 text-[11px] leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+                falsified if {h.falsifiedIf}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="text-[10px] uppercase tracking-[0.18em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+          + The stimulus for H1
+        </div>
+        <p className="text-base leading-relaxed max-w-2xl mb-8 md:mb-10">
+          Both panels use the same words, blur range, and total duration. One sharpens everything on a flat ramp; the
+          other resolves regions out of order on the retired phi cadence. This is a prototype stimulus. It is not a
+          research result.
+        </p>
+        <RevealComparison />
+        <p className="mt-4 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
+          Interrupt the loop at any instant and both panels are a matched pair: same words, same clock. The study asks
+          which one lets a participant say what is still changing.
+        </p>
+        <p className="mt-2 text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--muted)' }}>
+          An answer that arrives whole gives the eye nothing to track, and <DefinitionTerm term="change blindness" /> is
+          why a large simultaneous change can pass unread. Staging the arrival is what makes the change perceivable at
+          all, which is the part of H1 a study would have to break first.
+        </p>
       </div>
 
       <div className="mt-16 md:mt-24">
@@ -360,7 +257,7 @@ export function SectionThesis() {
           + System anatomy
         </div>
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight lowercase leading-tight mb-4 max-w-2xl">
-          a reusable engine, not ten one-off animations
+          a reusable engine
         </h3>
         <p className="text-base leading-relaxed max-w-2xl mb-8">
           The implementation separates meaning, timing, and visual identity. That makes the prototype testable: a study can
@@ -392,16 +289,18 @@ export function SectionThesis() {
             still to validate
           </div>
           <p className="text-base leading-relaxed">
-            Whether region-based revealing improves state identification or comprehension. If it performs no better than
-            the baseline, or adds distraction, the legibility thesis fails.
+            All three claims. The prototype supplies the stimuli, including real sampler order and real commit
+            probabilities; a study supplies the readers.
           </p>
         </div>
       </div>
 
       <div className="mt-10 max-w-3xl border-l-2 pl-5" style={{ borderColor: 'var(--section-accent)' }}>
         <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-          <strong className="font-semibold">Decision:</strong> I replaced abstract progress graphs with the live word
-          comparison above. The graph explained the idea; the paired stimulus makes the interaction itself inspectable.
+          <strong className="font-semibold">Decision:</strong> the reveal was rebuilt from these rows after the
+          trajectories were measured. Four earlier choices were retired by them: a phi cadence, a field-wide sweep during
+          the reveal, a halo left on every locked word, and a closing beat at a fixed fraction of the run. The reasoning
+          in order is in the repository as docs/redesign.md.
         </p>
       </div>
     </Section>

@@ -3,37 +3,50 @@ import { standardReducedFallback } from '../reduced-motion'
 import { MyceliumOverlay } from '@/components/diffusion/mycelium-overlay'
 import orderModel from '@/data/traces/derived/order-model.json'
 
-export const MYCELIUM_PRE_ROLL_MS = 1500
-
-// Golden ratio decay: each gap is 1/phi (about 0.618) of the previous one.
-// This is an authored acceleration, not a measured one. The recorded
-// word-lock cadence under the default sampler is close to linear (see
-// lib/traces/findings.ts, DERIVED.cadenceMaxDeviation) because the block
-// schedule commits a fixed number of tokens per step. No sampler in the
-// trace set produces this curve; it stays because it reads well, and the
-// comparison chart in the "what a sampler actually does" section shows the
-// authored curve against the recorded one so the difference is visible
-// rather than implied.
-export const PHI = 1.6180339887498949
-export const MYCELIUM_FIRST_GAP_MS = 720
+// Cadence. The recorded sampler's word-lock rate is linear, not accelerating:
+// the block schedule commits a fixed number of tokens per denoising step, so
+// successive word locks land at close to equal intervals (see
+// lib/traces/findings.ts, DERIVED.cadenceMaxDeviation, a median deviation of
+// 0.057 from a straight line across the 20 traces). The shipped cadence below
+// is linear for the same reason and bounded by the Doherty threshold: no gap
+// between visible changes should run past the point where attention drifts,
+// so every interval clamps to at most MYCELIUM_MAX_GAP_MS. The order those
+// locks land in is a separate question, the fitted growth process in
+// computeLockOrder below, untouched by this change.
+//
+// Phi's acceleration is retired from this cadence. It remains, labeled as the
+// retired comparison curve, as the stimulus in reveal-comparison.tsx and the
+// golden-curve chart, so the difference between the authored guess and the
+// measured cadence stays visible rather than implied.
+export const MYCELIUM_PRE_ROLL_MS = 320
+export const MYCELIUM_MAX_GAP_MS = 80
 export const MYCELIUM_MIN_GAP_MS = 45
-
-export function goldenDecayGap(n: number): number {
-  // gap_n = MYCELIUM_FIRST_GAP_MS / PHI^n, clamped to the floor.
-  const gap = MYCELIUM_FIRST_GAP_MS / Math.pow(PHI, n)
-  return Math.max(MYCELIUM_MIN_GAP_MS, gap)
-}
+export const MYCELIUM_BUDGET_MS = 5200
 
 const RESOLVING_TO_RESOLVED_MS = 90
 const TAIL_MS = 260
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+/** The interval between successive word locks: the reveal's time budget
+ *  spread evenly across the answer's words, bounded so a short answer never
+ *  waits past the Doherty threshold between locks and a long one never
+ *  flickers faster than the eye can register a change as a change. */
+export function wordInterval(n: number): number {
+  if (n <= 0) return MYCELIUM_MAX_GAP_MS
+  return clamp(MYCELIUM_BUDGET_MS / n, MYCELIUM_MIN_GAP_MS, MYCELIUM_MAX_GAP_MS)
+}
+
 export function computeWordLockTimes(wordCount: number): number[] {
   const times: number[] = []
   if (wordCount === 0) return times
+  const gap = wordInterval(wordCount)
   let t = MYCELIUM_PRE_ROLL_MS
   times.push(t)
   for (let i = 1; i < wordCount; i++) {
-    t += goldenDecayGap(i - 1)
+    t += gap
     times.push(t)
   }
   return times

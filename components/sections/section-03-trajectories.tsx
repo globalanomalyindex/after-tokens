@@ -8,7 +8,7 @@ import { PromptPicker } from '@/components/coda/prompt-picker'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { TRACE_IDS, TRACE_META, loadTrace, type TraceId } from '@/lib/traces/index'
 import { FINDINGS, FINDINGS_HEADING, LEAD, LIMITS, LLADA, ORDER_DRAWN } from '@/lib/traces/findings'
-import type { TraceCompact } from '@/lib/diffusion/traces'
+import { PROVISIONAL_FLOOR, type TraceCompact } from '@/lib/diffusion/traces'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
 
 type Config = 'lowconf-b32' | 'random-b32' | 'lowconf-b128'
@@ -177,6 +177,9 @@ export function SectionTrajectories() {
         <div className={EYEBROW} style={EYEBROW_STYLE}>
           + A recorded answer, replayed
         </div>
+        <p className="text-base leading-relaxed max-w-3xl mb-8" style={{ color: 'var(--ink-2)' }}>
+          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead.
+        </p>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
           <div>
             {activeTrace ? (
@@ -310,14 +313,14 @@ export function SectionTrajectories() {
             + Corroboration at 8B
           </div>
           <p className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            Four of the coda prompts were also run through {LLADA.model} ({LLADA.quant}) under the same {LLADA.sampler}. Commit order correlated with reading order at τ = {signed(LLADA.tau)}, with a median jump of {LLADA.meanJump.toFixed(1)} positions against roughly {LLADA.randomExpected.toFixed(0)} expected from a uniformly random order, reproducing the block-schedule pattern at {LLADA.params}. llama.cpp&rsquo;s sampler exposes commit order and timing through its step callback but not per-position confidence, so this set corroborates order and timing, not the confidence findings above.
+            Four of the coda prompts were also run through {LLADA.model} ({LLADA.quant}) under the same {LLADA.sampler}. Commit order correlated with reading order at τ = {signed(LLADA.tau)}, with a median jump of {LLADA.meanJump.toFixed(1)} positions against roughly {LLADA.randomExpected.toFixed(0)} expected from a uniformly random order, reproducing the block-schedule pattern at {LLADA.params}. llama.cpp&rsquo;s sampler exposes commit order and timing through its step callback. It does not expose per-position confidence, so this set corroborates order and timing. The confidence findings above rest on the 0.6B data alone.
           </p>
         </div>
       </div>
 
       <div className="mt-16 md:mt-24 max-w-3xl">
         <div className={EYEBROW} style={EYEBROW_STYLE}>
-          + What this does and does not show
+          + Scope and limits
         </div>
         <p className="text-base leading-relaxed">{LIMITS}</p>
         <p className="mt-4 text-xs leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>

@@ -6,14 +6,14 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 // A live, looping experiment: the same line resolves two ways, finishing at the
 // exact same instant. Both panels share the SAME blur range and the SAME opacity
 // floor (see BLUR_MAX / OP_FLOOR below), so the only variable is the cadence,
-// the order and pace words arrive in. The linear side is a fair baseline, not a
-// strawman.
+// the order and pace words arrive in. That shared range and floor are what
+// make the linear side a fair baseline.
 //   left  : generic LINEAR blur -> unblur (a uniform wall, one constant ramp,
 //           every word sharpening together)
 //   right : GOLDEN-RATIO reveal: words land OUT OF ORDER on a 1/φ-decay cadence
 //           (a deliberate first breadcrumb, then an accelerating flood). The
 //           reveal order itself follows a golden-angle stride, the way seeds
-//           pack a seed head, scattered, never left-to-right.
+//           pack a seed head, scattered rather than left to right.
 //
 // Under each panel runs a row of evenly-spaced crosshairs that lights up like a
 // runway. The traveling mark is driven by how much of THAT panel has actually
@@ -69,10 +69,10 @@ const SLOTS: number[] = (() => {
   return cum.map((c) => (c / last) * (1 - WORD_SPAN))
 })()
 
-// The reveal ORDER, scattered, not sequential. A stride near n/φ steps through
-// every index exactly once (it is coprime to n), the same golden-angle trick a
-// seed head uses to pack without clustering. So word k of the cadence is a jump
-// across the line, never the next one over.
+// The reveal ORDER is scattered. A stride near n/φ steps through every index
+// exactly once (it is coprime to n), the same golden-angle trick a seed head
+// uses to pack without clustering. So word k of the cadence jumps to a
+// distant index in the line.
 const REVEAL_ORDER: number[] = (() => {
   const n = WORDS.length
   let stride = Math.max(2, Math.round(n / PHI))

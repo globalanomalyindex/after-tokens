@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { mycelium, computeWordLockTimes, computeLockOrder } from '@/lib/diffusion/modes/mycelium'
+import {
+  mycelium,
+  computeWordLockTimes,
+  computeLockOrder,
+  MYCELIUM_PRE_ROLL_MS,
+  MYCELIUM_MIN_GAP_MS,
+  MYCELIUM_MAX_GAP_MS,
+} from '@/lib/diffusion/modes/mycelium'
 import type { MeasuredAtom } from '@/lib/diffusion/types'
 
 const measure = (count: number) =>
@@ -20,10 +27,12 @@ const syntheticWords = (k: number): MeasuredAtom[] =>
   }))
 
 describe('mycelium', () => {
-  it('total duration in the breach-loading band (2800-3800ms) for 10 words', () => {
+  it('total duration for 10 words matches the bounded linear cadence', () => {
     const t = mycelium.totalDuration(measure(10))
-    expect(t).toBeGreaterThanOrEqual(2800)
-    expect(t).toBeLessThanOrEqual(3800)
+    // 320 pre-roll + 9 gaps at the 80ms ceiling (5200/10 clamps to it) + the
+    // 90ms resolving beat + the 260ms tail.
+    expect(t).toBeGreaterThanOrEqual(1300)
+    expect(t).toBeLessThanOrEqual(1500)
   })
 
   it('emits a resolving + resolved event per word', () => {
@@ -32,17 +41,44 @@ describe('mycelium', () => {
     expect(events.filter((e) => e.state === 'resolved')).toHaveLength(8)
   })
 
-  it('lock times accelerate: first gap is the slowest, later gaps shrink', () => {
+  it('pre-roll is 320ms', () => {
     const times = computeWordLockTimes(10)
+    expect(times[0]).toBe(MYCELIUM_PRE_ROLL_MS)
+    expect(MYCELIUM_PRE_ROLL_MS).toBe(320)
+  })
+
+  it('lock times are linear: every successive gap is equal', () => {
+    const times = computeWordLockTimes(12)
     const gaps: number[] = []
     for (let i = 1; i < times.length; i++) {
       const prev = times[i - 1] ?? 0
       const curr = times[i] ?? 0
       gaps.push(curr - prev)
     }
-    expect(gaps[0]!).toBeGreaterThan(gaps[2]!)
-    expect(gaps[1]!).toBeGreaterThan(gaps[4]!)
-    expect(gaps[gaps.length - 1]!).toBeLessThanOrEqual(100)
+    for (const gap of gaps) {
+      expect(gap).toBeCloseTo(gaps[0]!, 6)
+    }
+  })
+
+  it('every gap stays within [MYCELIUM_MIN_GAP_MS, MYCELIUM_MAX_GAP_MS]', () => {
+    for (const n of [1, 2, 5, 10, 30, 87, 150]) {
+      const times = computeWordLockTimes(n)
+      for (let i = 1; i < times.length; i++) {
+        const gap = (times[i] ?? 0) - (times[i - 1] ?? 0)
+        expect(gap).toBeGreaterThanOrEqual(MYCELIUM_MIN_GAP_MS)
+        expect(gap).toBeLessThanOrEqual(MYCELIUM_MAX_GAP_MS)
+      }
+    }
+  })
+
+  it('a 30-word answer locks its last word under 3000ms', () => {
+    const times = computeWordLockTimes(30)
+    expect(times.at(-1)!).toBeLessThan(3000)
+  })
+
+  it('an 87-word answer locks its last word under 6000ms', () => {
+    const times = computeWordLockTimes(87)
+    expect(times.at(-1)!).toBeLessThan(6000)
   })
 
   it('computeLockOrder is deterministic for a given text and varies across texts', () => {

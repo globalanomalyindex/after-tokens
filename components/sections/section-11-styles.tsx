@@ -48,11 +48,12 @@ export function SectionStyles() {
       eyebrow={['Generalization', 'Different motion, same semantics']}
     >
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter lowercase leading-[1.02] mb-6 max-w-4xl">
-        <span className="title-index">ix.</span>nature is the source library, not the proof
+        <span className="title-index">ix.</span>nature is the source library
       </h2>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-16">
         I borrowed behaviors (branching, dissipation, bands, division) because they gave each mode a
-        coherent verb. That is a creative constraint, not evidence that the interaction works.
+        coherent verb. That is a creative constraint. Whether the interaction works is a separate question,
+        answered by the design contract below and an eventual user study.
       </p>
 
       {/* The thesis. */}
@@ -120,7 +121,7 @@ export function SectionStyles() {
         ))}
       </div>
 
-      {/* Rich content: not just plain text. */}
+      {/* Rich content: headings, emphasis, color, and layout. */}
       <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] gap-8 md:gap-12 items-center mb-16 md:mb-24">
         <div>
           <div

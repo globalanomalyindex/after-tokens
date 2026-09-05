@@ -28,8 +28,10 @@ import type { MeasuredAtom, ModeName, ModeStrategy, OverlayProps } from '@/lib/d
 // recorded mode pass a `strategy` prop instead (see DiffusionTextProps).
 const strategies: Record<Exclude<ModeName, 'trace'>, ModeStrategy> = { mycelium, fog, aurora, mitosis }
 
-const CYCLE_INTERVAL_MS = 440
-const GLOBAL_UNBLUR_THRESHOLD = 0.82
+// The sampler's provisional argmax changed a median of every 387 milliseconds
+// at recorded pace (see lib/traces/findings.ts, DERIVED.msPerFlipRecorded).
+// 390 keeps the authored churn at that measured rate.
+const CYCLE_INTERVAL_MS = 390
 
 type DiffusionTextProps = {
   children: string
@@ -63,7 +65,7 @@ type DiffusionTextProps = {
   // the caller. When present it replaces the strategies[mode] lookup
   // entirely: a recorded trajectory cannot be a static entry in the
   // strategies table above because it is built from data (which trace, which
-  // sampler config) at runtime, not known at module load.
+  // sampler config) only known at runtime, after module load.
   strategy?: ModeStrategy
   // Fires the raw 0..1 choreography progress on every change, read through a
   // ref by callers (e.g. a trajectory stage's step readout) that need it
@@ -76,6 +78,12 @@ type DiffusionTextProps = {
   // instead of the synthetic near-word noise from buildCandidates.
   provisionalAt?: (index: number, step: number) => string | undefined
   stepCount?: number
+  // The commit confidence for a word, 0..1, when the caller has one (the
+  // recorded trajectory mode does, from the sampler's own softmax at commit).
+  // Returning a number sets --conf on the word's wrapper span, which CSS
+  // reads to scale the settle overshoot and, in trace mode, resolved-word
+  // opacity, so certainty at commit reads as certainty on screen (finding 05).
+  wordConf?: (index: number) => number | undefined
 }
 
 export function DiffusionText({
@@ -94,6 +102,7 @@ export function DiffusionText({
   onProgress,
   provisionalAt,
   stepCount,
+  wordConf,
 }: DiffusionTextProps) {
   const atoms = useMemo(() => tokenize(children), [children])
   // 'words' cycles topical near-words; the other styles DECODE per character
@@ -220,6 +229,26 @@ export function DiffusionText({
 
   const totalDuration = useMemo(() => strategy.totalDuration(measured), [strategy, measured])
 
+  // The closing beat fires at the LAST lock, never at a fixed fraction of the
+  // run: a fixed threshold used to strip blur from still-pending noise for the
+  // final stretch, which showed illegible text as if it were words. Also
+  // remember which word locks last so it can carry the strongest settle
+  // (peak-end: the ending is where the memory of the sequence lands).
+  const closing = useMemo(() => {
+    if (measured.length === 0 || measured.length !== atoms.length) return { at: 1, lastIndex: -1 }
+    const total = strategy.totalDuration(measured)
+    if (total <= 0) return { at: 1, lastIndex: -1 }
+    let lastT = -1
+    let lastIndex = -1
+    for (const e of strategy.computeTimeline(measured)) {
+      if (e.state === 'resolved' && e.t > lastT) {
+        lastT = e.t
+        lastIndex = e.wordIndex
+      }
+    }
+    return { at: lastT < 0 ? 1 : Math.min(1, lastT / total), lastIndex }
+  }, [strategy, measured, atoms.length])
+
   // For decode styles, derive each word's [startP,endP] decode window from the
   // mode timeline (the fraction of total at which the mode locks that word).
   // This is what makes the per-character decode REACT in the mode's style: the
@@ -284,9 +313,9 @@ export function DiffusionText({
   const [provisionalStep, setProvisionalStep] = useState(0)
   const provisionalStepRef = useRef(0)
 
-  // Global unblur once progress crosses threshold, drives the "final reveal" beat.
+  // The closing beat lands when the last word has locked.
   useMotionValueEvent(progress, 'change', (p) => {
-    if (p >= GLOBAL_UNBLUR_THRESHOLD && !unblurred) setUnblurred(true)
+    if (p >= closing.at && !unblurred) setUnblurred(true)
     onProgressRef.current?.(p)
     if (stepCount && stepCount > 0) {
       const nextStep = Math.max(0, Math.min(stepCount - 1, Math.floor(p * (stepCount + 1))))
@@ -430,6 +459,7 @@ export function DiffusionText({
           // A word blooms into its color the instant it locks; pending words
           // stay neutral so the color reads as "the answer resolving."
           const lockedColor = state !== 'pending' ? wordColor?.(atom.index, atoms.length) : undefined
+          const conf = wordConf?.(atom.index)
           return (
             <span
               key={`${atom.index}-${atom.text}`}
@@ -437,11 +467,13 @@ export function DiffusionText({
                 wordRefs.current[i] = el
               }}
               data-word-index={atom.index}
+              data-last-lock={closing.lastIndex === atom.index ? 'true' : undefined}
               style={{
                 display: 'inline',
                 color: lockedColor,
                 transition: 'color 320ms cubic-bezier(0.23, 1, 0.32, 1)',
-              }}
+                ...(conf != null ? { ['--conf' as string]: String(conf) } : {}),
+              } as React.CSSProperties}
             >
               <CyclingWord
                 atomIndex={atom.index}

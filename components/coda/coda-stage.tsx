@@ -42,8 +42,8 @@ export function CodaStage({
   const isTrace = mode === 'trace'
   const traceReady = isTrace && trace != null
 
-  // Memoized on trace.id: the strategy and answer text only need to change
-  // when the underlying trajectory changes, not on every render.
+  // Memoized on trace.id: the strategy and answer text change only when the
+  // underlying trajectory changes.
   const traceAnswer = useMemo(() => (trace ? traceAnswerText(trace) : ''), [trace])
   const traceStrat = useMemo(
     () => (trace ? traceStrategy(trace, { msPerStep: TRACE_MS_PER_STEP }) : undefined),
@@ -57,6 +57,13 @@ export function CodaStage({
       const c = trace.words[i]?.conf ?? 1
       return c < 0.3 ? 'color-mix(in oklab, var(--stage-text) 58%, transparent)' : undefined
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trace?.id])
+  // The commit confidence itself, fed straight to DiffusionText: it scales
+  // the settle overshoot and, in trace mode, the resolved word's opacity.
+  const traceWordConf = useMemo(() => {
+    if (!trace) return undefined
+    return (i: number) => trace.words[i]?.conf
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trace?.id])
 
@@ -103,6 +110,7 @@ export function CodaStage({
               className="text-base md:text-lg leading-relaxed"
               strategy={traceStrat}
               wordColor={traceWordColor}
+              wordConf={traceWordConf}
             >
               {traceAnswer}
             </DiffusionText>

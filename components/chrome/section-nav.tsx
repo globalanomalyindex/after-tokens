@@ -5,7 +5,7 @@ import { sectionAccent, RAINBOW_FALLBACK } from '@/lib/brand/section-accents'
 
 // Quiet instrument-panel wayfinding for a skimming reviewer: a fixed rail of
 // roman numerals, one per section, right edge, vertically centered. Same
-// family as the corner numerals and registration marks — texture, not UI.
+// family as the corner numerals and registration marks: instrument-panel texture.
 // Desktop only; the >=1100px gutter beside the max-w-5xl column is what
 // keeps it from ever overlapping content.
 

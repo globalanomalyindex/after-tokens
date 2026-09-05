@@ -15,8 +15,8 @@ type Props = {
   // The sampler's own successive guesses for this word, recorded at capture
   // time (see lib/diffusion/traces.ts, traceProvisionalText). When state is
   // 'pending' and this is defined, it replaces the cycled candidate: the
-  // pending state in the recorded trajectory mode is not decoration, it is
-  // literally what the model's provisional argmax was at that step.
+  // pending state in the recorded trajectory mode is literally what the
+  // model's provisional argmax was at that step.
   provisionalText?: string
 }
 
@@ -47,6 +47,10 @@ function CyclingWordImpl({
     <span
       data-cycling-word
       data-state={state}
+      // belief: a pending slot showing the model's own guess (above the
+      // probability floor) rather than authored noise; CSS renders it as
+      // forming, less blurred and steadier than noise, still short of readable.
+      data-belief={state === 'pending' && provisionalText != null ? 'true' : undefined}
       data-word-index={atomIndex}
       className="cycling-slot"
       style={{

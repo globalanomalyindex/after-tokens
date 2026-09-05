@@ -6,8 +6,8 @@ import { HeroTitle } from '@/components/hero/hero-title'
 import { RegistrationFrame } from '@/components/chrome/registration'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
-// The first screen. The whole site argues that token-by-token is not the only
-// way to render text, so the first screen does not type itself in: the hero
+// The first screen. The whole site argues that rendering text has more than
+// one shape, so the first screen does not type itself in: the hero
 // title resolves out of order, all at once, orienting a skimming reviewer with
 // the stakes line, the resolving title, the author. The palette is INVERTED
 // here: standard surfaces are light (bone/ink), the hero is the dark stage,
@@ -17,10 +17,10 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 
 // Stakes first, in two beats: what each rendering model is telling you to do.
 // Streaming asks you to watch it type; diffusion asks you to watch it settle.
-// The reveal is not decoration — it signals the SHAPE of the answer so a reader
-// can distinguish an authored resolving state from a settled one.
+// The reveal signals the SHAPE of the answer, so a reader can distinguish an
+// authored resolving state from a settled one.
 const SUBTITLE = 'streaming says watch me type. diffusion says watch me settle.'
-// The thesis verbs, pulled to full brightness while the rest sits muted — the
+// The thesis verbs, pulled to full brightness while the rest sits muted, so the
 // eye lands on "type" vs "settle", the whole argument in two words.
 const BRIGHT = new Set(['type.', 'settle.'])
 

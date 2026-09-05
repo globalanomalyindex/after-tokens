@@ -43,7 +43,7 @@ export function SectionWidget() {
           </h2>
           <p className="mb-6 text-base leading-relaxed">
             <Highlight>
-              An assistant answer is not only words: it can carry color, data, icons, and layout. This
+              An assistant answer carries more than words: it can carry color, data, icons, and layout. This
               prototype applies the same ready → resolving → resolved contract to the whole response
               so structured content does not fall back to a generic spinner.
             </Highlight>
@@ -70,7 +70,7 @@ export function SectionWidget() {
             <Bullet label="Data">
               <Highlight>
                 The temperature follows a deterministic fixture-authored trace; forecast bars use the
-                same progress value. This demonstrates coordination, not model uncertainty.
+                same progress value. This demonstrates coordination among the widget&rsquo;s elements.
               </Highlight>
             </Bullet>
             <Bullet label="Same engine">
