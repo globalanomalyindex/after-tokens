@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Section } from '@/components/section'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { WeatherAnswer } from '@/components/widget/weather-answer'
-import { Highlight } from '@/components/chrome/highlight'
 import { weatherFixtures } from '@/lib/widget/weather-data'
 import type { ModeName } from '@/lib/diffusion/types'
 
@@ -42,42 +41,30 @@ export function SectionWidget() {
             </em>
           </h2>
           <p className="mb-6 text-base leading-relaxed">
-            <Highlight>
-              An assistant answer carries more than words: it can carry color, data, icons, and layout. This
-              prototype applies the same ready → resolving → resolved contract to the whole response
-              so structured content does not fall back to a generic spinner.
-            </Highlight>
+            An assistant answer carries more than words: it can carry color, data, icons, and layout. This
+            prototype applies the same ready → resolving → resolved contract to the whole response
+            so structured content does not fall back to a generic spinner.
           </p>
           <p className="mb-10 text-base leading-relaxed">
-            <Highlight>
-              The weather values are static fixtures, and every intermediate value is a deterministic
-              authored trace. Nothing here represents live uncertainty. Switch cities and modes to
-              inspect how one content structure behaves under different presentation strategies.
-            </Highlight>
+            The weather values are static fixtures, and every intermediate value is a deterministic
+            authored trace. Nothing here represents live uncertainty. Switch cities and modes to
+            inspect how one content structure behaves under different presentation strategies.
           </p>
 
           <ul className="space-y-3 text-sm leading-relaxed">
             <Bullet label="Color">
-              <Highlight>
-                The fixture&rsquo;s sky palette establishes the widget surface before detailed data appears.
-              </Highlight>
+              The fixture&rsquo;s sky palette establishes the widget surface before detailed data appears.
             </Bullet>
             <Bullet label="Graphic">
-              <Highlight>
-                The icon and background share one staged reveal instead of arriving as unrelated assets.
-              </Highlight>
+              The icon and background share one staged reveal instead of arriving as unrelated assets.
             </Bullet>
             <Bullet label="Data">
-              <Highlight>
-                The temperature follows a deterministic fixture-authored trace; forecast bars use the
+              The temperature follows a deterministic fixture-authored trace; forecast bars use the
                 same progress value. This demonstrates coordination among the widget&rsquo;s elements.
-              </Highlight>
             </Bullet>
             <Bullet label="Same engine">
-              <Highlight>
-                The widget uses the same strategy contract as text: all four modes receive measured
+              The widget uses the same strategy contract as text: all four modes receive measured
                 targets, one progress value, and the same reduced-motion completion path.
-              </Highlight>
             </Bullet>
           </ul>
         </div>
@@ -153,10 +140,10 @@ function Bullet({ label, children }: { label: string; children: React.ReactNode 
   return (
     <li className="grid grid-cols-[88px_1fr] gap-4 items-start">
       <span
-        className="text-[9.5px] uppercase tracking-[0.16em] mt-[3px]"
-        style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+      className="text-[9.5px] uppercase tracking-[0.16em] mt-[3px]"
+      style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
       >
-        + {label}
+      + {label}
       </span>
       <span>{children}</span>
     </li>

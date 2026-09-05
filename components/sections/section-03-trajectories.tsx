@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Section } from '@/components/section'
-import { UnmaskMap } from '@/components/diffusion/unmask-map'
+import { UnmaskMap, type UnmaskMapHandle } from '@/components/diffusion/unmask-map'
 import { TraceStage } from '@/components/trajectories/trace-stage'
 import { PromptPicker } from '@/components/coda/prompt-picker'
 import { ToggleRail } from '@/components/coda/toggle-rail'
@@ -62,13 +62,6 @@ for (const id of TRACE_IDS) {
   if (!PROMPT_IDS.includes(promptId)) PROMPT_IDS.push(promptId)
 }
 
-const PROMPT_ITEMS: CodaPrompt[] = PROMPT_IDS.map((id) => ({
-  id,
-  prompt: PROMPT_LABELS[id] ?? id,
-  defaultMode: 'trace',
-  response: '',
-}))
-
 const PACE_ITEMS = [
   { id: '40', label: '40 ms / step' },
   { id: 'recorded', label: 'recorded pace' },
@@ -99,10 +92,27 @@ export function SectionTrajectories() {
   const [activeConfig, setActiveConfig] = useState<Config>('lowconf-b32')
   const [paceId, setPaceId] = useState<'40' | 'recorded'>('40')
   const [traces, setTraces] = useState<Map<TraceId, TraceCompact>>(() => new Map())
+  const liveMapRef = useRef<UnmaskMapHandle>(null)
 
   const activeTraceId = traceIdFor(activePromptId, activeConfig)
   const activeTrace = traces.get(activeTraceId)
+  const activeLoop = TRACE_META[activeTraceId]?.loop
   const msPerStep = paceId === '40' ? 40 : undefined
+
+  // The picker: one short pill per prompt, tagged when this sampler's run
+  // for that prompt fell into a repetition loop.
+  const promptItems = useMemo<CodaPrompt[]>(
+    () =>
+      PROMPT_IDS.map((id) => ({
+        id,
+        prompt: PROMPT_LABELS[id] ?? id,
+        short: id.replace(/-/g, ' '),
+        badge: TRACE_META[traceIdFor(id, activeConfig)]?.loop ? 'looped' : undefined,
+        defaultMode: 'trace',
+        response: '',
+      })),
+    [activeConfig],
+  )
 
   // Load the active trajectory.
   useEffect(() => {
@@ -144,6 +154,7 @@ export function SectionTrajectories() {
   const selectPrompt = useCallback((id: string) => setActivePromptId(id), [])
   const selectConfig = useCallback((id: string) => setActiveConfig(id as Config), [])
   const selectPace = useCallback((id: string) => setPaceId(id as '40' | 'recorded'), [])
+  const onStep = useCallback((step: number) => liveMapRef.current?.setStep(step), [])
 
   const stats = activeTrace?.stats
   const statRows = useMemo(() => {
@@ -178,12 +189,20 @@ export function SectionTrajectories() {
           + A recorded answer, replayed
         </div>
         <p className="text-base leading-relaxed max-w-3xl mb-8" style={{ color: 'var(--ink-2)' }}>
-          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead.
+          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead. The map beside the stage draws itself as the words lock.
         </p>
+
+        <div className="mb-6">
+          <div className={EYEBROW} style={EYEBROW_STYLE}>
+            + Pick a prompt
+          </div>
+          <PromptPicker prompts={promptItems} activeId={activePromptId} onSelect={selectPrompt} layout="compact" />
+        </div>
+
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
           <div>
             {activeTrace ? (
-              <TraceStage trace={activeTrace} msPerStep={msPerStep} />
+              <TraceStage trace={activeTrace} msPerStep={msPerStep} onStep={onStep} />
             ) : (
               <div
                 className="trace-stage rounded-2xl flex items-center justify-center min-h-[420px]"
@@ -192,14 +211,48 @@ export function SectionTrajectories() {
                 <span className="trace-loading">loading trajectory</span>
               </div>
             )}
+            {activeLoop && (
+              <p
+                className="mt-3 text-[11px] leading-relaxed max-w-2xl"
+                style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+                data-trace-loop
+              >
+                + the model looped on this run: &ldquo;{activeLoop.phrase}&rdquo; repeats {activeLoop.reps} times back
+                to back, {Math.round(activeLoop.cover * 100)}% of the answer. It replays as recorded, and it stays in every
+                statistic; a small model decoded greedily does this.
+              </p>
+            )}
           </div>
-          <aside>
-            <div className={EYEBROW} style={EYEBROW_STYLE}>
-              + Pick a prompt
+          <aside className="flex flex-col gap-6">
+            <div>
+              <div className={EYEBROW} style={EYEBROW_STYLE}>
+                + This run, drawn live
+              </div>
+              <div
+                className="rounded-xl p-3"
+                style={{ border: '0.8px solid color-mix(in oklab, var(--ink) 14%, transparent)' }}
+              >
+                {activeTrace ? (
+                  <UnmaskMap
+                    key={activeTrace.id}
+                    ref={liveMapRef}
+                    trace={activeTrace}
+                    compact
+                    live
+                    label={`${CONFIG_SHORT[activeConfig]} · step ↓`}
+                  />
+                ) : (
+                  <div
+                    className="flex items-center justify-center aspect-square text-[9px] uppercase tracking-[0.14em]"
+                    style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}
+                  >
+                    loading
+                  </div>
+                )}
+              </div>
             </div>
-            <PromptPicker prompts={PROMPT_ITEMS} activeId={activePromptId} onSelect={selectPrompt} layout="list" />
 
-            <div className="mt-6 flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               <ToggleRail
                 label="Sampler"
                 items={CONFIG_IDS.map((c) => ({ id: c, label: CONFIG_LABELS[c] }))}
@@ -210,7 +263,7 @@ export function SectionTrajectories() {
             </div>
 
             {stats && (
-              <dl className="mt-6 border-t" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)' }}>
+              <dl className="border-t" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)' }}>
                 {statRows.map((row) => (
                   <div
                     key={row.label}

@@ -2,7 +2,6 @@
 
 import { Section } from '@/components/section'
 import { ModeDemo } from './mode-demo'
-import { Highlight } from '@/components/chrome/highlight'
 import { GoldenCurve } from '@/components/diffusion/golden-curve'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
@@ -43,13 +42,11 @@ export function SectionMycelium() {
       />
 
       <p className="max-w-2xl mt-10 md:mt-14 text-base leading-relaxed">
-        <Highlight>
-          A locked word gets heavier than its neighbors as it locks. The{' '}
+        A locked word gets heavier than its neighbors as it locks. The{' '}
           <DefinitionTerm term="von restorff effect" /> is the reason that difference registers at all: the item that
-          stands apart from its neighbors is the one that gets read. Weight is the channel the shipped mode uses;
-          color or scale could carry the same signal in another register. Which channel carries it is a brand
-          decision. That there has to be one is a constraint the effect sets.
-        </Highlight>
+        stands apart from its neighbors is the one that gets read. Weight is the channel the shipped mode uses;
+        color or scale could carry the same signal in another register. Which channel carries it is a brand
+        decision. That there has to be one is a constraint the effect sets.
       </p>
 
       <div className="max-w-5xl mt-16 md:mt-24">
@@ -63,32 +60,26 @@ export function SectionMycelium() {
           <GoldenCurve />
           <div className="space-y-5">
             <p className="text-base leading-relaxed">
-              <Highlight>
-                Branching systems, <NatureWord kind="fog">fog</NatureWord>, <NatureWord kind="aurora">aurora</NatureWord>,
-                and cell division gave me a motion vocabulary for the earlier authored modes. Product research has to
-                determine whether any treatment improves comprehension; resemblance to nature only supplies the
-                starting shapes.
-              </Highlight>
+              Branching systems, <NatureWord kind="fog">fog</NatureWord>, <NatureWord kind="aurora">aurora</NatureWord>,
+              and cell division gave me a motion vocabulary for the earlier authored modes. Product research has to
+              determine whether any treatment improves comprehension; resemblance to nature only supplies the
+              starting shapes.
             </p>
             <p className="text-base leading-relaxed">
-              <Highlight>
-                The shipped cadence is linear. Each word locks on a per-word interval that scales to the answer&apos;s
-                length, clamped between 45 and 80 milliseconds, after a 320 millisecond pre-roll. The recorded
-                sampler&apos;s own word cadence is linear too: the median lock fraction by word rank stays within about{' '}
-                {pct(DERIVED.cadenceMaxDeviation)} of a straight line, because the schedule commits a fixed number of
-                tokens per step regardless of confidence. The <DefinitionTerm term="doherty threshold" /> sets the
-                other bound, so no gap between visible changes runs long enough for attention to drift. Phi decay was
-                the reveal&apos;s first cadence. It now lives on as the comparison stimulus in the hypothesis section
-                and as the golden curve above, drawn beside the recorded median it was meant to anticipate.
-              </Highlight>
+              The shipped cadence is linear. Each word locks on a per-word interval that scales to the answer&apos;s
+              length, clamped between 45 and 80 milliseconds, after a 320 millisecond pre-roll. The recorded
+              sampler&apos;s own word cadence is linear too: the median lock fraction by word rank stays within about{' '}
+              {pct(DERIVED.cadenceMaxDeviation)} of a straight line, because the schedule commits a fixed number of
+              tokens per step regardless of confidence. The <DefinitionTerm term="doherty threshold" /> sets the
+              other bound, so no gap between visible changes runs long enough for attention to drift. Phi decay was
+              the reveal&apos;s first cadence. It now lives on as the comparison stimulus in the hypothesis section
+              and as the golden curve above, drawn beside the recorded median it was meant to anticipate.
             </p>
             <p className="text-base leading-relaxed">
-              <Highlight>
-                The churn rate is a separate decision. The pending glyphs now change every 390 milliseconds, the
-                sampler&apos;s own measured rate: its provisional guess for a pending token changed every{' '}
-                {DERIVED.msPerFlipRecorded} milliseconds at recorded pace, and 390 rounds that number instead of
-                approximating it.
-              </Highlight>
+              The churn rate is a separate decision. The pending glyphs now change every 390 milliseconds, the
+              sampler&apos;s own measured rate: its provisional guess for a pending token changed every{' '}
+              {DERIVED.msPerFlipRecorded} milliseconds at recorded pace, and 390 rounds that number instead of
+              approximating it.
             </p>
           </div>
         </div>

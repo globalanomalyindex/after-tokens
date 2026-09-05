@@ -68,7 +68,6 @@ export function DecodingWord({
   const rootStyle = {
     display: 'inline-block',
     position: 'relative',
-    marginRight: '0.28em',
     whiteSpace: 'nowrap',
     verticalAlign: 'baseline',
     ['--word-index' as string]: String(wordIndex),
@@ -110,7 +109,7 @@ export function DecodingWord({
   // always a noise field. Child layout effects run before the parent's, so
   // this lands first.
   //
-  // Deps are ONLY chars/style/reduced — deliberately NOT startP/endP. A
+  // Deps are ONLY chars/style/reduced, and deliberately exclude startP/endP. A
   // re-measurement (font swap, reflow) recomputes the mode's lock windows, which
   // changes startP/endP; the live `windows` memo picks those up for the next
   // frame, but we must NOT re-run this baseline here or it would reset resolved

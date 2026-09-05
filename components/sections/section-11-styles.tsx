@@ -1,7 +1,6 @@
 'use client'
 
 import { Section } from '@/components/section'
-import { Highlight } from '@/components/chrome/highlight'
 import { GeminiSpecimen } from '@/components/diffusion/specimens/gemini-specimen'
 import { MinimalSpecimen } from '@/components/diffusion/specimens/minimal-specimen'
 import { AsciiSpecimen } from '@/components/diffusion/specimens/ascii-specimen'
@@ -134,11 +133,9 @@ export function SectionStyles() {
             The wait already shows the shape
           </h3>
           <p className="text-base leading-relaxed max-w-prose">
-            <Highlight>
-              Structured answers need more than plain-word choreography. This specimen keeps headings,
-              emphasis, color, and emoji intact while the container changes state. It tests whether the
-              engine can preserve hierarchy instead of flattening rich content into a text effect.
-            </Highlight>
+            Structured answers need more than plain-word choreography. This specimen keeps headings,
+            emphasis, color, and emoji intact while the container changes state. It tests whether the
+            engine can preserve hierarchy instead of flattening rich content into a text effect.
           </p>
         </div>
         <div

@@ -18,14 +18,20 @@ type Props = {
   prompts: CodaPrompt[]
   activeId: string
   onSelect: (id: string) => void
-  layout?: 'grid' | 'list'
+  // 'compact' renders each prompt as a short pill (its `short` label when it
+  // has one) in a wrapping row, for a picker with many entries; the full
+  // prompt still reads in the stage's own prompt bubble.
+  layout?: 'grid' | 'list' | 'compact'
 }
 
 export function PromptPicker({ prompts, activeId, onSelect, layout = 'grid' }: Props) {
+  const compact = layout === 'compact'
   const containerClass =
     layout === 'list'
-      ? 'flex flex-col gap-2'
-      : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'
+      ? 'flex flex-col gap-1.5'
+      : compact
+        ? 'flex flex-wrap gap-1.5'
+        : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'
 
   // Tactile commit, same mechanism as ToggleRail: snap to 0.97 for one frame on
   // activation, release over ~140ms. Fires on click and keyboard alike, and is
@@ -87,6 +93,45 @@ export function PromptPicker({ prompts, activeId, onSelect, layout = 'grid' }: P
       {prompts.map((p, index) => {
         const isActive = p.id === activeId
         const isPressed = p.id === pressedId
+        if (compact) {
+          return (
+            <button
+              key={p.id}
+              ref={(el) => {
+                btnRefs.current[index] = el
+              }}
+              type="button"
+              role="radio"
+              aria-checked={isActive}
+              aria-label={p.prompt}
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => commit(p.id)}
+              onKeyDown={(e) => onKeyDown(e, index)}
+              className="toggle-pill px-3 py-1.5 text-[11px] rounded-md cursor-pointer inline-flex items-center gap-1.5"
+              style={{
+                border: '0.8px solid var(--ink)',
+                background: isActive ? 'var(--ink)' : 'transparent',
+                color: isActive ? 'var(--surface)' : 'var(--ink)',
+                transform: isPressed ? 'scale(0.96)' : 'scale(1)',
+                transition:
+                  'background-color 180ms var(--ease-out-strong), color 180ms var(--ease-out-strong), border-color 180ms var(--ease-out-strong), transform 140ms var(--ease-out-strong)',
+              }}
+            >
+              {p.short ?? p.prompt}
+              {p.badge && (
+                <span
+                  className="text-[8.5px] uppercase tracking-[0.14em]"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: isActive ? 'color-mix(in oklab, var(--surface) 85%, var(--accent))' : 'var(--muted)',
+                  }}
+                >
+                  {p.badge}
+                </span>
+              )}
+            </button>
+          )
+        }
         return (
           <button
             key={p.id}
@@ -99,7 +144,7 @@ export function PromptPicker({ prompts, activeId, onSelect, layout = 'grid' }: P
             tabIndex={isActive ? 0 : -1}
             onClick={() => commit(p.id)}
             onKeyDown={(e) => onKeyDown(e, index)}
-            className="toggle-pill rounded-xl px-4 py-3 text-left text-sm leading-snug cursor-pointer flex items-start gap-3 w-full"
+            className="toggle-pill rounded-xl px-3.5 py-2.5 text-left text-[13px] leading-snug cursor-pointer flex items-start gap-3 w-full"
             style={{
               border: '0.8px solid var(--ink)',
               background: isActive ? 'var(--ink)' : 'transparent',

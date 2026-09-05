@@ -66,8 +66,13 @@ export const TRACE_IDS: readonly TraceId[] = [
   'why-out-of-order__random-b32',
 ] as const
 
+/** A repetition loop the model fell into: the phrase, how many times it
+ *  repeated back to back, and the share of the answer's words it covers.
+ *  Present only on runs that meet LOOP_RULE in scripts/gen-trace-index.mjs. */
+export type TraceLoop = { phrase: string; reps: number; cover: number }
+
 // Lightweight metadata available without loading a trajectory.
-export const TRACE_META: Record<TraceId, { promptId: string; config: string; words: number }> = {
+export const TRACE_META: Record<TraceId, { promptId: string; config: string; words: number; loop?: TraceLoop }> = {
   'brainstorm__lowconf-b128': { promptId: 'brainstorm', config: 'lowconf-b128', words: 4 },
   'brainstorm__lowconf-b32': { promptId: 'brainstorm', config: 'lowconf-b32', words: 90 },
   'brainstorm__random-b32': { promptId: 'brainstorm', config: 'random-b32', words: 89 },
@@ -93,13 +98,13 @@ export const TRACE_META: Record<TraceId, { promptId: string; config: string; wor
   'heist-plot__lowconf-b32': { promptId: 'heist-plot', config: 'lowconf-b32', words: 81 },
   'heist-plot__random-b32': { promptId: 'heist-plot', config: 'random-b32', words: 87 },
   'heron-poem__lowconf-b128': { promptId: 'heron-poem', config: 'lowconf-b128', words: 4 },
-  'heron-poem__lowconf-b32': { promptId: 'heron-poem', config: 'lowconf-b32', words: 96 },
+  'heron-poem__lowconf-b32': { promptId: 'heron-poem', config: 'lowconf-b32', words: 96, loop: { phrase: "rises in the sky, A heron", reps: 14, cover: 0.88 } },
   'heron-poem__random-b32': { promptId: 'heron-poem', config: 'random-b32', words: 86 },
   'houseplants__lowconf-b128': { promptId: 'houseplants', config: 'lowconf-b128', words: 8 },
   'houseplants__lowconf-b32': { promptId: 'houseplants', config: 'lowconf-b32', words: 107 },
   'houseplants__random-b32': { promptId: 'houseplants', config: 'random-b32', words: 89 },
   'lighthouse-haiku__lowconf-b128': { promptId: 'lighthouse-haiku', config: 'lowconf-b128', words: 3 },
-  'lighthouse-haiku__lowconf-b32': { promptId: 'lighthouse-haiku', config: 'lowconf-b32', words: 76 },
+  'lighthouse-haiku__lowconf-b32': { promptId: 'lighthouse-haiku', config: 'lowconf-b32', words: 76, loop: { phrase: "Lighthouse on the sea,", reps: 16, cover: 0.84 } },
   'lighthouse-haiku__random-b32': { promptId: 'lighthouse-haiku', config: 'random-b32', words: 96 },
   'out-of-office__lowconf-b128': { promptId: 'out-of-office', config: 'lowconf-b128', words: 0 },
   'out-of-office__lowconf-b32': { promptId: 'out-of-office', config: 'lowconf-b32', words: 72 },
@@ -111,7 +116,7 @@ export const TRACE_META: Record<TraceId, { promptId: string; config: string; wor
   'rust-or-go__lowconf-b32': { promptId: 'rust-or-go', config: 'lowconf-b32', words: 92 },
   'rust-or-go__random-b32': { promptId: 'rust-or-go', config: 'random-b32', words: 94 },
   'sky-blue__lowconf-b128': { promptId: 'sky-blue', config: 'lowconf-b128', words: 14 },
-  'sky-blue__lowconf-b32': { promptId: 'sky-blue', config: 'lowconf-b32', words: 123 },
+  'sky-blue__lowconf-b32': { promptId: 'sky-blue', config: 'lowconf-b32', words: 123, loop: { phrase: "than it gets scattered more", reps: 19, cover: 0.77 } },
   'sky-blue__random-b32': { promptId: 'sky-blue', config: 'random-b32', words: 89 },
   'sleep-tips__lowconf-b128': { promptId: 'sleep-tips', config: 'lowconf-b128', words: 7 },
   'sleep-tips__lowconf-b32': { promptId: 'sleep-tips', config: 'lowconf-b32', words: 92 },

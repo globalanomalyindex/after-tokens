@@ -1,5 +1,4 @@
 import { Section } from '@/components/section'
-import { Highlight } from '@/components/chrome/highlight'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { HYPOTHESES } from '@/lib/traces/findings'
@@ -16,7 +15,7 @@ export function SectionClose() {
           comprehension hypothesis is true. That distinction is part of the product work.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-5 mb-16">
+        <div className="grid md:grid-cols-2 gap-5 mb-16 items-start">
           <div className="rounded-2xl p-7 md:p-8" style={{ background: 'var(--stage)', color: 'var(--stage-text)' }}>
             <p className="text-[10px] uppercase tracking-[0.18em] mb-5" style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 60%, transparent)' }}>
               + evidence in the build
@@ -91,13 +90,13 @@ export function SectionClose() {
           </p>
           <ul className="space-y-4 text-base leading-relaxed">
             <li>
-              <Highlight><strong>Particle flock.</strong> Rebuilt as a chain reaction, liquid-glass orbs, and fireflies. Faster motion reduced legibility; Mycelium did the job with less visual traffic.</Highlight>
+              <strong>Particle flock.</strong> Rebuilt as a chain reaction, liquid-glass orbs, and fireflies. Faster motion reduced legibility; Mycelium did the job with less visual traffic.
             </li>
             <li>
-              <Highlight><strong>The entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is a toll.</Highlight>
+              <strong>The entrance.</strong> The opening was a full cinematic entrance: giant words resolving out of noise, one beat at a time, ending on &ldquo;until now&rdquo; before fog handed off to the site. It shipped, it broke on a slow connection, it was rebuilt, and then it was cut. It performed the thesis beautifully and it cost a reviewer six seconds before the first sentence of the argument. The hero already resolves out of order. Making the same point twice is a toll.
             </li>
             <li>
-              <Highlight><strong>Abstract line graphs.</strong> Replaced with actual word locks so the comparison demonstrates the interaction instead of describing it from a distance.</Highlight>
+              <strong>Abstract line graphs.</strong> Replaced with actual word locks so the comparison demonstrates the interaction instead of describing it from a distance.
             </li>
           </ul>
         </div>
@@ -109,9 +108,9 @@ export function SectionClose() {
           <p className="text-base lowercase">
             product design and engineering by{' '}
             <span aria-label="christopher robin fiore" style={{ fontWeight: 500 }}>
-              {'christopher robin fiore'.split('').map((ch, i, all) => ch === ' ' ? ' ' : (
+            {'christopher robin fiore'.split('').map((ch, i, all) => ch === ' ' ? ' ' : (
                 <span key={i} style={{ color: `oklch(0.55 0.19 ${Math.round((i / (all.length - 1)) * 320)})` }}>{ch}</span>
-              ))}
+            ))}
             </span>
           </p>
           <p className="text-base lowercase mt-1">

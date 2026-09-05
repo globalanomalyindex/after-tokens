@@ -107,6 +107,7 @@ what changed in the design because of it (the reasoning in order is `docs/redesi
 - four earlier choices were retired by the data: the phi cadence (kept only as the comparison stimulus), a field-wide sweep during the reveal, a halo left on every locked word, and a closing beat at a fixed 82% of the run that unblurred still-pending noise.
 - the hypothesis is now three claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3). the recorded trajectories are the stimuli for all three.
 - a llada-8b-instruct corroboration set (4 runs, tau +0.90, median jump 3.9) reproduces the block-schedule pattern at 8b; llama.cpp exposes order and timing but not confidence.
+- three of the twenty default-sampler answers fell into a repetition loop (one phrase repeated 14 to 19 times back to back, covering 77% to 88% of the words), a known failure of greedy decoding at this scale; no run under the other two samplers did. they stay in every statistic and replay as recorded, with the loop named on the stage; the intent-mapping demo replays the same prompt's random-order run in their place. the rule that flags them is `LOOP_RULE` in `scripts/gen-trace-index.mjs`.
 
 ## evidence and limits
 

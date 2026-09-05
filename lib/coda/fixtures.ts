@@ -5,6 +5,10 @@ export type CodaPrompt = {
   prompt: string
   defaultMode: ModeStrategy['name']
   response: string
+  /** a short pill label, for a compact picker with many entries */
+  short?: string
+  /** a small tag beside the label, e.g. 'looped' */
+  badge?: string
 }
 
 export const codaPrompts: CodaPrompt[] = [

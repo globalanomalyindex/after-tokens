@@ -59,18 +59,20 @@ export function SectionPrimer() {
           ))}
         </dl>
 
-        <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border" style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)', background: 'color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+        {/* The project facts read as one strip on a rule, under the question,
+            so the two grids do not stack as twins. */}
+        <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6 pt-6 border-t" style={{ borderColor: 'color-mix(in oklab, var(--ink) 18%, transparent)' }}>
           {[
             ['brief', 'Invent an arrival language for masked diffusion responses.'],
             ['role', 'Solo product design and design engineering.'],
             ['built', 'Reusable engine, four authored modes plus one driven by recorded sampler trajectories, brand tokens, widget, and playground.'],
             ['status', 'Working prototype. One mode replays a real sampler. The comprehension hypothesis is not yet validated.'],
           ].map(([label, value]) => (
-            <div key={label} className="p-5 md:p-6" style={{ background: 'var(--surface)' }}>
-              <dt className="text-[10px] uppercase tracking-[0.16em] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+            <div key={label}>
+              <dt className="text-[10px] uppercase tracking-[0.16em] mb-2" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
                 + {label}
               </dt>
-              <dd className="text-sm leading-relaxed">{value}</dd>
+              <dd className="text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>{value}</dd>
             </div>
           ))}
         </dl>

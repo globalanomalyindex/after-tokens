@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import diffusionExplainJson from '@/data/traces/compact/diffusion-explain__lowconf-b32.json'
 import { tokenize } from '@/lib/diffusion/tokenize'
 import {
+  END_BELIEF_GLYPH,
   asTrace,
   traceAnswerText,
   traceProvisionalText,
@@ -42,6 +43,29 @@ describe('recorded trajectory data', () => {
     diffusionExplain.words.forEach((w, i) => {
       expect(traceProvisionalText(diffusionExplain, i, w.lock_step)).toBe(w.text)
     })
+  })
+
+  it('draws an end-of-text belief as the pilcrow, never as the literal special token', async () => {
+    const skyBlue = asTrace((await import('@/data/traces/compact/sky-blue__lowconf-b32.json')).default)
+    let specials = 0
+    let pilcrows = 0
+    skyBlue.words.forEach((w, i) => {
+      for (const [step, text] of w.changes) {
+        if (/^<\|/.test(text) && step < w.lock_step) {
+          specials += 1
+          if (traceProvisionalText(skyBlue, i, step) === END_BELIEF_GLYPH) pilcrows += 1
+        }
+      }
+    })
+    // the run this guards against: the model believed "end here" for its last
+    // open positions well before it committed the loop that filled them
+    expect(specials).toBeGreaterThan(0)
+    skyBlue.words.forEach((w, i) => {
+      for (let step = 0; step < w.lock_step; step++) {
+        expect(traceProvisionalText(skyBlue, i, step) ?? '').not.toMatch(/<\|/)
+      }
+    })
+    expect(pilcrows).toBeGreaterThan(0)
   })
 
   it('clamps traceStepAt to [0, steps - 1] at the endpoints of progress', () => {

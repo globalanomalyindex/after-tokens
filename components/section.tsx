@@ -44,9 +44,6 @@ export function Section({ id, n, act, title, eyebrow, children }: SectionProps) 
   const parts = eyebrow?.filter((p) => !/^section\b/i.test(p)) ?? []
   const code = `s.${String(n).padStart(2, '0')} / ${TOTAL}`
   const spine = `act ${act} · ${title}`
-  // Repeating tag rail along the section's base, over-filled so it always spans
-  // the full page width edge to edge, then clipped.
-  const rail = Array.from({ length: 80 }, () => id).join(' ▸ ')
 
   return (
     <section
@@ -83,10 +80,6 @@ export function Section({ id, n, act, title, eyebrow, children }: SectionProps) 
           <MonoLabel parts={parts} index={`${roman}.`} accentColor={eyebrowAccent} className="mb-5" />
         )}
         {children}
-      </div>
-
-      <div aria-hidden="true" className="section-rail">
-        <span>{rail}</span>
       </div>
     </section>
   )

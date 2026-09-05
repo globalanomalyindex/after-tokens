@@ -113,7 +113,7 @@ export type TraceStrategyOptions = {
 /**
  * Build a ModeStrategy from a recorded trajectory. A word enters `resolving`
  * when its first token commits and `resolved` when its last token commits.
- * That is literally the sampler's state, not a metaphor for it. Atoms past the
+ * That is literally the sampler's state rather than a metaphor for it. Atoms past the
  * end of the trace (which cannot happen when the text came from
  * traceAnswerText) are locked at the end so the contract still holds.
  */
@@ -197,10 +197,23 @@ export function traceStepAt(trace: TraceCompact, p: number): number {
  */
 export const PROVISIONAL_FLOOR = 0.25
 
+/** How a belief that the answer ends here is drawn. Late in a run the model's
+ *  best guess for a still-open position is often its end-of-text token: the
+ *  answer's extent settling before its last words do (finding 03). That is a
+ *  real belief worth showing, and its literal form ("<|endoftext|>",
+ *  "<|im_end|>") is tokenizer plumbing, so it renders as the pilcrow, the
+ *  typographic mark for where text stops. */
+export const END_BELIEF_GLYPH = '¶'
+// A guess can span tokens, so a word's guess may be several special tokens
+// run together, or a word piece with an end token after it.
+const SPECIAL_TOKEN = /<\|[^|]*\|>/g
+
 /** What the interface should show for a word at a given step: the committed
  *  word once it is committed; before that, the latest recorded guess at or
  *  before that step if its probability clears PROVISIONAL_FLOOR; otherwise
- *  undefined, which tells the engine to show its authored noise instead. */
+ *  undefined, which tells the engine to show its authored noise instead. A
+ *  guess that is a special token (an end-of-text belief) renders as
+ *  END_BELIEF_GLYPH. */
 export function traceProvisionalText(
   trace: TraceCompact,
   wordIndex: number,
@@ -214,6 +227,10 @@ export function traceProvisionalText(
   for (const [s, text, p] of w.changes) {
     if (s > step) break
     out = p >= floor ? text : undefined
+  }
+  if (out !== undefined && out.includes('<|')) {
+    const stripped = out.replace(SPECIAL_TOKEN, '').trim()
+    return stripped.length > 0 ? stripped : END_BELIEF_GLYPH
   }
   return out
 }

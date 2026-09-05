@@ -151,6 +151,17 @@ button:active { transform: scale(0.97); }
   background: color-mix(in oklab, currentColor 10%, transparent);
 }
 
+/* A change of belief is the one pending change meant to be seen: the inner
+   span remounts on each new guess and rises in over a short beat. Noise
+   churn swaps in place; under 4.2 px of blur a crossfade is invisible work. */
+@keyframes belief-shift {
+  from { opacity: 0.3; transform: translateY(0.08em); }
+  to   { opacity: 1;   transform: translateY(0); }
+}
+.belief-shift {
+  animation: belief-shift 280ms var(--ease-out-expo) both;
+}
+
 /* resolving: the lock. Crisp immediately; a committed token is committed. */
 [data-cycling-word][data-state="resolving"] {
   color: currentColor;
@@ -264,7 +275,7 @@ button:active { transform: scale(0.97); }
    - soft-edge mask so visuals fade into the stage instead of clipping hard
    - fades out cleanly when the diffusion settles
    - z-index 0 keeps it explicitly UNDER the words (words are z-index 2) so
-     orbs read as fireflies sparkling beneath the text, not on top of it */
+     orbs read as fireflies sparkling beneath the text rather than over it */
 .diffusion-overlay {
   z-index: 0;
   -webkit-mask-image:
@@ -469,8 +480,8 @@ button:active { transform: scale(0.97); }
 
 /* ===== Section chrome: technical-color layer + density ================== */
 /* A per-section accent (set inline as --section-accent) threads through a top
-   rule, an edge spine, corner data marks, and a base tag rail, color across
-   the whole run, and content in the wide-screen gutters that used to be empty. */
+   rule, an edge spine, and corner data marks: color across the whole run, and
+   content in the wide-screen gutters that used to be empty. */
 .section-topbar {
   position: absolute;
   top: 0;
@@ -528,22 +539,6 @@ button:active { transform: scale(0.97); }
   font-size: 12px;
   letter-spacing: 0.3em;
   color: color-mix(in oklab, var(--ink) 36%, transparent);
-}
-
-.section-rail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: var(--space-4);
-  overflow: hidden;
-  white-space: nowrap;
-  pointer-events: none;
-  padding: 0;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.26em;
-  text-transform: lowercase;
-  color: color-mix(in oklab, var(--section-accent) 32%, transparent);
 }
 
 @media (min-width: 1280px) {
@@ -1132,7 +1127,10 @@ html.cursor-fx-on * {
 .diffusion-text[data-mode="trace"][data-unblurred="true"]::after {
   content: '';
   position: absolute;
-  inset: -10% -12%;
+  top: -10%;
+  bottom: -10%;
+  left: -12%;
+  width: 124%;
   pointer-events: none;
   z-index: 3;
   background: linear-gradient(135deg,
@@ -1142,17 +1140,19 @@ html.cursor-fx-on * {
     color-mix(in oklab, var(--accent) 6%, transparent) 53%,
     transparent 68%
   );
-  background-size: 240% 100%;
-  background-position: -120% 50%;
   mix-blend-mode: screen;
   filter: blur(3px);
+  /* The sweep is a transform, so the wave never repaints the words under it;
+     a background-position animation used to rasterize every frame. */
+  transform: translateX(-100%);
+  will-change: transform, opacity;
   animation: mycelium-final-wave 1500ms var(--ease-out-expo) 1 forwards;
 }
 @keyframes mycelium-final-wave {
-  0%   { background-position: -120% 50%; opacity: 0; }
+  0%   { transform: translateX(-100%); opacity: 0; }
   20%  { opacity: 0.6; }
   80%  { opacity: 0.6; }
-  100% { background-position: 220% 50%; opacity: 0; }
+  100% { transform: translateX(100%); opacity: 0; }
 }
 .diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word],
 .diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word] {
@@ -1223,6 +1223,7 @@ html.cursor-fx-on * {
     animation: none !important;
   }
   [data-cycling-word]::before { display: none; }
+  .belief-shift { animation: none; }
   [data-cycling-word][data-state='resolved'],
   [data-cycling-word][data-state='resolved']::before { animation: none; }
   .diffusion-text [data-cycling-word] { will-change: auto; }

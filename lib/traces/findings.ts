@@ -46,6 +46,11 @@ export const TRACE_NUMBERS = {
   emptyAnswersNoBlock: 3,
   shortExcludedNoBlock: 9,
   shortExcludedDefault: 0,
+  /** default-sampler answers that fell into a repetition loop (one phrase repeated back to back, covering most of the words); none under the other two samplers. see LOOP_RULE in scripts/gen-trace-index.mjs */
+  loopedAnswersDefault: 3,
+  loopedAnswersOther: 0,
+  loopRepsRange: [14, 19] as const,
+  loopCoverRange: [0.77, 0.88] as const,
 } as const
 
 const pct = (x: number) => `${Math.round(x * 100)}%`
@@ -95,7 +100,7 @@ export const FINDINGS: Finding[] = [
 ]
 
 export const LIMITS =
-  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
+  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. ${N.loopedAnswersDefault === 3 ? 'Three' : String(N.loopedAnswersDefault)} of the twenty default-sampler answers fell into a repetition loop, one phrase repeated ${N.loopRepsRange[0]} to ${N.loopRepsRange[1]} times back to back over ${pct(N.loopCoverRange[0])} to ${pct(N.loopCoverRange[1])} of the words, a known failure of greedy decoding at this scale; ${N.loopedAnswersOther === 0 ? 'no run' : String(N.loopedAnswersOther)} under the other two samplers did. Those three stay in every statistic, replay as recorded with the loop named on the stage, and the product demo replays the same prompt's random-order run in their place. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
 
 // Numbers derived from the full traces for feeding back into the authored
 // design (see data/traces/derived/*.json and scripts/derive-trajectory-models.py).

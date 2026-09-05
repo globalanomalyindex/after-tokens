@@ -9,7 +9,6 @@ import { codaPrompts, type CodaPrompt } from '@/lib/coda/fixtures'
 import { CodaStage } from '@/components/coda/coda-stage'
 import { PromptPicker } from '@/components/coda/prompt-picker'
 import { ToggleRail } from '@/components/coda/toggle-rail'
-import { Highlight } from '@/components/chrome/highlight'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { tokenize } from '@/lib/diffusion/tokenize'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
@@ -17,7 +16,8 @@ import { fog } from '@/lib/diffusion/modes/fog'
 import { aurora } from '@/lib/diffusion/modes/aurora'
 import { mitosis } from '@/lib/diffusion/modes/mitosis'
 import { traceStrategy } from '@/lib/diffusion/traces'
-import { loadTrace, type TraceId } from '@/lib/traces'
+import { loadTrace } from '@/lib/traces'
+import { codaTraceIdFor } from '@/lib/traces/select'
 import type { TraceCompact } from '@/lib/diffusion/traces'
 import type { BrandId } from '@/lib/brand/types'
 import type { MeasuredAtom, ModeStrategy } from '@/lib/diffusion/types'
@@ -99,11 +99,12 @@ export function SectionCoda() {
     setMode(activePrompt.defaultMode)
   }, [activePrompt])
 
-  // Load the recorded trajectory for the active prompt. All seven coda fixtures
-  // were captured under lowconf-b32; cache by trace id so switching back to a
-  // prompt already visited does not re-fetch.
+  // Load the recorded trajectory for the active prompt: the default sampler's
+  // run, or the random-order run when the default run looped (see
+  // codaTraceIdFor). Cache by trace id so switching back to a prompt already
+  // visited does not re-fetch.
   useEffect(() => {
-    const traceId = `${activePrompt.id}__lowconf-b32` as TraceId
+    const traceId = codaTraceIdFor(activePrompt.id)
     const cached = traceCacheRef.current.get(traceId)
     if (cached) {
       setTrace(cached)
@@ -158,18 +159,16 @@ export function SectionCoda() {
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-4 max-w-3xl">
         <span className="title-index">vi.</span>map response intent to a reveal
       </h2>
-      <p className="mb-10 text-base max-w-prose">
-        <Highlight>
-          Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
-          lock in clusters; open-ended answers drift in. The mapping is authored by hand.
-          Override it to compare how presentation changes the read without pretending the model chose it.
-          The fifth option replays what a real sampler did for this exact prompt, at 40 milliseconds
-          per step; the answer belongs to the model.
-        </Highlight>
+      <p className="mb-10 text-base leading-relaxed max-w-prose" style={{ color: 'var(--ink-2)' }}>
+        Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
+        lock in clusters; open-ended answers drift in. The mapping is authored by hand.
+        Override it to compare how presentation changes the read without pretending the model chose it.
+        The fifth mode replays what a real sampler did for this exact prompt, at 40 milliseconds
+        per step; the answer belongs to the model.
       </p>
 
-      <div className="grid gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
-        <BrandProvider brand={brandId} className="rounded-2xl p-6 md:p-10 border w-full">
+      <div className="grid gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_380px] items-start">
+        <BrandProvider brand={brandId} className="w-full">
           <CodaScaffold
             prompt={activePrompt}
             mode={mode}
@@ -179,6 +178,7 @@ export function SectionCoda() {
           />
         </BrandProvider>
 
+        {/* Every control of the stage lives in one console beside it. */}
         <aside className="w-full lg:sticky lg:top-24">
           <div
             className="text-[9.5px] uppercase tracking-[0.16em] mb-3"
@@ -193,53 +193,51 @@ export function SectionCoda() {
             layout="list"
           />
           <p className="mt-3 text-[11px] leading-relaxed" style={{ color: 'var(--muted)' }}>
-            The label above shows the mode the prompt is tagged with. Press Space to replay the read.
+            The tag on each prompt is the mode it is fixture-authored with. Press Space to replay the read.
           </p>
+
+          <div
+            className="mt-6 grid gap-4 pt-5 border-t"
+            style={{ borderColor: 'color-mix(in oklab, var(--ink) 18%, transparent)' }}
+          >
+            <ToggleRail
+              label="Mode"
+              items={modes.map((m) =>
+                m === 'trace'
+                  ? { id: m, label: 'Sampler', badge: 'recorded' }
+                  : {
+                      id: m,
+                      label: cap(m),
+                      badge: m === activePrompt.defaultMode && m === mode ? 'fixture' : undefined,
+                    },
+              )}
+              activeId={mode}
+              onSelect={(id) => setMode(id as ModeStrategy['name'])}
+            />
+            <ToggleRail
+              label="Reveal time"
+              items={(['instant', 'low', 'med', 'high'] as const).map((t) => ({
+                id: t,
+                label: revealLabels[t],
+              }))}
+              activeId={revealPace}
+              onSelect={(id) => setRevealPace(id as RevealPace)}
+            />
+            <ToggleRail
+              label="Brand"
+              items={brandIds.map((b) => ({ id: b, label: getBrand(b).name }))}
+              activeId={brandId}
+              onSelect={(id) => setBrandId(id as BrandId)}
+            />
+          </div>
         </aside>
       </div>
 
-      <p className="mt-10 text-base max-w-prose">
-        <Highlight>
-          Pace is a measured variable here. The <DefinitionTerm term="doherty threshold" /> marks
-          roughly where a system stops feeling responsive, so a reveal that outlasts the answer it is describing
-          is a cost. The rail exists so that trade is visible instead of assumed.
-        </Highlight>
+      <p className="mt-10 text-base leading-relaxed max-w-prose" style={{ color: 'var(--ink-2)' }}>
+        Pace is a measured variable here. The <DefinitionTerm term="doherty threshold" /> marks
+        roughly where a system stops feeling responsive, so a reveal that outlasts the answer it is describing
+        is a cost. The reveal-time rail exists so that trade is visible instead of assumed.
       </p>
-
-      <div
-        className="mt-6 grid gap-4 pt-6 border-t"
-        style={{ borderColor: 'color-mix(in oklab, var(--ink) 25%, transparent)' }}
-      >
-        <ToggleRail
-          label="Mode"
-          items={modes.map((m) =>
-            m === 'trace'
-              ? { id: m, label: 'Sampler', badge: 'recorded' }
-              : {
-                  id: m,
-                  label: cap(m),
-                  badge: m === activePrompt.defaultMode && m === mode ? 'fixture' : undefined,
-                },
-          )}
-          activeId={mode}
-          onSelect={(id) => setMode(id as ModeStrategy['name'])}
-        />
-        <ToggleRail
-          label="Reveal time"
-          items={(['instant', 'low', 'med', 'high'] as const).map((t) => ({
-            id: t,
-            label: revealLabels[t],
-          }))}
-          activeId={revealPace}
-          onSelect={(id) => setRevealPace(id as RevealPace)}
-        />
-        <ToggleRail
-          label="Brand"
-          items={brandIds.map((b) => ({ id: b, label: getBrand(b).name }))}
-          activeId={brandId}
-          onSelect={(id) => setBrandId(id as BrandId)}
-        />
-      </div>
     </Section>
   )
 }
@@ -258,9 +256,16 @@ function CodaScaffold({
   trace: TraceCompact | undefined
 }) {
   const brand = useBrand()
+  // One frame: the brand's own surface, at the brand's corner radius, around
+  // the dark chat stage. The surface is what changes when the brand does.
   return (
     <div
-      style={{ background: 'var(--surface)', borderRadius: 'var(--brand-radius)', padding: '24px' }}
+      className="p-4 md:p-6 border"
+      style={{
+        background: 'var(--surface-tint)',
+        borderRadius: 'var(--brand-radius)',
+        borderColor: 'color-mix(in oklab, var(--ink) 12%, transparent)',
+      }}
     >
       <CodaStage
         prompt={prompt}

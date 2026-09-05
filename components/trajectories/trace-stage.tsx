@@ -20,13 +20,16 @@ type Props = {
   // External replay nonce, same contract as CodaStage: bumping it from the
   // parent re-runs the exchange from the top independent of the local button.
   replayKey?: number
+  // The current denoising step, on every change, for a live map beside the
+  // stage. Read through a ref so a fresh closure never restarts playback.
+  onStep?: (step: number) => void
 }
 
 // The replay stage for one recorded trajectory: same dark-instrument family as
 // CodaStage and ModeDemo, but every readout here is read off the sampler
 // itself rather than authored. Step count, confidence, and the provisional
 // text all come from the trace.
-export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
+export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
   const [localReplay, setLocalReplay] = useState(0)
   const replay = () => setLocalReplay((k) => k + 1)
 
@@ -92,6 +95,10 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
 
   const stepReadoutRef = useRef<HTMLSpanElement>(null)
   const lengthReadoutRef = useRef<HTMLSpanElement>(null)
+  const onStepRef = useRef<typeof onStep>(onStep)
+  useEffect(() => {
+    onStepRef.current = onStep
+  }, [onStep])
 
   // Reset the guess count whenever a new run starts: a new trace, a new
   // pace, or either replay path (the local button or the section's shortcut).
@@ -100,11 +107,13 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
     if (guessesShownRef.current) {
       guessesShownRef.current.textContent = 'guesses shown 00'
     }
+    onStepRef.current?.(0)
   }, [trace.id, msPerStep, replayKey, localReplay])
 
   const handleProgress = useCallback(
     (p: number) => {
       const step = Math.max(0, Math.min(stepCount, Math.round(p * stepCount)))
+      onStepRef.current?.(step)
       const total = String(stepCount).padStart(3, '0')
       if (stepReadoutRef.current) {
         stepReadoutRef.current.textContent = `step ${String(step).padStart(3, '0')} / ${total}`
@@ -169,10 +178,10 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
         </ChatExchange>
       </div>
       <div
-        className="trace-readout flex justify-between items-end gap-4 px-6 pb-5 text-[10px] uppercase tracking-[0.16em]"
+        className="trace-readout flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-4 px-6 pb-5 text-[10px] uppercase tracking-[0.16em]"
         style={{ fontFamily: 'var(--font-mono)' }}
       >
-        <div className="flex flex-col gap-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+        <div className="flex flex-col gap-1 whitespace-nowrap" style={{ fontVariantNumeric: 'tabular-nums' }}>
           <span ref={stepReadoutRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
             {`step 000 / ${String(stepCount).padStart(3, '0')}`}
           </span>
@@ -183,7 +192,7 @@ export function TraceStage({ trace, msPerStep, replayKey = 0 }: Props) {
             guesses shown 00
           </span>
         </div>
-        <div className="flex flex-col items-end gap-1.5">
+        <div className="flex flex-col sm:items-end gap-1.5">
           <span style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>
             recorded {(realTotalMs / 1000).toFixed(1)}s on an m3 · replayed {speedup.toFixed(1)}x
           </span>

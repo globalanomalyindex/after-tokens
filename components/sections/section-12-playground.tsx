@@ -1,5 +1,4 @@
 import { Section } from '@/components/section'
-import { Highlight } from '@/components/chrome/highlight'
 import { Playground } from '@/components/playground/playground'
 
 export function SectionPlayground() {
@@ -34,11 +33,9 @@ export function SectionPlayground() {
         wearing whatever you put on it.
       </p>
       <p className="text-base leading-relaxed max-w-prose mb-12 md:mb-14">
-        <Highlight>
-          Color is the one axis left out of the replay key on purpose: recoloring a settled answer
-          changes nothing about its meaning, so it shifts live without re-running. Motion, glyphs,
-          and timing do carry meaning, so changing them runs a fresh read.
-        </Highlight>
+        Color is the one axis left out of the replay key on purpose: recoloring a settled answer
+        changes nothing about its meaning, so it shifts live without re-running. Motion, glyphs,
+        and timing do carry meaning, so changing them runs a fresh read.
       </p>
 
       <Playground />

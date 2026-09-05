@@ -1,7 +1,6 @@
 'use client'
 
 import { memo } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
 import type { WordState } from '@/lib/diffusion/types'
 
 type Props = {
@@ -27,14 +26,11 @@ function CyclingWordImpl({
   state,
   cycleTick,
   slotWidth,
-  reduced = false,
   provisionalText,
 }: Props) {
-  // pending → cycle through candidates with a per-word phase offset, unless a
+  // pending: cycle through candidates with a per-word phase offset, unless a
   // real recorded provisionalText is supplied, in which case that replaces
-  // the synthetic cycle. resolved & resolving → show final text. (Resolving
-  // means "locked but still blurred" until the global unblur threshold; the
-  // text content matches resolved.)
+  // the synthetic cycle. resolving and resolved show the final text.
   const ringIdx = candidates.length > 0
     ? (cycleTick + atomIndex * 3) % candidates.length
     : 0
@@ -42,45 +38,44 @@ function CyclingWordImpl({
   const pendingDisplay = provisionalText ?? candidates[ringIdx] ?? finalText
   const display = showFinal ? finalText : pendingDisplay
   const reservedWidth = slotWidth > 0 ? `${slotWidth}px` : undefined
+  const isBelief = state === 'pending' && provisionalText != null
 
+  // Text swaps in place. Noise churn lives under a 4.2 px blur where any
+  // crossfade is invisible work (it used to run a per-word Motion crossfade,
+  // ninety of them at once on a long answer), and a lock is crisp at once by
+  // design: the slot's own filter transition carries it. The one change that
+  // is meant to be seen is a change of belief, the prediction error made
+  // visible, so a belief keys its inner span on the text and re-runs a short
+  // CSS entrance each time the model changes its mind.
   return (
     <span
       data-cycling-word
       data-state={state}
-      // belief: a pending slot showing the model's own guess (above the
-      // probability floor) rather than authored noise; CSS renders it as
-      // forming, less blurred and steadier than noise, still short of readable.
-      data-belief={state === 'pending' && provisionalText != null ? 'true' : undefined}
+      data-belief={isBelief ? 'true' : undefined}
       data-word-index={atomIndex}
       className="cycling-slot"
       style={{
         display: 'inline-block',
         position: 'relative',
         minWidth: state === 'pending' ? reservedWidth : undefined,
-        marginRight: '0.28em',
         whiteSpace: 'nowrap',
         verticalAlign: 'baseline',
-        // Used by CSS to desynchronize per-word breathing/pulse animations.
+        // Used by CSS to desynchronize per-word breathing animations.
         ['--word-index' as string]: String(atomIndex),
       } as React.CSSProperties}
     >
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-          key={display}
-          initial={reduced ? false : { opacity: 0, filter: 'blur(7px)', y: 1 }}
-          animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-          exit={reduced ? undefined : { opacity: 0, filter: 'blur(7px)', y: -1 }}
-          transition={reduced ? { duration: 0 } : { duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-          style={{ display: 'inline-block' }}
-        >
-          {display}
-        </motion.span>
-      </AnimatePresence>
+      <span
+        key={isBelief ? display : 'text'}
+        className={isBelief ? 'belief-shift' : undefined}
+        style={{ display: 'inline-block' }}
+      >
+        {display}
+      </span>
     </span>
   )
 }
 
-// cycleTick increments every 440ms while any word is still pending, and it is
+// cycleTick increments every 390ms while any word is still pending, and it is
 // passed to every CyclingWord in a paragraph. A settled word no longer reads
 // cycleTick (showFinal is already true), so re-rendering it on every tick is
 // wasted work. The one non-obvious rule: cycleTick is deliberately excluded
@@ -88,7 +83,7 @@ function CyclingWordImpl({
 // on the ticks that keep the still-pending words cycling. provisionalText
 // gets the same treatment as cycleTick for a settled word (showFinal already
 // ignores it) but, unlike cycleTick, a change to it while still pending must
-// re-render: that's the recorded trajectory's real mind-change crossfade.
+// re-render: that's the recorded trajectory's real mind change.
 function areEqual(prev: Props, next: Props): boolean {
   if (
     prev.atomIndex !== next.atomIndex ||

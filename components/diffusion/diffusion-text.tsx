@@ -1,6 +1,7 @@
 'use client'
 
 import React, {
+  Fragment,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -402,12 +403,14 @@ export function DiffusionText({
       style={isDecode ? { fontFamily: 'var(--font-mono)' } : undefined}
     >
       {announce === 'on-complete' ? (
-        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only select-none">
           {isComplete ? children : ''}
         </div>
       ) : (
-        <span className="sr-only">{children}</span>
+        <span className="sr-only select-none">{children}</span>
       )}
+      {/* Real whitespace between the slots, never a margin: the words wrap at
+          the spaces like text, and a copied answer comes out with its spaces. */}
       <span aria-hidden="true" className="block">
         {atoms.map((atom, i) => {
           // Decode styles: per-character stage decode, timed to the mode's lock
@@ -416,8 +419,9 @@ export function DiffusionText({
           if (isDecode) {
             const win = lockWindows?.get(atom.index)
             return (
-              <DecodingWord
-                key={`${atom.index}-${atom.text}`}
+              <Fragment key={`${atom.index}-${atom.text}`}>
+                {i > 0 ? ' ' : null}
+                <DecodingWord
                 text={atom.text}
                 style={glyphStyle}
                 startP={win?.startP ?? 0}
@@ -429,7 +433,8 @@ export function DiffusionText({
                 registerRoot={(el) => {
                   wordRefs.current[i] = el
                 }}
-              />
+                />
+              </Fragment>
             )
           }
           const state = wordStates.get(atom.index) ?? 'pending'
@@ -438,22 +443,23 @@ export function DiffusionText({
           // useLayoutEffect can measure the final widths.
           if (slotWidth === 0) {
             return (
-              <span
-                key={`${atom.index}-${atom.text}`}
-                ref={(el) => {
-                  wordRefs.current[i] = el
-                }}
-                data-word-index={atom.index}
-                className="cycling-slot"
-                style={{
-                  display: 'inline-block',
-                  marginRight: '0.28em',
-                  opacity: active ? 0 : 0,
-                  visibility: 'hidden',
-                }}
-              >
-                {atom.text}
-              </span>
+              <Fragment key={`${atom.index}-${atom.text}`}>
+                {i > 0 ? ' ' : null}
+                <span
+                  ref={(el) => {
+                    wordRefs.current[i] = el
+                  }}
+                  data-word-index={atom.index}
+                  className="cycling-slot"
+                  style={{
+                    display: 'inline-block',
+                    opacity: 0,
+                    visibility: 'hidden',
+                  }}
+                >
+                  {atom.text}
+                </span>
+              </Fragment>
             )
           }
           // A word blooms into its color the instant it locks; pending words
@@ -461,8 +467,9 @@ export function DiffusionText({
           const lockedColor = state !== 'pending' ? wordColor?.(atom.index, atoms.length) : undefined
           const conf = wordConf?.(atom.index)
           return (
+            <Fragment key={`${atom.index}-${atom.text}`}>
+              {i > 0 ? ' ' : null}
             <span
-              key={`${atom.index}-${atom.text}`}
               ref={(el) => {
                 wordRefs.current[i] = el
               }}
@@ -488,6 +495,7 @@ export function DiffusionText({
                 }
               />
             </span>
+            </Fragment>
           )
         })}
       </span>
@@ -502,14 +510,13 @@ export function DiffusionText({
       )}
       {showStatus && (
         <div
-          className="mt-4 flex items-center gap-2 text-[9.5px] uppercase tracking-[0.16em]"
+          className="mt-4 select-none text-[9.5px] uppercase tracking-[0.16em]"
           style={{
             fontFamily: 'var(--font-mono)',
             color: 'color-mix(in oklab, currentColor 62%, transparent)',
           }}
           data-prototype-status={isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         >
-          <span aria-hidden="true">{isComplete ? '●' : shouldPlay ? '◐' : '○'}</span>
           {mode === 'trace' ? 'recorded sampler' : 'authored prototype'} · {isComplete ? 'resolved' : shouldPlay ? 'resolving' : 'ready'}
         </div>
       )}

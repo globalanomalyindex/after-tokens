@@ -6,20 +6,20 @@ type MonoLabelProps = {
   // parts with no `+` separator, so the eyebrow reads "ii.  primer + fog".
   index?: string
   // When set, the strip becomes a solid colored tag (cream text on the accent)
-  // instead of the neutral marker wash — the section's technical-color layer.
+  // instead of the neutral marker wash: the section's technical-color layer.
   accentColor?: string
   size?: 'sm' | 'md'
   className?: string
 }
 
-// Flat marker-highlight across the entire label — every part plus the `+`
+// Flat marker-highlight across the entire label, every part plus the `+`
 // separators. Same shape as a cursor text selection: solid bg, no border,
 // no radius. The whole subtitle reads as one highlighted strip.
 export function MonoLabel({ parts, index, accentColor, size = 'md', className = '' }: MonoLabelProps) {
   const fontSize = size === 'sm' ? '9px' : '10.5px'
   return (
     <span
-      className={`inline-flex items-center gap-2 lowercase ${className}`}
+      className={`inline-flex flex-wrap items-center gap-x-2 gap-y-0 lowercase ${className}`}
       style={{
         fontFamily: 'var(--font-brand-mono, var(--font-mono))',
         fontSize,

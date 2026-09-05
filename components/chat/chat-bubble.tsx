@@ -58,10 +58,12 @@ type AnswerBubbleProps = {
   label?: string
   className?: string
   delay?: number
-  // The bubble doesn't know the size of the answer it's about to hold, so
-  // it starts compact and grows to natural height over the diffusion window.
-  // This is the visual that sells "the AI is thinking and the answer is
-  // becoming clear." Default growth duration matches typical text diffusion.
+  // The bubble opens from a compact line to its natural height in one short
+  // motion, so the whole field of slots is on screen before any word locks.
+  // The primer names the slowly growing bubble as a convention that stops
+  // telling the truth once the answer resolves in parallel: height tracking
+  // emitted tokens says "this much is written," and a diffusion answer has
+  // its whole extent from the start. So the surface is reserved at once.
   growMs?: number
 }
 
@@ -72,7 +74,7 @@ export function AnswerBubble({
   label = 'Answer',
   className = '',
   delay = 0.08,
-  growMs = 2400,
+  growMs = 560,
 }: AnswerBubbleProps) {
   const reduced = usePrefersReducedMotion()
   const innerRef = useRef<HTMLDivElement>(null)

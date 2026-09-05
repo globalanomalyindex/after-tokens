@@ -69,7 +69,7 @@ export function CodaStage({
 
   return (
     <div
-      className="relative mx-auto rounded-2xl overflow-hidden max-w-md min-h-[560px] flex flex-col"
+      className="relative rounded-2xl overflow-hidden min-h-[520px] flex flex-col"
       style={{ background: 'var(--stage)', color: 'var(--stage-text)' }}
     >
       <div
@@ -80,7 +80,7 @@ export function CodaStage({
           Stage
         </span>
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
-          {isTrace ? '+ sampler (recorded)' : `+ ${mode}${isAutoMode ? ' (fixture)' : ''}`}
+          {isTrace ? `+ sampler · ${trace ? trace.sampler.id : 'recorded'}` : `+ ${mode}${isAutoMode ? ' (fixture)' : ''}`}
         </span>
       </div>
       <div className="px-5 py-7 flex-1 flex items-center">

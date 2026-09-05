@@ -3,7 +3,6 @@
 import { useState, type ReactNode } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
-import { Highlight } from '@/components/chrome/highlight'
 import type { ModeName } from '@/lib/diffusion/types'
 
 export type ModeSpec = { label: string; value: string }
@@ -58,8 +57,8 @@ export function ModeDemo({
           {index && <span className="title-index">{index}</span>}
           {headline}
         </h2>
-        <p className={`leading-relaxed max-w-prose mb-8 ${compact ? 'text-sm' : 'text-base'}`}>
-          <Highlight>{intro}</Highlight>
+        <p className={`leading-relaxed max-w-prose mb-8 ${compact ? 'text-sm' : 'text-base'}`} style={{ color: 'var(--ink-2)' }}>
+          {intro}
         </p>
         {specs && specs.length > 0 && (
           <dl

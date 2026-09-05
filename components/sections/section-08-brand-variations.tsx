@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Section } from '@/components/section'
 import { BrandProvider } from '@/lib/brand/provider'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
-import { Highlight } from '@/components/chrome/highlight'
 import type { BrandId } from '@/lib/brand/types'
 
 const variants: { id: BrandId; industry: string; prompt: string; response: string }[] = [
@@ -67,23 +66,15 @@ export function SectionBrandVariations() {
       <h2 className="text-4xl md:text-5xl font-bold tracking-tighter lowercase leading-tight mb-6 max-w-3xl">
         <span className="title-index">viii.</span>hold the motion constant; change the brand
       </h2>
-      <p className="mb-6 text-base max-w-prose">
-        <Highlight>
-          One timeline, four identities. Mode, duration, lock order, and tokenization stay fixed.
-          Only surface, ink, accent, type, and corner radius change. This isolates brand expression
-          from state semantics instead of tuning both at once.
-        </Highlight>
+      <p className="mb-5 text-base leading-relaxed max-w-prose" style={{ color: 'var(--ink-2)' }}>
+        One timeline, four identities. Mode, duration, lock order, and tokenization stay fixed.
+        Only surface, ink, accent, type, and corner radius change, which isolates brand expression
+        from state semantics instead of tuning both at once.
       </p>
-      <p className="mb-6 text-base max-w-prose">
-        <Highlight>
-          Arrival can be a brand moment, but recognition cannot come at the cost of contrast or a
-          truthful state signal. Every palette below uses AA-compliant text tokens.
-        </Highlight>
-      </p>
-      <p className="mb-10 text-base max-w-prose">
-        <Highlight>
-          Replay all four to compare the identical timeline under four visual systems.
-        </Highlight>
+      <p className="mb-10 text-base leading-relaxed max-w-prose" style={{ color: 'var(--ink-2)' }}>
+        Arrival can be a brand moment, but recognition cannot come at the cost of contrast or a
+        truthful state signal. Every palette below uses AA-compliant text tokens. Replay all four to
+        compare the identical timeline under four visual systems.
       </p>
       <div className="mb-6 flex items-center gap-4">
         <button
