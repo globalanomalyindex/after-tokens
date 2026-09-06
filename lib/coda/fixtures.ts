@@ -45,7 +45,7 @@ export const codaPrompts: CodaPrompt[] = [
     prompt: 'Give me a few wild ideas for naming a new color.',
     defaultMode: 'mitosis',
     response:
-      'Drift Cobalt. Folded Mango. Wet Slate at Dusk. Lemon Static. The blue your tongue tastes after biting a wire.',
+      'Five to start with:\n1. Drift Cobalt\n2. Folded Mango\n3. Wet Slate at Dusk\n4. Lemon Static\n5. The blue your tongue tastes after biting a wire',
   },
   {
     id: 'travel',
@@ -55,10 +55,17 @@ export const codaPrompts: CodaPrompt[] = [
       'For under four hours of total travel, take the train. Door to door it usually wins, and you can actually work the whole way.',
   },
   {
+    id: 'heist-plot',
+    prompt: 'Summarize the plot of a heist movie in three sentences, without naming a real film.',
+    defaultMode: 'mycelium',
+    response:
+      'A crew of retired thieves is hired to empty a vault that has never been opened. The heist runs perfectly until the alarm that should have sounded stays silent, and the crew realizes the job was bait. The twist is that the vault was empty all along, and the real theft is the crew itself.',
+  },
+  {
     id: 'compiler-error',
     prompt: 'Walk me through this compiler error.',
     defaultMode: 'mycelium',
     response:
-      'The type system caught a mismatch between what the function returns and what the caller expects. Look at the return statement on line 14 and the variable type on line 22. They disagree.',
+      'The type system caught a mismatch between what the function returns and what the caller expects.\n1. Read the return statement on line 14.\n2. Read the variable type on line 22.\n3. They disagree; decide which one is right and change the other.',
   },
 ]

@@ -166,11 +166,12 @@ const REWARD: { n: string; lead: string; body: ReactNode; decision: string }[] =
     body: (
       <>
         Curiosity is the pull of an <DefinitionTerm term="information gap" />, and it recruits the same circuits as a
-        reward: anticipating information is itself pleasant. A blurred slot of the right width is a gap the eye wants
-        closed; a half-formed guess is a gap it can almost close.
+        reward: anticipating information is itself pleasant. The <DefinitionTerm term="gist" /> of a line lives in
+        its content words, so a reveal that lands those first closes the gap that matters while the predictable words
+        are still forming.
       </>
     ),
-    decision: 'pending words hold their final width, and the model’s real guess shows when it clears the floor',
+    decision: 'structure and topic words seed the growth, so a list shows its skeleton and a plot its heist first',
   },
 ]
 

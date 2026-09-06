@@ -49,13 +49,15 @@ export const TRACE_NUMBERS = {
   shortExcludedNoBlock: 9,
   shortExcludedDefault: 0,
   /** default-sampler answers that fell into a repetition loop (one phrase repeated back to back, covering most of the words); none under the other two samplers. see LOOP_RULE in scripts/gen-trace-index.mjs */
-  loopedAnswersDefault: 3,
+  loopedAnswersDefault: 4,
   loopedAnswersOther: 0,
-  loopRepsRange: [14, 19] as const,
-  loopCoverRange: [0.77, 0.88] as const,
+  loopRepsRange: [5, 19] as const,
+  loopCoverRange: [0.72, 0.88] as const,
+  /** runs the hand audit (data/traces/curated.json) kept for the picker: complete, coherent answers */
+  curatedRuns: 18,
   /** the audit of every recorded answer (AUDIT_RULE in scripts/gen-trace-index.mjs): complete means the model chose its own ending */
   audit: {
-    lowconfB32: { complete: 17, looped: 3 },
+    lowconfB32: { complete: 16, looped: 4 },
     randomB32: { complete: 20 },
     lowconfB128: { complete: 11, short: 6, empty: 3 },
   },
@@ -108,7 +110,7 @@ export const FINDINGS: Finding[] = [
 ]
 
 export const LIMITS =
-  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. ${N.loopedAnswersDefault === 3 ? 'Three' : String(N.loopedAnswersDefault)} of the twenty default-sampler answers fell into a repetition loop, one phrase repeated ${N.loopRepsRange[0]} to ${N.loopRepsRange[1]} times back to back over ${pct(N.loopCoverRange[0])} to ${pct(N.loopCoverRange[1])} of the words, a known failure of greedy decoding at this scale; ${N.loopedAnswersOther === 0 ? 'no run' : String(N.loopedAnswersOther)} under the other two samplers did. Every recorded answer carries an audit verdict on the stage (${N.audit.lowconfB32.complete} of the 20 default runs chose their own ending, ${N.audit.randomB32.complete} of 20 random-order runs did, and ${N.audit.lowconfB128.complete} of 20 no-block runs did, the rest short or empty); the looped three stay in every statistic and replay as recorded, and the product demos replay a run's order, timing, and confidence over pre-written words, so no recorded text reaches them. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
+  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. ${N.loopedAnswersDefault === 4 ? 'Four' : String(N.loopedAnswersDefault)} of the twenty default-sampler answers fell into a repetition loop, one phrase repeated ${N.loopRepsRange[0]} to ${N.loopRepsRange[1]} times back to back over ${pct(N.loopCoverRange[0])} to ${pct(N.loopCoverRange[1])} of the words, a known failure of greedy decoding at this scale; ${N.loopedAnswersOther === 0 ? 'no run' : String(N.loopedAnswersOther)} under the other two samplers did. Every recorded answer carries an audit verdict (${N.audit.lowconfB32.complete} of the 20 default runs chose their own ending, ${N.audit.randomB32.complete} of 20 random-order runs did, and ${N.audit.lowconfB128.complete} of 20 no-block runs did, the rest short or empty), and a hand audit kept ${N.curatedRuns} of the 60 as complete, coherent answers; the research stage shows only those, every excluded run keeps its reason in the data, all sixty stay in the statistics they qualify for, and the product demos replay a run's order, timing, and confidence over pre-written words, so no recorded text reaches them. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
 
 // Numbers derived from the full traces for feeding back into the authored
 // design (see data/traces/derived/*.json and scripts/derive-trajectory-models.py).
@@ -188,6 +190,12 @@ export const SYNTHESIS: SynthesisRow[] = [
     from: 'finding 01 · finding 02 · change blindness',
     tag: 'derived',
     effect: 'the block schedule is what makes the default sampler read left to right, and a schedule is a product decision the reveal does not inherit. Without one the same confidence rule grows a few clusters at once (finding 02), so the order is a growth process: the first step seeds the whole span, every later commit extends a live front with the recorded jump distribution (51% adjacent, schedule-free runs) or opens a new seed in the largest gap left. Growth is staged, local change, which is what the eye can follow; a uniform scatter is what it misses.',
+  },
+  {
+    decision: 'the gist comes first: structure and topic words seed the growth, connective tissue fills last',
+    from: 'gist · information gap · surprisal',
+    tag: 'derived',
+    effect: 'a reader takes the meaning of a line from its content words; the function words are predictable and carry almost none of it. So each region seeds with its most salient word (a list marker or line opening, a word that echoes the prompt, a proper noun, a number, a long or repeated content word) and every front leans toward the more salient neighbor, so a list shows its skeleton first and a plot shows its heist, its vault, and its crew before its articles. The curiosity gap closes on the essentials early, and the answer reads as sculpted rather than typed. The score is a hint the process reads; a product would pick the order with a small saliency model of its own, and a real sampler commits its surest tokens first.',
   },
   {
     decision: 'commits arrive in steps of several words, 140 to 260 milliseconds apart, after a 320 millisecond pre-roll',

@@ -70,13 +70,13 @@ const PACE_ITEMS: { id: PaceId; label: string }[] = [
 ]
 const PACE_OF: Record<PaceId, TracePace> = { shaped: 'shaped', '40': 40, recorded: 'recorded' }
 
-const VERDICT_BADGE: Record<string, string | undefined> = {
-  complete: undefined,
-  looped: 'looped',
-  short: 'short',
-  empty: 'empty',
-  cut: 'cut off',
+// The picker shows only the runs the hand audit kept (data/traces/curated.json):
+// the ones that read as complete, coherent answers to their prompt. Every
+// other run stays in the data and its statistics, with a reason.
+function isCurated(promptId: string, config: Config): boolean {
+  return TRACE_META[traceIdFor(promptId, config)]?.curated === true
 }
+const CURATED_COUNT = TRACE_IDS.filter((id) => TRACE_META[id].curated).length
 
 function traceIdFor(promptId: string, config: Config): TraceId {
   return `${promptId}__${config}` as TraceId
@@ -99,7 +99,7 @@ const EYEBROW = 'text-[10px] uppercase tracking-[0.18em] mb-3'
 const EYEBROW_STYLE = { fontFamily: 'var(--font-mono)', color: 'var(--muted)' } as const
 
 export function SectionTrajectories() {
-  const [activePromptId, setActivePromptId] = useState('diffusion-explain')
+  const [activePromptId, setActivePromptId] = useState('heist-plot')
   const [activeConfig, setActiveConfig] = useState<Config>('lowconf-b32')
   const [paceId, setPaceId] = useState<PaceId>('shaped')
   const [traces, setTraces] = useState<Map<TraceId, TraceCompact>>(() => new Map())
@@ -111,19 +111,31 @@ export function SectionTrajectories() {
   const activeAudit = TRACE_META[activeTraceId]?.audit
   const pace = PACE_OF[paceId]
 
-  // The picker: one short pill per prompt, tagged when this sampler's run
-  // for that prompt fell into a repetition loop.
+  // The picker: one short pill per prompt whose run under this sampler was
+  // kept by the hand audit.
   const promptItems = useMemo<CodaPrompt[]>(
     () =>
-      PROMPT_IDS.map((id) => ({
+      PROMPT_IDS.filter((id) => isCurated(id, activeConfig)).map((id) => ({
         id,
         prompt: PROMPT_LABELS[id] ?? id,
         short: id.replace(/-/g, ' '),
-        badge: VERDICT_BADGE[TRACE_META[traceIdFor(id, activeConfig)]?.audit.verdict ?? 'complete'],
         defaultMode: 'trace',
         response: '',
       })),
     [activeConfig],
+  )
+  // Switching samplers keeps the prompt when its run under the new sampler
+  // was kept, and otherwise moves to the first prompt that was.
+  const selectConfig = useCallback(
+    (id: string) => {
+      const config = id as Config
+      setActiveConfig(config)
+      if (!isCurated(activePromptId, config)) {
+        const first = PROMPT_IDS.find((p) => isCurated(p, config))
+        if (first) setActivePromptId(first)
+      }
+    },
+    [activePromptId],
   )
 
   // Load the active trajectory.
@@ -164,7 +176,6 @@ export function SectionTrajectories() {
   }, [activeTrace, activePromptId, activeConfig, traces])
 
   const selectPrompt = useCallback((id: string) => setActivePromptId(id), [])
-  const selectConfig = useCallback((id: string) => setActiveConfig(id as Config), [])
   const selectPace = useCallback((id: string) => setPaceId(id as PaceId), [])
   const onStep = useCallback((step: number) => liveMapRef.current?.setStep(step), [])
 
@@ -210,7 +221,7 @@ export function SectionTrajectories() {
           </div>
           <PromptPicker prompts={promptItems} activeId={activePromptId} onSelect={selectPrompt} layout="compact" />
           <p className="mt-3 text-[11px] leading-relaxed max-w-2xl" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-            the words are the model&rsquo;s own, so every run carries its audit verdict; a tag marks a run that looped, came back short or empty, or was cut off.
+            the words are the model&rsquo;s own. the picker shows the {CURATED_COUNT} of {TRACE_IDS.length} runs that read as complete answers under a hand audit; the rest (loops, refusals, fragments, empties) stay in the data and in every statistic, each with its reason.
           </p>
         </div>
 
@@ -234,7 +245,7 @@ export function SectionTrajectories() {
               >
                 {activeLoop
                   ? `+ audit: looped. The model repeated “${activeLoop.phrase}” ${activeLoop.reps} times back to back, ${Math.round(activeLoop.cover * 100)}% of the answer. It replays as recorded and stays in every statistic; a small model decoded greedily does this.`
-                  : `+ audit: ${activeAudit.verdict}. ${activeAudit.note}. It replays as recorded${activeAudit.verdict === 'empty' || activeAudit.verdict === 'short' ? ' and is excluded from the order statistics' : ''}; removing the schedule lets the sampler commit its ending before its words.`}
+                  : `+ audit: ${activeAudit.verdict}. ${activeAudit.note}. It replays as recorded.`}
               </p>
             )}
             {activeAudit && activeAudit.verdict === 'complete' && (
@@ -243,7 +254,7 @@ export function SectionTrajectories() {
                 style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
                 data-trace-audit
               >
-                + audit: complete. {activeAudit.note}.
+                + audit: complete, kept. {activeAudit.note}; a hand audit found it coherent.
               </p>
             )}
           </div>

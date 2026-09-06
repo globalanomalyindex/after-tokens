@@ -2,6 +2,8 @@ export type WordAtom = {
   text: string
   index: number
   lineIndex: number
+  /** gist-first hint in [0, 1], attached by DiffusionText (see lib/diffusion/salience.ts) */
+  salience?: number
 }
 
 export function tokenize(input: string): WordAtom[] {

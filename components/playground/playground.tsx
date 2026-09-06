@@ -235,6 +235,7 @@ export function Playground() {
                 showStatus
                 className="text-base md:text-lg leading-relaxed"
                 strategy={traceStrat}
+                topic={prompt.prompt}
                 provisionalAt={view ? provisionalAt : undefined}
                 stepCount={view ? view.step_ms.length : undefined}
                 stepAt={stepAt}

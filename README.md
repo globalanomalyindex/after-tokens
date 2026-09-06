@@ -47,6 +47,7 @@ every rendering decision in the shipped reveal traces back to a named psychology
 | the pending glyphs change every 390 milliseconds | doherty threshold · finding 04 | matches the sampler's measured 387 ms flip rate, so every visible change lands inside the window where attention holds |
 | the model's guess renders only above a probability of 0.25 | predictive coding · prediction error | below the floor the guess is the corpus prior; above it, a real prediction |
 | words lock in several places at once, each cluster growing outward from its seed | finding 01 · finding 02 · change blindness | the block schedule is a product decision the reveal does not inherit; without it the sampler grows a few clusters at once, and staged local change is what the eye can follow |
+| the gist comes first: structure and topic words seed the growth, connective tissue fills last | gist · information gap | a list shows its skeleton first and a plot its heist, vault, and crew before its articles; the answer reads as sculpted rather than typed |
 | commits arrive in steps of several words, 140 to 260 milliseconds apart | finding 01 · doherty threshold | a fast decoder commits several positions per step; the average rate stays linear and no wait runs past the threshold |
 | a word forms for one step before it locks: the final word, ghosted, steady | reward anticipation · parafoveal preview | every lock is preceded by a beat of expectation; the ghost never changes, so previewing it costs nothing |
 | a locked word gets heavier than its neighbors, and snaps crisp in one beat | von restorff effect · aha effect | the lock is the one difference in the field, and a sudden gain in fluency reads as insight |
@@ -76,7 +77,7 @@ nature supplied a motion vocabulary (branching, dissipation, bands, division). i
 
 ## research
 
-the case study cites eighteen findings from cognitive science, neuroscience, and reading research, each placed next to the specific claim it motivates. they are why the hypothesis is worth testing. none of them was measured on this prototype.
+the case study cites nineteen findings from cognitive science, neuroscience, and reading research, each placed next to the specific claim it motivates. they are why the hypothesis is worth testing. none of them was measured on this prototype.
 
 | term | source |
 | --- | --- |
@@ -98,6 +99,7 @@ the case study cites eighteen findings from cognitive science, neuroscience, and
 | labor illusion | buell & norton, 2011 |
 | information gap | loewenstein, 1994; kang et al., 2009 |
 | groove | witek et al., 2014 |
+| gist | potter, 1976; levy, 2008 |
 
 parafoveal preview is in there as the counter-argument: while you read one word the eye is already sampling the next one over, so revealing out of order should cost a reader time. an honest study has to measure reading time. state identification alone would not be enough.
 
@@ -121,7 +123,7 @@ what changed in the design because of it (the reasoning in order is `docs/redesi
 - four earlier choices were retired by the data: the phi cadence (kept only as the comparison stimulus), a field-wide sweep during the reveal, a halo left on every locked word, and a closing beat at a fixed 82% of the run that unblurred still-pending noise.
 - the hypothesis is now four claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3), and felt quality (h4: the same answer, at the same duration, is rated more satisfying after the reward grammar than after a uniform fade). the recorded trajectories are the stimuli for all four.
 - a llada-8b-instruct corroboration set (4 runs, tau +0.90, median jump 3.9) reproduces the block-schedule pattern at 8b; llama.cpp exposes order and timing but not confidence.
-- every recorded answer carries an audit verdict (`AUDIT_RULE` in `scripts/gen-trace-index.mjs`): complete when the model chose its own ending, else looped, short, empty, or cut. under the default sampler 17 of 20 are complete and 3 looped (one phrase repeated 14 to 19 times over 77% to 88% of the words, a known failure of greedy decoding at this scale); under random order all 20 are complete; with no blocks 11 are complete, 6 short, and 3 empty (the sampler committed its ending before any word). every run stays in the statistics it qualifies for and replays as recorded with its verdict on the stage. the product demos (intent mapping, playground) replay a run's order, timing, and confidence over the pre-written answer, so no recorded prose reaches them, and the stage says so.
+- every recorded answer carries an audit verdict (`AUDIT_RULE` in `scripts/gen-trace-index.mjs`): complete when the model chose its own ending, else looped, short, empty, or cut. under the default sampler 16 of 20 are complete and 4 looped (one phrase repeated 5 to 19 times over 72% to 88% of the words, a known failure of greedy decoding at this scale); under random order all 20 are complete; with no blocks 11 are complete, 6 short, and 3 empty (the sampler committed its ending before any word). a hand audit (`data/traces/curated.json`) then kept 18 of the 60 as complete, coherent answers; the research stage's picker shows only those, and every excluded run (loops, refusals, fragments, empties, contradictions) keeps its reason in the file. every run stays in the statistics it qualifies for. the product demos (intent mapping, playground) replay a run's order, timing, and confidence over the pre-written answer, so no recorded prose reaches them, and the stage says so.
 - a shaped replay pace plays a tail-only step in 14 ms and a word step in 120 ms, so a no-blocks run, which spends most of its steps settling the answer's length, shows its anchors, its held beliefs, and its final flood at a readable pace; a strip under the answer draws the field settling. the order is untouched and the other paces stay one click away.
 
 ## evidence and limits

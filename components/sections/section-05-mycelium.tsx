@@ -23,20 +23,22 @@ export function SectionMycelium() {
         }
         intro={
           <>
-            Mycelium resolves each answer from several places at once. The first step seeds the whole span;
-            every step after it commits a handful of words, each one growing a live cluster outward with the jump
-            distribution of the recorded schedule-free sampler (about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB128)} land
-            next to a committed word) or opening a new seed in the largest gap left. The block schedule that makes
-            the default sampler read left to right is a product decision the reveal does not inherit. The seed is
-            the response text, so every replay is comparable. Each lock snaps crisp and heavy with a halo that is
-            gone within a second; the field moves as a whole once, at the last lock. Every one of those choices is
-            a row in the ledger above.
+            Mycelium sculpts the answer instead of typing it. The first step puts the gist on screen: each region
+            of the answer seeds with its most salient word, so a list shows its skeleton first and a plot shows its
+            heist, its vault, and its crew before its articles. Every step after that commits a handful of words,
+            each one growing a live cluster outward with the jump distribution of the recorded schedule-free sampler
+            (about {pct(TRACE_NUMBERS.adjacentFrac.lowconfB128)} land next to a committed word), leaning toward the
+            more salient neighbor, so the connective tissue fills in last. The block schedule that makes the default
+            sampler read left to right is a product decision the reveal does not inherit. The seed is the response
+            text, so every replay is comparable. Each lock snaps crisp and heavy with a halo that is gone within a
+            second; the field moves as a whole once, at the last lock. Every one of those choices is a row in the
+            ledger above.
           </>
         }
         prompt="How does masked diffusion text generation work?"
         answer={`Masked diffusion language models refine many masked positions across repeated denoising steps instead of emitting only the next token. This interface is an authored simulation of that non-sequential process; it is not connected to live model state.`}
         specs={[
-          { label: 'Signal source', value: 'Parallel growth, schedule-free sampler statistics' },
+          { label: 'Signal source', value: 'Gist-first growth, schedule-free sampler statistics' },
           { label: 'Cadence', value: 'About 20 steps, 140 to 260 ms apart, several words per step' },
           { label: 'Use-case hypothesis', value: 'General responses' },
           { label: 'Evidence', value: 'Order statistics matched; comprehension untested' },
@@ -136,7 +138,7 @@ export function SectionMycelium() {
             headline="Mitosis, structure dividing into parts"
             intro="One field divides toward measured word positions before a steady lock sequence begins. It extends the system beyond atmospheric metaphors and tests whether a more technical register still preserves the same state contract."
             prompt="Give me four names for an electric blue."
-            answer={`Signal Blue. Cobalt Static. Live Wire. Midnight Current.`}
+            answer={'Four, in order of voltage:\n1. Signal Blue\n2. Cobalt Static\n3. Live Wire\n4. Midnight Current'}
             specs={[
               { label: 'Signal source', value: 'Response hash + geometry' },
               { label: 'Use-case hypothesis', value: 'Lists and ideation' },

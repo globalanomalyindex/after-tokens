@@ -94,6 +94,7 @@ export function ModeDemo({
               mode={mode}
               trigger="immediate"
               showStatus
+              topic={prompt}
               className="text-base md:text-lg leading-relaxed"
             >
               {answer}

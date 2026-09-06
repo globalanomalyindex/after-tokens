@@ -11,6 +11,7 @@ import React, {
 } from 'react'
 import { useMotionValueEvent } from 'motion/react'
 import { tokenize } from '@/lib/diffusion/tokenize'
+import { wordSalience } from '@/lib/diffusion/salience'
 import { useDiffusionChoreography } from '@/lib/diffusion/choreographer'
 import { buildCandidates, type GlyphStyle } from '@/lib/diffusion/glyph-styles'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
@@ -89,6 +90,10 @@ type DiffusionTextProps = {
   // reads to scale the settle overshoot and, in trace mode, resolved-word
   // opacity, so certainty at commit reads as certainty on screen (finding 05).
   wordConf?: (index: number) => number | undefined
+  // The prompt the answer responds to, for the gist-first order: words that
+  // echo it score high and seed the growth (see lib/diffusion/salience.ts).
+  // Without it the order still puts structure and content words first.
+  topic?: string
 }
 
 export function DiffusionText({
@@ -109,8 +114,13 @@ export function DiffusionText({
   stepCount,
   stepAt,
   wordConf,
+  topic,
 }: DiffusionTextProps) {
-  const atoms = useMemo(() => tokenize(children), [children])
+  const atoms = useMemo(() => {
+    const raw = tokenize(children)
+    const sal = wordSalience(raw, topic)
+    return raw.map((a, i) => ({ ...a, salience: sal[i] }))
+  }, [children, topic])
   // 'words' cycles topical near-words; the other styles DECODE per character
   // through ordered stages (see DecodingWord) rather than cycling whole strings.
   const isDecode = isDecodeStyle(glyphStyle)
@@ -445,7 +455,9 @@ export function DiffusionText({
         <span className="sr-only select-none">{children}</span>
       )}
       {/* Real whitespace between the slots, never a margin: the words wrap at
-          the spaces like text, and a copied answer comes out with its spaces. */}
+          the spaces like text, and a copied answer comes out with its spaces.
+          A line break in the answer is a line break here, so a list keeps its
+          shape while it forms. */}
       <span aria-hidden="true" className="block">
         {atoms.map((atom, i) => {
           // Decode styles: per-character stage decode, timed to the mode's lock
@@ -455,7 +467,7 @@ export function DiffusionText({
             const win = lockWindows?.get(atom.index)
             return (
               <Fragment key={`${atom.index}-${atom.text}`}>
-                {i > 0 ? ' ' : null}
+                {i > 0 ? (atoms[i - 1]!.lineIndex !== atom.lineIndex ? <br /> : ' ') : null}
                 <DecodingWord
                 text={atom.text}
                 style={glyphStyle}
@@ -479,7 +491,7 @@ export function DiffusionText({
           if (slotWidth === 0) {
             return (
               <Fragment key={`${atom.index}-${atom.text}`}>
-                {i > 0 ? ' ' : null}
+                {i > 0 ? (atoms[i - 1]!.lineIndex !== atom.lineIndex ? <br /> : ' ') : null}
                 <span
                   ref={(el) => {
                     wordRefs.current[i] = el
@@ -503,7 +515,7 @@ export function DiffusionText({
           const conf = wordConf?.(atom.index)
           return (
             <Fragment key={`${atom.index}-${atom.text}`}>
-              {i > 0 ? ' ' : null}
+              {i > 0 ? (atoms[i - 1]!.lineIndex !== atom.lineIndex ? <br /> : ' ') : null}
             <span
               ref={(el) => {
                 wordRefs.current[i] = el
@@ -511,6 +523,7 @@ export function DiffusionText({
               data-word-index={atom.index}
               data-last-lock={closing.lastIndex === atom.index ? 'true' : undefined}
               data-gap-close={closing.gapClosers.has(atom.index) ? 'true' : undefined}
+              data-conf-label={conf != null ? `p ${conf.toFixed(2)}` : undefined}
               style={{
                 display: 'inline',
                 color: lockedColor,

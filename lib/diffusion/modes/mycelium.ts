@@ -18,6 +18,16 @@ import orderModel from '@/data/traces/derived/order-model.json'
 // left, so the answer resolves in parallel from many places and closes
 // where the fronts meet.
 //
+// The gist. Which word seeds a region, and which neighbor a front grows
+// into next, follows salience (lib/diffusion/salience.ts): list markers and
+// line openings, then the words that echo the prompt, proper nouns, numbers,
+// and long or repeated content words, with function words and bare
+// punctuation last. Step 0 seeds each slice of the answer with its most
+// salient word, so the skeleton and the topic are on screen first and the
+// connective tissue fills in around them: the answer reads as sculpted, the
+// gist before the grammar. A word's salience is a hint the process reads;
+// with no hint (or a flat one) the process is the plain growth above.
+//
 // The cadence. A fast diffusion decoder commits several positions per
 // denoising step, so the locks here arrive in steps too: about
 // MYCELIUM_TARGET_STEPS per answer, each step inside the Doherty threshold
@@ -42,6 +52,9 @@ export const MYCELIUM_FORMING_MS = 300
  *  the pulse has a lilt (moderate syncopation is the most pleasurable pulse,
  *  a metronome the least). The average interval is unchanged. */
 export const MYCELIUM_SWING = 0.08
+/** Salience at or above which an open word is seeded outright, one per step,
+ *  before the fronts grow: the topic and the skeleton land first. */
+export const GIST_SEED_FLOOR = 0.6
 
 const TAIL_MS = 260
 
@@ -171,6 +184,7 @@ export function computeLockSchedule(words: MeasuredAtom[]): LockSchedule {
 
   const rng = mulberry32(fnv1a(words.map((w) => w.text).join('|')))
   const k = wordsPerStep(n)
+  const sal = (p: number) => words[p]?.salience ?? 0.3
 
   // Work in array positions (0..n-1); words[i].index === i for every
   // tokenized atom (see lib/diffusion/tokenize.ts).
@@ -191,7 +205,22 @@ export function computeLockSchedule(words: MeasuredAtom[]): LockSchedule {
     for (let p = 0; p < n; p++) if (committed[p] && (isOpen(p - 1) || isOpen(p + 1))) out.push(p)
     return out
   }
-  // A seed near the middle of the largest run of open positions.
+  // The most salient open word in a range, ties broken by the seeded rng.
+  const mostSalient = (lo: number, hi: number): number => {
+    let best = -1
+    let bestScore = -Infinity
+    for (let p = lo; p <= hi; p++) {
+      if (committed[p]) continue
+      const score = sal(p) + rng() * 0.05
+      if (score > bestScore) {
+        bestScore = score
+        best = p
+      }
+    }
+    return best
+  }
+  // A seed in the largest run of open positions: its most salient word,
+  // which in the middle of a sentence is usually a content word.
   const seedInLargestGap = (): number => {
     let bestStart = -1
     let bestLen = 0
@@ -209,22 +238,47 @@ export function computeLockSchedule(words: MeasuredAtom[]): LockSchedule {
       }
       p = q
     }
-    const spread = Math.floor(bestLen / 4)
-    const mid = bestStart + Math.floor(bestLen / 2)
-    return clamp(mid + Math.floor((rng() * 2 - 1) * spread), bestStart, bestStart + bestLen - 1)
+    return mostSalient(bestStart, bestStart + bestLen - 1)
   }
 
-  // Step 0: one seed per slice of the answer.
+  // Step 0: one seed per slice of the answer, the slice's most salient word.
   const firstK = Math.min(k, n)
   for (let i = 0; i < firstK; i++) {
     const lo = Math.floor((i * n) / firstK)
     const hi = Math.floor(((i + 1) * n) / firstK) - 1
-    commit(lo + Math.floor(rng() * (hi - lo + 1)), 0)
+    commit(mostSalient(lo, hi), 0)
+  }
+
+  // A gist seed: the most salient word still open anywhere in the answer,
+  // when one clears GIST_SEED_FLOOR. One per step, as the step's first
+  // commit, so the topic words and the skeleton land in the first few steps
+  // wherever they sit, and the growth then closes around them. Growth alone
+  // can only reach a word through its neighbors, which would put the words
+  // between a front and a topic word on screen before the topic word.
+  const gistSeed = (): number => {
+    let best = -1
+    let bestScore = GIST_SEED_FLOOR
+    for (let p = 0; p < n; p++) {
+      if (committed[p]) continue
+      const score = sal(p) + rng() * 0.02
+      if (score > bestScore) {
+        bestScore = score
+        best = p
+      }
+    }
+    return best
   }
 
   let step = 1
   while (order.length < n) {
     for (let j = 0; j < k && order.length < n; j++) {
+      if (j === 0) {
+        const g = gistSeed()
+        if (g !== -1) {
+          commit(g, step)
+          continue
+        }
+      }
       const cls = pickJumpClass(rng)
       const d = jumpDistance(cls, rng)
       const fronts = frontier()
@@ -232,9 +286,31 @@ export function computeLockSchedule(words: MeasuredAtom[]): LockSchedule {
         commit(seedInLargestGap(), step)
         continue
       }
-      const base = fronts[Math.floor(rng() * fronts.length)]!
-      const bothOpen = isOpen(base - 1) && isOpen(base + 1)
-      const dir = bothOpen ? (rng() < 0.5 ? 1 : -1) : isOpen(base + 1) ? 1 : -1
+      // Which front grows, and which way: weighted by the salience of the
+      // open neighbor it would grow into, with a floor so every word is
+      // reachable and function words still fill in.
+      const options: { base: number; dir: number; w: number }[] = []
+      for (const base of fronts) {
+        for (const dir of [1, -1]) {
+          if (isOpen(base + dir)) {
+            // Salience squared, so a topic word pulls a front toward it well
+            // before a function word does, with a floor so every word is
+            // still reachable and the connective tissue fills in.
+            const sv = sal(base + dir)
+            options.push({ base, dir, w: 0.06 + sv * sv * 1.2 })
+          }
+        }
+      }
+      let pick = rng() * options.reduce((acc, o) => acc + o.w, 0)
+      let chosen = options[options.length - 1]!
+      for (const o of options) {
+        pick -= o.w
+        if (pick <= 0) {
+          chosen = o
+          break
+        }
+      }
+      const { base, dir } = chosen
       let target = base + dir * d
       if (!isOpen(target)) {
         target = -1

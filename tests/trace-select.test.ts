@@ -37,6 +37,16 @@ describe('the audit of every recorded answer', () => {
     expect(count('lowconf-b128', 'empty')).toBe(a.lowconfB128.empty)
   })
 
+  it('keeps exactly the hand-audited runs the findings cite, each excluded run with a reason', () => {
+    const kept = TRACE_IDS.filter((id) => TRACE_META[id].curated)
+    expect(kept).toHaveLength(TRACE_NUMBERS.curatedRuns)
+    for (const id of TRACE_IDS) {
+      const m = TRACE_META[id]
+      if (!m.curated) expect(m.why, id).toBeTruthy()
+      if (m.audit.verdict !== 'complete') expect(m.curated, id).toBe(false)
+    }
+  })
+
   it('gives every run a verdict and a note', () => {
     for (const id of TRACE_IDS) {
       expect(['complete', 'looped', 'short', 'empty', 'cut']).toContain(traceAudit(id).verdict)

@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { codaPrompts } from '@/lib/coda/fixtures'
 
 describe('coda fixtures', () => {
-  it('exposes seven prompts (4 narrative modes + the wild card)', () => {
-    expect(codaPrompts).toHaveLength(7)
+  it('exposes eight prompts, every one with a recorded run of the same prompt', () => {
+    expect(codaPrompts).toHaveLength(8)
   })
   it('each prompt has a default mode and a response', () => {
     for (const p of codaPrompts) {

@@ -148,6 +148,7 @@ export function CodaStage({
               durationScale={durationScale}
               announce="on-complete"
               showStatus
+              topic={prompt.prompt}
               className="text-base md:text-lg leading-relaxed"
             >
               {prompt.response}

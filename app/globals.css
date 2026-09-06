@@ -227,9 +227,9 @@ button:active { transform: scale(0.97); }
    ending is where the reader's memory of the sequence settles. Fires once,
    when the selector starts matching. */
 @keyframes word-settle {
-  0%   { transform: scale(0.994); }
-  55%  { transform: scale(calc(1 + var(--settle, 0.015))); }
-  100% { transform: scale(1); }
+  0%   { transform: translateY(0.05em) scale(0.994); }
+  55%  { transform: translateY(0) scale(calc(1 + var(--settle, 0.015))); }
+  100% { transform: translateY(0) scale(1); }
 }
 [data-cycling-word][data-state='resolved'] {
   animation: word-settle 260ms var(--ease-out-expo) both;
@@ -1231,6 +1231,30 @@ html.cursor-fx-on * {
   opacity: calc(0.62 + 0.38 * var(--conf, 1));
 }
 
+
+/* A settled word in the recorded mode carries the sampler's own probability
+   at commit; hovering it shows the number, so the dimming a weak commit gets
+   can be checked against the signal that caused it. */
+.diffusion-text[data-mode="trace"] [data-conf-label] {
+  position: relative;
+}
+.diffusion-text[data-mode="trace"] [data-conf-label]:has([data-state="resolved"]):hover::after {
+  content: attr(data-conf-label);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.3em);
+  transform: translateX(-50%);
+  padding: 0.1em 0.4em;
+  border-radius: 0.3em;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: var(--stage);
+  background: var(--stage-text);
+  pointer-events: none;
+  z-index: 5;
+}
 
 /* --- Trace mode: the recorded-trajectory map + stage ---------------------- */
 /* .unmask-map renders a static SVG diagram of a real trajectory's reveal

@@ -154,6 +154,7 @@ function BrandTile({
         <DiffusionText
           mode="mycelium"
           trigger="immediate"
+          topic={prompt}
           className="text-base md:text-lg leading-snug"
         >
           {response}

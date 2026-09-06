@@ -142,6 +142,13 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     src: 'loewenstein, 1994; kang et al., 2009',
     color: 'oklch(0.78 0.13 285)', // periwinkle
   },
+  gist: {
+    pron: 'ˈjist',
+    pos: 'noun',
+    def: 'the meaning a reader takes from a glance. the content words carry it; the predictable words around them carry almost none.',
+    src: 'potter, 1976; levy, 2008',
+    color: 'oklch(0.82 0.08 130)', // sage
+  },
   groove: {
     pron: 'ˈgrüv',
     pos: 'noun',

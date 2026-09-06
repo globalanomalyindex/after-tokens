@@ -110,6 +110,56 @@ describe('mycelium cadence', () => {
   })
 })
 
+// A list-shaped answer about a heist, with salience attached the way
+// DiffusionText attaches it, for the gist-first checks.
+import { wordSalience } from '@/lib/diffusion/salience'
+const HEIST_PROMPT = 'Summarize the plot of a heist movie in three sentences.'
+const HEIST = [
+  'A crew of thieves plans a heist on a vault beneath the city.',
+  '1. The plan: map the vault, time the guards, buy the crew.',
+  '2. The heist: the vault opens, the alarm does not, and a twist follows.',
+  '3. The escape: one thief keeps the gold and the crew learns who.',
+].join('\n')
+function salientWords(): MeasuredAtom[] {
+  const atoms: MeasuredAtom[] = []
+  HEIST.split('\n').forEach((line, lineIndex) => {
+    for (const text of line.split(/\s+/)) atoms.push({ text, index: atoms.length, lineIndex, bbox: { x: 0, y: 0, w: 50, h: 20 } })
+  })
+  const sal = wordSalience(atoms, HEIST_PROMPT)
+  return atoms.map((a, i) => ({ ...a, salience: sal[i] }))
+}
+
+describe('mycelium gist first', () => {
+  const words = salientWords()
+  const { order, stepOf } = computeLockSchedule(words)
+  const rankOf = new Map<number, number>()
+  order.forEach((idx, rank) => rankOf.set(idx, rank))
+  const stepOfWord = (idx: number) => stepOf[order.indexOf(idx)]!
+
+  it('puts the list markers on screen in the first two steps', () => {
+    for (const w of words) {
+      if (/^\d\.$/.test(w.text)) expect(stepOfWord(w.index)).toBeLessThanOrEqual(1)
+    }
+  })
+
+  it('locks the topic words before the function words, on average', () => {
+    const topic = words.filter((w) => /^(heist|vault|crew|thieves|thief|plot)/i.test(w.text.replace(/[^a-z]/gi, '')))
+    const stop = words.filter((w) => /^(a|the|of|on|and|to|not)$/i.test(w.text.replace(/[^a-z]/gi, '')))
+    const mean = (arr: MeasuredAtom[]) => arr.reduce((acc, w) => acc + rankOf.get(w.index)!, 0) / arr.length
+    expect(topic.length).toBeGreaterThan(3)
+    expect(stop.length).toBeGreaterThan(5)
+    expect(mean(topic)).toBeLessThan(mean(stop) * 0.7)
+  })
+
+  it('still grows from several places at once: one seed in each slice of the answer', () => {
+    const first = order.filter((_, rank) => stepOf[rank] === 0)
+    const k = wordsPerStep(words.length)
+    expect(first).toHaveLength(k)
+    const slices = new Set(first.map((idx) => Math.floor((idx * k) / words.length)))
+    expect(slices.size).toBe(k)
+  })
+})
+
 describe('mycelium order', () => {
   it('is deterministic for a given text and varies across texts', () => {
     expect(computeLockOrder(measure(20))).toEqual(computeLockOrder(measure(20)))
