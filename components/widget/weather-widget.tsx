@@ -4,10 +4,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValueEvent, useTransform } from 'motion/react'
 import type { MotionValue } from 'motion/react'
 import { useDiffusionChoreography } from '@/lib/diffusion/choreographer'
+import { crystal } from '@/lib/diffusion/modes/crystal'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
 import { aurora } from '@/lib/diffusion/modes/aurora'
 import { mitosis } from '@/lib/diffusion/modes/mitosis'
+import { fade, scatter, typewriter } from '@/lib/arrival/references'
 import type {
   ModeName,
   MeasuredAtom,
@@ -23,6 +25,10 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 // surface here, only the authored strategies), so this table stays total
 // over every mode except 'trace'. Every lookup below narrows the mode first.
 const strategies: Record<Exclude<ModeName, 'trace'>, ModeStrategy> = {
+  crystal,
+  typewriter,
+  fade,
+  scatter,
   mycelium,
   fog,
   aurora,

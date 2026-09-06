@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import arrivalReport from './arrival.json'
 
 // The findings from the recorded trajectories, written once here so every
 // section, the readme, and the research note cite the same numbers. All values
@@ -289,20 +290,20 @@ export const SYNTHESIS: SynthesisRow[] = [
   },
 ]
 
-// The hypothesis, as four claims a study can break. The recorded trajectories
-// are the stimuli for all three.
+// The hypothesis, as five claims a study can break. The recorded
+// trajectories and the reference arrivals are the stimuli for all of them.
 export const HYPOTHESES = [
   {
     id: 'H1',
     lead: 'state legibility',
-    claim: 'Interrupted at matched timestamps, readers identify which words are settled more accurately with the lock reveal than with a uniform blur.',
+    claim: 'Interrupted at matched timestamps, readers identify which words are settled more accurately under crystallize than under a uniform fade.',
     falsifiedIf: 'accuracy is no better, or readers read authored order as model certainty.',
   },
   {
     id: 'H2',
     lead: 'reading cost',
-    claim: 'Reading time of the final answer after the lock reveal is no worse than after a typewriter reveal.',
-    falsifiedIf: 'it is worse. The parafoveal argument predicts it could be; then the right design reveals in reading order and carries state some other way.',
+    claim: 'Reading time of the final answer after crystallize is no worse than after a typewriter. Reading order inside each phrase, with one crisp anchor, is the mechanism.',
+    falsifiedIf: 'it is worse. Then the design falls back to reading order at the phrase scale as well.',
   },
   {
     id: 'H3',
@@ -313,7 +314,62 @@ export const HYPOTHESES = [
   {
     id: 'H4',
     lead: 'felt quality',
-    claim: 'The same answer, at the same duration, is rated more satisfying and of higher quality after the reward grammar (forming stage, receding field, closure beats, swing, progress) than after a uniform fade.',
+    claim: 'The same answer, at the same duration, is rated more satisfying and of higher quality after crystallize than after a typewriter or a fade.',
     falsifiedIf: 'quality and satisfaction ratings do not differ, or the grammar reads as busier without reading as better.',
   },
+  {
+    id: 'H5',
+    lead: 'tension budget',
+    claim: 'Satisfaction rises from one open loop to two and falls when the budget is removed, tracking the span of open goals a reader can hold.',
+    falsifiedIf: 'ratings are flat across the budget, or rise with it without limit.',
+  },
 ] as const
+
+// The arrival profile (lib/arrival/profile.ts), computed for every arrival
+// over the same stimuli and written by `pnpm traces:arrival`
+// (tests/arrival/report.test.ts). Medians over the eight coda fixtures for
+// the authored arrivals, and over the eighteen curated recorded runs at the
+// shaped pace. Every number describes an arrival, never a reader.
+export type ArrivalKey =
+  | 'typewriter'
+  | 'fade'
+  | 'scatter'
+  | 'fog'
+  | 'aurora'
+  | 'mitosis'
+  | 'mycelium'
+  | 'crystal'
+  | 'crystal-unbounded'
+  | 'crystal-1'
+  | 'crystal-3'
+  | 'crystal-strict'
+export type ArrivalMedians = {
+  n: number
+  tensionMax: number
+  tensionMean: number
+  alignment: number
+  steps: number
+  largestShare: number
+  peakAt: number
+  gistAt: number
+  endWeight: number
+  inversions: number
+  previewCost: number
+  tau: number
+  totalMs: number
+}
+export type RecordedProfile = {
+  plain: ArrivalMedians
+  ordered: ArrivalMedians
+  lagMedianMs: number
+  lagMaxMs: number
+  waitedShare: number
+}
+export const ARRIVAL = arrivalReport as unknown as {
+  stimuli: { fixtures: number; curatedRuns: number }
+  arrivals: Record<ArrivalKey, ArrivalMedians>
+  recorded: Record<'all' | 'lowconf-b32' | 'random-b32' | 'lowconf-b128', RecordedProfile>
+}
+
+/** The eight arrivals the figure draws, in the order it draws them. */
+export const ARRIVAL_ORDER: ArrivalKey[] = ['typewriter', 'fade', 'scatter', 'fog', 'aurora', 'mitosis', 'mycelium', 'crystal']

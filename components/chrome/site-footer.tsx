@@ -1,30 +1,24 @@
-// The last thing on the page: where the work lives and how to cite it. Quiet
-// mono, one rule, the same instrument-panel register as the section chrome.
+// The last thing on the page: where the work lives and how to cite it.
 const LINKS: { label: string; href: string; note: string }[] = [
-  { label: 'source', href: 'https://github.com/globalanomalyindex/after-tokens', note: 'the engine, the case study, the tests' },
-  { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, limits' },
+  { label: 'source', href: 'https://github.com/globalanomalyindex/after-tokens', note: 'the engine, the metric suite, the tests' },
+  { label: 'case study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/case-study.md', note: 'the written version, for reading offline' },
+  { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, the arrival profile, limits' },
   { label: 'design record', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/redesign.md', note: 'the reasoning, in order' },
   { label: 'data', href: 'https://github.com/globalanomalyindex/after-tokens/tree/main/data/traces', note: 'sixty recorded trajectories, mit' },
 ]
 
 export function SiteFooter() {
   return (
-    <footer
-      className="px-6 md:px-16 pt-14 pb-16 border-t"
-      style={{ borderColor: 'color-mix(in oklab, var(--ink) 14%, transparent)' }}
-      aria-label="colophon"
-    >
-      <div className="max-w-5xl mx-auto grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <footer className="section-shell rule" aria-label="colophon" style={{ paddingTop: '3.5rem', paddingBottom: '4rem' }}>
+      <div className="section-column grid gap-10 md:grid-cols-2">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.18em] mb-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-            + after tokens
-          </p>
           <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--ink-2)' }}>
-            An independent product design and engineering case study on how an answer from a diffusion language model
-            should arrive on screen. A working prototype, sixty recorded trajectories, and four claims a study can break.
+            after tokens is an independent product design and engineering case study on how an answer from a
+            diffusion language model should arrive on screen. one reveal grammar, four measurable properties,
+            sixty recorded trajectories, five brand voices, and five claims a study can break.
           </p>
-          <p className="mt-5 text-[11px] leading-relaxed max-w-md" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
-            cite as: fiore, c. r. (2026). after tokens: a rendering system for answers that do not arrive left to right.
+          <p className="mt-5 readout max-w-md" style={{ color: 'var(--muted)' }}>
+            cite as: fiore, c. r. (2026). after tokens: an arrival grammar for diffusion text.
             github.com/globalanomalyindex/after-tokens
           </p>
         </div>
@@ -32,23 +26,18 @@ export function SiteFooter() {
           {LINKS.map((l) => (
             <div key={l.label} className="grid grid-cols-[120px_1fr] gap-4 items-baseline">
               <dt>
-                <a
-                  className="text-sm underline underline-offset-4 decoration-[0.8px]"
-                  href={l.href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a className="text-sm" href={l.href} target="_blank" rel="noreferrer">
                   {l.label} ↗
                 </a>
               </dt>
-              <dd className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+              <dd className="readout" style={{ color: 'var(--muted)' }}>
                 {l.note}
               </dd>
             </div>
           ))}
-          <div className="grid grid-cols-[120px_1fr] gap-4 items-baseline mt-2 pt-4 border-t" style={{ borderColor: 'color-mix(in oklab, var(--ink) 10%, transparent)' }}>
-            <dt className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>license</dt>
-            <dd className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>mit · text and data cc by 4.0 · 2026</dd>
+          <div className="grid grid-cols-[120px_1fr] gap-4 items-baseline mt-2 pt-4 rule">
+            <dt className="readout" style={{ color: 'var(--muted)' }}>license</dt>
+            <dd className="readout" style={{ color: 'var(--muted)' }}>mit · text and data cc by 4.0 · 2026</dd>
           </div>
         </dl>
       </div>

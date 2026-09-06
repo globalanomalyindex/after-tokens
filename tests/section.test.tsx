@@ -5,12 +5,12 @@ import { Section } from '@/components/section'
 describe('Section', () => {
   it('renders its children inside a labeled landmark', () => {
     render(
-      <Section id="hook" n={1} title="Hook" act="I" eyebrow={['Case study', '2026']}>
+      <Section id="hook" title="Hook">
         <p>body</p>
       </Section>,
     )
     expect(screen.getByRole('region', { name: /hook/i })).toBeInTheDocument()
     expect(screen.getByText('body')).toBeInTheDocument()
-    expect(screen.getAllByText('01').length).toBeGreaterThan(0)
+    expect(document.querySelector('[data-section="hook"]')).not.toBeNull()
   })
 })

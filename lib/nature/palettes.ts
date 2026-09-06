@@ -20,6 +20,7 @@ export type NatureKind =
   | 'mycelium'
   | 'nature'
   | 'amber'
+  | 'crystal'
 
 type Stop = [number, number, number] // L, C, H
 
@@ -99,6 +100,13 @@ const PALETTES: Record<NatureKind, Stop[]> = {
     [0.64, 0.15, 78],
     [0.6, 0.14, 74],
     [0.58, 0.14, 82],
+  ],
+  // ice: cobalt deepening to a cold slate, the color of a lock on the stage
+  crystal: [
+    [0.5, 0.19, 262],
+    [0.56, 0.13, 250],
+    [0.62, 0.08, 238],
+    [0.52, 0.12, 258],
   ],
 }
 

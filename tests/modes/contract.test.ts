@@ -1,21 +1,30 @@
 import { describe, expect, it } from 'vitest'
 import diffusionExplainJson from '@/data/traces/compact/diffusion-explain__lowconf-b32.json'
+import { crystal, crystalWith } from '@/lib/diffusion/modes/crystal'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
 import { aurora } from '@/lib/diffusion/modes/aurora'
 import { mitosis } from '@/lib/diffusion/modes/mitosis'
+import { typewriter, fade, scatter } from '@/lib/arrival/references'
+import { withReadingOrder } from '@/lib/arrival/reading-order'
 import { asTrace, traceStrategy } from '@/lib/diffusion/traces'
 import type { MeasuredAtom, ModeStrategy } from '@/lib/diffusion/types'
 
-// The recorded trajectory mode runs through the same shared contract as the
-// authored ones: it is a ModeStrategy like any other, just built from data
-// at runtime instead of a formula (see lib/diffusion/traces.ts).
+// Every arrival runs through one contract: the shipped grammar, the
+// reference arrivals it is scored against, the earlier authored modes, and
+// the recorded sampler, plain and through the reading-order transform.
 const strategies: ModeStrategy[] = [
+  crystal,
+  crystalWith({ budget: 'unbounded' }),
+  typewriter,
+  fade,
+  scatter,
   mycelium,
   fog,
   aurora,
   mitosis,
   traceStrategy(asTrace(diffusionExplainJson), { msPerStep: 40 }),
+  withReadingOrder(traceStrategy(asTrace(diffusionExplainJson), { msPerStep: 40 })),
 ]
 
 function words(count: number): MeasuredAtom[] {

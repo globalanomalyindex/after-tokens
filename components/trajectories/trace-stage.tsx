@@ -29,13 +29,16 @@ type Props = {
   // The current denoising step, on every change, for a live map beside the
   // stage. Read through a ref so a fresh closure never restarts playback.
   onStep?: (step: number) => void
+  // The two-channel reveal: commits ghost when they land, legibility arrives
+  // in reading order inside each phrase (lib/arrival/reading-order.ts).
+  readingOrder?: boolean
 }
 
 // The replay stage for one recorded trajectory: same dark-instrument family as
 // CodaStage and ModeDemo, but every readout here is read off the sampler
 // itself rather than authored. Step count, confidence, and the provisional
 // text all come from the trace.
-export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Props) {
+export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep, readingOrder = false }: Props) {
   const [localReplay, setLocalReplay] = useState(0)
   const replay = () => setLocalReplay((k) => k + 1)
 
@@ -87,7 +90,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
   const wordColor = useCallback(
     (index: number) => {
       const c = trace.words[index]?.conf ?? 1
-      return c < 0.3 ? 'color-mix(in oklab, var(--stage-text) 58%, transparent)' : undefined
+      return c < 0.3 ? 'color-mix(in oklab, var(--stage-text) 76%, transparent)' : undefined
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [trace.id],
@@ -153,7 +156,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
     for (const el of stripRefs.current) el?.removeAttribute('data-lit')
     litStepRef.current = -1
     onStepRef.current?.(0)
-  }, [trace.id, pace, replayKey, localReplay])
+  }, [trace.id, pace, replayKey, localReplay, readingOrder])
 
   const handleProgress = useCallback(
     (p: number) => {
@@ -198,8 +201,9 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
       >
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
           sampler · {trace.sampler.id}
+          {readingOrder ? ' · reading order inside phrases' : ' · as committed'}
         </span>
-        <span style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>
+        <span style={{ color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)' }}>
           qwen3 0.6b · mdlm
         </span>
       </div>
@@ -208,7 +212,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
           className="w-full"
           prompt={trace.prompt}
           thinkingMs={600}
-          runKey={`${trace.id}-${String(pace)}-${replayKey}-${localReplay}`}
+          runKey={`${trace.id}-${String(pace)}-${replayKey}-${localReplay}-${readingOrder ? 'ro' : 'raw'}`}
         >
           <DiffusionText
             mode="trace"
@@ -222,6 +226,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
             stepAt={stepAt}
             wordColor={wordColor}
             wordConf={wordConf}
+            readingOrder={readingOrder}
             className="text-base md:text-lg leading-relaxed"
           >
             {answer}
@@ -231,7 +236,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
       <div className="px-6 pb-3" aria-hidden="true">
         <div
           className="flex items-baseline justify-between text-[9px] uppercase tracking-[0.16em] mb-1.5"
-          style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 64%, transparent)' }}
+          style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)' }}
         >
           <span>the field · {cols} positions</span>
           <span>accent: a word · muted: end of sequence</span>
@@ -256,15 +261,15 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
           <span ref={stepReadoutRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
             {`step 000 / ${String(stepCount).padStart(3, '0')}`}
           </span>
-          <span ref={lengthReadoutRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>
+          <span ref={lengthReadoutRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)' }}>
             length open
           </span>
-          <span ref={guessesShownRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}>
+          <span ref={guessesShownRef} style={{ color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)' }}>
             guesses shown 00
           </span>
         </div>
         <div className="flex flex-col sm:items-end gap-1.5">
-          <span style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>
+          <span style={{ color: 'color-mix(in oklab, var(--stage-text) 80%, transparent)' }}>
             recorded {(realTotalMs / 1000).toFixed(1)}s on an m3 · {paceLabel}
           </span>
           <button
@@ -272,7 +277,7 @@ export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Pr
             onClick={replay}
             aria-label="Replay trajectory"
             className="replay-btn cursor-pointer inline-flex items-center gap-1.5"
-            style={{ color: 'color-mix(in oklab, var(--stage-text) 60%, transparent)' }}
+            style={{ color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)' }}
           >
             <span aria-hidden="true" className="replay-glyph">
               ↻

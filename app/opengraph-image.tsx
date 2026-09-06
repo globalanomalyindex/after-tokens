@@ -25,17 +25,17 @@ export default function OG() {
         }}
       >
         <div style={{ fontSize: 18, color: '#6C685C', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 24 }}>
-          Product design + engineering
+          product design and engineering
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', fontSize: 140, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
-          <span>After</span>
-          <span>tokens.</span>
+          <span>after</span>
+          <span>tokens</span>
         </div>
         <div style={{ fontSize: 28, color: '#2A2820', marginTop: 24, maxWidth: 800 }}>
-          A reveal system for diffusion-generated answers.
+          an arrival grammar for diffusion text: the same answer, in a shape the mind pays out for.
         </div>
         <div style={{ fontSize: 18, color: '#6C685C', marginTop: 18 }}>
-          Christopher Robin Fiore
+          christopher robin fiore
         </div>
       </div>
     ),

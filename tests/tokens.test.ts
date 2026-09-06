@@ -14,8 +14,15 @@ describe('design tokens', () => {
     expect(css).toMatch(/--stage-text:\s*#EBE7DA/i)
   })
 
-  it('defines the warm-white accent', () => {
-    expect(css).toMatch(/--accent:\s*#F5F2EA/i)
+  it('defines the ice accent for the stage and the one cobalt accent for the page', () => {
+    expect(css).toMatch(/--accent:\s*#D9E3F2/i)
+    expect(css).toMatch(/--cobalt:\s*oklch\(0\.5 0\.19 262\)/)
+  })
+
+  it('declares the voice defaults the grammar reads', () => {
+    for (const token of ['--voice-attack', '--voice-weight', '--voice-glow', '--voice-hush']) {
+      expect(css).toContain(`${token}:`)
+    }
   })
 
   it('keeps the case-study root palette off pure black and white', () => {

@@ -4,15 +4,6 @@ import { useCallback, useRef, useState, type KeyboardEvent } from 'react'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 
-const modeAbbrev: Record<CodaPrompt['defaultMode'], string> = {
-  mycelium: 'Myc',
-  fog: 'Fog',
-  aurora: 'Aur',
-  mitosis: 'Mts',
-  // The recorded-trajectory mode: no prompt currently sets this as its
-  // defaultMode, but the label map must stay total over ModeName.
-  trace: 'sampler',
-}
 
 type Props = {
   prompts: CodaPrompt[]
@@ -154,13 +145,6 @@ export function PromptPicker({ prompts, activeId, onSelect, layout = 'grid' }: P
                 'background-color 180ms var(--ease-out-strong), color 180ms var(--ease-out-strong), border-color 180ms var(--ease-out-strong), transform 140ms var(--ease-out-strong)',
             }}
           >
-            <span
-              aria-hidden="true"
-              className="shrink-0 text-[8.5px] uppercase tracking-[0.14em] opacity-80 mt-[3px]"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              {modeAbbrev[p.defaultMode]}
-            </span>
             <span className="flex-1">{p.prompt}</span>
           </button>
         )

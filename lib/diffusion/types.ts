@@ -21,7 +21,20 @@ export type OverlayProps = {
   reduced: boolean
 }
 
-export type ModeName = 'mycelium' | 'fog' | 'aurora' | 'mitosis' | 'trace'
+// crystal is the shipped grammar. typewriter, fade, and scatter are reference
+// arrivals the profile scores it against (lib/arrival/references.ts). fog,
+// aurora, mitosis, and mycelium are the earlier authored modes, kept as
+// reference arrivals too. trace is a recorded sampler run.
+export type ModeName =
+  | 'crystal'
+  | 'typewriter'
+  | 'fade'
+  | 'scatter'
+  | 'mycelium'
+  | 'fog'
+  | 'aurora'
+  | 'mitosis'
+  | 'trace'
 
 export type ModeStrategy = {
   name: ModeName

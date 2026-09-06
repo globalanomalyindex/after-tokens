@@ -25,7 +25,11 @@ const STOPWORDS = new Set(
   ).split(' '),
 )
 
-const LIST_MARKER = /^(\d{1,3}[.)]|[a-z][.)]|[-•*–])$/i
+export const LIST_MARKER = /^(\d{1,3}[.)]|[a-z][.)]|[-•*–])$/i
+/** A list marker begins a phrase and a line's skeleton: "1.", "a)", a bullet. */
+export function isListMarker(text: string): boolean {
+  return LIST_MARKER.test(text)
+}
 const PUNCT_ONLY = /^[^\p{L}\p{N}]+$/u
 
 function normalize(text: string): string {

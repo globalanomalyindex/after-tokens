@@ -120,6 +120,18 @@ Six further decisions concern how the same answer can feel better rather than re
 
 The recorded trajectories are the stimuli for all four.
 
+## 8 The arrival profile
+
+The redesign adds a metric suite that scores any reveal, whether authored or recorded, on four properties (`lib/arrival/profile.ts`; the definitions are in `docs/redesign.md`, section 3). Over the eight coda fixtures at matched durations, the shipped grammar holds two phrases open at most (mean 1.5), makes a reader at one fixation per 250 ms wait on no fixation, closes a phrase on 36 percent of its steps against the typewriter's 18, arrives out of order at the phrase scale (τ +0.13), peaks at 28 percent of the run, and carries 0.83 of the mean intensity in its last stretch. The earlier growth mode (mycelium) opened 4.5 loops at the median and made a reader wait on 19 percent of fixations; fog and aurora ended at 2.9 and 1.8 times the mean; a uniform fade at 6.4.
+
+### 8.1 The two-channel reveal on the recorded runs
+
+`withReadingOrder` (`lib/arrival/reading-order.ts`) re-times legibility so that inside each phrase words turn crisp in reading order, at least 40 ms apart, with the phrase's earliest commit kept as its anchor, while the forming (state) channel keeps the sampler's own commit times. On the eighteen curated runs at the shaped pace, legibility trails commitment by a median of 540 ms on the 36 percent of words that wait (median maximum 1460 ms per run); the answer's total duration moves by about 100 ms; τ in the reading channel rises from 0.86 to 0.91; and the share of within-phrase pairs out of order falls from 22 percent to 6 percent, all of them anchors. The transform removes inversions by construction and cannot remove a wait the sampler imposes, so the report (`lib/traces/arrival.json`) carries both the plain and the ordered profile for every configuration.
+
+### 8.2 Limits of the profile
+
+The phrase rule is punctuation and line breaks, stated for English and Latin script. The salience that seeds the grammar is an authored score. The reader model is one number, a fixation every quarter second, with no skimming or rereading. The medians are over eight fixtures and eighteen curated runs of a 0.6B model. Every number describes an arrival; none describes a reader. The five claims in the case study's evidence section are what a study would test.
+
 ## References
 
 Nie, S., et al. Large Language Diffusion Models. arXiv:2502.09992.

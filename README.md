@@ -7,130 +7,61 @@ an independent product design and engineering case study on how text from a diff
 
 ![after tokens: a product design and engineering case study](https://after-tokens.vercel.app/opengraph-image)
 
-> **the hypothesis.** when a model refines many text positions in parallel, the interface should reveal the response as a settling field rather than imitate left-to-right typing.
+> **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, using psychological principles such as the zeigarnik effect, gestalt closure, and the peak-end rule, so that the same answer feels better to read through presentation alone?
+
+> **the answer.** treat the arrival as a design object. an arrival is one number per word, the time it becomes legible; from it, four measurable properties follow, each grounded in one mechanism from the psychology of reading and reward. one reveal grammar, crystallize, is built to keep all four inside their rules, any brand gets a voice on it, and every other arrival (the typewriter, a fade, a scatter, the earlier nature modes, a real sampler) is scored on the same profile.
 
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | a reusable `DiffusionText` engine, four authored reveal modes plus one driven by recorded sampler trajectories, brand variants, a structured weather answer, an interactive playground |
-| **status** | working prototype. one mode now replays a real model's sampler order; the comprehension hypothesis has not been validated with users. |
+| **built** | the `DiffusionText` engine, the crystallize grammar, the arrival profile (a metric suite for any reveal), the two-channel reveal for recorded sampler runs, five brand voices, sixty recorded trajectories, a structured weather answer |
+| **status** | working prototype. every arrival in the piece is scored; a five-claim study is designed and its stimuli ship in the repository. no reader has been measured. |
 | **stack** | next.js, typescript, motion, tailwind, vitest, playwright, axe-core |
 
 ## the problem
 
-autoregressive models write left to right, one token at a time, so the typewriter stream became the default way to show an answer arriving. masked diffusion language models iteratively refine many positions in parallel, so a typewriter reveal misrepresents how the answer is actually forming.
+a diffusion language model produces a whole answer and refines it in parallel. the words are fixed before the interface draws a single one, so the interface chooses the temporal shape of the arrival. every chat product ships one shape, the typewriter, which makes three promises a sampler cannot keep: one insertion point, a bubble that grows with the text, and partial output you can trust. in the recorded runs the model's provisional guess for a position changed about 5.3 times before it committed.
 
-this piece explores the alternative: reveal behavior that communicates what is visually settled and what is still changing. the prototype uses designed choreography and hand-tagged response modes. it does not consume live model-confidence data. a production version would need a trustworthy model signal before animation could honestly represent uncertainty.
+## the arrival profile
 
-mechanism references: [llada](https://arxiv.org/abs/2502.09992) and [simple and effective masked diffusion language models](https://arxiv.org/abs/2406.07524).
+`lib/arrival/` is the research contribution: a way to measure any reveal.
 
-## the system
+| property | mechanism | what it measures | the rule it yields |
+| --- | --- | --- | --- |
+| tension | zeigarnik effect | how many phrases are partly settled at once | one or two open loops; never more than three |
+| closure | gestalt closure, the aha effect | how often a step completes a phrase | batch commits so a step tends to close a phrase |
+| peak and end | peak-end rule | where salience-weighted intensity peaks, how heavy the end is | peak at the gist; end on one quiet completion |
+| fluency | parafoveal preview, processing fluency | whether a reader at one fixation per 250 ms would wait for the next word | nothing crisp before commit; inside a phrase, one crisp anchor, then reading order |
 
-the implementation separates six layers so each design decision can be tested on its own:
+a phrase is the perceptual unit: a line break or a list marker starts one, terminal punctuation ends one, a comma ends one after three words, eight words is the cap. `pnpm traces:arrival` scores eight arrivals of the same texts at matched durations and the eighteen curated recorded runs, and writes `lib/traces/arrival.json`; `lib/traces/findings.ts` is the only source of numbers the copy may cite.
 
-1. response content
-2. tokenization into stable visual atoms
-3. measured word and line geometry
-4. a reveal strategy: mycelium, fog, aurora, or mitosis
-5. choreography across `ready → resolving → resolved`
-6. brand tokens, glyph treatments, and overlays
+medians over the eight fixtures:
 
-the same contract drives plain text, rich content, brand specimens, and a weather widget. reduced motion resolves immediately while keeping a visible state label. editorial examples expose ordinary screen-reader text; user-triggered results announce once on completion.
+| arrival | loops at most | reader waits | phrase-scale order (τ) | end weight | gist at |
+| --- | --- | --- | --- | --- | --- |
+| typewriter | 1 | 0% | +1.00 | 1.02× | 68% |
+| fade | 0 | 0% | 0.00 | 6.44× | 90% |
+| scatter | 4.5 | 14% | +0.03 | 1.07× | 80% |
+| mycelium (earlier growth mode) | 4.5 | 19% | +0.19 | 0.86× | 56% |
+| crystallize | 2 | 0% | +0.13 | 0.83× | 68% |
 
-### the reveal grammar, decision by decision
+## the grammar: crystallize
 
-every rendering decision in the shipped reveal traces back to a named psychology principle and a numbered finding from the real trajectories. this is the map:
+nature anchor: crystallization. a few sites nucleate, each crystal grows along its lattice, grains meet, the finished crystal is still. in the grammar: at most two phrases are open at once; the next opens by salience, spread across the answer, so the gist opens first wherever it sits; when a phrase opens its most salient word locks at once and crisp legibility proceeds from the phrase's first word; every front advances every step and steps end on closures; a lock is crisp at once, heavier, with a settle sized to salience and a halo gone within a second; after the last lock the field quiets once, no wave, no pulse. the reasoning in order is [`docs/redesign.md`](docs/redesign.md); the design spec is [`docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md`](docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md).
 
-| decision | principle & finding | effect |
-| --- | --- | --- |
-| a pending word stays blurred, in a slot of its final width | parafoveal preview · zeigarnik effect | churn to the side of the eye stays illegible, so it costs no reading time, and the open slot holds the answer's extent and the reader's attention |
-| the pending glyphs change every 390 milliseconds | doherty threshold · finding 04 | matches the sampler's measured 387 ms flip rate, so every visible change lands inside the window where attention holds |
-| the model's guess renders only above a probability of 0.25 | predictive coding · prediction error | below the floor the guess is the corpus prior; above it, a real prediction |
-| words lock in several places at once, each cluster growing outward from its seed | finding 01 · finding 02 · change blindness | the block schedule is a product decision the reveal does not inherit; without it the sampler grows a few clusters at once, and staged local change is what the eye can follow |
-| the gist comes first: structure and topic words seed the growth, connective tissue fills last | gist · information gap | a list shows its skeleton first and a plot its heist, vault, and crew before its articles; the answer reads as sculpted rather than typed |
-| commits arrive in steps of several words, 140 to 260 milliseconds apart | finding 01 · doherty threshold | a fast decoder commits several positions per step; the average rate stays linear and no wait runs past the threshold |
-| a word forms for one step before it locks: the final word, ghosted, steady | reward anticipation · parafoveal preview | every lock is preceded by a beat of expectation; the ghost never changes, so previewing it costs nothing |
-| a locked word gets heavier than its neighbors, and snaps crisp in one beat | von restorff effect · aha effect | the lock is the one difference in the field, and a sudden gain in fluency reads as insight |
-| the open field recedes as the answer fills | goal gradient · reward anticipation | the noise dims and the slot markers fade as the share of settled words rises, so the approach to completion is visible |
-| a lock that joins two settled neighbors settles harder | gestalt closure · dopamine | a small completion at the scale of a phrase, rewarded on the way to the whole |
-| the steps swing long and short by eight percent | groove · doherty threshold | moderate syncopation is the most pleasurable pulse; the average rate stays linear |
-| the status line counts the words settled while the reveal runs | goal gradient · labor illusion | visible progress pulls toward the goal, and an outcome whose work can be seen is valued more |
-| the product demos replay recorded order, timing, and confidence over pre-written words | state fidelity · the audit | the recording contributes everything but the prose; the model's own words stay in the research section with their audit verdict |
-| the shaped pace spends a replay where the words are | doherty threshold · finding 03 | a tail-only step plays in 14 ms, a word step in 120; the field's settling is drawn in a strip under the answer |
-| a lock settles with an overshoot sized to its confidence | dopamine · finding 05 | the resolution beat is a reward signal, scaled to how sure the commit was |
-| a weak commit stays slightly dimmer | trust calibration · finding 05 | 38% of commits went in under even odds; the render shows certainty as certainty and leaves the rest to read as provisional |
-| the whole answer unblurs once at the end | gestalt closure · peak-end rule | the final snap is the moment the sequence is remembered by |
-| the last word carries the strongest beat | peak-end rule · finding 03 | the sampler decides its ending last, and that is where memory of the answer settles |
+for a recorded sampler run, `withReadingOrder` splits the signal into a state channel (a word ghosts when its tokens commit) and a reading channel (crisp legibility in reading order inside each phrase, the phrase's earliest commit kept as its anchor). on the curated runs legibility trails commitment by a median of 540 ms on the 36% of words that wait, and no phrase reads out of order.
 
-source: [`lib/traces/findings.ts`](lib/traces/findings.ts), `SYNTHESIS`.
+## the voice
 
-## key decisions
-
-this shipped through cycles of build, audit, and cut.
-
-- a fourth reveal mode (a particle flock) was rebuilt three times and killed: it reduced legibility and duplicated the simpler mycelium mode.
-- the thesis comparison began as abstract line graphs and became word-level locks, so the demo shows the behavior instead of describing it. a timeline scrubber was built on top of it and then cut: it turned a thing you glance at into a thing you operate, and the loop already shows both cadences against the same clock.
-- a cinematic entrance was built, broke, was rebuilt around its failure modes, and was then cut entirely. the hero already resolves out of order, and a second performance of the same idea cost a reviewer six seconds before the argument started.
-- the last decision was to stop authoring: sixty real trajectories were captured so one mode could replay a sampler instead of imitating one, and the piece now separates what the sampler does from what a reader can read.
-
-nature supplied a motion vocabulary (branching, dissipation, bands, division). it did not supply proof. the shipped cadence is linear on average now, batched in steps the way a decoder commits; phi decay is retired to the comparison stimulus. the case study states exactly what is implemented, what is simulated, and what a user study would need to falsify.
-
-## research
-
-the case study cites nineteen findings from cognitive science, neuroscience, and reading research, each placed next to the specific claim it motivates. they are why the hypothesis is worth testing. none of them was measured on this prototype.
-
-| term | source |
-| --- | --- |
-| predictive coding | rao & ballard, 1999 |
-| prediction error | friston, 2010 |
-| dopamine | schultz, 1997 |
-| zeigarnik effect | zeigarnik, 1927 |
-| gestalt closure | wertheimer, 1923 |
-| peak-end rule | kahneman et al., 1993 |
-| trust calibration | lee & see, 2004 |
-| change blindness | simons & levin, 1997 |
-| parafoveal preview | rayner, 1998 |
-| doherty threshold | doherty & thadhani, 1982 |
-| von restorff effect | von restorff, 1933 |
-| reward anticipation | howe et al., 2013; salimpoor et al., 2011 |
-| processing fluency | reber, schwarz & winkielman, 2004 |
-| aha effect | topolinski & reber, 2010 |
-| goal gradient | hull, 1932; kivetz, urminsky & zheng, 2006; nunes & drèze, 2006 |
-| labor illusion | buell & norton, 2011 |
-| information gap | loewenstein, 1994; kang et al., 2009 |
-| groove | witek et al., 2014 |
-| gist | potter, 1976; levy, 2008 |
-
-parafoveal preview is in there as the counter-argument: while you read one word the eye is already sampling the next one over, so revealing out of order should cost a reader time. an honest study has to measure reading time. state identification alone would not be enough.
+a brand gets six tokens on the one grammar: tempo, attack, weight, glow, hush, swing, each inside a range that keeps every property of the profile inside its rule. the budget, the phrases, the forming lead, and the exhale are grammar, outside the voice. five presets ship: after tokens, halcyon, felt, pulse, voltage.
 
 ## real trajectories
 
-sixty denoising trajectories were recorded from a real masked diffusion language model, `dllm-hub/qwen3-0.6b-diffusion-mdlm-v0.1` (0.6b parameters, instruction tuned, apache-2.0), run greedily on an apple m3. twenty prompts times three sampler configurations: `lowconf-b32` (llada-style low-confidence remasking in four blocks of 32, the model card default), `random-b32` (the original mdlm random unmasking order, same blocks), and `lowconf-b128` (low-confidence remasking with no block schedule). one reveal mode replays these trajectories directly; the other modes stay authored.
-
-| finding | number |
-| --- | --- |
-| commit order vs reading order (kendall's tau) | +0.96 with blocks, +0.75 random order, +0.38 with no blocks |
-| median jump between consecutive commits | 2.5 positions, vs 36.7 expected from a uniformly random order |
-| provisional-guess changes per token before it commits | 5.3, range 2.1 to 9.4 across prompts |
-| end-of-sequence tail committed before the last word (default schedule) | 95% |
-| median confidence of the token committed at each step | 0.57 |
-
-with the default sampler the answer arrives almost left to right, one block at a time. the block schedule enforces that order; the confidence rule alone would not. commits cluster around a handful of confident anchors, growing outward from them instead of filling in as a scatter or a strict scan. the model's current best guess for an unfilled position is usually wrong more than once before that position commits. the sequence's end is fixed only shortly before its last words are: the tail sits inside the final block, so the length becomes certain at the 95% mark and the last word lands at the 99% mark. and a meaningful share of commits, nearly two in five, land under even odds, so a lock does not always mean the model was sure.
-
-what changed in the design because of it (the reasoning in order is `docs/redesign.md`):
-
-- the shipped reveal was rebuilt from the principles and the measurements together. a pending word is an illegible blur in a slot of its final width; the pending glyphs change every 390 ms (the sampler's measured rate was 387); the model's guess is shown only above a probability of 0.25, because below it the guess is the corpus prior and reads "the" in every slot; words lock in several places at once, each cluster growing from its seed, in steps of several words 140 to 260 ms apart; a lock is crisp at once, heavier, with a settle sized to its probability and a halo that is gone within a second; a weak commit rests dimmer; the field moves as a whole once, at the last lock.
-- four earlier choices were retired by the data: the phi cadence (kept only as the comparison stimulus), a field-wide sweep during the reveal, a halo left on every locked word, and a closing beat at a fixed 82% of the run that unblurred still-pending noise.
-- the hypothesis is now four claims a study can break: legible state (h1), no reading cost (h2), calibrated trust (h3), and felt quality (h4: the same answer, at the same duration, is rated more satisfying after the reward grammar than after a uniform fade). the recorded trajectories are the stimuli for all four.
-- a llada-8b-instruct corroboration set (4 runs, tau +0.90, median jump 3.9) reproduces the block-schedule pattern at 8b; llama.cpp exposes order and timing but not confidence.
-- every recorded answer carries an audit verdict (`AUDIT_RULE` in `scripts/gen-trace-index.mjs`): complete when the model chose its own ending, else looped, short, empty, or cut. under the default sampler 16 of 20 are complete and 4 looped (one phrase repeated 5 to 19 times over 72% to 88% of the words, a known failure of greedy decoding at this scale); under random order all 20 are complete; with no blocks 11 are complete, 6 short, and 3 empty (the sampler committed its ending before any word). a hand audit (`data/traces/curated.json`) then kept 18 of the 60 as complete, coherent answers; the research stage's picker shows only those, and every excluded run (loops, refusals, fragments, empties, contradictions) keeps its reason in the file. every run stays in the statistics it qualifies for. the product demos (intent mapping, playground) replay a run's order, timing, and confidence over the pre-written answer, so no recorded prose reaches them, and the stage says so.
-- a shaped replay pace plays a tail-only step in 14 ms and a word step in 120 ms, so a no-blocks run, which spends most of its steps settling the answer's length, shows its anchors, its held beliefs, and its final flood at a readable pace; a strip under the answer draws the field settling. the order is untouched and the other paces stay one click away.
+sixty denoising trajectories were recorded from `dllm-hub/qwen3-0.6b-diffusion-mdlm-v0.1` (0.6b parameters, instruction tuned, apache-2.0), run greedily on an apple m3, twenty prompts under three sampler configurations, plus a four-run llada-8b-instruct corroboration set. the findings that drive the grammar: commit order is local growth from anchors (half of consecutive commits land beside the last one), the answer's length is known late (the tail commits at the 92 to 95% mark), and confidence at commit varies (median 0.57, 38% under even odds). the method, the statistics, and the limits are in [`docs/research-note.md`](docs/research-note.md); the data is in [`data/traces/`](data/traces).
 
 ## evidence and limits
 
-the repository demonstrates a reusable typed engine, deterministic choreography, responsive geometry, reduced-motion behavior, and automated quality checks. it does **not** yet demonstrate that region-based revealing improves comprehension, that the modes map to user intent, or that any timeline corresponds to calibrated model uncertainty.
-
-the glyph choreography is tuned for english and latin-script content. this is a prototype primitive; it has not shipped as a published component library.
+five claims a study can break: state legibility (h1), reading cost (h2), trust calibration (h3), felt quality (h4), and the tension budget (h5). the stimuli ship: the recorded runs, the reference arrivals, the grammar at every budget. the profile measures arrivals and the trajectories measure a sampler; neither measures a reader. the phrase rule is language-naive, the salience score is authored, the reader model is one number, and the glyph choreography is tuned for english and latin script.
 
 ## run it
 
@@ -150,26 +81,26 @@ then open http://localhost:3000.
 | `pnpm typecheck` | type check without emitting |
 | `pnpm test` | run the unit suite (vitest) |
 | `pnpm test:e2e` | run the browser tests (playwright) |
+| `pnpm traces:arrival` | score every arrival and regenerate `lib/traces/arrival.json` |
+| `pnpm traces:index` | regenerate the trajectory loader from `data/traces/compact` |
 | `pnpm build` | production build |
 | `pnpm check` | lint, typecheck, unit tests, and a production build |
 
 ## deploys
 
-the same app ships to two hosts from one codebase.
-
-- vercel: the default build serves at the domain root.
-- github pages: the workflow in `.github/workflows/deploy-pages.yml` builds with `GITHUB_PAGES=true`, which switches on next.js static export and a `/after-tokens` base path, then publishes the static `out` directory.
-
-pull requests run lint, typecheck, unit tests, both production build configurations, and chromium playwright checks. the pages workflow repeats those checks and blocks deployment if any fail.
+the same app ships to two hosts from one codebase. vercel serves the default build at the domain root. github pages builds with `GITHUB_PAGES=true`, which switches on static export and a `/after-tokens` base path, and publishes the static `out` directory. pull requests run lint, typecheck, unit tests, both builds, and chromium playwright checks.
 
 ## reference
 
-- design spec: [`docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md`](docs/superpowers/specs/2026-05-27-diffusion-text-animation-design.md). historical design direction; the shipped case study is the source of truth where they differ.
+- written case study: [`docs/case-study.md`](docs/case-study.md)
+- design record: [`docs/redesign.md`](docs/redesign.md)
+- design spec: [`docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md`](docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md)
+- research note: [`docs/research-note.md`](docs/research-note.md)
 - type system notes: [`docs/fonts.md`](docs/fonts.md)
 
 ## credit
 
-designed and built by [globalanomalyindex](https://github.com/globalanomalyindex), product designer and design engineer. portfolio theme: looking to nature for answers.
+designed and built by [globalanomalyindex](https://github.com/globalanomalyindex), product designer and design engineer, with claude as design and engineering partner. portfolio theme: looking to nature for answers.
 
 ## license
 

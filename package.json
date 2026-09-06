@@ -1,7 +1,7 @@
 {
   "name": "after-tokens",
   "version": "0.1.0",
-  "description": "A product design and engineering case study for diffusion-generated text interfaces.",
+  "description": "A product design and engineering case study: an arrival grammar for diffusion-generated text.",
   "author": "Christopher Robin Fiore",
   "private": true,
   "packageManager": "pnpm@11.7.0",
@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "traces:index": "node scripts/gen-trace-index.mjs"
+    "traces:index": "node scripts/gen-trace-index.mjs",
+    "traces:arrival": "ARRIVAL_REPORT=1 vitest run tests/arrival/report.test.ts"
   },
   "dependencies": {
     "motion": "^12.40.0",

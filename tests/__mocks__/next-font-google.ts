@@ -1,13 +1,14 @@
-// Mock for next/font/google in Vitest jsdom environment
-function mockFont(variable: string) {
-  return () => ({
-    variable,
-    className: variable.replace('--font-', 'font-'),
-    style: { fontFamily: variable },
+type FontOptions = { variable?: string }
+type FontResult = { variable: string; className: string; style: { fontFamily: string } }
+
+function mockFont(name: string) {
+  return (opts: FontOptions = {}): FontResult => ({
+    variable: opts.variable ?? `--font-${name}`,
+    className: `font-${name}`,
+    style: { fontFamily: name },
   })
 }
 
-export const Inter = mockFont('--font-display')
-export const JetBrains_Mono = mockFont('--font-mono')
-export const PP_Neue_Montreal = mockFont('--font-display')
-export const Berkeley_Mono = mockFont('--font-mono')
+export const JetBrains_Mono = mockFont('jetbrains-mono')
+export const Instrument_Sans = mockFont('instrument-sans')
+export const Inter = mockFont('inter')

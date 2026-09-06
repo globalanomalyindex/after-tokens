@@ -43,7 +43,7 @@ export function PromptBubble({ children, label = 'You asked' }: PromptBubbleProp
         className="text-[9.5px] uppercase tracking-[0.18em] mb-1"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)',
+          color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)',
         }}
       >
         + {label}
@@ -155,7 +155,7 @@ export function AnswerBubble({
           className="text-[9.5px] uppercase tracking-[0.18em] mb-2"
           style={{
             fontFamily: 'var(--font-mono)',
-            color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)',
+            color: 'color-mix(in oklab, var(--stage-text) 76%, transparent)',
           }}
         >
           + {label}

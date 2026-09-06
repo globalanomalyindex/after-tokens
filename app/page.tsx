@@ -2,36 +2,29 @@ import { BrandProvider } from '@/lib/brand/provider'
 import { SectionNav } from '@/components/chrome/section-nav'
 import { SiteFooter } from '@/components/chrome/site-footer'
 import { ScrollProgress } from '@/components/chrome/scroll-progress'
-import { SectionHook } from '@/components/sections/section-01-hook'
-import { SectionPrimer } from '@/components/sections/section-02-primer'
-import { SectionTrajectories } from '@/components/sections/section-03-trajectories'
-import { SectionThesis } from '@/components/sections/section-04-thesis'
-import { SectionMycelium } from '@/components/sections/section-05-mycelium'
-import { SectionBrandVariations } from '@/components/sections/section-08-brand-variations'
-import { SectionCoda } from '@/components/sections/section-09-coda'
-import { SectionWidget } from '@/components/sections/section-10-widget'
-import { SectionStyles } from '@/components/sections/section-11-styles'
-import { SectionPlayground } from '@/components/sections/section-12-playground'
-import { SectionClose } from '@/components/sections/section-13-close'
+import { SectionHook } from '@/components/sections/section-hook'
+import { SectionProblem } from '@/components/sections/section-problem'
+import { SectionProfile } from '@/components/sections/section-profile'
+import { SectionSampler } from '@/components/sections/section-sampler'
+import { SectionGrammar } from '@/components/sections/section-grammar'
+import { SectionVoice } from '@/components/sections/section-voice'
+import { SectionEvidence } from '@/components/sections/section-evidence'
+import { SectionOpen } from '@/components/sections/section-open'
 
-// Hiring-manager reading order: orient quickly, explain the mechanism, show
-// what a real sampler actually does, state the hypothesis, expose the
-// system, show it in product contexts, then prove range before closing on
-// evidence and limits.
+// The case study in reading order: the thing itself, the problem, a way to
+// measure an arrival, what a real sampler does, the grammar, its voice, the
+// evidence and the claims, and what is open.
 export default function HomePage() {
   return (
     <BrandProvider brand="after-tokens" as="main" className="min-h-screen">
       <SectionHook />
-      <SectionPrimer />
-      <SectionTrajectories />
-      <SectionThesis />
-      <SectionMycelium />
-      <SectionCoda />
-      <SectionWidget />
-      <SectionBrandVariations />
-      <SectionStyles />
-      <SectionPlayground />
-      <SectionClose />
+      <SectionProblem />
+      <SectionProfile />
+      <SectionSampler />
+      <SectionGrammar />
+      <SectionVoice />
+      <SectionEvidence />
+      <SectionOpen />
       <SiteFooter />
       <SectionNav />
       <ScrollProgress />

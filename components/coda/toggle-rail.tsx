@@ -72,16 +72,15 @@ export function ToggleRail({ label, items, activeId, onSelect }: Props) {
     [items, commit],
   )
 
+  const hasLabel = label.trim().length > 0
   return (
-    <div className="grid grid-cols-[88px_1fr] gap-4 items-center">
-      <span
-        id={labelId}
-        className="text-[9.5px] uppercase tracking-[0.16em]"
-        style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
-      >
-        {label}
-      </span>
-      <div role="radiogroup" aria-labelledby={labelId} className="flex flex-wrap gap-1.5">
+    <div className={hasLabel ? 'grid grid-cols-[88px_1fr] gap-4 items-center' : 'grid'}>
+      {hasLabel && (
+        <span id={labelId} className="label">
+          {label}
+        </span>
+      )}
+      <div role="radiogroup" aria-labelledby={hasLabel ? labelId : undefined} aria-label={hasLabel ? undefined : 'options'} className="flex flex-wrap gap-1.5">
         {items.map((item, index) => {
           const isActive = item.id === activeId
           const isPressed = item.id === pressedId

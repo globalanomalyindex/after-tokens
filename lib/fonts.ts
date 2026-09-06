@@ -1,8 +1,8 @@
 import localFont from 'next/font/local'
-import { JetBrains_Mono } from 'next/font/google'
+import { Instrument_Sans, JetBrains_Mono } from 'next/font/google'
 
-// Sligoil Micro — the project's primary display + body face. Squared, mechanical,
-// reads as "instrument panel" — the perfect register for diffusion / model UI.
+// Sligoil Micro: the display face. Squared and mechanical, the voice of the
+// case study's headings and its wordmark.
 export const displayFont = localFont({
   src: [
     { path: '../public/fonts/Sligoil-Micro.otf', weight: '400', style: 'normal' },
@@ -13,13 +13,20 @@ export const displayFont = localFont({
   display: 'swap',
 })
 
-// Keep JetBrains Mono for the +symbol mono labels — Sligoil itself already reads
-// quite mono so we use a different mono to keep the eyebrow tags visually distinct.
+// Instrument Sans: the reading face. The piece argues that the same words
+// read better with a better arrival, so its own body copy is set for reading
+// rather than for texture: a humanist grotesk at a comfortable measure.
+export const bodyFont = Instrument_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500', '600'],
+  display: 'swap',
+})
+
+// JetBrains Mono: readouts, numbers, and the small labels an instrument needs.
 export const monoFont = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
-  // 700 is for the hero title — a giant lowercase "after tokens" set bold mono,
-  // resolving out of noise. The mono eyebrows/labels stay at 400/500.
   weight: ['400', '500', '700'],
   display: 'swap',
 })

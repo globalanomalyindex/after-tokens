@@ -8,7 +8,7 @@
   --color-muted: #636058;
   --color-stage: #0B0A08;
   --color-stage-text: #EBE7DA;
-  --color-accent: #F5F2EA;
+  --color-accent: #D9E3F2;
 }
 
 :root {
@@ -19,30 +19,22 @@
   --muted: #636058;
   --stage: #0B0A08;
   --stage-text: #EBE7DA;
-  /* Neutral warm-white accent: visible on dark stage, doesn't fight the bone palette */
-  --accent: #F5F2EA;
-  /* Marker / selection wash for LIGHT (bone) surfaces. The off-white --accent
-     is nearly invisible on bone, so eyebrow + body highlights need their own
-     token: a translucent graphite wash that reads like a real cursor selection
-     across the warm paper, while staying inside the monochrome system. */
+  /* Ice: the cool white a lock glows on the dark stage. */
+  --accent: #D9E3F2;
+  /* Cobalt: the one accent the page itself uses, for the active state, the
+     link under the pointer, and the grammar's series in every figure. */
+  --cobalt: oklch(0.5 0.19 262);
+  --cobalt-soft: oklch(0.5 0.19 262 / 0.14);
+  /* Selection and marker wash on the bone surface. */
   --marker: color-mix(in oklab, var(--ink) 14%, transparent);
-  /* Product-UI sans for the demo/preview surfaces. The diffusion stages
-     simulate real chat product UI, so the message text reads in the native
-     system UI font (SF Pro on Apple, Segoe/Roboto elsewhere) rather than the
-     editorial display face, the register people actually expect in a chatbot. */
+  /* The demo stages simulate chat product UI, so answers read in the system
+     UI face, the register people expect from an assistant. */
   --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 
-  /* Curve borrowed from the φ-decay rhythm: long hold, then a sudden sweep.
-     Used by the liquid-glass loading sweep. */
-  --ease-phi-sweep: cubic-bezier(0.7, 0, 0.18, 1);
-
-  /* Spacing scale. The same token discipline color and type already carry,
-     applied to layout: a modular rem ramp the chrome insets and offsets read
-     from instead of ad hoc magic numbers. */
   --space-1: 0.25rem;
   --space-2: 0.45rem;
   --space-3: 0.6rem;
@@ -52,56 +44,108 @@
   --space-7: 4rem;
   --space-8: 6.5rem;
   --space-9: 10rem;
+
+  /* The voice, at the case study's own setting. A BrandProvider or a
+     DiffusionText overrides these on its wrapper (lib/brand/provider.tsx). */
+  --voice-attack: 110ms;
+  --voice-weight: 0.66;
+  --voice-glow: 0.6;
+  --voice-hush: 0.5;
 }
 
-/* Type system. next/font sets --font-display (Sligoil) and --font-mono
-   (JetBrains Mono) on <html>. Two registers:
-   - Sligoil = EXPRESSIVE: headlines + the model's own "voice" (the diffusion
-     demo text). Characterful, art-directed, used at large sizes.
-   - JetBrains Mono = READING: body copy, labels, captions, UI. Clean and
-     legible, the instrument-panel annotation layer.
-   Fallback chains are spelled out (no self-referential var()) so next/font
-   values win. */
-body { font-family: var(--font-mono), ui-monospace, monospace; }
+/* Type. Three faces, three jobs: Sligoil Micro for headings and the
+   wordmark, Instrument Sans for reading, JetBrains Mono for readouts. */
+body { font-family: var(--font-body), system-ui, sans-serif; }
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display), system-ui, sans-serif;
   font-feature-settings: "ss01", "ss02", "cv01";
 }
 code, pre, .mono { font-family: var(--font-mono), ui-monospace, monospace; }
-/* The diffusion demo text simulates real chat product UI, so it renders in the
-   familiar system UI sans, NOT the editorial Sligoil. Sligoil stays the voice
-   of the case study itself (headlines); the previews look like real product. */
 .diffusion-text { font-family: var(--font-ui); }
 
 * { box-sizing: border-box; }
 html, body { background: var(--bone); color: var(--ink); }
 html { font-size: 16px; }
 body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+html, body { overflow-x: clip; }
 
 ::selection { background: var(--marker); color: var(--ink); }
 
-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 0.8px; text-underline-offset: 0.2em; }
+a:hover { color: var(--cobalt); }
+
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 2px;
   border-radius: inherit;
 }
-
 button { transition: transform 140ms var(--ease-out-strong); }
 button:active { transform: scale(0.97); }
 
-/* --- DiffusionText word states ------------------------------------------ */
-/* Four stages in a word's life, each rendered so the state is readable at a
-   glance and nothing crisp appears before it is committed (parafoveal preview:
-   crisp text to the right of the eye that later changes costs reading time).
-     open      masked, no belief: an illegible blurred noise word in a slot of
-               its final width (the slot holds the answer's extent, zeigarnik)
-     belief    masked, the model holds a real guess (recorded mode only, above
-               PROVISIONAL_FLOOR): less blurred, brighter, still unreadable
-     resolving the lock itself, crisp at once, heavier
-     resolved  committed: crisp, heavier, a one-shot settle sized to confidence,
-               then quiet. The distinctiveness of a lock lives at the moment it
-               happens (von restorff); a halo left on every locked word would
-               make none of them distinct. */
+/* The whole case study speaks in lowercase. Demos keep their natural casing,
+   simulating real product output. */
+main { text-transform: lowercase; overflow-x: clip; }
+main .uppercase { text-transform: lowercase; }
+[data-demo], .diffusion-text, .keep-case { text-transform: none; }
+[data-demo] .uppercase { text-transform: uppercase; }
+
+/* ===== Layout ============================================================ */
+.section-shell { position: relative; padding: clamp(4.5rem, 9vw, 8rem) 1.5rem; }
+@media (min-width: 768px) { .section-shell { padding-left: 4rem; padding-right: 4rem; } }
+.section-column { max-width: 66rem; margin-inline: auto; position: relative; }
+.measure { max-width: 64ch; }
+.standfirst { font-size: clamp(1.15rem, 1.6vw, 1.35rem); line-height: 1.55; color: var(--ink-2); }
+.rule { border-top: 1px solid color-mix(in oklab, var(--ink) 14%, transparent); }
+.label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.readout {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.stage {
+  background: var(--stage);
+  color: var(--stage-text);
+  border-radius: 1rem;
+}
+.diffusion-status {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, currentColor 78%, transparent);
+}
+
+/* Headings rise into place as they enter the viewport, driven by the scroll
+   position itself. Progressive: engines without view() timelines render the
+   settled state, and reduced motion never animates. */
+@keyframes section-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@supports (animation-timeline: view()) {
+  .section-shell h2 {
+    animation: section-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 90%;
+  }
+}
+@media (prefers-reduced-motion: reduce) { .section-shell h2 { animation: none; } }
+
+/* ===== The word, in its four stages ===================================== */
+/* open      masked, no belief: an illegible blurred noise word in a slot of
+             its final width. The slot holds the answer's extent.
+   belief    masked, the model holds a real guess (recorded mode only):
+             less blurred, brighter, still unreadable.
+   forming   the final word, ghosted and steady, one step before it locks:
+             a beat of expectation that never changes.
+   settled   crisp at once, heavier, a settle sized to confidence or
+             salience, a halo gone within a second. Then quiet. */
 
 [data-cycling-word] {
   position: relative;
@@ -110,9 +154,6 @@ button:active { transform: scale(0.97); }
     filter 300ms var(--ease-out-expo),
     opacity 300ms var(--ease-out-strong);
 }
-
-/* The slot marker: a faint pill so the field's extent reads as slots, cheap
-   (no backdrop-filter, one per word on a page full of reveals). */
 [data-cycling-word]::before {
   content: '';
   position: absolute;
@@ -123,24 +164,24 @@ button:active { transform: scale(0.97); }
   transition: opacity 320ms var(--ease-out-strong), background 320ms var(--ease-out-strong);
 }
 
-/* open: unreadable by design. 4.2px at body size erases letterforms while
-   keeping word shape and length, so the slot says "a word this long is
-   coming" and nothing more. The slow breathe stays low in amplitude so the
-   field reads as alive without raising the noise floor a lock must clear
-   (change blindness). */
+/* open: unreadable by design. 4.2 px at body size erases letterforms while
+   keeping word shape and length. The field recedes as the answer fills
+   (--fill, the share of words settled) and rests as dim as the voice's hush
+   asks; only its brightness moves, never its legibility. */
 [data-cycling-word][data-state="pending"] {
-  color: color-mix(in oklab, currentColor 68%, transparent);
+  --open-alpha: calc(74% - 28% * var(--voice-hush, 0.5) - 18% * var(--fill, 0));
+  color: color-mix(in oklab, currentColor var(--open-alpha), transparent);
   filter: blur(4.2px);
   animation: cycling-breathe 2400ms ease-in-out infinite;
   animation-delay: calc(var(--word-index, 0) * -190ms);
 }
-[data-cycling-word][data-state="pending"]::before {
-  opacity: 1;
+[data-cycling-word][data-state="pending"]::before { opacity: calc(1 - 0.55 * var(--fill, 0)); }
+@keyframes cycling-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.5; }
 }
 
-/* belief: the model has a guess worth showing (recorded mode). Forming, so
-   less blurred and steadier than noise, still short of readable. Each change
-   of belief crossfades (the prediction error, made visible). */
+/* belief: the model has a guess worth showing (recorded mode). */
 [data-cycling-word][data-state="pending"][data-belief="true"] {
   color: color-mix(in oklab, currentColor 88%, transparent);
   filter: blur(2px);
@@ -150,1094 +191,113 @@ button:active { transform: scale(0.97); }
 [data-cycling-word][data-state="pending"][data-belief="true"]::before {
   background: color-mix(in oklab, currentColor 10%, transparent);
 }
-
-/* A change of belief is the one pending change meant to be seen: the inner
-   span remounts on each new guess and rises in over a short beat. Noise
-   churn swaps in place; under 4.2 px of blur a crossfade is invisible work. */
 @keyframes belief-shift {
   from { opacity: 0.3; transform: translateY(0.08em); }
   to   { opacity: 1;   transform: translateY(0); }
 }
-.belief-shift {
-  animation: belief-shift 280ms var(--ease-out-expo) both;
-}
+.belief-shift { animation: belief-shift 280ms var(--ease-out-expo) both; }
 
-/* forming: the word is on its way. The final word, ghosted at 1.6px and
-   steady, one step before it locks. It never changes, so previewing it costs
-   the reader nothing (parafoveal preview is a benefit when the word holds);
-   what it buys is a beat of expectation before each fulfillment (reward
-   anticipation, the ITPRA cycle in music), so every lock lands as something
-   the eye was already waiting for. In the recorded mode this is literally a
-   partly committed word. */
+/* forming: the ghost. Quick into it, so the stage is seen at rest. */
 [data-cycling-word][data-state="resolving"] {
   color: color-mix(in oklab, currentColor 92%, transparent);
   filter: blur(1.6px);
   animation: none;
   opacity: 0.92;
   font-weight: 500;
-  /* Quick into the ghost, so the forming stage is seen at rest before the
-     lock rather than spent in transit. */
   transition:
     color 140ms var(--ease-out-strong),
     filter 140ms var(--ease-out-expo),
     opacity 140ms var(--ease-out-strong),
     font-weight 200ms var(--ease-out-expo);
 }
-[data-cycling-word][data-state="resolving"]::before {
-  opacity: 0.55;
-}
+[data-cycling-word][data-state="resolving"]::before { opacity: 0.55; }
 
-/* resolved: the lock. Crisp at once (a sudden gain in fluency reads as
-   insight, and suddenness is what makes it), so the filter snaps here. */
+/* settled: the lock. Crisp at once (a sudden gain in fluency reads as
+   insight, and suddenness is what makes it), heavier by the voice's weight,
+   one settle, one halo, then quiet. */
 [data-cycling-word][data-state="resolved"] {
   color: currentColor;
   filter: blur(0);
+  font-weight: calc(400 + 300 * var(--voice-weight, 0.66));
   transition:
     color 320ms var(--ease-out-strong),
-    filter 110ms var(--ease-out-expo),
+    filter var(--voice-attack, 110ms) var(--ease-out-expo),
     opacity 300ms var(--ease-out-strong);
+  /* the settle is sized to the commit's probability, or to salience in the
+     authored grammar: 0.5% at 0.3, 1.5% at 1, and a little more when the
+     lock closes a gap between two settled neighbors */
+  --settle: calc(0.005 + (var(--conf, 1) - 0.3) * 0.0142857 + var(--gap, 0) * 0.008);
+  animation:
+    word-settle 260ms var(--ease-out-expo) both,
+    lock-glow 900ms var(--ease-out-expo) both;
 }
 [data-cycling-word][data-state="resolved"]::before {
-  opacity: 0;
+  inset: -0.22em -0.4em;
+  border-radius: 0.7em;
+  background: radial-gradient(ellipse at center,
+    color-mix(in oklab, var(--accent) calc(24% * var(--voice-glow, 0.6)), transparent),
+    transparent 70%);
+  animation: halo-once 900ms var(--ease-out-expo) both;
 }
-
-/* The field recedes as the answer fills. --fill is the share of words locked
-   (set by DiffusionText); the noise words dim and their slot markers fade as
-   it rises, so the open field grows quieter while the settled text grows
-   heavier: the approach to completion is visible before completion lands
-   (reward anticipation, goal gradient). Pending words stay illegible
-   throughout; only their brightness moves. */
-[data-cycling-word][data-state="pending"] {
-  color: color-mix(in oklab, currentColor calc(68% - 22% * var(--fill, 0)), transparent);
-}
-[data-cycling-word][data-state="pending"]::before {
-  opacity: calc(1 - 0.55 * var(--fill, 0));
-}
-
-@keyframes cycling-breathe {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 0.5; }
-}
-
-/* The settle. A lock gets one short weight-shift of scale on the strong
-   ease-out curve; nothing in the real world snaps into place from nothing.
-   The overshoot is sized to the commit's probability (finding 05, dopamine as
-   a reward signal scaled to how sure the commit was): 0.5% at p 0.3 up to
-   1.5% at p 1. The last word to lock gets the strongest beat (peak-end): the
-   ending is where the reader's memory of the sequence settles. Fires once,
-   when the selector starts matching. */
 @keyframes word-settle {
   0%   { transform: translateY(0.05em) scale(0.994); }
   55%  { transform: translateY(0) scale(calc(1 + var(--settle, 0.015))); }
   100% { transform: translateY(0) scale(1); }
 }
-[data-cycling-word][data-state='resolved'] {
-  animation: word-settle 260ms var(--ease-out-expo) both;
-  /* --gap is 1 on a lock that joins two settled neighbors: a local closure,
-     the kind of small completion the mind rewards (gestalt closure, at the
-     scale of a phrase), so it settles a little harder than a lock that only
-     extends a cluster. */
-  --settle: calc(0.005 + (var(--conf, 1) - 0.3) * 0.0142857 + var(--gap, 0) * 0.008);
-}
-[data-gap-close="true"] [data-cycling-word][data-state='resolved'] {
-  --gap: 1;
-}
-[data-last-lock="true"] [data-cycling-word][data-state='resolved'] {
-  --settle: 0.024;
-  animation-duration: 340ms;
-}
-
-/* will-change lifecycle: promote blurred words to their own compositor layer only
-   while the reveal is actually animating, and hand the layer back once the whole
-   diffusion is complete. A permanently promoted layer per word is a real memory
-   cost on a page with this many reveals. */
-.diffusion-text[data-active='true'][data-complete='false'] [data-cycling-word] {
-  will-change: filter, opacity;
-}
-.diffusion-text[data-complete='true'] [data-cycling-word] { will-change: auto; }
-
-/* The closing beat. data-unblurred is set at the LAST lock (see
-   DiffusionText), so every word is already committed and crisp when it lands;
-   nothing here reveals pending text. It only quiets the field: slot markers
-   drop and the answer reads flat and finished (gestalt closure). */
-.diffusion-text[data-unblurred="true"] [data-cycling-word] {
-  animation: none;
-  opacity: 1;
-}
-.diffusion-text[data-unblurred="true"] [data-cycling-word]::before {
-  opacity: 0;
-}
-
-/* Settle pulse, one-shot glow when the whole answer unblurs. Uniform across
-   modes, the "this is the final shape" beat. GLOW ONLY: no transform on the
-   layout container, since scaling the text box re-rasterizes every glyph and
-   shimmers the most important beat at the sub-pixel level. The multi-layer
-   shadow carries the moment; the long mid hold lets the halo land before it
-   eases away. */
-@keyframes settle-pulse {
-  0% {
-    text-shadow: 0 0 0 transparent;
-  }
-  16% {
-    text-shadow:
-      0 0 14px color-mix(in oklab, currentColor 62%, transparent),
-      0 0 42px color-mix(in oklab, currentColor 32%, transparent);
-  }
-  48% {
-    text-shadow:
-      0 0 22px color-mix(in oklab, currentColor 42%, transparent),
-      0 0 60px color-mix(in oklab, currentColor 22%, transparent);
-  }
-  100% {
-    text-shadow: 0 0 0 transparent;
-  }
-}
-.diffusion-text[data-unblurred="true"] {
-  animation: settle-pulse 1080ms var(--ease-out-expo) 1;
-}
-/* mycelium and the recorded mode close with the wave instead; two beats at the
-   end would split the peak. */
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"],
-.diffusion-text[data-mode="trace"][data-unblurred="true"] {
-  animation: none;
-}
-
-/* (Cut) A whole-field glass sweep used to run for the length of the reveal.
-   Continuous field-wide motion is exactly what change blindness says masks a
-   local change, and the locks are the signal. The reveal now moves the whole
-   field once, at the close. */
-
-/* Keep the words above both the sweep and the pill backgrounds */
-.diffusion-text > span[aria-hidden] {
-  position: relative;
-  z-index: 2;
-}
-
-/* Universal overlay treatment:
-   - soft-edge mask so visuals fade into the stage instead of clipping hard
-   - fades out cleanly when the diffusion settles
-   - z-index 0 keeps it explicitly UNDER the words (words are z-index 2) so
-     orbs read as fireflies sparkling beneath the text rather than over it */
-.diffusion-overlay {
-  z-index: 0;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent, black 7%, black 93%, transparent),
-    linear-gradient(to bottom, transparent, black 7%, black 93%, transparent);
-  mask-image:
-    linear-gradient(to right, transparent, black 7%, black 93%, transparent),
-    linear-gradient(to bottom, transparent, black 7%, black 93%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-  transition: opacity 620ms var(--ease-out-expo);
-}
-.diffusion-text[data-unblurred="true"] .diffusion-overlay {
-  opacity: 0;
-}
-
-/* Stylizations section: single-word arrival pulse over the crosshair wave.
-   CSS keyframe (not Motion) so it's reliable regardless of hydration timing
-   and the final settled state is unambiguous. */
-.stylization-settle-word {
-  opacity: 0;
-  transform: scale(0.92);
-  filter: blur(10px);
-  text-shadow:
-    0 0 18px color-mix(in oklab, var(--accent) 38%, transparent),
-    0 0 42px color-mix(in oklab, var(--accent) 18%, transparent);
-  animation: stylization-settle 1100ms var(--ease-out-expo) 350ms 1 forwards;
-}
-@keyframes stylization-settle {
-  0%   { opacity: 0;   transform: scale(0.92); filter: blur(10px); }
-  55%  { opacity: 1;   transform: scale(1.08); filter: blur(0); }
-  100% { opacity: 1;   transform: scale(1);    filter: blur(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .stylization-settle-word {
-    animation: none;
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-}
-
-/* ============ Hero / Section 01, the inverted entrance =================
-   The site opens on its own thesis. Standard surfaces are light (bone/ink);
-   the entrance INVERTS to the dark stage, the "before order" void. The title
-   "after tokens" does not type left-to-right (token-by-token): it resolves out
-   of a chaotic block-and-braille noise field into crisp letters, one giant word
-   at a time (see HeroTitle / DecodingWord). Scrolling out blurs the hero and
-   dissolves it, through a fog bridge, back into the light site: chaos -> order,
-   rendered spatially. */
-.hero-section {
-  background: var(--stage);
-  color: var(--stage-text);
-  isolation: isolate;
-}
-
-/* Ambient drifting fog on the dark stage, the field is never quite still. */
-.hero-fog {
-  position: absolute;
-  inset: -25%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(38% 52% at 22% 32%, color-mix(in oklab, var(--stage-text) 8%, transparent), transparent 70%),
-    radial-gradient(46% 50% at 78% 68%, color-mix(in oklab, var(--stage-text) 5%, transparent), transparent 72%);
-  filter: blur(40px);
-  opacity: 0.85;
-  animation: hero-fog-drift 30s ease-in-out infinite alternate;
-}
-@keyframes hero-fog-drift {
-  from { transform: translate3d(-3%, -2%, 0) scale(1.05); }
-  to   { transform: translate3d(4%, 4%, 0) scale(1.16); }
-}
-
-.hero-eyebrow {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  color: color-mix(in oklab, var(--stage-text) 48%, transparent);
-  margin-bottom: clamp(1.1rem, 3vw, 2rem);
-  opacity: 0;
-  animation: hero-fade 900ms var(--ease-out-expo) 180ms forwards;
-}
-
-.hero-title {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.9;
-}
-.hero-title-line { font-size: clamp(3.4rem, 15.5vw, 12rem); }
-/* One-shot bloom the instant the whole title locks into order. */
-.hero-title[data-settled="true"] {
-  animation: hero-title-glow 1300ms var(--ease-out-expo) 1;
-}
-@keyframes hero-title-glow {
-  0%   { text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
-  32%  {
-    text-shadow:
-      0 0 26px color-mix(in oklab, var(--stage-text) 42%, transparent),
-      0 0 64px color-mix(in oklab, var(--stage-text) 18%, transparent);
-  }
-  100% { text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
-}
-
-.hero-sub {
-  margin-top: clamp(1.6rem, 4vw, 2.8rem);
-  max-width: 58ch;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(0.9rem, 1.45vw, 1.12rem);
-  line-height: 1.7;
-  letter-spacing: 0.005em;
-  color: color-mix(in oklab, var(--stage-text) 54%, transparent);
-}
-.hero-sub-word {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(0.5em);
-  filter: blur(5px);
-  animation: hero-word-resolve 780ms var(--ease-out-expo) both;
-}
-.hero-sub-word[data-bright="true"] {
-  color: var(--stage-text);
-  font-weight: 500;
-}
-@keyframes hero-word-resolve {
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-@keyframes hero-fade { to { opacity: 1; } }
-
-/* Fog bridge: the dark hero dissolves into the light site at its base. The bone
-   band at the bottom means there is no seam into the (light) section below. */
-.hero-bridge {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: clamp(180px, 38vh, 440px);
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    color-mix(in oklab, var(--stage) 62%, transparent) 32%,
-    color-mix(in oklab, var(--stage) 16%, var(--bone)) 68%,
-    var(--bone) 100%
-  );
-}
-
-/* Scroll cue, ink on the light band, invites the descent into the site. */
-.hero-scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(1.4rem, 3.5vh, 2.4rem);
-  transform: translateX(-50%);
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55em;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: color-mix(in oklab, var(--ink) 52%, transparent);
-  opacity: 0;
-  animation: hero-fade 900ms var(--ease-out-expo) 3.4s forwards;
-}
-.hero-scroll-arrow {
-  display: inline-block;
-  font-size: 14px;
-  animation: hero-cue-bob 2200ms ease-in-out 3.6s infinite;
-}
-@keyframes hero-cue-bob {
-  0%, 100% { transform: translateY(0); opacity: 0.7; }
-  50%      { transform: translateY(5px); opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-fog { animation: none; }
-  .hero-eyebrow { animation: none; opacity: 1; }
-  .hero-title[data-settled="true"] { animation: none; }
-  .hero-sub-word { animation: none; opacity: 1; transform: none; filter: none; }
-  .hero-scroll-cue { animation: none; opacity: 1; }
-  .hero-scroll-arrow { animation: none; }
-}
-
-/* Roman-numeral index leading each big section title, echoing the eyebrow
-   index. Muted and slightly lighter so the title itself stays dominant. */
-.title-index {
-  color: var(--muted);
-  font-weight: 500;
-  margin-right: 0.3em;
-}
-/* Hero variant: a small raised folio before the giant wordmark, dimmed against
-   the dark stage rather than the light surface. */
-.hero-title-index {
-  font-size: 0.3em;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  vertical-align: top;
-  margin-right: 0.32em;
-  color: color-mix(in oklab, var(--stage-text) 44%, transparent);
-}
-
-/* ===== Section entrances ================================================= */
-/* Headlines rise into place as they enter the viewport, driven by the scroll
-   position itself (no observer, no JS): each h2 travels its own height of
-   scroll from 16px below and transparent to settled. Progressive: engines
-   without view() timelines render the settled state, and reduced motion
-   never animates. */
-@keyframes section-rise {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@supports (animation-timeline: view()) {
-  .section-shell h2 {
-    animation: section-rise linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 100%;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .section-shell h2 { animation: none; }
-}
-
-/* ===== Section chrome: technical-color layer + density ================== */
-/* A per-section accent (set inline as --section-accent) threads through a top
-   rule, an edge spine, and corner data marks: color across the whole run, and
-   content in the wide-screen gutters that used to be empty. */
-.section-topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--section-accent);
-  opacity: 0.92;
-}
-
-.section-spine {
-  position: absolute;
-  left: var(--space-4);
-  top: 0;
-  bottom: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 1;
-}
-.section-spine > span {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  white-space: nowrap;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.34em;
-  text-transform: lowercase;
-  color: color-mix(in oklab, var(--section-accent) 80%, transparent);
-}
-
-.section-data {
-  position: absolute;
-  /* Right edge matches the corner numeral (top: --space-4, right: --space-5) and
-     sits directly beneath it, so the index reads as one stacked unit. */
-  right: var(--space-5);
-  top: var(--space-8);
-  display: none;
-  flex-direction: column;
-  gap: var(--space-2);
-  align-items: flex-end;
-  text-align: right;
-  pointer-events: none;
-  z-index: 1;
-}
-.section-data-code {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: color-mix(in oklab, var(--section-accent) 85%, transparent);
-}
-.section-data-glyphs {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  color: color-mix(in oklab, var(--ink) 36%, transparent);
-}
-
-@media (min-width: 1280px) {
-  .section-spine,
-  .section-data {
-    display: flex;
-  }
-}
-
-/* Faint technical grid on the cream, gives the open field a measured drafting
-   texture instead of blank space. Sits under everything; dark panels and the
-   hero paint over it. */
-body {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px);
-  background-size: 46px 46px;
-  background-position: -1px -1px;
-}
-
-/* Dark content panels get a glow in their section's accent, color bleeding off
-   the panel edge instead of sitting on dead cream. */
-.panel-accent {
-  box-shadow: 0 30px 80px -52px color-mix(in oklab, var(--section-accent) 78%, transparent);
-}
-
-/* Mono spec row: accent label + ink value, divided. Fills the column beside a
-   panel with structured data. */
-.spec-rail {
-  border-top: 1px solid color-mix(in oklab, var(--section-accent) 40%, transparent);
-}
-.spec-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
-}
-.spec-row dt {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: lowercase;
-  color: color-mix(in oklab, var(--section-accent) 90%, var(--ink));
-  white-space: nowrap;
-}
-.spec-row dd {
-  font-size: 0.95rem;
-  text-align: right;
-  color: var(--ink-2);
-}
-
-/* ===== Fully lowercase editorial voice ================================== */
-/* The whole case study speaks in lowercase. Demos keep their natural casing,
-   simulating real product output; any uppercase utility inside a demo is
-   restored to uppercase. */
-/* Clip decorative bleed (hero-fog inset:-25%, gemini-aura inset:-25%, section
-   rail overrun) on the x-axis only. `clip` rather than `hidden` so we do NOT
-   create a scroll container, `hidden` would break the position:sticky asides
-   in coda/widget and the hero scroll math. overflow-y stays visible. */
-html,
-body {
-  overflow-x: clip;
-}
-main {
-  text-transform: lowercase;
-  /* Belt-and-suspenders: `overflow-x: clip` with the default
-     `overflow-y: visible` is ignored by some engines, so repeat it here on the
-     content root. Do not touch overflow-y. */
-  overflow-x: clip;
-}
-main .uppercase {
-  text-transform: lowercase;
-}
-[data-demo],
-.diffusion-text {
-  text-transform: none;
-}
-[data-demo] .uppercase {
-  text-transform: uppercase;
-}
-
-/* ===== Dotted exoskeleton frame ========================================= */
-/* A faint dotted rectangle registering each section's content column, the
-   structural skeleton the content sits inside, paired with the background grid
-   and the corner marks. */
-.exo-frame {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--space-6);
-  bottom: var(--space-6);
-  max-width: 66rem;
-  margin-inline: auto;
-  border: 1px dotted color-mix(in oklab, var(--ink) 14%, transparent);
-  pointer-events: none;
-}
-
-/* Typing indicator, three dots that pulse while the assistant "thinks",
-   shown in the beat between the prompt sending and the answer arriving. */
-.thinking-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  display: inline-block;
-  opacity: 0.3;
-  animation: thinking-dot 1100ms ease-in-out infinite;
-}
-@keyframes thinking-dot {
-  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
-  40% { opacity: 0.95; transform: translateY(-2px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .thinking-dot { animation: none; opacity: 0.55; }
-}
-
-/* ===== Crosshair runway + definition windows (corner note, cursor) ==== */
-/* A row of evenly-spaced registration crosses under each panel: first and last
-   flush to the edges, the rest spaced between. A rAF loop drives each mark's
-   opacity to draw a traveling comet, only base styles live here. */
-.xhair-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.xhair {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  line-height: 1;
-  user-select: none;
-  opacity: 0.08;
-}
-
-/* ===== Definition terms (inline chip + dictionary window) =============== */
-/* A keyword sits in a flat, bright, sharp-cornered chip; opening it reveals a
-   WIDE dictionary entry filled with that same solid color, headword + part of
-   speech across the top, a phonetic respelling, a dashed rule, then the gloss.
-   Dark ink throughout keeps it readable on the bright fill (no drop shadow). The
-   box anchors left / center / right by where the chip sits, so it never spills
-   off-screen. */
-.def-wrap {
-  position: relative;
-  display: inline-block;
-  vertical-align: baseline;
-}
-.def-chip {
-  font: inherit;
-  font-weight: 500;
-  color: var(--ink);
-  background: var(--chip);
-  padding: 0.04em 0.28em;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  transition: filter 140ms ease, transform 120ms var(--ease-out-expo);
-}
-.def-chip:hover {
-  filter: brightness(1.06) saturate(1.04);
-}
-.def-chip:active {
-  transform: translateY(1px);
-}
-.def-chip:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
-.def-window {
-  /* dark inks tuned to read on the bright solid fill */
-  --on: color-mix(in oklab, var(--ink) 96%, var(--chip)); /* headword + definition */
-  --on-soft: color-mix(in oklab, var(--ink) 78%, var(--chip)); /* pronunciation */
-  --on-faint: color-mix(in oklab, var(--ink) 50%, var(--chip)); /* corner ticks + rule */
-  /* only the top-right note is lightened, to a faint construction-line tone */
-  --note: color-mix(in oklab, var(--ink) 40%, var(--chip));
-  --note-text: color-mix(in oklab, var(--ink) 54%, var(--chip));
-  position: absolute;
-  top: calc(100% + 9px);
-  left: 50%;
-  z-index: 50;
-  display: block;
-  width: max-content;
-  min-width: min(18rem, 86vw);
-  max-width: min(27.5rem, calc(100vw - 1.5rem));
-  padding: 0.78rem 1.05rem 0.85rem;
-  background: var(--chip);
-  color: var(--on);
-  border: 1.5px solid color-mix(in oklab, var(--ink) 40%, var(--chip));
-  text-align: left;
-  opacity: 0;
-  transform: translateX(-50%) translateY(-4px) scale(0.97);
-  transform-origin: top center;
-  pointer-events: none;
-  transition: opacity 180ms var(--ease-out-expo),
-    transform 180ms var(--ease-out-expo);
-}
-.def-window[data-open='true'] {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-  pointer-events: auto;
-}
-/* edge-aware anchoring so the wide box never spills off-screen */
-.def-window[data-align='left'] {
-  left: 0;
-  transform: translateX(0) translateY(-4px) scale(0.97);
-  transform-origin: top left;
-}
-.def-window[data-align='left'][data-open='true'] {
-  transform: translateX(0) translateY(0) scale(1);
-}
-.def-window[data-align='right'] {
-  left: auto;
-  right: 0;
-  transform: translateX(0) translateY(-4px) scale(0.97);
-  transform-origin: top right;
-}
-.def-window[data-align='right'][data-open='true'] {
-  transform: translateX(0) translateY(0) scale(1);
-}
-/* One chip in the glossary is deliberately dark: the von restorff entry, the item
-   that differs from its neighbors. Its window flips the ink mixes toward bone so
-   the same markup stays legible on a dark fill. */
-.def-wrap[data-tone='dark'] .def-chip { color: var(--bone); }
-.def-wrap[data-tone='dark'] .def-window {
-  --on: color-mix(in oklab, var(--bone) 96%, var(--chip));
-  --on-soft: color-mix(in oklab, var(--bone) 78%, var(--chip));
-  --on-faint: color-mix(in oklab, var(--bone) 52%, var(--chip));
-  --note: color-mix(in oklab, var(--bone) 42%, var(--chip));
-  --note-text: color-mix(in oklab, var(--bone) 56%, var(--chip));
-  border-color: color-mix(in oklab, var(--bone) 40%, var(--chip));
-}
-.def-wrap[data-tone='dark'] .def-chip::after {
-  --c: color-mix(in oklab, var(--bone) calc(var(--ant, 0) * 100%), color-mix(in oklab, var(--bone) 55%, transparent));
-}
-.def-wrap[data-tone='dark'] .def-chip:focus-visible { outline-color: var(--bone); }
-/* the kept-from-figma margin note, top-right, the ONLY lightened element.
-   Floated absolutely so it never pushes the pronunciation down; framed with
-   plus-signs + dashes and a vertical ^|v dimension arrow. The rails flex to
-   fill, so the frame sizes itself dynamically; the text stays on one line. */
-.def-note {
-  position: absolute;
-  top: 0.72rem; /* top-right corner, spanning the headword + pron rows */
-  right: 0.85rem;
-  height: 2.45rem; /* fills that vertical band */
-  display: flex;
-  align-items: stretch;
-  gap: 3px;
-  width: 5rem;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(6.5px, 0.55vw, 7.5px);
-  line-height: 1.18;
-  letter-spacing: 0.02em;
-  color: var(--note);
-  pointer-events: none;
-}
-/* the vertical ^|v dimension arrow, filling the note's height */
-.def-note-arrow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-.def-note-arrow i {
-  flex: 1;
-  width: 0;
-  margin: 1px 0;
-  border-left: 1px dashed currentColor;
-}
-.def-note-box {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 2px 5px;
-  border: 1px dashed var(--note);
-}
-/* plus-signs at the four corners of the box */
-.nx {
-  position: absolute;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 8px;
-  line-height: 1;
-  color: var(--note);
-}
-.nx-tl { top: -5px; left: -3px; }
-.nx-tr { top: -5px; right: -3px; }
-.nx-bl { bottom: -5px; left: -3px; }
-.nx-br { bottom: -5px; right: -3px; }
-
-/* ===== Definition chips: marching-ants CTA + custom crosshair cursor ==== */
-/* Each clickable chip wears a faint gray dotted marquee that marches around it.
-   CursorFX sets --px (march phase) and --ant (0..1 proximity) on the chip; as
-   the cursor nears, the ants brighten toward white, grow more opaque, and speed
-   up. Without JS / with reduced motion it falls back to a static dotted border. */
-.def-chip {
-  position: relative;
-}
-.def-chip::after {
-  content: '';
-  position: absolute;
-  inset: 1px; /* the marquee rides just inside the chip's edges */
-  pointer-events: none;
-  /* dark dotted ants, darkening toward ink as the cursor nears (legible on the bright fill) */
-  --c: color-mix(in oklab, oklch(0.17 0.01 262) calc(var(--ant, 0) * 100%), oklch(0.43 0.012 262));
-  background-image:
-    repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(0deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(0deg, var(--c) 0 2px, transparent 2px 5px);
-  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
-  background-position:
-    var(--px, 0px) 0,
-    calc(-1 * var(--px, 0px)) 100%,
-    0 calc(-1 * var(--px, 0px)),
-    100% var(--px, 0px);
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  opacity: calc(0.3 + 0.7 * var(--ant, 0));
-}
-
-/* the site-wide custom cursor replaces the native one when active */
-html.cursor-fx-on,
-html.cursor-fx-on * {
-  cursor: none !important;
-}
-.cursor-fx {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  z-index: 2147483600;
-  pointer-events: none;
-  --prox: 0;
-  --px: 0px;
-  transition: opacity 180ms ease;
-  will-change: transform;
-}
-/* the "+" crosshair, cool gray, brightening + growing with proximity */
-.cursor-cross::before,
-.cursor-cross::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, -50%);
-  /* black, shifting to the nearest highlight's own color as it approaches */
-  background: color-mix(in oklab, var(--near-color, oklch(0.2 0.014 262)) calc(var(--prox) * 100%), oklch(0.2 0.014 262));
-}
-.cursor-cross::before {
-  width: calc(13px + 7px * var(--prox));
-  height: 1.5px;
-}
-.cursor-cross::after {
-  width: 1.5px;
-  height: calc(13px + 7px * var(--prox));
-}
-/* the marching-ants ring that fades in as the cursor approaches a chip */
-.cursor-ants {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(24px + 16px * var(--prox));
-  height: calc(24px + 16px * var(--prox));
-  transform: translate(-50%, -50%);
-  opacity: var(--prox);
-  --c: color-mix(in oklab, var(--near-color, oklch(0.2 0.014 262)) calc(var(--prox) * 100%), oklch(0.2 0.014 262));
-  background-image:
-    repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(0deg, var(--c) 0 2px, transparent 2px 5px),
-    repeating-linear-gradient(0deg, var(--c) 0 2px, transparent 2px 5px);
-  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
-  background-position:
-    var(--px, 0px) 0,
-    calc(-1 * var(--px, 0px)) 100%,
-    0 calc(-1 * var(--px, 0px)),
-    100% var(--px, 0px);
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-}
-@media (prefers-reduced-motion: reduce) {
-  .def-chip::after {
-    opacity: 0.3;
-  }
-}
-.def-term {
-  display: block;
-  white-space: nowrap; /* the word being defined always stays on one line */
-  padding-right: 6rem; /* reserve the top-right corner for the note */
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
-  color: var(--on);
-}
-.def-pos {
-  font-style: normal;
-  letter-spacing: 0.04em;
-  color: var(--on-soft);
-}
-.def-pron {
-  display: block;
-  margin-top: 0.2rem;
-  padding-right: 6rem; /* clear the corner note */
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10.5px;
-  font-style: italic;
-  color: var(--on-soft);
-}
-.def-rule {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0.5rem 0 0.45rem;
-  color: var(--on-faint);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  line-height: 1;
-}
-.def-rule i {
-  flex: 1;
-  border-top: 1.5px dashed currentColor;
-}
-.def-def {
-  display: block;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--on);
-}
-.def-src {
-  display: block;
-  margin-top: 0.5rem;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--on-faint);
-}
-.def-x {
-  position: absolute;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  line-height: 1;
-  color: var(--on-faint);
-  pointer-events: none;
-}
-.def-x-tl { top: 3px; left: 5px; }
-.def-x-tr { top: 3px; right: 5px; }
-.def-x-bl { bottom: 3px; left: 5px; }
-.def-x-br { bottom: 3px; right: 5px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .def-window,
-  .def-window[data-open='true'] {
-    transform: translateX(-50%);
-    transition: opacity 120ms linear;
-  }
-  .def-window[data-align='left'],
-  .def-window[data-align='left'][data-open='true'],
-  .def-window[data-align='right'],
-  .def-window[data-align='right'][data-open='true'] {
-    transform: none;
-  }
-  .def-chip {
-    transition: none;
-  }
-}
-
-/* Brand variation tile stagger via per-tile delay set inline */
-.tile-enter {
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 480ms var(--ease-out-expo), transform 480ms var(--ease-out-expo);
-}
-.tile-enter[data-in-view="true"] {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Replay button, spin metaphor on hover */
-/* The resting dimness is a color-mix alpha on `color` (not base opacity), so an
-   opacity hover was a no-op. Brighten via color instead.
-   Stage-context buttons (coda-stage, mode-demo, widget, playground) brighten to
-   full --stage-text; the lone surface-context button (brand-variations) opts in
-   to a darker --ink hover via .replay-btn-on-surface. */
-.replay-btn { transition: color 180ms var(--ease-out-strong); }
-.replay-btn:hover { color: var(--stage-text); }
-.replay-btn-on-surface:hover { color: var(--ink); }
-.replay-btn .replay-glyph {
-  display: inline-block;
-  transition: transform 320ms var(--ease-out-expo);
-  transform-origin: center;
-}
-.replay-btn:hover .replay-glyph { transform: rotate(-90deg); }
-
-/* Playground console pills, pressable, with tactile feedback */
-.playground-pill {
-  transition:
-    background-color 180ms var(--ease-out-strong),
-    color 180ms var(--ease-out-strong),
-    border-color 180ms var(--ease-out-strong),
-    box-shadow 180ms var(--ease-out-strong),
-    transform 140ms var(--ease-out-strong);
-}
-.playground-pill:hover {
-  box-shadow: inset 0 0 0 0.8px var(--ink);
-}
-.playground-pill:active { transform: scale(0.97); }
-
-/* Toggle-pill rails (coda prompt picker + reveal-duration rail). The tactile
-   press scale and base transition are driven inline in the components (JS press
-   state), so globals only add what they don't own: a hover lift for parity with
-   the playground console pills, and a focus ring that is actually visible. The
-   global button:focus-visible uses --accent, which on the bone surface is
-   near-white and low-contrast on a transparent pill, so keyboard focus reads in
-   --ink here, mirroring .def-chip:focus-visible. (No transition is set on the
-   base class: the components' inline `transition` would override it; the inset
-   hairline lift is subtle enough to read fine applied instantly on hover.) */
-.toggle-pill:hover {
-  box-shadow: inset 0 0 0 0.8px var(--ink);
-}
-.toggle-pill:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
-/* --- The lock treatment (mycelium and the recorded mode) ------------------ */
-/* Both are word-level lock reveals with no overlay; they differ only in where
-   the order comes from. The lock is an EVENT: the word snaps crisp and heavy,
-   a halo blooms and fades within a second, and then the word rests quiet.
-   Locked words keep their weight until the close so the frontier between
-   settled and open stays readable across the field; the glow does not stay,
-   because a halo on every locked word would leave nothing distinct. */
-
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
-.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
-  font-weight: 700;
-}
-
-/* The one-shot lock glow: in fast, out over the rest of the second. */
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"],
-.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
-  animation:
-    word-settle 260ms var(--ease-out-expo) both,
-    lock-glow 900ms var(--ease-out-expo) both;
-}
 @keyframes lock-glow {
   0% {
     text-shadow:
-      0 0 6px color-mix(in oklab, var(--accent) 55%, transparent),
-      0 0 16px color-mix(in oklab, var(--accent) 28%, transparent);
+      0 0 6px color-mix(in oklab, var(--accent) calc(55% * var(--voice-glow, 0.6)), transparent),
+      0 0 16px color-mix(in oklab, var(--accent) calc(28% * var(--voice-glow, 0.6)), transparent);
   }
-  100% {
-    text-shadow:
-      0 0 0 transparent,
-      0 0 0 transparent;
-  }
-}
-
-/* The halo behind a fresh lock: wider than the word so it reads as a bloom,
-   then gone. */
-.diffusion-text[data-mode="mycelium"] [data-cycling-word][data-state="resolved"]::before,
-.diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"]::before {
-  inset: -0.22em -0.4em;
-  border-radius: 0.7em;
-  background: radial-gradient(ellipse at center,
-    color-mix(in oklab, var(--accent) 24%, transparent),
-    color-mix(in oklab, var(--accent) 0%, transparent) 70%
-  );
-  border: 0;
-  animation: halo-once 900ms var(--ease-out-expo) both;
+  100% { text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
 }
 @keyframes halo-once {
   0%   { opacity: 0.9; transform: scale(1); }
   100% { opacity: 0;   transform: scale(1.1); }
 }
+[data-gap-close="true"] [data-cycling-word][data-state="resolved"] { --gap: 1; }
+/* the nucleus: the gist word that opened its phrase lands hardest, and its
+   halo lingers a beat longer */
+[data-nucleus="true"] [data-cycling-word][data-state="resolved"] {
+  --gap: 1.5;
+  animation-duration: 300ms, 1200ms;
+}
+[data-last-lock="true"] [data-cycling-word][data-state="resolved"] { --settle: 0.012; }
 
-/* The close: one wave across the field, then everything rests uniform. This
-   is the only whole-field motion in the reveal (gestalt closure, peak-end). */
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after,
-.diffusion-text[data-mode="trace"][data-unblurred="true"]::after {
-  content: '';
-  position: absolute;
-  top: -10%;
-  bottom: -10%;
-  left: -12%;
-  width: 124%;
-  pointer-events: none;
-  z-index: 3;
-  background: linear-gradient(135deg,
-    transparent 32%,
-    color-mix(in oklab, var(--accent) 6%, transparent) 47%,
-    color-mix(in oklab, var(--accent) 14%, transparent) 50%,
-    color-mix(in oklab, var(--accent) 6%, transparent) 53%,
-    transparent 68%
-  );
-  mix-blend-mode: screen;
-  filter: blur(3px);
-  /* The sweep is a transform, so the wave never repaints the words under it;
-     a background-position animation used to rasterize every frame. */
-  transform: translateX(-100%);
-  will-change: transform, opacity;
-  animation: mycelium-final-wave 1500ms var(--ease-out-expo) 1 forwards;
-}
-@keyframes mycelium-final-wave {
-  0%   { transform: translateX(-100%); opacity: 0; }
-  20%  { opacity: 0.6; }
-  80%  { opacity: 0.6; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-.diffusion-text[data-mode="mycelium"][data-unblurred="true"] [data-cycling-word],
-.diffusion-text[data-mode="trace"][data-unblurred="true"] [data-cycling-word] {
-  font-weight: inherit;
-  text-shadow: none;
+/* will-change lifecycle: promote blurred words only while the reveal runs. */
+.diffusion-text[data-active='true'][data-complete='false'] [data-cycling-word] { will-change: filter, opacity; }
+.diffusion-text[data-complete='true'] [data-cycling-word] { will-change: auto; }
+
+/* The exhale. data-settled is set at the LAST lock, so every word is already
+   crisp when it lands. The field quiets once, after a beat: slot markers
+   drop, weights equalize, and the answer reads finished. No wave, no pulse:
+   the ending is completion. */
+.diffusion-text[data-settled="true"] [data-cycling-word] {
   animation: none;
-  transition: font-weight 260ms var(--ease-out-expo) 900ms;
+  opacity: 1;
+  text-shadow: none;
+  font-weight: inherit;
+  transition:
+    font-weight 700ms var(--ease-out-expo) 420ms,
+    opacity 700ms var(--ease-out-expo) 420ms,
+    text-shadow 400ms var(--ease-out-expo);
+}
+.diffusion-text[data-settled="true"] [data-cycling-word]::before {
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out-expo) 420ms;
 }
 
-/* Finding 05, trust calibration: certainty renders as certainty. A resolved word
-   in the recorded trace carries the model's own confidence at that commit, so a
-   sure word sits at full strength and a shaky one stays visibly lighter. This
-   overrides the global unblur rule above, which resets every word to opacity 1
-   once the field settles; here that reset is what we are deliberately undoing. */
+/* Recorded mode: certainty renders as certainty. A settled word carries the
+   sampler's probability at commit, so a shaky word rests lighter even after
+   the exhale. Hovering it shows the number. */
 .diffusion-text[data-mode="trace"] [data-cycling-word][data-state="resolved"] {
   opacity: calc(0.62 + 0.38 * var(--conf, 1));
 }
-
-
-/* A settled word in the recorded mode carries the sampler's own probability
-   at commit; hovering it shows the number, so the dimming a weak commit gets
-   can be checked against the signal that caused it. */
-.diffusion-text[data-mode="trace"] [data-conf-label] {
-  position: relative;
+.diffusion-text[data-mode="trace"][data-settled="true"] [data-cycling-word][data-state="resolved"] {
+  opacity: calc(0.62 + 0.38 * var(--conf, 1));
 }
+.diffusion-text[data-mode="trace"] [data-conf-label] { position: relative; }
 .diffusion-text[data-mode="trace"] [data-conf-label]:has([data-state="resolved"]):hover::after {
   content: attr(data-conf-label);
   position: absolute;
@@ -1256,34 +316,204 @@ html.cursor-fx-on * {
   z-index: 5;
 }
 
-/* --- Trace mode: the recorded-trajectory map + stage ---------------------- */
-/* .unmask-map renders a static SVG diagram of a real trajectory's reveal
-   order; nothing in it animates, so it only needs layout and type rules. */
-.unmask-map {
-  display: block;
-  width: 100%;
-  height: auto;
+/* The typewriter, as every chat product ships it: nothing until the cursor
+   arrives, then the word, flat. No slot, no ghost, no settle. */
+.diffusion-text[data-mode="typewriter"] [data-cycling-word][data-state="pending"] {
+  opacity: 0;
+  filter: none;
+  animation: none;
 }
-.unmask-map text {
+.diffusion-text[data-mode="typewriter"] [data-cycling-word]::before { display: none; }
+.diffusion-text[data-mode="typewriter"] [data-cycling-word][data-state="resolving"],
+.diffusion-text[data-mode="typewriter"] [data-cycling-word][data-state="resolved"] {
+  filter: none;
+  opacity: 1;
+  font-weight: inherit;
+  animation: none;
+  text-shadow: none;
+  transition: none;
+}
+
+/* The fade: every word sharpens on one ramp from the run's progress (--p,
+   written by DiffusionText), and lands together at the end. */
+.diffusion-text[data-mode="fade"] [data-cycling-word][data-state="pending"] {
+  filter: blur(calc(6px * (1 - var(--p, 0))));
+  color: color-mix(in oklab, currentColor calc(38% + 58% * var(--p, 0)), transparent);
+  animation: none;
+}
+.diffusion-text[data-mode="fade"] [data-cycling-word]::before { opacity: calc(0.8 * (1 - var(--p, 0))); }
+.diffusion-text[data-mode="fade"] [data-cycling-word][data-state="resolved"] {
+  animation: none;
+  font-weight: inherit;
+  text-shadow: none;
+  transition: filter 220ms var(--ease-out-expo), color 220ms var(--ease-out-expo);
+}
+.diffusion-text[data-mode="fade"] [data-cycling-word][data-state="resolved"]::before { animation: none; opacity: 0; }
+
+/* Overlays of the retired modes: under the words, fading at the close. */
+.diffusion-overlay {
+  z-index: 0;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, black 7%, black 93%, transparent),
+    linear-gradient(to bottom, transparent, black 7%, black 93%, transparent);
+  mask-image:
+    linear-gradient(to right, transparent, black 7%, black 93%, transparent),
+    linear-gradient(to bottom, transparent, black 7%, black 93%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  transition: opacity 620ms var(--ease-out-expo);
+}
+.diffusion-text[data-settled="true"] .diffusion-overlay { opacity: 0; }
+.diffusion-text > span[aria-hidden] { position: relative; z-index: 2; }
+
+/* ===== Chat stage ======================================================= */
+.thinking-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  display: inline-block;
+  opacity: 0.3;
+  animation: thinking-dot 1100ms ease-in-out infinite;
+}
+@keyframes thinking-dot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 0.95; transform: translateY(-2px); }
+}
+
+.replay-btn {
   font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 180ms var(--ease-out-strong);
 }
+.replay-btn:hover { color: var(--stage-text); }
+.replay-btn-on-surface:hover { color: var(--cobalt); }
+.replay-btn .replay-glyph { display: inline-block; transition: transform 320ms var(--ease-out-expo); transform-origin: center; }
+.replay-btn:hover .replay-glyph { transform: rotate(-90deg); }
+
+/* Toggle pills and prompt pills: ink on bone, the active one filled. */
+.toggle-pill:hover { box-shadow: inset 0 0 0 0.8px var(--ink); }
+.toggle-pill:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+/* Voice sliders. */
+.voice-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+}
+.voice-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.voice-range::-moz-range-track {
+  height: 2px;
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.voice-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -6px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--bone);
+  box-shadow: 0 0 0 1px var(--ink);
+  cursor: pointer;
+}
+.voice-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 2px solid var(--bone);
+  box-shadow: 0 0 0 1px var(--ink);
+  cursor: pointer;
+}
+.voice-range:focus-visible { outline: none; }
+.voice-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+/* ===== Definition terms ================================================== */
+/* A keyword with a dotted underline; hover or tap opens a small entry on
+   bone: headword, gloss, source. One accent, no ornament. */
+.def-wrap { position: relative; display: inline-block; vertical-align: baseline; }
+.def-chip {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in oklab, var(--ink) 45%, transparent);
+  transition: color 140ms ease, text-decoration-color 140ms ease;
+}
+.def-chip:hover, .def-chip[aria-expanded="true"] { color: var(--cobalt); text-decoration-color: var(--cobalt); }
+.def-window {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  z-index: 50;
+  display: block;
+  width: max-content;
+  min-width: min(17rem, 86vw);
+  max-width: min(24rem, calc(100vw - 1.5rem));
+  padding: 0.7rem 0.9rem 0.8rem;
+  background: var(--bone);
+  color: var(--ink);
+  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: 8px;
+  box-shadow: 0 18px 40px -24px color-mix(in oklab, var(--ink) 50%, transparent);
+  text-align: left;
+  text-transform: lowercase;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-4px) scale(0.98);
+  transform-origin: top center;
+  pointer-events: none;
+  transition: opacity 160ms var(--ease-out-expo), transform 160ms var(--ease-out-expo);
+}
+.def-window[data-open='true'] { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); pointer-events: auto; }
+.def-window[data-align='left'] { left: 0; transform: translateX(0) translateY(-4px) scale(0.98); transform-origin: top left; }
+.def-window[data-align='left'][data-open='true'] { transform: translateX(0) translateY(0) scale(1); }
+.def-window[data-align='right'] { left: auto; right: 0; transform: translateX(0) translateY(-4px) scale(0.98); transform-origin: top right; }
+.def-window[data-align='right'][data-open='true'] { transform: translateX(0) translateY(0) scale(1); }
+.def-term {
+  display: block;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.def-pos { font-style: normal; color: var(--muted); font-weight: 400; }
+.def-def { display: block; margin-top: 0.4rem; font-size: 0.9rem; line-height: 1.5; color: var(--ink-2); }
+.def-src {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ===== Figures =========================================================== */
+.lock-map { display: block; width: 100%; height: auto; }
+.lock-map text, .unmask-map text { font-family: var(--font-mono), ui-monospace, monospace; }
+.unmask-map { display: block; width: 100%; height: auto; }
 .unmask-map-caption {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   margin-top: 0.5rem;
 }
-
-/* The length strip under a recorded replay: one cell per position, lit as
-   its token commits. Opacity only, so a hundred cells lighting in a burst
-   never touch layout. */
-.trace-strip {
-  display: grid;
-  gap: 1px;
-  height: 6px;
-}
+.trace-strip { display: grid; gap: 1px; height: 6px; }
 .trace-cell {
   display: block;
   height: 100%;
@@ -1291,25 +521,9 @@ html.cursor-fx-on * {
   background: color-mix(in oklab, var(--stage-text) 10%, transparent);
   transition: background-color 180ms var(--ease-out-strong);
 }
-.trace-cell[data-lit="tail"] {
-  background: color-mix(in oklab, var(--stage-text) 34%, transparent);
-}
-.trace-cell[data-lit="content"] {
-  background: var(--section-accent, var(--accent));
-}
-@media (prefers-reduced-motion: reduce) {
-  .trace-cell { transition: none; }
-}
-
-/* .trace-stage gets its surface from the shared stage utilities already;
-   the only addition is a tabular-nums lock on the live step readout so the
-   counter does not jitter in width as it counts steps. */
-.trace-readout {
-  font-variant-numeric: tabular-nums;
-}
-
-/* "+ loading trajectory" placeholder, shown while a trace is fetched. Mono,
-   quiet, breathing very slowly so it reads as waiting rather than broken. */
+.trace-cell[data-lit="tail"] { background: color-mix(in oklab, var(--stage-text) 34%, transparent); }
+.trace-cell[data-lit="content"] { background: var(--accent); }
+.trace-readout { font-variant-numeric: tabular-nums; }
 .trace-loading {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
@@ -1318,81 +532,19 @@ html.cursor-fx-on * {
   color: color-mix(in oklab, var(--stage-text) 55%, transparent);
   animation: trace-loading-pulse 2400ms ease-in-out infinite;
 }
-
 @keyframes trace-loading-pulse {
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
 
-/* Reduced motion: keep transitions snappy, kill heavy filters */
-@media (prefers-reduced-motion: reduce) {
-  [data-cycling-word] {
-    transition: none;
-    filter: none !important;
-    animation: none !important;
-  }
-  [data-cycling-word]::before { display: none; }
-  .belief-shift { animation: none; }
-  [data-cycling-word][data-state="resolving"] { opacity: 1; color: currentColor; }
-  [data-cycling-word][data-state='resolved'],
-  [data-cycling-word][data-state='resolved']::before { animation: none; }
-  .diffusion-text [data-cycling-word] { will-change: auto; }
-  .diffusion-text[data-active="true"]::after { display: none; }
-  .diffusion-text[data-unblurred="true"] { animation: none; }
-  .diffusion-text[data-mode="mycelium"][data-unblurred="true"]::after,
-  .diffusion-text[data-mode="trace"][data-unblurred="true"]::after { display: none; }
-  .tile-enter,
-  .tile-enter[data-in-view="true"] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .replay-btn,
-  .replay-btn .replay-glyph,
-  .playground-pill,
-  .toggle-pill {
-    transition: none !important;
-  }
-  .replay-btn:hover .replay-glyph { transform: none; }
-  .trace-loading {
-    animation: none;
-    opacity: 1;
-  }
-}
-
-/* ===== hero byline ======================================================
-   The hook byline: the author + role + thesis line, so the first screen
-   reads as a portfolio case study. Mono, dimmed against the dark stage,
-   wraps gracefully. Only transform / opacity / filter animate. ============*/
-
-/* Hook byline: the author + role + thesis line, so the first screen reads as a
-   portfolio case study. Mono, dimmed against the dark stage, wraps gracefully. */
-.hero-byline {
-  margin-top: clamp(1.4rem, 3.4vw, 2.2rem);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5em 0.7em;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(0.72rem, 1vw, 0.84rem);
-  letter-spacing: 0.04em;
-  color: color-mix(in oklab, var(--stage-text) 40%, transparent);
+.tile-enter {
   opacity: 0;
-  animation: hero-fade 900ms var(--ease-out-expo) 3.0s forwards;
+  transform: translateY(8px);
+  transition: opacity 480ms var(--ease-out-expo), transform 480ms var(--ease-out-expo);
 }
-.hero-byline-name { color: var(--stage-text); font-weight: 500; }
-.hero-byline-sep { color: color-mix(in oklab, var(--stage-text) 28%, transparent); }
-.hero-byline-role { color: color-mix(in oklab, var(--stage-text) 58%, transparent); }
+.tile-enter[data-in-view="true"] { opacity: 1; transform: translateY(0); }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-byline { animation: none; opacity: 1; }
-}
-/* ===== end hero byline ==================================================== */
-/* ===== section nav ===== */
-/* Fixed vertical jump-nav rail, right edge, vertically centered. Desktop only
-   (the max-w-5xl content column leaves gutter at >=1100px). Quiet
-   instrument-panel chrome, same family as the corner numerals / registration
-   marks: texture first, UI second. */
+/* ===== Wayfinding ======================================================== */
 .section-nav {
   display: none;
   position: fixed;
@@ -1401,93 +553,31 @@ html.cursor-fx-on * {
   transform: translateY(-50%);
   z-index: 40;
 }
-@media (min-width: 1100px) {
-  .section-nav { display: block; }
-}
-.section-nav-list {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.9rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.section-nav-item { position: relative; }
+@media (min-width: 1180px) { .section-nav { display: block; } }
+.section-nav-list { display: flex; flex-direction: column; align-items: flex-end; gap: 0.7rem; list-style: none; margin: 0; padding: 0; }
 .section-nav-link {
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 0.5rem;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
-  line-height: 1;
   text-decoration: none;
-  color: var(--ink);
-  opacity: 0.35;
-  transition: opacity 180ms var(--ease-out-strong), color 180ms var(--ease-out-strong);
+  /* muted ink reads at AA on bone; the active item takes the accent */
+  color: var(--muted);
+  transition: color 180ms var(--ease-out-strong);
 }
-.section-nav-link:hover,
-.section-nav-link:focus-visible {
-  opacity: 1;
+.section-nav-link::after {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+  transition: width 180ms var(--ease-out-strong);
 }
-/* Over the dark hero (the one full-viewport stage section), ink numerals at
-   0.35 vanish; flip the resting color to the stage text token so the rail
-   stays legible on both surfaces. Active item keeps its section accent. */
-.section-nav[data-on-stage="true"] .section-nav-link:not([data-active="true"]) {
-  color: var(--stage-text);
-}
-.section-nav-link:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
-.section-nav-link[data-active="true"] {
-  opacity: 1;
-  color: var(--section-nav-color, var(--ink));
-}
-.section-nav-mark { position: relative; display: inline-flex; align-items: center; }
-.section-nav-plus {
-  position: absolute;
-  left: -0.85em;
-  opacity: 0.8;
-}
-.section-nav-link[data-active="true"] .section-nav-mark {
-  text-decoration: underline;
-  text-underline-offset: 0.28em;
-  text-decoration-thickness: 1px;
-}
-/* Label chip: appears to the LEFT on hover/focus, absolutely positioned so it
-   never shifts layout. Ink-on-bone, hairline border, 2px radius, fast
-   fade + slide-in from 4px right. */
-.section-nav-chip {
-  position: absolute;
-  right: calc(100% + 0.6rem);
-  top: 50%;
-  transform: translate(4px, -50%);
-  white-space: nowrap;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  background: var(--bone);
-  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
-  border-radius: 2px;
-  padding: 0.28em 0.5em;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 140ms var(--ease-out-strong), transform 140ms var(--ease-out-strong);
-}
-.section-nav-link:hover .section-nav-chip,
-.section-nav-link:focus-visible .section-nav-chip {
-  opacity: 1;
-  transform: translate(0, -50%);
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .section-nav-link,
-  .section-nav-chip { transition: none; }
-}
-/* ===== end section nav ===== */
+.section-nav-link:hover, .section-nav-link:focus-visible { color: var(--ink); }
+.section-nav-link[data-active="true"] { color: var(--cobalt); }
+.section-nav-link[data-active="true"]::after { width: 26px; }
 
-/* Reading progress hairline, shown only where the section rail is hidden. */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -1495,12 +585,49 @@ html.cursor-fx-on * {
   width: 100%;
   height: 2px;
   z-index: 60;
-  background: var(--ink);
+  background: var(--cobalt);
   transform-origin: left center;
   transform: scaleX(0);
-  opacity: 0.55;
+  opacity: 0.8;
   pointer-events: none;
 }
-@media (min-width: 1100px) {
-  .scroll-progress { display: none; }
+@media (min-width: 1180px) { .scroll-progress { display: none; } }
+
+/* ===== Hero ============================================================== */
+.hero-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  font-size: clamp(3.2rem, 11vw, 8.5rem);
+}
+.hero-word {
+  display: inline-block;
+  filter: blur(6px);
+  opacity: 0.35;
+  animation: hero-word-lock 520ms var(--ease-out-expo) both;
+}
+@keyframes hero-word-lock {
+  0%   { filter: blur(6px); opacity: 0.35; transform: translateY(0.04em); }
+  70%  { filter: blur(0); opacity: 1; transform: translateY(0) scale(1.012); }
+  100% { filter: blur(0); opacity: 1; transform: none; }
+}
+
+/* ===== Reduced motion ==================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-cycling-word] { transition: none; filter: none !important; animation: none !important; }
+  [data-cycling-word]::before { display: none; }
+  .belief-shift { animation: none; }
+  [data-cycling-word][data-state="resolving"] { opacity: 1; color: currentColor; }
+  .diffusion-text [data-cycling-word] { will-change: auto; }
+  .thinking-dot { animation: none; opacity: 0.55; }
+  .trace-cell { transition: none; }
+  .trace-loading { animation: none; opacity: 1; }
+  .tile-enter, .tile-enter[data-in-view="true"] { opacity: 1; transform: none; transition: none; }
+  .replay-btn, .replay-btn .replay-glyph, .toggle-pill { transition: none !important; }
+  .replay-btn:hover .replay-glyph { transform: none; }
+  .def-window, .def-window[data-open='true'] { transition: opacity 120ms linear; }
+  .section-nav-link, .section-nav-link::after { transition: none; }
+  .hero-word { animation: none; filter: none; opacity: 1; }
 }
