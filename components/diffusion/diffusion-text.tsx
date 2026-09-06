@@ -13,7 +13,8 @@ import { useMotionValueEvent } from 'motion/react'
 import { tokenize } from '@/lib/diffusion/tokenize'
 import { wordSalience } from '@/lib/diffusion/salience'
 import { useDiffusionChoreography } from '@/lib/diffusion/choreographer'
-import { buildCandidatesPerAtom } from '@/lib/diffusion/candidate-pool'
+import { buildCandidates, type GlyphStyle } from '@/lib/diffusion/glyph-styles'
+import { isDecodeStyle, DECODE_WINDOW } from '@/lib/diffusion/decode'
 import { crystalWith, type CrystalOptions } from '@/lib/diffusion/modes/crystal'
 import { mycelium } from '@/lib/diffusion/modes/mycelium'
 import { fog } from '@/lib/diffusion/modes/fog'
@@ -25,6 +26,7 @@ import { segmentPhrases } from '@/lib/arrival/phrases'
 import { clampVoice } from '@/lib/brand/brands'
 import { useBrand, voiceStyle } from '@/lib/brand/provider'
 import { CyclingWord } from './cycling-word'
+import { DecodingWord } from './decoding-word'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import type { BrandVoice } from '@/lib/brand/types'
 import type { MeasuredAtom, ModeName, ModeStrategy, OverlayProps, WordState } from '@/lib/diffusion/types'
@@ -69,6 +71,10 @@ export type DiffusionTextProps = {
   externalActive?: boolean
   // Multiplier on the strategy's totalDuration. 1 = native speed.
   durationScale?: number
+  // The vocabulary words cycle through while pending. 'words' (default) is
+  // the topical near-word noise; 'blocks', 'matrix', and 'binary' decode per
+  // character through ordered stages instead, composable with any arrival.
+  glyphStyle?: GlyphStyle
   // Optional per-word color for the RESOLVED text: a word blooms into that
   // color the moment it locks (pending words stay neutral).
   wordColor?: (index: number, total: number) => string | undefined
@@ -119,6 +125,7 @@ export function DiffusionText({
   trigger = 'inView',
   externalActive,
   durationScale = 1,
+  glyphStyle = 'words',
   wordColor,
   announce = 'none',
   showStatus = false,
@@ -153,7 +160,13 @@ export function DiffusionText({
     for (const ph of segmentPhrases(atoms)) if (ph.end > ph.start) set.add(atoms[ph.nucleus]!.index)
     return set
   }, [atoms, mode])
-  const candidatesPerAtom = useMemo(() => buildCandidatesPerAtom(atoms), [atoms])
+  // 'words' cycles topical near-words; the other styles DECODE per character
+  // through ordered stages (see DecodingWord) rather than cycling strings.
+  const isDecode = isDecodeStyle(glyphStyle)
+  const candidatesPerAtom = useMemo(
+    () => (isDecode ? [] : buildCandidates(atoms, glyphStyle)),
+    [atoms, glyphStyle, isDecode],
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([])
   const [measured, setMeasured] = useState<MeasuredAtom[]>([])
@@ -281,6 +294,34 @@ export function DiffusionText({
     }
   }, [strategy, measured, atoms.length])
 
+  // For decode styles, each word's [startP, endP] decode window comes from
+  // the arrival's timeline (the share of the run at which it locks), so the
+  // per-character decode reacts in the arrival's own order. Frozen once
+  // computed: a re-measure mid-run would shift the windows and rewind a word.
+  const lockIdentity = `${mode}\u0000${glyphStyle}\u0000${durationScale}\u0000${children}`
+  const lockWindowsRef = useRef<{ identity: string; windows: Map<number, { startP: number; endP: number }> } | null>(null)
+  const lockWindows = useMemo(() => {
+    if (!isDecode) return null
+    if (lockWindowsRef.current?.identity === lockIdentity) return lockWindowsRef.current.windows
+    if (measured.length === 0 || measured.length !== atoms.length) return null
+    const total = strategy.totalDuration(measured)
+    if (total <= 0) return null
+    const resolvedAt = new Map<number, number>()
+    for (const e of strategy.computeTimeline(measured)) {
+      if (e.state === 'resolved') {
+        const cur = resolvedAt.get(e.wordIndex)
+        if (cur == null || e.t > cur) resolvedAt.set(e.wordIndex, e.t)
+      }
+    }
+    const map = new Map<number, { startP: number; endP: number }>()
+    for (const w of measured) {
+      const endP = Math.min(1, (resolvedAt.get(w.index) ?? total) / total)
+      map.set(w.index, { startP: Math.max(0, endP - DECODE_WINDOW), endP })
+    }
+    lockWindowsRef.current = { identity: lockIdentity, windows: map }
+    return map
+  }, [isDecode, measured, strategy, atoms.length, lockIdentity])
+
   const { wordStates, progress, isComplete, play } = useDiffusionChoreography({
     words: measured,
     strategy,
@@ -334,12 +375,13 @@ export function DiffusionText({
     return atoms.some((atom) => (wordStates.get(atom.index) ?? 'pending') === 'pending')
   }, [atoms, wordStates])
   useEffect(() => {
-    if (!shouldPlay || !hasPending || reduced) return
+    // Decode styles drive their own glyph churn from progress; no cycle tick.
+    if (!shouldPlay || !hasPending || reduced || isDecode) return
     const id = setInterval(() => {
       setCycleTick((t) => t + 1)
     }, CYCLE_INTERVAL_MS)
     return () => clearInterval(id)
-  }, [shouldPlay, hasPending, reduced])
+  }, [shouldPlay, hasPending, reduced, isDecode])
 
   // How much of the answer has settled: drives --fill on the container (the
   // open field recedes as it rises) and the count in the status line.
@@ -359,12 +401,16 @@ export function DiffusionText({
       ref={containerRef}
       className={`diffusion-text relative ${className}`}
       data-mode={mode}
+      data-glyph={glyphStyle}
       data-settled={settled ? 'true' : 'false'}
       data-active={shouldPlay ? 'true' : 'false'}
       data-complete={isComplete ? 'true' : 'false'}
       data-reduced-motion={reduced ? 'true' : 'false'}
+      // Decode styles render in monospace so every stage glyph occupies one
+      // cell with zero layout jitter; 'words' keeps the chat-native UI font.
       style={{
         ...voiceStyle(voice),
+        ...(isDecode ? { fontFamily: 'var(--font-mono)' } : {}),
         ['--fill' as string]: fill.toFixed(3),
       } as React.CSSProperties}
     >
@@ -380,6 +426,30 @@ export function DiffusionText({
           A line break in the answer is a line break here. */}
       <span aria-hidden="true" className="block">
         {atoms.map((atom, i) => {
+          // Decode styles: per-character stage decode, timed to the arrival's
+          // lock window for this word. Self-measuring (mono widths are
+          // stable), so no placeholder pass is needed.
+          if (isDecode) {
+            const win = lockWindows?.get(atom.index)
+            return (
+              <Fragment key={`${atom.index}-${atom.text}`}>
+                {i > 0 ? (atoms[i - 1]!.lineIndex !== atom.lineIndex ? <br /> : ' ') : null}
+                <DecodingWord
+                  text={atom.text}
+                  style={glyphStyle}
+                  startP={win?.startP ?? 0}
+                  endP={win?.endP ?? 1}
+                  progress={progress}
+                  resolvedColor={wordColor?.(atom.index, atoms.length)}
+                  reduced={reduced}
+                  wordIndex={atom.index}
+                  registerRoot={(el) => {
+                    wordRefs.current[i] = el
+                  }}
+                />
+              </Fragment>
+            )
+          }
           const state = wordStates.get(atom.index) ?? 'pending'
           const slotWidth = measured[i]?.bbox.w ?? 0
           // Until measurement is done, render a hidden placeholder so the

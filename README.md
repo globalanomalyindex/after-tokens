@@ -14,7 +14,7 @@ an independent product design and engineering case study on how text from a diff
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | the `DiffusionText` engine, the crystallize grammar, the arrival profile (a metric suite for any reveal), the two-channel reveal for recorded sampler runs, five brand voices, sixty recorded trajectories, a structured weather answer |
+| **built** | the `DiffusionText` engine, the crystallize grammar, the arrival profile (a metric suite for any reveal), the two-channel reveal for recorded sampler runs, five brand voices, three live product previews, a playground, sixty recorded trajectories, a structured weather answer |
 | **status** | working prototype. every arrival in the piece is scored; a five-claim study is designed and its stimuli ship in the repository. no reader has been measured. |
 | **stack** | next.js, typescript, motion, tailwind, vitest, playwright, axe-core |
 
@@ -50,6 +50,10 @@ medians over the eight fixtures:
 nature anchor: crystallization. a few sites nucleate, each crystal grows along its lattice, grains meet, the finished crystal is still. in the grammar: at most two phrases are open at once; the next opens by salience, spread across the answer, so the gist opens first wherever it sits; when a phrase opens its most salient word locks at once and crisp legibility proceeds from the phrase's first word; every front advances every step and steps end on closures; a lock is crisp at once, heavier, with a settle sized to salience and a halo gone within a second; after the last lock the field quiets once, no wave, no pulse. the reasoning in order is [`docs/redesign.md`](docs/redesign.md); the design spec is [`docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md`](docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md).
 
 for a recorded sampler run, `withReadingOrder` splits the signal into a state channel (a word ghosts when its tokens commit) and a reading channel (crisp legibility in reading order inside each phrase, the phrase's earliest commit kept as its anchor). on the curated runs legibility trails commitment by a median of 540 ms on the 36% of words that wait, and no phrase reads out of order.
+
+## in the wild, and the playground
+
+three live product frames (a desktop assistant thread, a search answer, a phone) run the real engine on their brand's surface and voice. the playground frees every axis to combine: arrival (the grammar, the three reference arrivals, the four earlier modes, the recorded sampler), the tension budget, the glyph vocabulary (words, blocks, matrix, binary), reveal time, and color, with the profile read live off the words as they settle.
 
 ## the voice
 

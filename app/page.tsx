@@ -9,6 +9,7 @@ import { SectionSampler } from '@/components/sections/section-sampler'
 import { SectionGrammar } from '@/components/sections/section-grammar'
 import { SectionVoice } from '@/components/sections/section-voice'
 import { SectionPreviews } from '@/components/sections/section-previews'
+import { SectionPlayground } from '@/components/sections/section-playground'
 import { SectionEvidence } from '@/components/sections/section-evidence'
 import { SectionOpen } from '@/components/sections/section-open'
 
@@ -25,6 +26,7 @@ export default function HomePage() {
       <SectionGrammar />
       <SectionVoice />
       <SectionPreviews />
+      <SectionPlayground />
       <SectionEvidence />
       <SectionOpen />
       <SiteFooter />

@@ -6,10 +6,10 @@ test.describe('reduced motion full audit', () => {
   test('all sections resolve their content without overlay animations', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
-    // The nine-section cut: the answer crystallizing, the problem, the
+    // The ten-section cut: the answer crystallizing, the problem, the
     // arrival profile, the recorded sampler, the grammar, the voice, the
-    // grammar in the wild, the evidence, and what is open.
-    const sectionIds = ['hook', 'problem', 'profile', 'sampler', 'grammar', 'voice', 'previews', 'evidence', 'open']
+    // grammar in the wild, the playground, the evidence, and what is open.
+    const sectionIds = ['hook', 'problem', 'profile', 'sampler', 'grammar', 'voice', 'previews', 'playground', 'evidence', 'open']
     await expect(page.locator('[data-section]')).toHaveCount(sectionIds.length)
 
     // ChatExchange mounts its answer only when the stage enters the

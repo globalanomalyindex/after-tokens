@@ -6,7 +6,7 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
 
   // Bring the in-view stages up before scanning so axe covers the demo
   // content and the controls beside it.
-  for (const id of ['problem', 'grammar', 'voice', 'previews']) {
+  for (const id of ['problem', 'grammar', 'voice', 'previews', 'playground']) {
     await page.locator(`#${id} [data-demo]`).first().scrollIntoViewIfNeeded()
     await expect(page.locator(`#${id} .diffusion-text`).first()).toBeVisible({ timeout: 15_000 })
   }

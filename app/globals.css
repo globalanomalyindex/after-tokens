@@ -730,3 +730,16 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   html[data-motion="on"] [data-in="false"] .lock-map .lm-ref,
   html[data-motion="on"] [data-in="true"] .lock-map .lm-ref { opacity: 1; animation: none; }
 }
+
+/* Playground console pills: pressable, tactile. */
+.playground-pill {
+  transition:
+    background-color 180ms var(--ease-out-strong),
+    color 180ms var(--ease-out-strong),
+    border-color 180ms var(--ease-out-strong),
+    box-shadow 180ms var(--ease-out-strong),
+    transform 140ms var(--ease-out-strong);
+}
+.playground-pill:hover { box-shadow: inset 0 0 0 0.8px var(--ink); }
+.playground-pill:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { .playground-pill { transition: none !important; } }
