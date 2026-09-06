@@ -1,5 +1,7 @@
 import { BrandProvider } from '@/lib/brand/provider'
 import { SectionNav } from '@/components/chrome/section-nav'
+import { SiteFooter } from '@/components/chrome/site-footer'
+import { ScrollProgress } from '@/components/chrome/scroll-progress'
 import { SectionHook } from '@/components/sections/section-01-hook'
 import { SectionPrimer } from '@/components/sections/section-02-primer'
 import { SectionTrajectories } from '@/components/sections/section-03-trajectories'
@@ -30,7 +32,9 @@ export default function HomePage() {
       <SectionStyles />
       <SectionPlayground />
       <SectionClose />
+      <SiteFooter />
       <SectionNav />
+      <ScrollProgress />
     </BrandProvider>
   )
 }

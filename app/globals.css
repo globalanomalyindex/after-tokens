@@ -1252,6 +1252,31 @@ html.cursor-fx-on * {
   margin-top: 0.5rem;
 }
 
+/* The length strip under a recorded replay: one cell per position, lit as
+   its token commits. Opacity only, so a hundred cells lighting in a burst
+   never touch layout. */
+.trace-strip {
+  display: grid;
+  gap: 1px;
+  height: 6px;
+}
+.trace-cell {
+  display: block;
+  height: 100%;
+  border-radius: 1px;
+  background: color-mix(in oklab, var(--stage-text) 10%, transparent);
+  transition: background-color 180ms var(--ease-out-strong);
+}
+.trace-cell[data-lit="tail"] {
+  background: color-mix(in oklab, var(--stage-text) 34%, transparent);
+}
+.trace-cell[data-lit="content"] {
+  background: var(--section-accent, var(--accent));
+}
+@media (prefers-reduced-motion: reduce) {
+  .trace-cell { transition: none; }
+}
+
 /* .trace-stage gets its surface from the shared stage utilities already;
    the only addition is a tabular-nums lock on the live step readout so the
    counter does not jitter in width as it counts steps. */
@@ -1437,3 +1462,21 @@ html.cursor-fx-on * {
   .section-nav-chip { transition: none; }
 }
 /* ===== end section nav ===== */
+
+/* Reading progress hairline, shown only where the section rail is hidden. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 60;
+  background: var(--ink);
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0.55;
+  pointer-events: none;
+}
+@media (min-width: 1100px) {
+  .scroll-progress { display: none; }
+}

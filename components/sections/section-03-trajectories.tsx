@@ -8,7 +8,7 @@ import { PromptPicker } from '@/components/coda/prompt-picker'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { TRACE_IDS, TRACE_META, loadTrace, type TraceId } from '@/lib/traces/index'
 import { FINDINGS, FINDINGS_HEADING, LEAD, LIMITS, LLADA, ORDER_DRAWN } from '@/lib/traces/findings'
-import { PROVISIONAL_FLOOR, type TraceCompact } from '@/lib/diffusion/traces'
+import { PROVISIONAL_FLOOR, SHAPED_CONTENT_STEP_MS, SHAPED_TAIL_STEP_MS, type TraceCompact, type TracePace } from '@/lib/diffusion/traces'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
 
 type Config = 'lowconf-b32' | 'random-b32' | 'lowconf-b128'
@@ -62,10 +62,21 @@ for (const id of TRACE_IDS) {
   if (!PROMPT_IDS.includes(promptId)) PROMPT_IDS.push(promptId)
 }
 
-const PACE_ITEMS = [
+type PaceId = 'shaped' | '40' | 'recorded'
+const PACE_ITEMS: { id: PaceId; label: string }[] = [
+  { id: 'shaped', label: 'shaped' },
   { id: '40', label: '40 ms / step' },
   { id: 'recorded', label: 'recorded pace' },
 ]
+const PACE_OF: Record<PaceId, TracePace> = { shaped: 'shaped', '40': 40, recorded: 'recorded' }
+
+const VERDICT_BADGE: Record<string, string | undefined> = {
+  complete: undefined,
+  looped: 'looped',
+  short: 'short',
+  empty: 'empty',
+  cut: 'cut off',
+}
 
 function traceIdFor(promptId: string, config: Config): TraceId {
   return `${promptId}__${config}` as TraceId
@@ -90,14 +101,15 @@ const EYEBROW_STYLE = { fontFamily: 'var(--font-mono)', color: 'var(--muted)' } 
 export function SectionTrajectories() {
   const [activePromptId, setActivePromptId] = useState('diffusion-explain')
   const [activeConfig, setActiveConfig] = useState<Config>('lowconf-b32')
-  const [paceId, setPaceId] = useState<'40' | 'recorded'>('40')
+  const [paceId, setPaceId] = useState<PaceId>('shaped')
   const [traces, setTraces] = useState<Map<TraceId, TraceCompact>>(() => new Map())
   const liveMapRef = useRef<UnmaskMapHandle>(null)
 
   const activeTraceId = traceIdFor(activePromptId, activeConfig)
   const activeTrace = traces.get(activeTraceId)
   const activeLoop = TRACE_META[activeTraceId]?.loop
-  const msPerStep = paceId === '40' ? 40 : undefined
+  const activeAudit = TRACE_META[activeTraceId]?.audit
+  const pace = PACE_OF[paceId]
 
   // The picker: one short pill per prompt, tagged when this sampler's run
   // for that prompt fell into a repetition loop.
@@ -107,7 +119,7 @@ export function SectionTrajectories() {
         id,
         prompt: PROMPT_LABELS[id] ?? id,
         short: id.replace(/-/g, ' '),
-        badge: TRACE_META[traceIdFor(id, activeConfig)]?.loop ? 'looped' : undefined,
+        badge: VERDICT_BADGE[TRACE_META[traceIdFor(id, activeConfig)]?.audit.verdict ?? 'complete'],
         defaultMode: 'trace',
         response: '',
       })),
@@ -153,7 +165,7 @@ export function SectionTrajectories() {
 
   const selectPrompt = useCallback((id: string) => setActivePromptId(id), [])
   const selectConfig = useCallback((id: string) => setActiveConfig(id as Config), [])
-  const selectPace = useCallback((id: string) => setPaceId(id as '40' | 'recorded'), [])
+  const selectPace = useCallback((id: string) => setPaceId(id as PaceId), [])
   const onStep = useCallback((step: number) => liveMapRef.current?.setStep(step), [])
 
   const stats = activeTrace?.stats
@@ -189,7 +201,7 @@ export function SectionTrajectories() {
           + A recorded answer, replayed
         </div>
         <p className="text-base leading-relaxed max-w-3xl mb-8" style={{ color: 'var(--ink-2)' }}>
-          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead. Under the default sampler the answer arrives nearly left to right because its block schedule says so; switch the sampler to no blocks to watch the schedule-free order the shipped reveal grows from. The map beside the stage draws itself as the words lock.
+          The pending words show the model&rsquo;s own guess only when it clears a probability of {PROVISIONAL_FLOOR}; below that the guess is the corpus prior and would read &ldquo;the&rdquo; in every slot, so the slot shows noise instead. Under the default sampler the answer arrives nearly left to right because its block schedule says so. Switch the sampler to no blocks to watch the schedule-free order the shipped reveal grows from: a few anchors, a long stretch in which the model holds its beliefs while the answer&rsquo;s length settles, then the words.
         </p>
 
         <div className="mb-6">
@@ -197,12 +209,15 @@ export function SectionTrajectories() {
             + Pick a prompt
           </div>
           <PromptPicker prompts={promptItems} activeId={activePromptId} onSelect={selectPrompt} layout="compact" />
+          <p className="mt-3 text-[11px] leading-relaxed max-w-2xl" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+            the words are the model&rsquo;s own, so every run carries its audit verdict; a tag marks a run that looped, came back short or empty, or was cut off.
+          </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
           <div>
             {activeTrace ? (
-              <TraceStage trace={activeTrace} msPerStep={msPerStep} onStep={onStep} />
+              <TraceStage trace={activeTrace} pace={pace} onStep={onStep} />
             ) : (
               <div
                 className="trace-stage rounded-2xl flex items-center justify-center min-h-[420px]"
@@ -211,15 +226,24 @@ export function SectionTrajectories() {
                 <span className="trace-loading">loading trajectory</span>
               </div>
             )}
-            {activeLoop && (
+            {activeAudit && activeAudit.verdict !== 'complete' && (
               <p
                 className="mt-3 text-[11px] leading-relaxed max-w-2xl"
                 style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
                 data-trace-loop
               >
-                + the model looped on this run: &ldquo;{activeLoop.phrase}&rdquo; repeats {activeLoop.reps} times back
-                to back, {Math.round(activeLoop.cover * 100)}% of the answer. It replays as recorded, and it stays in every
-                statistic; a small model decoded greedily does this.
+                {activeLoop
+                  ? `+ audit: looped. The model repeated “${activeLoop.phrase}” ${activeLoop.reps} times back to back, ${Math.round(activeLoop.cover * 100)}% of the answer. It replays as recorded and stays in every statistic; a small model decoded greedily does this.`
+                  : `+ audit: ${activeAudit.verdict}. ${activeAudit.note}. It replays as recorded${activeAudit.verdict === 'empty' || activeAudit.verdict === 'short' ? ' and is excluded from the order statistics' : ''}; removing the schedule lets the sampler commit its ending before its words.`}
+              </p>
+            )}
+            {activeAudit && activeAudit.verdict === 'complete' && (
+              <p
+                className="mt-3 text-[11px] leading-relaxed max-w-2xl"
+                style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+                data-trace-audit
+              >
+                + audit: complete. {activeAudit.note}.
               </p>
             )}
           </div>
@@ -260,6 +284,9 @@ export function SectionTrajectories() {
                 onSelect={selectConfig}
               />
               <ToggleRail label="Pace" items={PACE_ITEMS} activeId={paceId} onSelect={selectPace} />
+              <p className="text-[11px] leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}>
+                shaped spends the replay where the words are: a step that only settles the end of the sequence plays in {SHAPED_TAIL_STEP_MS} ms, a step that commits a word in {SHAPED_CONTENT_STEP_MS} ms. the order is untouched. the strip under the answer draws the field settling.
+              </p>
             </div>
 
             {stats && (

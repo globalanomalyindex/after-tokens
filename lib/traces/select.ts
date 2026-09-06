@@ -1,22 +1,21 @@
-import { TRACE_META, type TraceId, type TraceLoop } from './index'
-
-/** Sampler configurations in the order a product demo prefers them: the
- *  model card default first, then the random-order run of the same prompt. */
-export const CODA_CONFIG_ORDER = ['lowconf-b32', 'random-b32'] as const
+import { TRACE_META, type TraceAudit, type TraceId, type TraceLoop } from './index'
 
 /** The repetition loop a trajectory fell into, when it did. */
 export function traceLoop(id: TraceId): TraceLoop | undefined {
   return TRACE_META[id]?.loop
 }
 
-/** The recorded trajectory a product demo replays for a prompt. The default
- *  sampler's run, unless that run looped, in which case the random-order run
- *  of the same prompt stands in. The looped run is still shown, marked, in
- *  the research section, and it stays in every statistic. */
+/** The audit verdict for a recorded answer (AUDIT_RULE in scripts/gen-trace-index.mjs). */
+export function traceAudit(id: TraceId): TraceAudit {
+  return TRACE_META[id].audit
+}
+
+/** The recorded run a product demo replays for a prompt: the model card
+ *  default (low-confidence remasking, four blocks), always. The product demos
+ *  replay a run's order, timing, and confidence over pre-written words, so
+ *  the text of the run never reaches them and a looped or rough answer is no
+ *  reason to switch runs. The model's own words stay in the research section,
+ *  with every run's audit verdict beside them. */
 export function codaTraceIdFor(promptId: string): TraceId {
-  for (const config of CODA_CONFIG_ORDER) {
-    const id = `${promptId}__${config}` as TraceId
-    if (id in TRACE_META && !TRACE_META[id].loop) return id
-  }
   return `${promptId}__lowconf-b32` as TraceId
 }

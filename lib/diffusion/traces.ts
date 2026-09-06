@@ -72,8 +72,25 @@ export type TraceCompact = {
  *  128-step trajectory land in ~5 seconds, which is a chat-plausible wait. */
 export const TRACE_DEFAULT_MS_PER_STEP = 40
 
-const RESOLVING_TO_RESOLVED_MS = 90
-const TAIL_MS = 260
+/** How a replay paces its steps: a fixed number of milliseconds per step,
+ *  the recorded wall clock, or 'shaped', which spends the time where the
+ *  words are. Under the schedule-free sampler most steps commit only
+ *  end-of-sequence positions (the answer's length settling, nothing to read
+ *  yet), then the words land in the last stretch. Shaped pace plays a
+ *  tail-only step at SHAPED_TAIL_STEP_MS and a step that commits a content
+ *  token at SHAPED_CONTENT_STEP_MS, so the length settles quickly and every
+ *  visible lock gets a full beat (Doherty on both ends: no wait past the
+ *  threshold with nothing to see, no lock faster than the eye takes it in).
+ *  The order is untouched; only the clock is reshaped, and the stage says so. */
+export type TracePace = number | 'recorded' | 'shaped'
+export const SHAPED_TAIL_STEP_MS = 14
+export const SHAPED_CONTENT_STEP_MS = 120
+
+/** The forming stage in the recorded mode: a word enters 'resolving' when its
+ *  first token commits and 'resolved' this long after its last token does, so
+ *  even a one-token word ghosts in for a beat before it snaps crisp. */
+export const TRACE_FORMING_MS = 160
+export const TRACE_TAIL_MS = 260
 
 /** The text the interface should render for a trace: its whitespace words
  *  joined by single spaces, so tokenize() yields exactly one atom per word
@@ -88,26 +105,67 @@ export function traceRealTotalMs(trace: TraceCompact): number {
   return traceStepEnds(trace).at(-1) ?? 0
 }
 
-/** Cumulative time at which each step has completed. Uniform when msPerStep
- *  is given; otherwise the recorded wall-clock pace (warmup clamped). */
-export function traceStepEnds(trace: TraceCompact, msPerStep?: number): number[] {
+/** Milliseconds each step takes under a pace. */
+export function traceStepDurations(trace: TraceCompact, pace: TracePace): number[] {
   const n = trace.step_ms.length
   if (n === 0) return []
-  if (msPerStep != null) return Array.from({ length: n }, (_, i) => (i + 1) * msPerStep)
-  const sorted = [...trace.step_ms].sort((a, b) => a - b)
-  const median = sorted[Math.floor(n / 2)] ?? 0
+  if (typeof pace === 'number') return Array.from({ length: n }, () => pace)
+  if (pace === 'recorded') {
+    const sorted = [...trace.step_ms].sort((a, b) => a - b)
+    const median = sorted[Math.floor(n / 2)] ?? 0
+    return trace.step_ms.map((ms, i) => (i === 0 ? Math.min(ms, median) : ms))
+  }
+  const contentSteps = new Set(trace.tokens.filter((t) => !t.tail && t.step >= 0).map((t) => t.step))
+  return trace.step_ms.map((_, i) => (contentSteps.has(i) ? SHAPED_CONTENT_STEP_MS : SHAPED_TAIL_STEP_MS))
+}
+
+/** Cumulative time at which each step has completed under a pace. */
+export function traceStepEndsFor(trace: TraceCompact, pace: TracePace): number[] {
   const ends: number[] = []
   let acc = 0
-  trace.step_ms.forEach((ms, i) => {
-    acc += i === 0 ? Math.min(ms, median) : ms
+  for (const ms of traceStepDurations(trace, pace)) {
+    acc += ms
     ends.push(acc)
-  })
+  }
   return ends
+}
+
+/** Cumulative step ends. Uniform when msPerStep is given; otherwise the
+ *  recorded wall-clock pace (warmup clamped). */
+export function traceStepEnds(trace: TraceCompact, msPerStep?: number): number[] {
+  return traceStepEndsFor(trace, msPerStep ?? 'recorded')
+}
+
+/** The step a replay is on `elapsedMs` into a run with these step ends: the
+ *  number of steps that have completed, clamped to the last step. Correct
+ *  under any pace, where a share of the run would only be right for a
+ *  uniform one. */
+export function traceStepAtElapsed(ends: number[], elapsedMs: number): number {
+  const n = ends.length
+  if (n === 0) return 0
+  let lo = 0
+  let hi = n
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1
+    if ((ends[mid] ?? Infinity) <= elapsedMs) lo = mid + 1
+    else hi = mid
+  }
+  return Math.min(n - 1, lo)
+}
+
+/** The replay's total duration under a pace: the last step end plus the
+ *  forming beat and the closing tail. */
+export function traceTotalMsFor(trace: TraceCompact, pace: TracePace): number {
+  const ends = traceStepEndsFor(trace, pace)
+  const last = ends.at(-1) ?? 0
+  return last + TRACE_FORMING_MS + TRACE_TAIL_MS
 }
 
 export type TraceStrategyOptions = {
   /** replay pace; omit to play at the recorded wall-clock pace */
   msPerStep?: number
+  /** a pace by name; takes precedence over msPerStep */
+  pace?: TracePace
 }
 
 /**
@@ -121,15 +179,18 @@ export function traceStrategy(
   trace: TraceCompact,
   opts: TraceStrategyOptions = { msPerStep: TRACE_DEFAULT_MS_PER_STEP },
 ): ModeStrategy {
-  const ends = traceStepEnds(trace, opts.msPerStep)
+  const pace: TracePace = opts.pace ?? (opts.msPerStep != null ? opts.msPerStep : 'recorded')
+  const ends = traceStepEndsFor(trace, pace)
   const last = ends.at(-1) ?? 0
   const at = (step: number) => ends[Math.max(0, Math.min(ends.length - 1, step))] ?? last
 
   function totalDuration(words: MeasuredAtom[]): number {
     if (words.length === 0) return 0
-    return last + RESOLVING_TO_RESOLVED_MS + TAIL_MS
+    return last + TRACE_FORMING_MS + TRACE_TAIL_MS
   }
 
+  // 'resolving' is the forming stage (first token committed, the word ghosts
+  // in); 'resolved' is the lock, a forming beat after the last token commits.
   function computeTimeline(words: MeasuredAtom[]): ResolutionEvent[] {
     if (words.length === 0) return []
     const events: ResolutionEvent[] = []
@@ -137,8 +198,8 @@ export function traceStrategy(
       const w = trace.words[atom.index]
       const tFirst = w ? at(w.first_step) : last
       const tLock = w ? at(w.lock_step) : last
-      events.push({ wordIndex: atom.index, state: 'resolving', t: tFirst })
-      events.push({ wordIndex: atom.index, state: 'resolved', t: tLock + RESOLVING_TO_RESOLVED_MS })
+      events.push({ wordIndex: atom.index, state: 'resolving', t: Math.min(tFirst, tLock) })
+      events.push({ wordIndex: atom.index, state: 'resolved', t: tLock + TRACE_FORMING_MS })
     }
     return events
   }
@@ -155,8 +216,13 @@ export function traceStrategy(
 
 /** Replay speed relative to the recorded pace, for an honest on-screen label. */
 export function traceSpeedup(trace: TraceCompact, msPerStep: number): number {
+  return traceSpeedupFor(trace, msPerStep)
+}
+
+/** The same, for any pace. */
+export function traceSpeedupFor(trace: TraceCompact, pace: TracePace): number {
   const real = traceRealTotalMs(trace)
-  const replay = trace.step_ms.length * msPerStep
+  const replay = traceStepEndsFor(trace, pace).at(-1) ?? 0
   return replay > 0 ? real / replay : 1
 }
 

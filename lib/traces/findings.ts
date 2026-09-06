@@ -53,6 +53,12 @@ export const TRACE_NUMBERS = {
   loopedAnswersOther: 0,
   loopRepsRange: [14, 19] as const,
   loopCoverRange: [0.77, 0.88] as const,
+  /** the audit of every recorded answer (AUDIT_RULE in scripts/gen-trace-index.mjs): complete means the model chose its own ending */
+  audit: {
+    lowconfB32: { complete: 17, looped: 3 },
+    randomB32: { complete: 20 },
+    lowconfB128: { complete: 11, short: 6, empty: 3 },
+  },
 } as const
 
 const pct = (x: number) => `${Math.round(x * 100)}%`
@@ -102,7 +108,7 @@ export const FINDINGS: Finding[] = [
 ]
 
 export const LIMITS =
-  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. ${N.loopedAnswersDefault === 3 ? 'Three' : String(N.loopedAnswersDefault)} of the twenty default-sampler answers fell into a repetition loop, one phrase repeated ${N.loopRepsRange[0]} to ${N.loopRepsRange[1]} times back to back over ${pct(N.loopCoverRange[0])} to ${pct(N.loopCoverRange[1])} of the words, a known failure of greedy decoding at this scale; ${N.loopedAnswersOther === 0 ? 'no run' : String(N.loopedAnswersOther)} under the other two samplers did. Those three stay in every statistic, replay as recorded with the loop named on the stage, and the product demo replays the same prompt's random-order run in their place. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
+  `This is one model at 0.6 billion parameters, one sampler family, greedy decoding, twenty prompts, one laptop. Larger models and other samplers may order differently. Order statistics exclude answers under ${N.minContentTokens} content tokens, because two tokens are always in order; that excluded ${N.shortExcludedNoBlock} of the 20 no-block runs (${N.emptyAnswersNoBlock} of them came back with no answer at all, the model committing its end-of-sequence tokens first, a known cost of removing the schedule; the usable no-block answers ran a median of ${N.noBlockMedianContentTokens} content tokens) and ${N.shortExcludedDefault} of the default runs. ${N.loopedAnswersDefault === 3 ? 'Three' : String(N.loopedAnswersDefault)} of the twenty default-sampler answers fell into a repetition loop, one phrase repeated ${N.loopRepsRange[0]} to ${N.loopRepsRange[1]} times back to back over ${pct(N.loopCoverRange[0])} to ${pct(N.loopCoverRange[1])} of the words, a known failure of greedy decoding at this scale; ${N.loopedAnswersOther === 0 ? 'no run' : String(N.loopedAnswersOther)} under the other two samplers did. Every recorded answer carries an audit verdict on the stage (${N.audit.lowconfB32.complete} of the 20 default runs chose their own ending, ${N.audit.randomB32.complete} of 20 random-order runs did, and ${N.audit.lowconfB128.complete} of 20 no-block runs did, the rest short or empty); the looped three stay in every statistic and replay as recorded, and the product demos replay a run's order, timing, and confidence over pre-written words, so no recorded text reaches them. None of it measures whether any reveal helps a reader. That is still the study in the closing section; the recorded trajectories are now its stimulus rather than an authored guess.`
 
 // Numbers derived from the full traces for feeding back into the authored
 // design (see data/traces/derived/*.json and scripts/derive-trajectory-models.py).
@@ -248,6 +254,18 @@ export const SYNTHESIS: SynthesisRow[] = [
     from: 'gestalt closure · peak-end rule · finding 03',
     tag: 'constraint',
     effect: 'the last word carries the strongest settle, one wave crosses the field, the slot markers drop, and the answer reads finished. The closing beat used to fire at 82% of the run and unblurred still-pending noise as if it were text; it now fires when the last word locks.',
+  },
+  {
+    decision: 'the product demos replay recorded order, timing, and confidence over pre-written words',
+    from: 'state fidelity · the audit',
+    tag: 'constraint',
+    effect: 'what a recording contributes to a reveal is the sampler’s order, timing, confidence, and belief timing, none of which depend on the words being the model’s own. A 0.6B model’s prose is not what a reader should be handed, so the demos put the authored answer in the recorded slots and say so on the stage. The model’s own words stay in the research section, every run with its audit verdict.',
+  },
+  {
+    decision: 'the shaped pace spends the replay where the words are',
+    from: 'doherty threshold · finding 03',
+    tag: 'tuned',
+    effect: 'under the schedule-free sampler most steps commit only end-of-sequence positions, the answer’s length settling with nothing to read yet. A tail-only step plays in 14 milliseconds and a step that commits a word in 120, so the length settles quickly and every visible lock gets a full beat; the strip under the answer draws the field settling. The order is untouched, the other paces stay one click away, and the values are set by eye.',
   },
   {
     decision: 'nine pixels of blur and a 0.32 opacity floor in the comparison',

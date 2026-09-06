@@ -4,19 +4,25 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
 import {
+  SHAPED_CONTENT_STEP_MS,
+  SHAPED_TAIL_STEP_MS,
   traceAnswerText,
   traceProvisionalText,
   traceRealTotalMs,
-  traceSpeedup,
+  traceSpeedupFor,
+  traceStepAtElapsed,
+  traceStepEndsFor,
   traceStrategy,
+  traceTotalMsFor,
   type TraceCompact,
+  type TracePace,
 } from '@/lib/diffusion/traces'
 
 type Props = {
   trace: TraceCompact
-  // Replay pace in ms per denoising step. Omit for the recorded wall-clock
-  // pace (traceStrategy's own default when no msPerStep is given).
-  msPerStep?: number
+  // Replay pace: 'shaped' spends the time where the words are, a number is
+  // milliseconds per step, 'recorded' is the wall clock of the capture.
+  pace?: TracePace
   // External replay nonce, same contract as CodaStage: bumping it from the
   // parent re-runs the exchange from the top independent of the local button.
   replayKey?: number
@@ -29,17 +35,23 @@ type Props = {
 // CodaStage and ModeDemo, but every readout here is read off the sampler
 // itself rather than authored. Step count, confidence, and the provisional
 // text all come from the trace.
-export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
+export function TraceStage({ trace, pace = 'shaped', replayKey = 0, onStep }: Props) {
   const [localReplay, setLocalReplay] = useState(0)
   const replay = () => setLocalReplay((k) => k + 1)
 
   const answer = useMemo(() => traceAnswerText(trace), [trace])
   const stepCount = useMemo(() => trace.step_ms.length, [trace.step_ms.length])
   const strategy = useMemo(
-    () => traceStrategy(trace, msPerStep != null ? { msPerStep } : {}),
+    () => traceStrategy(trace, { pace }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [trace.id, msPerStep],
+    [trace.id, pace],
   )
+  // The clock under this pace, so every step-indexed readout (the counter, the
+  // beliefs, the map, the strip) follows the real step and never a share of
+  // the run, which would only be right for a uniform pace.
+  const ends = useMemo(() => traceStepEndsFor(trace, pace), [trace, pace])
+  const totalMs = useMemo(() => traceTotalMsFor(trace, pace), [trace, pace])
+  const stepAt = useCallback((p: number) => traceStepAtElapsed(ends, p * totalMs), [ends, totalMs])
 
   const guessesShownRef = useRef<HTMLSpanElement>(null)
   const seenGuessesRef = useRef<Set<string>>(new Set())
@@ -54,9 +66,6 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
     (index: number, step: number) => {
       const text = traceProvisionalText(trace, index, step)
       const w = trace.words[index]
-      // Only a word still pending counts as a "guess": once step reaches
-      // lock_step, traceProvisionalText returns the committed word itself,
-      // its settled answer instead of a live prediction.
       if (text !== undefined && w && step < w.lock_step) {
         const key = `${index}:${text}`
         if (!seenGuessesRef.current.has(key)) {
@@ -84,9 +93,6 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
     [trace.id],
   )
 
-  // The commit confidence itself, fed straight to DiffusionText: it scales
-  // the settle overshoot and, in trace mode, the resolved word's opacity, so
-  // certainty at commit reads as certainty on screen.
   const wordConf = useCallback(
     (index: number) => trace.words[index]?.conf,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,23 +106,64 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
     onStepRef.current = onStep
   }, [onStep])
 
-  // Reset the guess count whenever a new run starts: a new trace, a new
-  // pace, or either replay path (the local button or the section's shortcut).
+  // The length strip: one cell per position in the field, lit as its token
+  // commits. Tail cells (end of sequence) light muted, content cells light in
+  // the accent, so the answer's extent settling is visible as a shape while
+  // the words themselves stay in the bubble. Under the schedule-free sampler
+  // this is most of the run: the field contracting to the answer's true
+  // length before the words land in it.
+  const stripRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const tokensByStep = useMemo(() => {
+    const byStep = new Map<number, { pos: number; tail: boolean }[]>()
+    for (const t of trace.tokens) {
+      if (t.step < 0) continue
+      const arr = byStep.get(t.step) ?? []
+      arr.push({ pos: t.pos, tail: t.tail })
+      byStep.set(t.step, arr)
+    }
+    return byStep
+  }, [trace.tokens])
+  const litStepRef = useRef(-1)
+  const paintStrip = useCallback(
+    (step: number) => {
+      const from = litStepRef.current + 1
+      if (step < litStepRef.current) {
+        // a replay: clear everything
+        for (const el of stripRefs.current) el?.removeAttribute('data-lit')
+        litStepRef.current = -1
+        return paintStrip(step)
+      }
+      for (let s = from; s <= step; s++) {
+        for (const t of tokensByStep.get(s) ?? []) {
+          stripRefs.current[t.pos]?.setAttribute('data-lit', t.tail ? 'tail' : 'content')
+        }
+      }
+      litStepRef.current = step
+    },
+    [tokensByStep],
+  )
+
+  // Reset the guess count and the strip whenever a new run starts: a new
+  // trace, a new pace, or either replay path.
   useEffect(() => {
     seenGuessesRef.current = new Set()
     if (guessesShownRef.current) {
       guessesShownRef.current.textContent = 'guesses shown 00'
     }
+    for (const el of stripRefs.current) el?.removeAttribute('data-lit')
+    litStepRef.current = -1
     onStepRef.current?.(0)
-  }, [trace.id, msPerStep, replayKey, localReplay])
+  }, [trace.id, pace, replayKey, localReplay])
 
   const handleProgress = useCallback(
     (p: number) => {
-      const step = Math.max(0, Math.min(stepCount, Math.round(p * stepCount)))
+      const step = stepAt(p)
+      const shown = Math.min(stepCount, p >= 1 ? stepCount : step)
       onStepRef.current?.(step)
+      paintStrip(step)
       const total = String(stepCount).padStart(3, '0')
       if (stepReadoutRef.current) {
-        stepReadoutRef.current.textContent = `step ${String(step).padStart(3, '0')} / ${total}`
+        stepReadoutRef.current.textContent = `step ${String(shown).padStart(3, '0')} / ${total}`
       }
       const tailDone = trace.tail_done_step
       if (lengthReadoutRef.current) {
@@ -126,15 +173,18 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
             : 'length open'
       }
     },
-    [stepCount, trace.tail_done_step],
+    [stepAt, stepCount, trace.tail_done_step, paintStrip],
   )
 
   const realTotalMs = useMemo(() => traceRealTotalMs(trace), [trace])
-  const speedup = useMemo(
-    () => (msPerStep != null ? traceSpeedup(trace, msPerStep) : 1),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [trace.id, msPerStep],
-  )
+  const speedup = useMemo(() => traceSpeedupFor(trace, pace), [trace, pace])
+  const paceLabel =
+    pace === 'shaped'
+      ? `shaped · tail steps ${SHAPED_TAIL_STEP_MS} ms · word steps ${SHAPED_CONTENT_STEP_MS} ms`
+      : pace === 'recorded'
+        ? 'recorded pace'
+        : `${pace} ms per step · ${speedup.toFixed(1)}x`
+  const cols = trace.sampler.max_new_tokens
 
   return (
     <div
@@ -158,7 +208,7 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
           className="w-full"
           prompt={trace.prompt}
           thinkingMs={600}
-          runKey={`${trace.id}-${msPerStep ?? 'recorded'}-${replayKey}-${localReplay}`}
+          runKey={`${trace.id}-${String(pace)}-${replayKey}-${localReplay}`}
         >
           <DiffusionText
             mode="trace"
@@ -169,6 +219,7 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
             onProgress={handleProgress}
             provisionalAt={provisionalAt}
             stepCount={stepCount}
+            stepAt={stepAt}
             wordColor={wordColor}
             wordConf={wordConf}
             className="text-base md:text-lg leading-relaxed"
@@ -176,6 +227,26 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
             {answer}
           </DiffusionText>
         </ChatExchange>
+      </div>
+      <div className="px-6 pb-3" aria-hidden="true">
+        <div
+          className="flex items-baseline justify-between text-[9px] uppercase tracking-[0.16em] mb-1.5"
+          style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 64%, transparent)' }}
+        >
+          <span>the field · {cols} positions</span>
+          <span>accent: a word · muted: end of sequence</span>
+        </div>
+        <div className="trace-strip" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+          {Array.from({ length: cols }, (_, i) => (
+            <span
+              key={i}
+              ref={(el) => {
+                stripRefs.current[i] = el
+              }}
+              className="trace-cell"
+            />
+          ))}
+        </div>
       </div>
       <div
         className="trace-readout flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-4 px-6 pb-5 text-[10px] uppercase tracking-[0.16em]"
@@ -194,7 +265,7 @@ export function TraceStage({ trace, msPerStep, replayKey = 0, onStep }: Props) {
         </div>
         <div className="flex flex-col sm:items-end gap-1.5">
           <span style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>
-            recorded {(realTotalMs / 1000).toFixed(1)}s on an m3 · replayed {speedup.toFixed(1)}x
+            recorded {(realTotalMs / 1000).toFixed(1)}s on an m3 · {paceLabel}
           </span>
           <button
             type="button"

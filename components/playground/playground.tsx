@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
 import { ToggleRail } from '@/components/coda/toggle-rail'
@@ -8,6 +8,18 @@ import { HueWheel } from './hue-wheel'
 import { codaPrompts } from '@/lib/coda/fixtures'
 import { GLYPH_STYLE_ITEMS, type GlyphStyle } from '@/lib/diffusion/glyph-styles'
 import { hueToAccent, spectrumColor } from '@/lib/playground/color'
+import { tokenize } from '@/lib/diffusion/tokenize'
+import { hybridView } from '@/lib/diffusion/trace-hybrid'
+import {
+  traceProvisionalText,
+  traceStepAtElapsed,
+  traceStepEndsFor,
+  traceStrategy,
+  traceTotalMsFor,
+  type TraceCompact,
+} from '@/lib/diffusion/traces'
+import { loadTrace } from '@/lib/traces'
+import { codaTraceIdFor } from '@/lib/traces/select'
 import type { ModeName } from '@/lib/diffusion/types'
 
 // The playground is the case study's finale: every axis the piece demonstrated,
@@ -18,12 +30,17 @@ import type { ModeName } from '@/lib/diffusion/types'
 
 type DurationId = 'instant' | 'quick' | 'deep' | 'max'
 
-const MODE_ITEMS: { id: ModeName; label: string }[] = [
+const MODE_ITEMS: { id: ModeName; label: string; badge?: string }[] = [
   { id: 'mycelium', label: 'Mycelium' },
   { id: 'fog', label: 'Fog' },
   { id: 'aurora', label: 'Aurora' },
   { id: 'mitosis', label: 'Mitosis' },
+  // The recorded run for the prompt, re-read over its pre-written answer:
+  // real order, timing, and confidence, authored words (see hybridView).
+  { id: 'trace', label: 'Sampler', badge: 'recorded' },
 ]
+
+const TRACE_MS_PER_STEP = 40
 
 const DURATION_ITEMS: { id: DurationId; label: string }[] = [
   { id: 'instant', label: 'Fast' },
@@ -85,10 +102,48 @@ export function Playground() {
 
   const prompt = useMemo(() => getPrompt(promptId), [promptId])
   const durationScale = DURATION_SCALE[duration]
+
+  // The recorded run behind the Sampler motion, loaded on first use and
+  // cached per prompt.
+  const [trace, setTrace] = useState<TraceCompact | undefined>(undefined)
+  const traceCache = useRef(new Map<string, TraceCompact>())
+  useEffect(() => {
+    if (mode !== 'trace') return
+    const id = codaTraceIdFor(promptId)
+    const cached = traceCache.current.get(id)
+    if (cached) {
+      setTrace(cached)
+      return
+    }
+    setTrace(undefined)
+    let cancelled = false
+    loadTrace(id).then((t) => {
+      if (cancelled) return
+      traceCache.current.set(id, t)
+      setTrace(t)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [mode, promptId])
+  const view = useMemo(
+    () => (mode === 'trace' && trace ? hybridView(trace, tokenize(prompt.response).map((a) => a.text)) : undefined),
+    [mode, trace, prompt.response],
+  )
+  const traceStrat = useMemo(() => (view ? traceStrategy(view, { msPerStep: TRACE_MS_PER_STEP }) : undefined), [view])
+  const stepAt = useMemo(() => {
+    if (!view) return undefined
+    const ends = traceStepEndsFor(view, TRACE_MS_PER_STEP)
+    const total = traceTotalMsFor(view, TRACE_MS_PER_STEP)
+    return (p: number) => traceStepAtElapsed(ends, p * total)
+  }, [view])
+  const provisionalAt = useMemo(() => (view ? (i: number, step: number) => traceProvisionalText(view, i, step) : undefined), [view])
+  const traceConf = useMemo(() => (view ? (i: number) => view.words[i]?.conf : undefined), [view])
+  const traceWaiting = mode === 'trace' && !view
   const durationLabel = DURATION_ITEMS.find((item) => item.id === duration)?.label.toLowerCase() ?? duration
 
   // Color is intentionally absent from the run key, see file header.
-  const runKey = `${promptId}-${mode}-${style}-${duration}-${replayKey}`
+  const runKey = `${promptId}-${mode}-${style}-${duration}-${replayKey}-${view?.id ?? 'none'}`
 
   // Solid: the chosen hue. Spectrum: the overlay rides a hue offset from the
   // rainbow's origin so the band reads as part of the wash.
@@ -119,7 +174,7 @@ export function Playground() {
   const randomize = useCallback(() => {
     const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)]!
     setPromptId(pick(PROMPT_ITEMS).id)
-    setMode(pick(MODE_ITEMS).id)
+    setMode(pick(MODE_ITEMS.filter((m) => m.id !== 'trace')).id)
     setStyle(pick(GLYPH_STYLE_ITEMS).id)
     setDuration(pick(DURATION_ITEMS).id)
     setHue(Math.floor(Math.random() * 360))
@@ -162,18 +217,32 @@ export function Playground() {
             answerGrowMs={style === 'words' ? undefined : 0}
             runKey={runKey}
           >
-            <DiffusionText
-              mode={mode}
-              glyphStyle={style}
-              wordColor={wordColor}
-              durationScale={durationScale}
-              trigger="immediate"
-              announce="on-complete"
-              showStatus
-              className="text-base md:text-lg leading-relaxed"
-            >
-              {prompt.response}
-            </DiffusionText>
+            {traceWaiting ? (
+              <div
+                className="text-[11px] uppercase tracking-[0.16em]"
+                style={{ fontFamily: 'var(--font-mono)', color: 'color-mix(in oklab, var(--stage-text) 55%, transparent)' }}
+              >
+                loading trajectory
+              </div>
+            ) : (
+              <DiffusionText
+                mode={mode}
+                glyphStyle={style}
+                wordColor={wordColor}
+                durationScale={durationScale}
+                trigger="immediate"
+                announce="on-complete"
+                showStatus
+                className="text-base md:text-lg leading-relaxed"
+                strategy={traceStrat}
+                provisionalAt={view ? provisionalAt : undefined}
+                stepCount={view ? view.step_ms.length : undefined}
+                stepAt={stepAt}
+                wordConf={traceConf}
+              >
+                {prompt.response}
+              </DiffusionText>
+            )}
           </ChatExchange>
         </div>
 

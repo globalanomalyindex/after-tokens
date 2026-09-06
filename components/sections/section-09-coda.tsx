@@ -163,8 +163,9 @@ export function SectionCoda() {
         Pick a response fixture. I tagged each one with a reveal hypothesis: structured answers
         lock in clusters; open-ended answers drift in. The mapping is authored by hand.
         Override it to compare how presentation changes the read without pretending the model chose it.
-        The fifth mode replays what a real sampler did for this exact prompt, at 40 milliseconds
-        per step; the answer belongs to the model.
+        The fifth mode replays the order, timing, and confidence a real sampler produced for this exact
+        prompt, at 40 milliseconds per step, over the pre-written answer; the sampler&rsquo;s own words are on
+        the record in section iii, with their audit.
       </p>
 
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_380px] items-start">

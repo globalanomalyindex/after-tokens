@@ -79,6 +79,10 @@ type DiffusionTextProps = {
   // instead of the synthetic near-word noise from buildCandidates.
   provisionalAt?: (index: number, step: number) => string | undefined
   stepCount?: number
+  // The step the replay is on at progress p. Supplied by callers whose
+  // steps are not uniform in time (a shaped or recorded pace); without it
+  // the step is taken as a share of the run.
+  stepAt?: (p: number) => number
   // The commit confidence for a word, 0..1, when the caller has one (the
   // recorded trajectory mode does, from the sampler's own softmax at commit).
   // Returning a number sets --conf on the word's wrapper span, which CSS
@@ -103,6 +107,7 @@ export function DiffusionText({
   onProgress,
   provisionalAt,
   stepCount,
+  stepAt,
   wordConf,
 }: DiffusionTextProps) {
   const atoms = useMemo(() => tokenize(children), [children])
@@ -330,7 +335,9 @@ export function DiffusionText({
     if (p >= closing.at && !unblurred) setUnblurred(true)
     onProgressRef.current?.(p)
     if (stepCount && stepCount > 0) {
-      const nextStep = Math.max(0, Math.min(stepCount - 1, Math.floor(p * (stepCount + 1))))
+      const nextStep = stepAt
+        ? Math.max(0, Math.min(stepCount - 1, stepAt(p)))
+        : Math.max(0, Math.min(stepCount - 1, Math.floor(p * (stepCount + 1))))
       if (nextStep !== provisionalStepRef.current) {
         provisionalStepRef.current = nextStep
         setProvisionalStep(nextStep)

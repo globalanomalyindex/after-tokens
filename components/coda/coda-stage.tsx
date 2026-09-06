@@ -3,7 +3,17 @@
 import { useMemo, useState } from 'react'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { ChatExchange } from '@/components/chat/chat-exchange'
-import { traceAnswerText, traceSpeedup, traceStrategy, type TraceCompact } from '@/lib/diffusion/traces'
+import {
+  traceProvisionalText,
+  traceSpeedup,
+  traceStepAtElapsed,
+  traceStepEndsFor,
+  traceStrategy,
+  traceTotalMsFor,
+  type TraceCompact,
+} from '@/lib/diffusion/traces'
+import { hybridView } from '@/lib/diffusion/trace-hybrid'
+import { tokenize } from '@/lib/diffusion/tokenize'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
 import type { ModeStrategy } from '@/lib/diffusion/types'
 import type { BrandTokens } from '@/lib/brand/types'
@@ -24,7 +34,8 @@ type Props = {
   // runKey so the answer re-mounts and the diffusion restarts.
   replayKey?: number
   // The recorded trajectory for this prompt (lowconf-b32), when mode ===
-  // 'trace'. Undefined while it is still loading.
+  // 'trace'. Undefined while it is still loading. Its order, timing, and
+  // confidence drive the pre-written answer (see hybridView).
   trace?: TraceCompact
 }
 
@@ -42,30 +53,43 @@ export function CodaStage({
   const isTrace = mode === 'trace'
   const traceReady = isTrace && trace != null
 
-  // Memoized on trace.id: the strategy and answer text change only when the
-  // underlying trajectory changes.
-  const traceAnswer = useMemo(() => (trace ? traceAnswerText(trace) : ''), [trace])
-  const traceStrat = useMemo(
-    () => (trace ? traceStrategy(trace, { msPerStep: TRACE_MS_PER_STEP }) : undefined),
-    [trace],
+  // The recorded run re-read over the fixture's words: the sampler's order,
+  // timing, confidence, and belief timing, with the pre-written answer in
+  // the slots. Memoized on trace.id and the prompt.
+  const view = useMemo(
+    () => (trace ? hybridView(trace, tokenize(prompt.response).map((a) => a.text)) : undefined),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [trace?.id, prompt.response],
   )
+  const traceStrat = useMemo(
+    () => (view ? traceStrategy(view, { msPerStep: TRACE_MS_PER_STEP }) : undefined),
+    [view],
+  )
+  const stepAt = useMemo(() => {
+    if (!view) return undefined
+    const ends = traceStepEndsFor(view, TRACE_MS_PER_STEP)
+    const total = traceTotalMsFor(view, TRACE_MS_PER_STEP)
+    return (p: number) => traceStepAtElapsed(ends, p * total)
+  }, [view])
+  const provisionalAt = useMemo(() => {
+    if (!view) return undefined
+    return (i: number, step: number) => traceProvisionalText(view, i, step)
+  }, [view])
   // A word whose weakest token committed under thirty percent settles dimmer,
   // so a low-confidence lock reads visually as less certain than a confident one.
   const traceWordColor = useMemo(() => {
-    if (!trace) return undefined
+    if (!view) return undefined
     return (i: number) => {
-      const c = trace.words[i]?.conf ?? 1
+      const c = view.words[i]?.conf ?? 1
       return c < 0.3 ? 'color-mix(in oklab, var(--stage-text) 58%, transparent)' : undefined
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trace?.id])
+  }, [view])
   // The commit confidence itself, fed straight to DiffusionText: it scales
   // the settle overshoot and, in trace mode, the resolved word's opacity.
   const traceWordConf = useMemo(() => {
-    if (!trace) return undefined
-    return (i: number) => trace.words[i]?.conf
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trace?.id])
+    if (!view) return undefined
+    return (i: number) => view.words[i]?.conf
+  }, [view])
 
   return (
     <div
@@ -80,7 +104,7 @@ export function CodaStage({
           Stage
         </span>
         <span style={{ color: 'color-mix(in oklab, var(--stage-text) 85%, transparent)' }}>
-          {isTrace ? `+ sampler · ${trace ? trace.sampler.id : 'recorded'}` : `+ ${mode}${isAutoMode ? ' (fixture)' : ''}`}
+          {isTrace ? `+ sampler · ${trace ? trace.sampler.id : 'recorded'} · recorded order, authored words` : `+ ${mode}${isAutoMode ? ' (fixture)' : ''}`}
         </span>
       </div>
       <div className="px-5 py-7 flex-1 flex items-center">
@@ -100,7 +124,7 @@ export function CodaStage({
             >
               loading trajectory
             </div>
-          ) : isTrace && trace && traceStrat ? (
+          ) : isTrace && view && traceStrat ? (
             <DiffusionText
               mode={mode}
               trigger="immediate"
@@ -109,10 +133,13 @@ export function CodaStage({
               showStatus
               className="text-base md:text-lg leading-relaxed"
               strategy={traceStrat}
+              provisionalAt={provisionalAt}
+              stepCount={view.step_ms.length}
+              stepAt={stepAt}
               wordColor={traceWordColor}
               wordConf={traceWordConf}
             >
-              {traceAnswer}
+              {prompt.response}
             </DiffusionText>
           ) : (
             <DiffusionText

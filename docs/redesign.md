@@ -60,6 +60,12 @@ The words are identical either way. What differs is the shape of the wait and th
 
 These are reasons the same answer could feel better. None of them was measured on this prototype. Together they are the fourth claim: H4, felt quality, that the same answer at the same duration is rated more satisfying after this grammar than after a uniform fade. It is falsified if the ratings do not differ, or if the grammar reads as busier without reading as better.
 
-## 7. What is authored and what is measured
+## 7. The recorded mode, and what the recording contributes
+
+A recording contributes the sampler's order, its timing, its confidence at every commit, and the timing of every belief it held above the floor. It also contributes its words, and a 0.6B model's words are not what a reader should be handed: three of the twenty default-sampler runs loop, and the schedule-free runs are short or empty nearly half the time. So the research section replays the model's own words with an audit verdict on every run, and the product demos replay the recorded order, timing, and confidence over the pre-written answer, labeled on the stage. Nothing in the second is invented; only the prose is authored, and the stage says which is which.
+
+The schedule-free runs also spend most of their steps committing end-of-sequence positions, the answer's length settling with nothing to read yet, before the words land in the last stretch. The shaped pace plays a tail-only step in 14 milliseconds and a word step in 120, so the length settles quickly and every visible lock gets a full beat, and a strip under the answer draws the field settling. That is what makes the schedule-free run the showpiece: a few anchors, a stretch of held beliefs while the field contracts, then the flood.
+
+## 8. What is authored and what is measured
 
 The order model, the cadence bounds, the churn rate, the guess floor, and the confidence scaling are fitted to or set by the data. The blur radius, the opacity floor, the settle sizes, the step count, the within-step spread, the swing, the recede range, and the gap-close bonus are tuned by eye and labeled so. Nothing here shows that the reveal helps a reader; that is what the study is for.

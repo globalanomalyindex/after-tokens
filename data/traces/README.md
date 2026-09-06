@@ -43,9 +43,9 @@ computed over content tokens only (tail excluded unless named):
 - `mean_flips_per_token`, `tokens_with_any_flip_frac`: how often the model's provisional guess for a not-yet-committed position changed before it was committed. this is the cost of an interface that shows the current guess legibly.
 - `tail_all_committed_by_step`, `last_content_committed_step`, `tail_before_last_content`: when the answer's end was fixed relative to when its last content token was.
 
-## known failures
+## the audit
 
-three `lowconf-b32` runs (`heron-poem`, `lighthouse-haiku`, `sky-blue`) fell into a repetition loop, one phrase repeated 14 to 19 times back to back over 77% to 88% of the answer's words; a known failure of greedy decoding in a small model, and absent from every `random-b32` and `lowconf-b128` run. the files are untouched and the runs stay in every statistic. `scripts/gen-trace-index.mjs` flags them (`LOOP_RULE`: a 2- to 8-word phrase repeated at least three times covering at least 30% of the words) into `TRACE_META[id].loop` so the site can name the loop beside the stage and the product demo can replay the same prompt's `random-b32` run instead.
+every run gets one verdict from `scripts/gen-trace-index.mjs` (`AUDIT_RULE`), written into `TRACE_META[id].audit`: `complete` (the model emitted its own end-of-sequence token and the answer ends in terminal punctuation), `looped` (`LOOP_RULE`: a 2- to 8-word phrase repeated at least three times covering at least 30% of the words), `short` (under 8 content tokens), `empty` (no content token), or `cut`. tallies: `lowconf-b32` 17 complete, 3 looped (`heron-poem`, `lighthouse-haiku`, `sky-blue`; one phrase repeated 14 to 19 times over 77% to 88% of the words, a known failure of greedy decoding in a small model); `random-b32` 20 complete; `lowconf-b128` 11 complete, 6 short, 3 empty. the files are untouched and every run stays in the statistics it qualifies for. the site shows the verdict beside the stage, and its product demos replay a run's order, timing, and confidence over pre-written words rather than the model's prose.
 
 ## reproducing
 
