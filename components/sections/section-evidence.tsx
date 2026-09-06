@@ -1,4 +1,5 @@
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { ARRIVAL, HYPOTHESES, LIMITS, TRACE_NUMBERS } from '@/lib/traces/findings'
 
@@ -40,8 +41,8 @@ export function SectionEvidence() {
       <div className="mt-12 md:mt-16">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">five claims a study can break</h3>
         <dl className="mt-6 grid gap-6 rule pt-6">
-          {HYPOTHESES.map((h) => (
-            <div key={h.id} className="grid gap-2 md:grid-cols-[9rem_1fr] md:gap-6">
+          {HYPOTHESES.map((h, i) => (
+            <Reveal key={h.id} delay={i * 60} className="grid gap-2 md:grid-cols-[9rem_1fr] md:gap-6">
               <dt className="readout" style={{ color: 'var(--cobalt)' }}>
                 {h.id} · {h.lead}
               </dt>
@@ -51,7 +52,7 @@ export function SectionEvidence() {
                   falsified if {h.falsifiedIf}
                 </span>
               </dd>
-            </div>
+            </Reveal>
           ))}
         </dl>
         <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
@@ -67,18 +68,18 @@ export function SectionEvidence() {
       <div className="mt-16 md:mt-24">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what was cut, by the numbers</h3>
         <dl className="mt-6 grid gap-6 rule pt-6">
-          {CUTS.map((c) => (
-            <div key={c.what} className="grid gap-1 md:grid-cols-[16rem_1fr] md:gap-6">
+          {CUTS.map((c, i) => (
+            <Reveal key={c.what} delay={i * 60} className="grid gap-1 md:grid-cols-[16rem_1fr] md:gap-6">
               <dt className="text-base font-semibold leading-snug">{c.what}</dt>
               <dd className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
                 {c.why}
               </dd>
-            </div>
+            </Reveal>
           ))}
         </dl>
       </div>
 
-      <div className="mt-16 md:mt-24 max-w-[64ch]">
+      <Reveal className="mt-16 md:mt-24 max-w-[64ch]">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">limits</h3>
         <p className="mt-5 text-base leading-relaxed">{LIMITS}</p>
         <p className="mt-4 text-base leading-relaxed">
@@ -90,7 +91,7 @@ export function SectionEvidence() {
           the whole approach still stands until the study runs: <DefinitionTerm term="parafoveal preview" />{' '}is measurable,
           and the reader model is a model of it, never a measurement.
         </p>
-      </div>
+      </Reveal>
     </Section>
   )
 }

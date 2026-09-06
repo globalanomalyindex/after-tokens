@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react'
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { NatureWord } from '@/components/chrome/nature-word'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { GrammarStage } from '@/components/arrival/grammar-stage'
@@ -154,9 +155,9 @@ export function SectionGrammar() {
         grammar replaces four metaphors.
       </p>
 
-      <div className="mt-12 md:mt-16">
+      <Reveal className="mt-12 md:mt-16">
         <GrammarStage prompt={STAGE.prompt} answer={STAGE.response} />
-      </div>
+      </Reveal>
 
       <div className="mt-16 md:mt-24">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight max-w-2xl">eight decisions, by property</h3>
@@ -169,8 +170,8 @@ export function SectionGrammar() {
           {PHRASE_MAX_WORDS}{' '}words cut at punctuation and line breaks.
         </p>
         <div className="mt-10 grid gap-12">
-          {GROUPS.map((g) => (
-            <div key={g.property} className="grid gap-6 md:grid-cols-[10rem_1fr] rule pt-6">
+          {GROUPS.map((g, gi) => (
+            <Reveal key={g.property} delay={gi * 60} className="grid gap-6 md:grid-cols-[10rem_1fr] rule pt-6">
               <h4 className="text-lg font-bold tracking-tight">{g.property}</h4>
               <dl className="grid gap-7">
                 {g.decisions.map((d) => (
@@ -185,7 +186,7 @@ export function SectionGrammar() {
                   </div>
                 ))}
               </dl>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

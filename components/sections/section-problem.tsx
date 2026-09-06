@@ -1,6 +1,7 @@
 'use client'
 
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { ArrivalsTrio } from '@/components/arrival/arrivals-trio'
 import { codaPrompts } from '@/lib/coda/fixtures'
 import { TRACE_NUMBERS } from '@/lib/traces/findings'
@@ -31,9 +32,9 @@ export function SectionProblem() {
         interface draws a single one, so the interface chooses the shape of the arrival. every chat product ships the
         typewriter. here are three shapes, on the same words and the same clock.
       </p>
-      <div className="mt-12 md:mt-16">
+      <Reveal className="mt-12 md:mt-16">
         <ArrivalsTrio prompt={TRIO.prompt} answer={TRIO.response} />
-      </div>
+      </Reveal>
       <div className="mt-16 md:mt-24 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
         <div>
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight max-w-md">the typewriter made three promises the sampler cannot keep</h3>
@@ -44,13 +45,13 @@ export function SectionProblem() {
           </p>
         </div>
         <dl className="grid gap-6 rule pt-6">
-          {BREAKS.map((b) => (
-            <div key={b.title} className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:gap-6">
+          {BREAKS.map((b, i) => (
+            <Reveal key={b.title} delay={i * 80} className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:gap-6">
               <dt className="text-base font-semibold">{b.title}</dt>
               <dd className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
                 {b.body}
               </dd>
-            </div>
+            </Reveal>
           ))}
         </dl>
       </div>

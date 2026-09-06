@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { UnmaskMap, type UnmaskMapHandle } from '@/components/diffusion/unmask-map'
 import { TraceStage } from '@/components/trajectories/trace-stage'
 import { PromptPicker } from '@/components/coda/prompt-picker'
@@ -223,7 +224,7 @@ export function SectionSampler() {
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
+        <Reveal className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] items-start">
           <div>
             {activeTrace ? (
               <TraceStage trace={activeTrace} pace={pace} onStep={onStep} readingOrder={legibility === 'ordered'} />
@@ -319,7 +320,7 @@ export function SectionSampler() {
               </dl>
             )}
           </aside>
-        </div>
+        </Reveal>
       </div>
 
       <div className="mt-16 md:mt-24">
@@ -370,9 +371,10 @@ export function SectionSampler() {
           {FINDINGS_HEADING}
         </h3>
         <dl className="max-w-4xl" style={{ borderTop: '1px solid color-mix(in oklab, var(--ink) 14%, transparent)' }}>
-          {FINDINGS.map((f) => (
-            <div
+          {FINDINGS.map((f, i) => (
+            <Reveal
               key={f.n}
+              delay={i * 60}
               className="grid md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] gap-x-8 gap-y-2 py-6"
               style={{ borderBottom: '1px solid color-mix(in oklab, var(--ink) 14%, transparent)' }}
             >
@@ -391,7 +393,7 @@ export function SectionSampler() {
               <dd className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
                 {f.body}
               </dd>
-            </div>
+            </Reveal>
           ))}
         </dl>
         <div className="mt-10 max-w-3xl">

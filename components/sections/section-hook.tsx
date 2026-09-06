@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { ChatExchange } from '@/components/chat/chat-exchange'
 import { DiffusionText } from '@/components/diffusion/diffusion-text'
 import { codaPrompts } from '@/lib/coda/fixtures'
@@ -43,7 +44,7 @@ export function SectionHook() {
             </div>
           </dl>
         </div>
-        <div className="stage p-5 md:p-7 min-h-[420px] flex flex-col justify-center">
+        <Reveal delay={260} className="stage p-5 md:p-7 min-h-[420px] flex flex-col justify-center">
           <ChatExchange prompt={HERO.prompt} runKey={`hero-${replay}`}>
             <DiffusionText mode="crystal" trigger="immediate" topic={HERO.prompt} showStatus className="text-base md:text-lg leading-relaxed">
               {HERO.response}
@@ -61,7 +62,7 @@ export function SectionHook() {
               replay
             </button>
           </div>
-        </div>
+        </Reveal>
       </div>
     </Section>
   )

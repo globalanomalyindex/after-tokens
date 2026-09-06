@@ -66,12 +66,12 @@ export function ProfileFigure({ answer, prompt }: Props) {
   )
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-4">
-      {maps.map((m) => {
+      {maps.map((m, i) => {
         const med = ARRIVAL.arrivals[m.key]
         const isGrammar = m.key === 'crystal'
         return (
           <figure key={m.key} className="m-0">
-            <LockMap atoms={m.atoms} locks={m.locks} total={m.total} accent={isGrammar} nuclei={m.nuclei} compact />
+            <LockMap atoms={m.atoms} locks={m.locks} total={m.total} accent={isGrammar} nuclei={m.nuclei} compact delay={i * 90} />
             <figcaption className="mt-2">
               <span className="block text-sm font-medium" style={{ color: isGrammar ? 'var(--cobalt)' : 'var(--ink)' }}>
                 {NAMES[m.key]}

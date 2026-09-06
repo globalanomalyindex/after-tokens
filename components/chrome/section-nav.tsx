@@ -11,6 +11,7 @@ export const NAV_ITEMS: { id: string; label: string }[] = [
   { id: 'sampler', label: 'the sampler' },
   { id: 'grammar', label: 'the grammar' },
   { id: 'voice', label: 'the voice' },
+  { id: 'previews', label: 'in the wild' },
   { id: 'evidence', label: 'the evidence' },
   { id: 'open', label: 'what is open' },
 ]

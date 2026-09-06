@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react'
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 import { ProfileFigure } from '@/components/arrival/profile-figure'
 import { codaPrompts } from '@/lib/coda/fixtures'
@@ -67,8 +68,8 @@ export function SectionProfile() {
       </p>
 
       <dl className="mt-12 md:mt-16 grid gap-x-12 gap-y-10 md:grid-cols-2 rule pt-8">
-        {PROPERTIES.map((p) => (
-          <div key={p.name}>
+        {PROPERTIES.map((p, i) => (
+          <Reveal key={p.name} delay={i * 90}>
             <dt className="text-2xl font-bold tracking-tight">{p.name}</dt>
             <dd className="mt-2 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
               {p.mechanism}
@@ -79,7 +80,7 @@ export function SectionProfile() {
             <dd className="mt-1 readout leading-relaxed" style={{ color: 'var(--cobalt)' }}>
               rule · {p.rule}
             </dd>
-          </div>
+          </Reveal>
         ))}
       </dl>
 
@@ -93,7 +94,7 @@ export function SectionProfile() {
           reading order at the phrase scale; end is the last stretch&rsquo;s intensity against the run&rsquo;s mean.
         </p>
         <ProfileFigure answer={FIGURE.response} prompt={FIGURE.prompt} />
-        <p className="mt-10 text-base leading-relaxed max-w-[64ch]">
+        <Reveal as="p" className="mt-10 text-base leading-relaxed max-w-[64ch]">
           the typewriter holds exactly one loop and never makes a reader wait, and it reads in order at every scale
           (τ +{a.typewriter.tau.toFixed(2)}). the fade holds none and lands everything at the end, {a.fade.endWeight.toFixed(1)}{' '}times
           the run&rsquo;s mean intensity in its last stretch. the scatter and the earlier growth modes open{' '}
@@ -104,7 +105,7 @@ export function SectionProfile() {
           typewriter&rsquo;s {pct(a.typewriter.alignment)}, peaks at {pct(a.crystal.peakAt)}{' '}of the run, and ends at{' '}
           {a.crystal.endWeight.toFixed(2)}{' '}of the mean. every number describes an arrival. none of them describes a
           reader; that is what the study in the evidence section is for.
-        </p>
+        </Reveal>
       </div>
     </Section>
   )

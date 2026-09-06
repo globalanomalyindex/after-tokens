@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { bodyFont, displayFont, monoFont } from '@/lib/fonts'
+import { MotionGate } from '@/components/motion/reveal'
 import './globals.css'
 
 // Icons are static files with an env-gated prefix rather than the app/icon.tsx
@@ -46,7 +47,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <MotionGate />
+      </body>
     </html>
   )
 }

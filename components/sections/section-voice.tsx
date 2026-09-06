@@ -1,6 +1,7 @@
 'use client'
 
 import { Section } from '@/components/section'
+import { Reveal } from '@/components/motion/reveal'
 import { VoiceStage } from '@/components/arrival/voice-stage'
 import { brands, VOICE_RANGES } from '@/lib/brand/brands'
 
@@ -23,11 +24,11 @@ export function SectionVoice() {
         glows and swings; a developer tool snaps, heavy and quiet. the same answer, the same order, the same
         psychology, in the product&rsquo;s own hand.
       </p>
-      <div className="mt-12 md:mt-16">
+      <Reveal className="mt-12 md:mt-16">
         <VoiceStage />
-      </div>
+      </Reveal>
       <div className="mt-16 md:mt-24 grid gap-10 md:grid-cols-2">
-        <div>
+        <Reveal>
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what a voice can move</h3>
           <dl className="mt-6 grid gap-4 rule pt-6">
             {INVARIANTS.map((row) => (
@@ -41,8 +42,8 @@ export function SectionVoice() {
               </div>
             ))}
           </dl>
-        </div>
-        <div>
+        </Reveal>
+        <Reveal delay={90}>
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">the five presets</h3>
           <dl className="mt-6 grid gap-4 rule pt-6">
             {Object.values(brands).map((b) => (
@@ -57,7 +58,7 @@ export function SectionVoice() {
               </div>
             ))}
           </dl>
-        </div>
+        </Reveal>
       </div>
     </Section>
   )

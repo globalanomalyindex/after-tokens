@@ -631,3 +631,102 @@ main .uppercase { text-transform: lowercase; }
   .section-nav-link, .section-nav-link::after { transition: none; }
   .hero-word { animation: none; filter: none; opacity: 1; }
 }
+
+/* ===== Entrances ========================================================= */
+/* Once the page has JavaScript (html[data-motion="on"]), an element marked
+   .reveal rests fourteen pixels low and transparent until it enters the
+   viewport, then rises once on an exponential ease-out. Transform and
+   opacity only. A group staggers its children through --reveal-delay. */
+html[data-motion="on"] .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 640ms var(--ease-out-expo) var(--reveal-delay, 0ms),
+    transform 640ms var(--ease-out-expo) var(--reveal-delay, 0ms);
+}
+html[data-motion="on"] .reveal[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* A lock map draws itself in lock order when it enters the viewport: each
+   mark scales in at its share of the draw, the reference line fades in
+   first. Before that the marks are absent, so the figure is a replay of the
+   arrival rather than a picture of one. */
+.lock-map .lm-mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: var(--o, 1);
+}
+html[data-motion="on"] [data-in="false"] .lock-map .lm-mark { opacity: 0; }
+html[data-motion="on"] [data-in="true"] .lock-map .lm-mark {
+  opacity: 0;
+  animation: lm-mark 320ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--lm-delay, 0ms) + var(--k, 0) * 1100ms);
+}
+@keyframes lm-mark {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: var(--o, 1); transform: scale(1); }
+}
+html[data-motion="on"] [data-in="false"] .lock-map .lm-ref { opacity: 0; }
+html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
+  opacity: 0;
+  animation: lm-ref 500ms var(--ease-out-expo) both;
+  animation-delay: var(--lm-delay, 0ms);
+}
+@keyframes lm-ref { to { opacity: 1; } }
+
+/* Product frames in the previews section. */
+.frame {
+  border-radius: var(--brand-radius, 12px);
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-ui);
+}
+.frame-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  font-family: var(--font-brand-mono, var(--font-mono));
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.frame-input {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding: 0.6rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent);
+  color: var(--muted);
+  font-size: 13px;
+}
+.frame-input span:last-child {
+  margin-left: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+.phone {
+  border-radius: 28px;
+  border: 8px solid color-mix(in oklab, var(--ink) 92%, var(--surface));
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 24px 60px -36px color-mix(in oklab, var(--ink) 60%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion="on"] .reveal { opacity: 1; transform: none; transition: none; }
+  html[data-motion="on"] [data-in="false"] .lock-map .lm-mark,
+  html[data-motion="on"] [data-in="true"] .lock-map .lm-mark { opacity: var(--o, 1); animation: none; }
+  html[data-motion="on"] [data-in="false"] .lock-map .lm-ref,
+  html[data-motion="on"] [data-in="true"] .lock-map .lm-ref { opacity: 1; animation: none; }
+}
