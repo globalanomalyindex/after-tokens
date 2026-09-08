@@ -69,7 +69,7 @@ export function SectionField() {
         <dl className="grid gap-5 stage p-6 md:p-8 settle" data-demo data-status="complete" data-mark="tick" style={{ ['--settle-open-alpha' as string]: 0.3, fontFamily: 'var(--font-ui)' } as CSSProperties}>
           {REGISTERS.map((r) => (
             <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-4 items-baseline">
-              <dt className="text-base" aria-label={r.label}>{r.sample}</dt>
+              <dt className="text-base" aria-label={r.label}><span aria-hidden="true">{r.sample}</span></dt>
               <dd>
                 <span className="readout block" style={{ color: 'var(--stage-text)' }}>{r.label}</span>
                 <span className="text-sm leading-relaxed block mt-1" style={{ color: 'color-mix(in oklab, var(--stage-text) 72%, transparent)' }}>{r.body}</span>
