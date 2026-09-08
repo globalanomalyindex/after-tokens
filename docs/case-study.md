@@ -13,9 +13,9 @@
 
 Diffusion language models do not write. They hold every position of an answer open at once and commit positions in the order they are sure of them, over a hundred or so denoising steps. Every chat product renders that process with a typewriter inherited from models that write one token at a time, and the typewriter misrepresents it twice: it draws the answer in an order the sampler did not use, and it puts half-formed words under the reader whenever a token is a piece of one.
 
-After Tokens asks how an answer from this kind of model should reach a reader, and answers with a system called Settle. An answer has two surfaces and a margin. The page holds released passages as ordinary, still, selectable text. The field is carved into the text after it: every open position is a slot of static standing where a word will, a word stands where it will, dim, the moment every piece of it is in, in the sampler's own order, and the zone shortens from the tail as the model decides the answer's length. Between the page and the carved zone, the forming text: committed, in-order, word-complete text that has not yet completed a passage, brighter, brightening into the page when it does. The margin says what the source is doing, in words, beside a mark whose shape, bloom, breath and hue are a brand's.
+After Tokens asks how an answer from this kind of model should reach a reader, and answers with a system called Settle. An answer has two surfaces and a margin. The page holds released passages as ordinary, still, selectable text. The field is carved into the text after it: an open position reserves blank space, an open position the model already has a confident guess for shows that guess as a draft in a ghost that sharpens with its probability, a committed piece of a word stands as the piece it is, and a word snaps in where it will stand, dim, the moment every piece of it is in, in the sampler's own order, while the zone shortens from the tail as the model decides the answer's length. A cursor with mass moves through it, writing where the model just committed. Between the page and the carved zone, the forming text: committed, in-order, word-complete text that has not yet completed a passage, brighter, brightening into the page when it does. The margin says what the source is doing, in words, beside a mark whose shape, bloom, breath and hue are a brand's.
 
-The claim is narrow and testable: under this contract nothing reaches the reader before the model commits it, every final output is exact, and the cost of waiting for complete passages is measured rather than argued away. Whether the surface helps a reader is a hypothesis with a study designed to break it.
+The claim is narrow and testable: under this contract nothing reaches the page before the model commits it, nothing committed is drawn as a guess and nothing guessed is drawn as committed, every final output is exact, and the cost of waiting for complete passages is measured rather than argued away. Whether the surface helps a reader is a hypothesis with a study designed to break it.
 
 ## The challenge
 
@@ -36,6 +36,7 @@ Sixty denoising trajectories were recorded from a real masked diffusion language
 - Under the block sampler, half of consecutive commits land beside the previous one. Inside a block of 32 the easy positions fill first and one hard position holds the rest; when it fills, a whole clause joins the readable prefix at once. A causal renderer therefore sees text arrive in bursts, a clause at a time.
 - Under the schedule-free sampler, every usable run committed its end-of-sequence tail before its last word. The model spends most of its steps deciding how short the answer is, then lands the words in a rush at the end.
 - 18 percent of the corpus's words are spelled across more than one commit. A surface that draws a word at its first piece is guessing the rest.
+- At every step the model already holds a guess for every position it has not committed. At the 0.25 floor the surface draws at, a guess is on screen for 17 percent of open-position steps and is the token that later commits two thirds of the time, and a commitment lifts the confidence of the positions beside it by more than an order of magnitude over the rest of the answer.
 
 ### What the audit found
 
@@ -54,14 +55,15 @@ A review on 7 September 2026 checked each mechanism the first version had cited,
 
 | mechanism | what the evidence says | consequence |
 |---|---|---|
-| stability of text under the eye (Liu et al., CHI 2023; Slattery, Angele and Rayner, 2011) | revising text already on screen correlates with distraction, fatigue and harder reading; a change under a fixation is detected unless timed to a saccade | the page never changes, moves, blurs or reweights |
+| stability of text under the eye (Liu et al., CHI EA 2023, late-breaking work; Slattery, Angele and Rayner, 2011) | revising text already on screen went with self-reported distraction and fatigue and lower reading comfort, all reader experience rather than comprehension; a change under a fixation is detected unless timed to a saccade | the page never changes, moves, blurs or reweights |
 | rereading (Schotter, Tran and Rayner, 2014) | preventing return to earlier words reduced comprehension | earlier passages stay, in place, selectable |
-| visible process and explained waits (Buell and Norton, 2011; Maister, 1985; Zhang et al., 2024) | showing work raises perceived value; unexplained and uncertain waits feel longer | the field shows what the sampler has done and why the page waits, and never encodes confidence or correctness |
+| visible process and explained waits (Buell and Norton, 2011; Maister, 1985; Zhang et al., 2024) | showing work raises perceived value when the result is good and lowers it when the result disappoints; unexplained and uncertain waits feel longer | the field shows what the sampler has done and why the page waits, and it never encodes confidence or correctness |
 | pacing at linguistic boundaries (Zhu et al., CHI 2026; Tan and Nov, CHI 2026) | streaming paused at clause boundaries rated less demanding; an instant answer rated less thoughtful than a short visible delay | the page takes whole sentences; the forming text and field carry the delay |
 | Zeigarnik effect (Ghibellini and Meier, 2025, meta-analysis) | the memory advantage for interrupted tasks does not replicate as a general effect | retired; the first version's tension budget is gone |
 | gestalt closure (Elder and Zucker, 1994) | concerns contours of shapes | retired; a passage boundary is a linguistic rule, chosen and priced |
 | peak-end (Alaybek et al., 2022; contested for mild experiences) | endings matter, and so does the average | kept only as: end quietly, at a real terminal state |
-| fluency and truth (Reber and Schwarz, 1999; Alter and Oppenheimer, 2009) | easier-to-process statements are judged more likely true | a guardrail: the study measures false-answer acceptance |
+| fluency and truth (Reber and Schwarz, 1999, a small early demonstration with color contrast; Alter and Oppenheimer, 2009) | easier-to-process statements are judged more likely true | a guardrail: the study measures false-answer acceptance |
+| motion that carries mass (Lasseter, 1987; Thomas and Johnston, 1981; Chang and Ungar, 1993) | craft arguments and a design paper with no user study: squash and stretch defines an object's rigidity and mass, and solidity and reinforcement make an interface's changes easier to follow | the cursor is a body with mass and the snap is one short settling; nothing is claimed as measured benefit |
 
 No study tests non-sequential text arrival. No published design guidance for rendering diffusion text was found. Both gaps are part of why the work exists.
 
@@ -73,9 +75,9 @@ The insight is that each kind of fact has a place a reader can use it. Committed
 
 ## Design principles
 
-1. **Draw only what the source has committed.** No final-text lookup, no reserved widths, no map of salience, no forecast of length.
+1. **Draw only what the source has, drawn as what it is.** Committed text is drawn as committed, the source's own current guess is drawn as a guess, and no guess reaches the page. No final-text lookup, no reserved widths, no map of salience, no forecast of length.
 2. **The page holds still.** Text on the page never changes, moves, blurs or reweights. A passage arrives once, whole.
-3. **Show the process where it is real.** The field is the sampler's own positions. Nothing in it is authored.
+3. **Show the process where it is real.** The field is the sampler's own positions and the sampler's own guesses at them. What is authored is the floor a guess must clear, how it is drawn, and the words for the phase.
 4. **Price every wait.** A policy that holds text is measured on every recording, per clock, with denominators.
 5. **Brand outside the words.** A voice changes cells, marks and onsets. It never changes when text is available.
 
@@ -85,20 +87,28 @@ The insight is that each kind of fact has a place a reader can use it. Committed
 
 Given the same events, the surface shows the same page, the same forming text, the same field and the same status, whatever comes later. Ten rules make that true, kept by a pure reducer:
 
-1. Nothing is drawn that the source has not committed.
+1. Nothing is drawn as the source's text that the source has not committed. The one thing an uncommitted position may draw is the source's own current guess for it, drawn as a guess.
 2. A word is drawn only when it is complete. A token whose successor is uncommitted is held, because it may be the first piece of a longer word. A boundary exists when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end.
-3. Text on the page never changes, moves or reflows. When a sentence closes, the page's ink settles through its words' letterforms, bottom to top, in one movement; their shapes and places do not change. An available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
+3. Text on the page never changes, moves or reflows. When a sentence closes, the page's ink settles through its words' letterforms, bottom to top, in one movement; their shapes and places do not change. The zone after the page reflows as blanks, drafts and pieces become words, each position's width sliding from what it last drew to what it draws now. An available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
 4. The page grows by whole passages under a policy: each word, each sentence, or each paragraph. No timeout relabels a fragment as complete; finality releases the exact remainder.
-5. Out-of-order text appears only after the page, never inside it. An open position is reserved blank space; a piece of a word is a glimmer; a word is written where it will stand, in the secondary ink, only after every piece of it has committed. The cursor that writes it goes only where the source has been.
+5. Out-of-order text appears only after the page, never inside it. An open position is reserved blank space; a confident guess at one is drawn as a draft, in a ghost that sharpens with its probability; a committed piece of a word is drawn as the piece it is; and a word is written where it will stand, in the secondary ink, only after every piece of it has committed, snapping in where it stands. The cursor that writes it goes only where the source has been.
 6. An exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. Revisable snapshots stay off the page until one is explicitly final. A later revision keeps the prior page and offers a review and apply action.
 8. Complete, stopped, error, paused and revision available are distinct states, named in the margin.
 9. A brand changes appearance and motion envelopes, never availability.
-10. Reduced motion removes the breath, the bloom and the onset, and nothing else.
+10. Reduced motion removes the breath, the bloom, the onset, the snap and the cursor's trail, stretch and ring, and nothing else. What is drawn, and when, is identical.
 
 ### The field
 
-The field is carved into the text. Every position after the word-safe prefix is drawn as what the sampler has made of it: a slot of static while it is open, a held slot when a piece of a word is in and the rest is out, the word itself, dim, once every piece and its boundaries are in, and one end mark where the sampler has marked the end. Words appear across the zone in the sampler's own order; the zone shortens from the tail as the model decides the length; the page sweeps over the solved part. A word's progress is its register, carried by the word where the reader is looking. Under the block sampler the zone fills scattered inside a block, then a clause joins the page at once. Under the schedule-free sampler it is carved down from the tail for a hundred steps, then the words land in the last few, then the sentence settles onto the page. A strip of one cell per position beneath the page is the field's compact form, for a product that wants the text zone quiet. Either replaces the three bouncing dots with a loading state that says what is happening, where the answer will be.
+The field is carved into the text. Every position after the word-safe prefix is drawn as what the sampler has made of it: reserved blank space while it is open and unguessed, the model's own current guess where it holds one worth drawing, the piece itself when a piece of a word is in and the rest is out, the word, dim, once every piece and its boundaries are in, and one end mark where the sampler has marked the end. Words appear across the zone in the sampler's own order; the zone shortens from the tail as the model decides the length; the page sweeps over the solved part. A word's progress is its register, carried by the word where the reader is looking. Under the block sampler the zone fills scattered inside a block, then a clause joins the page at once. Under the schedule-free sampler it is carved down from the tail for a hundred steps, then the words land in the last few, then the sentence settles onto the page. A strip of one cell per position beneath the page is the field's compact form, for a product that wants the text zone quiet. Either replaces the three bouncing dots with a loading state that says what is happening, where the answer will be. The margin names the phase the answer is in, read off the same field: the positions it can still occupy are the ones up to the lowest committed end, else the request's bound, and the committed share plus half the drafted share puts the answer in sketching, drafting, polishing or closing. It reads "receiving · drafting · 20 of 128 settled", and it is a description of the state that promises nothing about what comes next.
+
+### The draft
+
+The recordings hold, at every denoising step, the model's provisional argmax for every position it has not committed, with that guess's probability. Those are the drafts, and they are what makes the wait watchable: the answer goes from a rough draft to a polish to a final, in the model's own order, with nothing invented. A guess is drawn once its probability reaches 0.25, the one floor the piece already used, in a ghost of the secondary ink whose opacity and sharpness follow the probability. It keeps being drawn while its text holds, so a guess sitting at the floor does not blink. It is drawn only where a reader can place it, so a guess that continues a word waits for letters before it to attach to, and a guess that the answer ends here is kept in the state and draws no mark, because the cut already says where the answer ends. When the model changes its mind, the draft reconsiders, once per change. A commitment ends the guess at its position, a completed answer holds none, and no guess ever reaches the page. The line the audit demanded now runs in both directions: nothing committed is drawn as a guess, and nothing guessed is drawn as committed.
+
+### The cursor
+
+The cursor is a small body with mass. A damped spring pulls its head to the position the source last committed, arriving in about 250 ms with a soft overshoot, and it can be retargeted mid-flight, because the source often commits somewhere else before it arrives. It stretches along its own velocity as it flies and rounds up as it stops; a trail follows on softer springs and is drawn as one body stretched from the trail to the head, thinning as it lengthens, so a jump across the answer reads as one thing moving. It sits after the word or the piece it wrote like a caret, presses and rings once for each word it finalizes, sweeps to the end of the page when a sentence closes, and rests and fades when the source is done. Squash and stretch is the old way of giving a shape rigidity and mass (Lasseter 1987, on the principles the Disney studio developed in the 1930s), and it does one job here: it says where the model is working, without touching the page. Under reduced motion the cursor is placed at its target with no trail, no stretch and no ring, and words arrive without the snap.
 
 ### The voice
 
@@ -130,24 +140,48 @@ The cost of each policy over all sixty recordings, on the uniform step clock (on
 
 Margin held the in-order text invisible until its sentence closed and paid the whole hold in blankness. Settle releases the page on the same boundary at the same moment, so the page's wait is identical, and draws the held text dim beneath it for 90 percent of the run. The word rule, the price of never drawing a piece of a word, costs 3.3 steps on average.
 
+The drafts, over the same recordings (content positions of every recording with at least eight content tokens; a pair is one open content position at one step; at the display floor, under the rule the surface uses; accuracy by decoded text):
+
+| measure | value |
+|---|---|
+| a draft is drawn, share of open-position steps | 0.1699 |
+| a drawn draft is the token that later commits | 0.6657 |
+| steps with at least one draft on screen | 0.9272 |
+| steps a draft shows before its position commits, median | 8 |
+| drafts that never change again once drawn | 0.6145 |
+
+| by sampler | lowconf-b32 | random-b32 | lowconf-b128 |
+|---|---|---|---|
+| a draft is drawn, share of open-position steps | 0.1301 | 0.1915 | 0.3115 |
+| a drawn draft is the token that later commits | 0.6103 | 0.718 | 0.5756 |
+| steps of polish before the position commits, median | 4 | 14 | 11 |
+| drawn share, first tenth of the run to the last | 0.036 to 0.623 | 0.098 to 0.801 | about 0.3, then 0.537 |
+| a commitment's lift on a neighbor's probability | 0.1096 (n = 1074) | 0.175 (n = 2121) | 0.1264 (n = 77) |
+| the same lift on every other open position | 0.0067 | 0.0048 | 0.0022 |
+
+Two thirds of what the surface draws as a guess is the word that later lands there, and a commitment lifts the confidence of the positions beside it by more than an order of magnitude over the rest of the answer: one word settling really does make its neighbors settle, and the surface shows it happening. Raising the floor buys accuracy with silence (0.227 of pairs drawn at 0.565 accuracy at a floor of 0.15; 0.153 at 0.705 at 0.25; 0.134 at 0.752 at 0.3; 0.086 at 0.878 at 0.5), and 0.25 keeps the one floor the piece already used. None of these numbers says that drawing a draft helps a reader.
+
 ## Process and decisions
 
 - **Crystallize to Margin to Settle.** The first version optimized a reveal it could not produce live. The audit was accepted in full. Margin's reducer, event contract, boundary rules, revision handling and cost instrument were kept as the reading surface. Margin's conclusion, that the answer should carry no trace of the process, was rejected, along with a brand surface that consisted of a 7-pixel bracket in three colors.
 - **The forming text.** Margin's waiting cost came entirely from holding in-order text invisible. Drawing it dim, as real text that never changes, keeps the page still and removes the blankness. It is not selectable and it is hidden from assistive technology, because it is not yet a place to read.
 - **The word rule.** The audit's 18 percent is the case for it. The rule reads whitespace at token boundaries and costs 3.3 steps on average.
 - **The field instead of ghost words.** The old surface showed the shape of the answer with illegible blurred slots at final width, which required the final answer. The field shows the same shape from the sampler's actual positions, which requires nothing.
+- **The draft register.** The zone was honest and empty: reserved blanks between written words, with nothing in them to watch. The recordings already held the model's guess for every open position at every step, so the zone shows it, above a floor, as a guess. It is the difference between watching an answer appear and watching it be written.
+- **The snap and the piece.** A committed piece of a word is drawn as the piece it is, because its letters are facts, and the old glimmer drew none of them. The word's completion is the one event in the zone worth marking, so the word snaps in where it stands, in 340 ms, and its width slides from the width its positions actually held to its own, so the line moves instead of jumping.
+- **A cursor with mass.** A dot that teleports reads as a state change; a body that leaves, stretches, arrives and presses reads as something doing the work. The springs, the stretch and the press are authored; where the cursor goes is the source's.
 - **Retired.** The tension budget, the salience map, the nucleus, the two-channel reveal, the arrival profile as a design instrument, the exhale, the "length fixed" label, and the 540 ms and 36 percent figures. The legacy engine is kept as a labeled retrospective reference the audit compares against.
 - **The nature anchor.** Sediment settling in a column of water: the clear zone grows from the top down as the suspension drops out. The page is the clear zone, the field is the suspension, and the rule is to wait for the water to clear before reading it, while being able to watch it clear.
 
 ## Validation
 
-Three claims about the repository, each tested: across all sixty recordings and three policies, zero characters reach the page before their tokens commit (a throwing-getter test proves the adapter never reads the answer); every final page equals the sampler's output to the character; and the cost of each policy is reported per run with denominators.
+Four claims about the repository, each tested: across all sixty recordings and three policies, zero characters reach the page before their tokens commit (a throwing-getter test proves the adapter never reads the answer); every final page equals the sampler's output to the character; a draft changes no page text, no prefix and no passage, a commitment ends the guess at its position, and a completed answer holds no drafts; and the cost of each policy, and what the drafts do, are reported per run with denominators from the recordings themselves.
 
 Nothing is claimed about a reader. The study is designed as two labeled experiments: an availability-faithful comparison under identical source events, and a matched-duration comparison to isolate preference. Conditions: the raw prefix, each word, each sentence with forming text, each sentence without it, each paragraph, counterbalanced within participants. Primary outcomes: qualification accuracy and time to a correct usable answer. Guardrails: false-answer acceptance and truth discrimination. Sample size from a pilot and a prespecified smallest useful effect. No participants have been recruited.
 
 ## Impact and limits
 
-What shipped: a pure reducer and its contract, a replay adapter that cannot read the answer, a field derived from state, a five-token voice with invariants, a cost instrument that measures every policy on every recording, a corrected literature ledger, and a study design with its stimuli. What did not: any measurement of a reader; a live model on the other end; support for scripts without word spacing, for rich Markdown, or for samplers that remask committed tokens beyond the snapshot path. The corpus is one small model on one machine. The strongest argument against the design, that waiting costs more than stillness gives back, stands until the study runs.
+What shipped: a pure reducer and its contract, a replay adapter that cannot read the answer, a field derived from state, the model's own drafts drawn as drafts, a cursor with mass, a five-token voice with invariants, a cost instrument that measures every policy on every recording, a corrected literature ledger, and a study design with its stimuli. What did not: any measurement of a reader; a live model on the other end; support for scripts without word spacing, for rich Markdown, or for samplers that remask committed tokens beyond the snapshot path. The corpus is one small model on one machine. The strongest argument against the design, that waiting costs more than stillness gives back, stands until the study runs.
 
 ## Reflections
 

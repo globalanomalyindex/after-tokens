@@ -68,11 +68,18 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     for (let i = 0; i < happened; i += 1) s = reduceSettle(s, events[i]!)
     return s
   }, [events, happened, policy, replay])
+  // the cursor's target: the position of the latest commitment, looking past
+  // the drafts that follow a commitment at the same instant
   const focus = useMemo(() => {
-    const last = events[happened - 1]
-    if (!last || last.type !== 'commit' || !last.tokens.length) return null
-    const content = last.tokens.filter((t) => !t.end)
-    return (content.length ? content : last.tokens)[content.length ? content.length - 1 : last.tokens.length - 1]!.position
+    for (let i = happened - 1; i >= 0; i -= 1) {
+      const event = events[i]!
+      if (event.type === 'draft') continue
+      if (event.type !== 'commit' || !event.tokens.length) return null
+      const content = event.tokens.filter((t) => !t.end)
+      const tokens = content.length ? content : event.tokens
+      return tokens[tokens.length - 1]!.position
+    }
+    return null
   }, [events, happened])
 
   useEffect(() => {

@@ -9,12 +9,12 @@ an independent product design and engineering case study on how an answer from a
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
-> **the answer.** only what the model has committed, on a page that holds still, with the process in view. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text. the field is carved into the text after it: every open position is a slot of static standing where a word will, a word stands where it will, dim, the moment every piece of it is in, in the sampler's own order, and the zone shortens from the tail as the model decides the length. between them, the forming text: committed, in-order, word-complete text waiting for its passage to close. the margin says what the source is doing, beside a mark that is the brand's.
+> **the answer.** what the model has committed, drawn as committed, and what it is only guessing, drawn as a guess. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text. the field is carved into the text after it: an open position reserves blank space, an open position the model already has a confident guess for shows that guess as a draft that sharpens with its probability, a committed piece of a word stands as the piece it is, and a word snaps in where it will stand, dim, the moment every piece of it is in, in the sampler's own order, while the zone shortens from the tail as the model decides the length. a cursor with mass writes where the model just committed. between them, the forming text: committed, in-order, word-complete text waiting for its passage to close. the margin says what the source is doing and what phase the answer is in, beside a mark that is the brand's.
 
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | a pure reducer and its ten-rule contract, a replay adapter that cannot read the answer, the field, a five-token brand voice with invariants, three live product frames, a playground, a cost instrument over sixty recorded trajectories, a causal audit of the version before, a corrected literature ledger, a study design |
+| **built** | a pure reducer and its ten-rule contract, a replay adapter that cannot read the answer, the carved field with the model's own drafts in it, a cursor with mass, a five-token brand voice with invariants, three live product frames, a playground, a cost instrument over sixty recorded trajectories, a causal audit of the version before, a corrected literature ledger, a study design |
 | **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing is drawn early. no reader has been measured. |
 | **stack** | next.js, typescript, tailwind, vitest, playwright, axe-core |
 
@@ -30,16 +30,16 @@ an independent audit of that build by a second agent (codex, 7 september 2026, u
 
 `lib/settle/` is the engine. given the same events, the surface shows the same page, the same forming text, the same field and the same status, whatever comes later. ten rules, kept by a pure reducer:
 
-1. nothing is drawn that the source has not committed.
+1. nothing is drawn as the source's text that the source has not committed. the one thing an uncommitted position may draw is the source's own current guess for it, drawn as a guess, and no guess ever reaches the page.
 2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
-3. text on the page never changes, moves or reflows; when a sentence closes, the page's ink settles through its words' letterforms in one movement, and their shapes and places do not change; an available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
+3. text on the page never changes, moves or reflows; when a sentence closes, the page's ink settles through its words' letterforms in one movement, and their shapes and places do not change; the zone after the page reflows as blanks, drafts and pieces become words, each position's width sliding from what it last drew to what it draws now; an available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
 4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
-5. out-of-order text appears only after the page, never inside it: an open position is reserved blank space, a piece of a word is a glimmer, and a word is written where it will stand, in the secondary ink, only after every piece of it has committed; the cursor that writes it goes only where the source has been.
+5. out-of-order text appears only after the page, never inside it: an open position is reserved blank space, a confident guess at one is drawn as a draft in a ghost that sharpens with its probability, a committed piece of a word is drawn as the piece it is, and a word is written where it will stand, in the secondary ink, only after every piece of it has committed, snapping in over 340 ms where it stands; the cursor that writes it goes only where the source has been.
 6. an exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
 8. complete, stopped, error, paused and revision available are distinct states, named in the margin.
 9. a brand changes appearance and motion envelopes, never availability.
-10. reduced motion removes the breath, the bloom and the onset, and nothing else.
+10. reduced motion removes the breath, the bloom, the onset, the snap and the cursor's trail, stretch and ring, and nothing else; what is drawn, and when, is identical.
 
 the spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpowers/specs/2026-09-07-settle-design.md).
 
@@ -55,7 +55,19 @@ the spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpow
 | exact final output | 60 of 60 | 60 of 60 | 60 of 60 |
 | characters drawn before commitment | 0 | 0 | 0 |
 
-a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop; a production model divides the seconds by an order of magnitude and changes none of the shapes.
+a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop; a production model divides the seconds by an order of magnitude and changes none of the shapes. the stages replay at that recorded clock by default, with half of recorded and twice recorded as the other choices.
+
+## the drafts
+
+at every step the model holds a provisional guess for every position it has not committed. `scripts/derive-drafts.py` writes those guesses into the compact traces and the statistics into `data/traces/derived/drafts.json`, and the surface draws one only at or above a probability of 0.25, as a guess. over content positions of every recording with at least eight content tokens, where a pair is one open content position at one step:
+
+| measure | all | lowconf-b32 | random-b32 | lowconf-b128 |
+| --- | --- | --- | --- | --- |
+| a draft is drawn, share of open-position steps | 0.1699 | 0.1301 | 0.1915 | 0.3115 |
+| a drawn draft is the token that later commits | 0.6657 | 0.6103 | 0.718 | 0.5756 |
+| steps a draft shows before its position commits, median | 8 | 4 | 14 | 11 |
+
+at least one draft is on screen on 93 percent of steps (0.9272), and 61 percent of drafts never change again once drawn (0.6145). on the raw probabilities, a commitment lifts the confidence of the positions beside it by 0.1096 (lowconf-b32), 0.175 (random-b32) and 0.1264 (lowconf-b128), against 0.0067, 0.0048 and 0.0022 for every other open position: one word settling makes its neighbors settle, by more than an order of magnitude. none of it says a draft helps a reader.
 
 ## the voice
 
@@ -63,11 +75,11 @@ a brand gets five tokens on the one surface, each inside a range that is an inva
 
 ## real trajectories
 
-`data/traces/` holds sixty recorded denoising trajectories from `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1` (twenty prompts, three sampler configurations, greedy, on an apple m3) and a four-run llada-8b corroboration set. the research note is [`docs/research-note.md`](docs/research-note.md); section 9 holds the audit, the contract, the cost and the literature ledger.
+`data/traces/` holds sixty recorded denoising trajectories from `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1` (twenty prompts, three sampler configurations, greedy, on an apple m3), the model's per-step drafts, and a four-run llada-8b corroboration set. the research note is [`docs/research-note.md`](docs/research-note.md); section 9 holds the audit, the contract, the drafts, the cost and the literature ledger.
 
 ## evidence and limits
 
-three claims about the repository, each tested: zero characters reach the page before their tokens commit, every final page equals the sampler's output, and the cost of each policy is reported per run with denominators. nothing is claimed about a reader. a two-experiment study is designed with the stimuli in the repository; nobody has run it. the written case study is [`docs/case-study.md`](docs/case-study.md).
+four claims about the repository, each tested: zero characters reach the page before their tokens commit, every final page equals the sampler's output, a draft changes no page text and no prefix and never survives its position's commitment, and the cost of each policy and the behavior of the drafts are reported per run with denominators. nothing is claimed about a reader. a two-experiment study is designed with the stimuli in the repository; nobody has run it. the written case study is [`docs/case-study.md`](docs/case-study.md).
 
 ## run
 

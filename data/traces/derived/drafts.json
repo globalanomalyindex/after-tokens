@@ -1,0 +1,201 @@
+{
+  "model": "dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1",
+  "recordFloor": 0.2,
+  "displayFloor": 0.25,
+  "minContentTokens": 8,
+  "note": "over content positions of every recording with at least minContentTokens content tokens; a pair is one open content position at one step. `shown` is what the surface draws: the recorded entries under the reducer's rule (a draft shows at or above the display floor and keeps showing while its text holds), accuracy by decoded text. `byFloor` explores the raw per-step probabilities at other floors, accuracy by token id.",
+  "shown": {
+    "visibleShare": 0.1699,
+    "accuracy": 0.6657,
+    "stepsWithDraftShare": 0.9272,
+    "medianPolishSteps": 8.0,
+    "meanPolishSteps": 14.5,
+    "neverChangedShare": 0.6145,
+    "byConfig": {
+      "lowconf-b128": {
+        "visibleShare": 0.3115,
+        "accuracy": 0.5756,
+        "medianPolishSteps": 11,
+        "visibleShareByDecile": [
+          0.303,
+          0.295,
+          0.305,
+          0.305,
+          0.321,
+          0.336,
+          0.334,
+          0.288,
+          0.334,
+          0.537
+        ]
+      },
+      "lowconf-b32": {
+        "visibleShare": 0.1301,
+        "accuracy": 0.6103,
+        "medianPolishSteps": 4.0,
+        "visibleShareByDecile": [
+          0.036,
+          0.036,
+          0.054,
+          0.078,
+          0.145,
+          0.236,
+          0.317,
+          0.494,
+          0.565,
+          0.623
+        ]
+      },
+      "random-b32": {
+        "visibleShare": 0.1915,
+        "accuracy": 0.718,
+        "medianPolishSteps": 14,
+        "visibleShareByDecile": [
+          0.098,
+          0.12,
+          0.079,
+          0.199,
+          0.142,
+          0.326,
+          0.523,
+          0.48,
+          0.853,
+          0.801
+        ]
+      }
+    }
+  },
+  "byFloor": {
+    "0.15": {
+      "visibleShare": 0.2272,
+      "accuracy": 0.5645,
+      "stepsWithDraftShare": 0.9681,
+      "medianPolishSteps": 10,
+      "meanPolishSteps": 17.4,
+      "neverChangedShare": 0.4343,
+      "meanFlipsAfterClearing": 1.149,
+      "wordInitialShare": 0.8263
+    },
+    "0.2": {
+      "visibleShare": 0.1812,
+      "accuracy": 0.644,
+      "stepsWithDraftShare": 0.9419,
+      "medianPolishSteps": 9,
+      "meanPolishSteps": 14.97,
+      "neverChangedShare": 0.5666,
+      "meanFlipsAfterClearing": 0.77,
+      "wordInitialShare": 0.8289
+    },
+    "0.25": {
+      "visibleShare": 0.1531,
+      "accuracy": 0.705,
+      "stepsWithDraftShare": 0.9095,
+      "medianPolishSteps": 8,
+      "meanPolishSteps": 14.06,
+      "neverChangedShare": 0.6551,
+      "meanFlipsAfterClearing": 0.571,
+      "wordInitialShare": 0.8281
+    },
+    "0.3": {
+      "visibleShare": 0.1336,
+      "accuracy": 0.7515,
+      "stepsWithDraftShare": 0.8776,
+      "medianPolishSteps": 8.0,
+      "meanPolishSteps": 13.43,
+      "neverChangedShare": 0.7196,
+      "meanFlipsAfterClearing": 0.423,
+      "wordInitialShare": 0.8324
+    },
+    "0.4": {
+      "visibleShare": 0.1053,
+      "accuracy": 0.8223,
+      "stepsWithDraftShare": 0.7679,
+      "medianPolishSteps": 8,
+      "meanPolishSteps": 12.57,
+      "neverChangedShare": 0.8236,
+      "meanFlipsAfterClearing": 0.239,
+      "wordInitialShare": 0.8349
+    },
+    "0.5": {
+      "visibleShare": 0.0863,
+      "accuracy": 0.8782,
+      "stepsWithDraftShare": 0.6852,
+      "medianPolishSteps": 8,
+      "meanPolishSteps": 12.1,
+      "neverChangedShare": 0.8965,
+      "meanFlipsAfterClearing": 0.124,
+      "wordInitialShare": 0.8339
+    }
+  },
+  "byConfig": {
+    "lowconf-b128": {
+      "runs": 11,
+      "visibleShare": 0.2762,
+      "accuracy": 0.63,
+      "medianPolishSteps": 10,
+      "medianFirstDraftStep": 0,
+      "visibleShareByDecile": [
+        0.29,
+        0.262,
+        0.265,
+        0.276,
+        0.28,
+        0.297,
+        0.296,
+        0.265,
+        0.29,
+        0.461
+      ],
+      "neighborLift": 0.1264,
+      "neighborLiftN": 77,
+      "otherLift": 0.0022,
+      "otherLiftN": 14617
+    },
+    "lowconf-b32": {
+      "runs": 20,
+      "visibleShare": 0.1168,
+      "accuracy": 0.6469,
+      "medianPolishSteps": 4,
+      "medianFirstDraftStep": 0.0,
+      "visibleShareByDecile": [
+        0.032,
+        0.031,
+        0.047,
+        0.068,
+        0.123,
+        0.207,
+        0.289,
+        0.469,
+        0.539,
+        0.591
+      ],
+      "neighborLift": 0.1096,
+      "neighborLiftN": 1074,
+      "otherLift": 0.0067,
+      "otherLiftN": 120388
+    },
+    "random-b32": {
+      "runs": 20,
+      "visibleShare": 0.1735,
+      "accuracy": 0.7556,
+      "medianPolishSteps": 14,
+      "medianFirstDraftStep": 0.0,
+      "visibleShareByDecile": [
+        0.089,
+        0.109,
+        0.068,
+        0.181,
+        0.129,
+        0.292,
+        0.472,
+        0.434,
+        0.819,
+        0.793
+      ],
+      "neighborLift": 0.175,
+      "neighborLiftN": 2121,
+      "otherLift": 0.0048,
+      "otherLiftN": 126168
+    }
+  }
+}

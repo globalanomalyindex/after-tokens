@@ -33,6 +33,25 @@ describe('the replay adapter', () => {
     expect(() => settleEnd(replayTrace(guarded(brainstorm), 40))).not.toThrow()
   })
 
+  it('turns the recorded drafts into draft events after the commitment of their step, and reads nothing else', () => {
+    const replay = replayTrace(guarded(heron), 1)
+    const drafts = replay.events.filter((e) => e.type === 'draft')
+    expect(drafts.length).toBeGreaterThan(20)
+    for (let i = 1; i < replay.events.length; i += 1) {
+      const previous = replay.events[i - 1]!
+      const event = replay.events[i]!
+      expect(event.atMs).toBeGreaterThanOrEqual(previous.atMs)
+      // at one instant, the commitment comes first
+      if (event.type === 'commit' && previous.atMs === event.atMs) expect(previous.type).not.toBe('draft')
+    }
+    // a draft is shown as a draft and never as text; the page is the same with them and without them
+    const bare = replayTrace({ ...heron, drafts: undefined }, 1)
+    expect(pageText(settleEnd(replay))).toBe(pageText(settleEnd(bare)))
+    const mid = settleAt(replay, 40)
+    expect(Object.keys(mid.drafts).length).toBeGreaterThan(0)
+    for (const key of Object.keys(mid.drafts)) expect(mid.tokens[Number(key)]).toBeUndefined()
+  })
+
   it('reproduces the exact recorded output, under every policy, from commitments alone', () => {
     for (const policy of ['word', 'sentence', 'paragraph'] as const) {
       const end = settleEnd(replayTrace(heron, 1), policy)

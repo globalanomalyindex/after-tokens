@@ -65,6 +65,12 @@ export type TraceCompact = {
   /** the step at which every end-of-sequence position had committed, i.e. the
    *  answer's length became fixed; null when the answer filled every position */
   tail_done_step: number | null
+  /** the model's drafts: one list per denoising step of [position, piece,
+   *  probability] entries, recorded when an open position's provisional
+   *  argmax first clears the record floor, changes while above it, or moves
+   *  in probability; [position, "", 0] withdraws one. A commitment at a
+   *  position ends its draft implicitly. See scripts/derive-drafts.py. */
+  drafts?: [number, string, number][][]
   stats: TraceStats
 }
 

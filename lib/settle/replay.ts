@@ -1,6 +1,6 @@
 import type { TraceCompact } from '@/lib/diffusion/traces'
 import { createSettleState, reduceSettle } from './reader'
-import type { Commit, Policy, Replay, SettleEvent, SettleState } from './types'
+import type { Commit, Draft, Policy, Replay, SettleEvent, SettleState } from './types'
 
 /** Recorded tokenizer end spellings, interpreted only on a committed token. */
 const EOS = new Set(['<|endoftext|>', '<|im_end|>'])
@@ -18,10 +18,12 @@ export function paceLabel(pace: Pace): string {
 
 /**
  * Turns a completed capture into a causal event recording. It reads only the
- * token positions, texts and commit steps, the step clock, the request bound
- * and the labels. It never reads the answer, the word table, the tail flags or
- * the tail statistic; a throwing-getter test proves it. Raw step_ms measures
- * forward passes on the capture machine and is not end-to-end latency.
+ * token positions, texts and commit steps, the step clock, the request bound,
+ * the drafts and the labels. It never reads the answer, the word table, the
+ * tail flags or the tail statistic; a throwing-getter test proves it. A
+ * step's drafts are the guesses the model held after that step's commitment,
+ * so they follow it at the same instant. Raw step_ms measures forward passes
+ * on the capture machine and is not end-to-end latency.
  */
 export function replayTrace(trace: TraceCompact, pace: Pace): Replay {
   const scale = pace === 'recorded' ? 1 : typeof pace === 'number' ? 0 : pace.scale
@@ -44,7 +46,22 @@ export function replayTrace(trace: TraceCompact, pace: Pace): Replay {
     commits.push({ position: token.pos, text: token.text, ...(EOS.has(token.text) ? { end: true } : {}) })
     byStep.set(token.step, commits)
   }
-  const events: SettleEvent[] = [...byStep].sort(([a], [b]) => a - b).map(([step, tokens]) => ({ type: 'commit', atMs: stepEnds[step]!, tokens }))
+  const drafts = trace.drafts ?? []
+  const events: SettleEvent[] = []
+  for (let step = 0; step < stepEnds.length; step += 1) {
+    const tokens = byStep.get(step)
+    if (tokens) events.push({ type: 'commit', atMs: stepEnds[step]!, tokens })
+    const entries = drafts[step]
+    if (!entries?.length) continue
+    const guesses: Draft[] = []
+    for (const entry of entries) {
+      if (!Array.isArray(entry) || entry.length < 3) continue
+      const [position, text, p] = entry
+      if (!Number.isSafeInteger(position) || typeof text !== 'string' || !Number.isFinite(p)) continue
+      guesses.push({ position, text, p })
+    }
+    if (guesses.length) events.push({ type: 'draft', atMs: stepEnds[step]!, guesses })
+  }
   events.push({ type: 'finish', atMs: durationMs, tokenCount: trace.sampler.max_new_tokens })
   return {
     id: trace.id,

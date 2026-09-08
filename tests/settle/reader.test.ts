@@ -8,6 +8,59 @@ function run(events: SettleEvent[], policy: 'word' | 'sentence' | 'paragraph' = 
 }
 
 const commit = (atMs: number, ...tokens: { position: number; text: string; end?: boolean }[]): SettleEvent => ({ type: 'commit', atMs, tokens })
+const draft = (atMs: number, ...guesses: { position: number; text: string; p: number }[]): SettleEvent => ({ type: 'draft', atMs, guesses })
+
+describe('the drafts', () => {
+  it('change nothing the reader can count on', () => {
+    const before = run([commit(100, { position: 0, text: 'The sky. ' })])
+    const after = reduceSettle(before, draft(200, { position: 1, text: ' It', p: 0.9 }, { position: 2, text: ' is', p: 0.4 }))
+    expect(pageText(after)).toBe(pageText(before))
+    expect(formingText(after)).toBe(formingText(before))
+    expect(heldText(after)).toBe(heldText(before))
+    expect(after.passages).toEqual(before.passages)
+    expect(after.receivedCount).toBe(before.receivedCount)
+    expect(after.status).toBe('receiving')
+    expect(after.drafts[1]).toEqual({ text: ' It', p: 0.9, shown: true })
+  })
+
+  it('shows a guess only above the floor, keeps it while its text holds, and drops it when withdrawn', () => {
+    let s = run([draft(100, { position: 3, text: ' sea', p: 0.2 })])
+    expect(s.status).toBe('receiving')
+    expect(s.drafts[3]?.shown).toBe(false)
+    s = reduceSettle(s, draft(200, { position: 3, text: ' sea', p: 0.3 }))
+    expect(s.drafts[3]?.shown).toBe(true)
+    s = reduceSettle(s, draft(300, { position: 3, text: ' sea', p: 0.2 }))
+    expect(s.drafts[3]?.shown).toBe(true)
+    s = reduceSettle(s, draft(400, { position: 3, text: ' sky', p: 0.2 }))
+    expect(s.drafts[3]?.shown).toBe(false)
+    s = reduceSettle(s, draft(500, { position: 3, text: '', p: 0 }))
+    expect(s.drafts[3]).toBeUndefined()
+  })
+
+  it('ignores a guess at a committed position, and a commitment ends the guess at its position', () => {
+    let s = run([commit(100, { position: 0, text: 'Yes' })])
+    s = reduceSettle(s, draft(200, { position: 0, text: 'No', p: 0.9 }, { position: 1, text: ', after', p: 0.9 }))
+    expect(s.drafts[0]).toBeUndefined()
+    expect(s.drafts[1]?.shown).toBe(true)
+    s = reduceSettle(s, commit(300, { position: 1, text: ', now' }))
+    expect(s.drafts[1]).toBeUndefined()
+    expect(pageText(s)).toBe('')
+    expect(heldText(s)).toBe('Yes, now')
+  })
+
+  it('leaves no draft on a completed answer and none after a terminal event', () => {
+    const done = run([draft(100, { position: 2, text: ' more', p: 0.9 }), commit(200, { position: 0, text: 'Yes.' }, { position: 1, text: '<|im_end|>', end: true })])
+    expect(done.status).toBe('complete')
+    expect(done.drafts).toEqual({})
+    const stopped = run([commit(100, { position: 0, text: 'a ' }), { type: 'stop', atMs: 200 }, draft(300, { position: 1, text: ' b', p: 0.9 })])
+    expect(stopped.drafts).toEqual({})
+  })
+
+  it('rejects a draft on a snapshot stream as the contract does any commitment', () => {
+    const s = run([{ type: 'snapshot', atMs: 100, text: 'x', final: false }, draft(200, { position: 0, text: 'y', p: 0.9 })])
+    expect(s.status).toBe('error')
+  })
+})
 
 describe('the word rule', () => {
   it('holds a token whose successor is uncommitted', () => {

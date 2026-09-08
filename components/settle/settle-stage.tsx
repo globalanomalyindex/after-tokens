@@ -66,7 +66,7 @@ function useTrace(id: TraceId | null): TraceCompact | null {
 const PACES: { id: string; label: string; pace: Pace }[] = [
   { id: 'recorded', label: 'recorded', pace: 'recorded' },
   { id: 'half', label: '1/2 of recorded', pace: { scale: 2 } },
-  { id: 'quarter', label: '1/4 of recorded', pace: { scale: 4 } },
+  { id: 'slow', label: 'twice recorded', pace: { scale: 0.5 } },
 ]
 const POLICIES: { id: Policy; label: string }[] = [
   { id: 'word', label: 'each word' },
@@ -81,7 +81,7 @@ export function SettleStage({
   controls = [],
   policy: policyProp = 'sentence',
   forming: formingProp = 'carve',
-  pace: paceProp = { scale: 2 },
+  pace: paceProp = 'recorded',
   brand: brandProp = 'after-tokens',
   voice,
   comparison: comparisonProp = false,
@@ -94,7 +94,7 @@ export function SettleStage({
   const [sourceId, setSourceId] = useState(source)
   const [policy, setPolicy] = useState<Policy>(policyProp)
   const [forming, setForming] = useState<FormingMode>(formingProp)
-  const [paceId, setPaceId] = useState<string>(() => PACES.find((p) => JSON.stringify(p.pace) === JSON.stringify(paceProp))?.id ?? 'half')
+  const [paceId, setPaceId] = useState<string>(() => PACES.find((p) => JSON.stringify(p.pace) === JSON.stringify(paceProp))?.id ?? 'recorded')
   const [brand, setBrand] = useState<BrandId>(brandProp)
   const [comparison, setComparison] = useState(comparisonProp)
   const pace = PACES.find((p) => p.id === paceId)?.pace ?? paceProp
@@ -193,7 +193,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · the cursor goes where the source just committed; a word is written there once every piece of it is in; the page takes it when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · the ghost words are the model\u2019s own drafts, drawn above a floor and never as words; the cursor goes where the source just committed, and a word snaps in once every piece of it is in; the page takes it when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
         </p>
       )}
     </div>

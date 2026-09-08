@@ -1,33 +1,38 @@
 'use client'
 
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { carve } from '@/lib/settle/carve'
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { carve, type CarveItem } from '@/lib/settle/carve'
+import { DRAFT_FLOOR } from '@/lib/settle/reader'
 import type { SettleState } from '@/lib/settle/types'
 import { clampSettleVoice, settleVoiceStyle, type SettleVoice } from '@/lib/settle/voice'
 import { useBrand } from '@/lib/brand/provider'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import { Field } from './field'
 import { Margin, statusWords } from './margin'
+import { useCompanion } from './use-companion'
 
 // The product component: page, zone, cursor, margin. It renders a state; it
-// never runs a clock, never sees an answer, and never draws a word before
-// the source has committed every piece of it.
+// never runs a clock and never sees an answer.
 //
 // The page holds released passages: still, selectable, the page's ink.
-// The zone after it is the answer's remaining positions, in order. An open
-// position is reserved blank space about a token wide. A position holding a
-// piece of a word is a glimmer. A complete word is written where it will
-// stand, in the secondary ink, opening from the width its positions
-// reserved to its own, so what follows slides rather than jumps. The cursor,
-// a circle centered on the line, glides to wherever the sampler just
-// committed and the word softens in as it arrives; when a sentence closes
-// the cursor sweeps to the end of the page and the page's ink settles
-// through the sentence. At completion the cursor rests and fades.
+// The zone after it is the answer's remaining positions, in order, drawn as
+// what the source has made of them. An open position is reserved blank
+// space about a token wide. A position the source holds a confident guess
+// for shows that guess as a draft: the model's own current prediction, in a
+// ghost of the secondary ink that sharpens with its probability, visibly
+// provisional. A committed piece of a word that is not complete stands as
+// the piece it is. A complete word snaps in where it will stand, in the
+// secondary ink, as the cursor reaches it. When a sentence closes the cursor
+// sweeps to the end of the page and the page's ink settles through the
+// sentence. At completion the cursor rests and fades.
+//
+// The honesty line: nothing committed is drawn as a guess, nothing guessed
+// is drawn as committed, and no guess ever reaches the page.
 
 export type FormingMode = 'carve' | 'flow' | 'held'
 
-/** The width a token reserves before it is a word, in ch. */
-const SLOT_CH = 2.3
+/** Where the cursor sits inside a cell: the middle of the lowercase letters, from the cell's top, in em. */
+const CELL_MID_EM = 0.71
 
 /** Splits text into words and the whitespace between them, whitespace kept. */
 function pieces(text: string): string[] {
@@ -48,35 +53,117 @@ function Passage({ text }: { text: string }) {
   )
 }
 
-/** A word in the zone. On arrival it holds the width its positions
- *  reserved and opens to its own over the onset, so the line slides
- *  instead of jumping; its letters soften in as the cursor reaches it. */
-function ZoneWord({ text, position, span, forming, ms, animate }: { text: string; position: number; span: number; forming: boolean; ms: number; animate: boolean }) {
-  const ref = useRef<HTMLSpanElement>(null)
+/** The widths each position was last drawn at, so a word can open from the
+ *  space its positions really held, whatever they were showing. */
+type Widths = Map<number, number>
+
+/** Slides an element's width from what it was to what it is whenever its
+ *  content changes, so the line moves instead of jumping. The element is
+ *  measured at its natural width, set back to its previous width without a
+ *  transition, then let go. */
+function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms: number, from?: () => number | null, after?: (natural: number) => void) {
+  const last = useRef<number | null>(null)
   useLayoutEffect(() => {
     const el = ref.current
-    if (!el || !animate || ms <= 0) return
+    if (!el) return
+    el.style.width = ''
+    el.style.transition = ''
     const natural = el.getBoundingClientRect().width
+    const previous = last.current ?? from?.() ?? null
+    last.current = natural
+    after?.(natural)
+    if (previous === null || ms <= 0 || Math.abs(previous - natural) < 0.5) return
     el.style.transition = 'none'
-    el.style.width = `${span * SLOT_CH}ch`
-    void el.getBoundingClientRect()
-    el.style.transition = `width ${ms}ms cubic-bezier(0.16, 1, 0.3, 1)`
+    el.style.width = `${previous}px`
+    void el.offsetWidth
+    el.style.transition = `width ${ms}ms var(--ease-out-expo)`
     el.style.width = `${natural}px`
-    const done = () => {
+    const timer = window.setTimeout(() => {
       el.style.width = ''
       el.style.transition = ''
-    }
-    const timer = window.setTimeout(done, ms + 40)
-    return () => {
-      window.clearTimeout(timer)
-      done()
-    }
-    // on mount only: a word's text and span never change once it is written
+    }, ms + 40)
+    return () => window.clearTimeout(timer)
+    // the glide runs when the content changes, which the key names
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [key])
+}
+
+/** A complete word in the zone. It opens from the width its positions held
+ *  to its own, and snaps in: a short settling of blur, weight and color as
+ *  the cursor reaches it. Its text never changes once it is written. */
+function ZoneWord({ text, position, span, forming, ms, widths }: { text: string; position: number; span: number; forming: boolean; ms: number; widths: Widths }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const from = useCallback(() => {
+    let sum = 0
+    for (let p = position; p < position + span; p += 1) {
+      const w = widths.get(p)
+      if (w === undefined) return null
+      sum += w
+    }
+    return sum
+  }, [position, span, widths])
+  const after = useCallback((natural: number) => {
+    for (let p = position; p < position + span; p += 1) widths.set(p, p === position ? natural : 0)
+  }, [position, span, widths])
+  useWidthGlide(ref, `${position}:${text}`, ms, from, after)
   return (
     <span ref={ref} className="settle-cw" data-pos={position} data-end={position + span - 1} data-forming={forming || undefined}>{text}</span>
   )
+}
+
+/** One position of the zone that is not a complete word: reserved space, a
+ *  draft, a committed piece, or an end belief. Keyed by position, so a
+ *  position that changes register keeps its element and slides its width. */
+function Cell({ item, ms, widths }: { item: Extract<CarveItem, { kind: 'piece' | 'draft' | 'slot' }>; ms: number; widths: Widths }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const text = item.kind === 'piece' || (item.kind === 'draft' && !item.end) ? item.text.trim() : ''
+  const register = item.kind === 'slot' ? item.state : item.kind === 'draft' && item.end ? 'end-belief' : item.kind
+  const changes = useRef(0)
+  const lastText = useRef(text)
+  if (item.kind === 'draft' && text !== lastText.current) {
+    // the source changed its mind here: the draft reconsiders, once per change
+    changes.current += 1
+    lastText.current = text
+  }
+  const after = useCallback((natural: number) => widths.set(item.position, natural), [item.position, widths])
+  useWidthGlide(ref, `${register}:${text}`, ms, undefined, after)
+  const p = item.kind === 'draft' ? item.p : undefined
+  // the draft's sharpness: its probability, from the floor to certainty
+  const sure = p === undefined ? undefined : Math.max(0, Math.min(1, (p - DRAFT_FLOOR) / (1 - DRAFT_FLOOR)))
+  return (
+    <span
+      ref={ref}
+      className={text ? 'settle-cz' : 'settle-slot'}
+      data-state={register}
+      data-pos={item.position}
+      data-flip={item.kind === 'draft' && changes.current > 0 ? (changes.current % 2 ? 'a' : 'b') : undefined}
+      style={sure === undefined ? undefined : ({ ['--sure' as string]: sure.toFixed(3) } as CSSProperties)}
+    >{text || null}</span>
+  )
+}
+
+/** Whether an item draws letters that a following piece attaches to. */
+const drawsLetters = (item: CarveItem) => item.kind === 'word' || item.kind === 'piece' || (item.kind === 'draft' && !item.end)
+const leadingSpace = (item: CarveItem) => (item.kind === 'word' || item.kind === 'piece' || item.kind === 'draft') && /^\s/.test(item.text)
+
+/** The zone's items grouped for wrapping: a piece that continues the letters
+ *  before it stays on their line. A group begins at a leading space, at a
+ *  blank, or after one. */
+function groupItems(items: CarveItem[]): CarveItem[][] {
+  const groups: CarveItem[][] = []
+  let current: CarveItem[] = []
+  let previous: CarveItem | null = null
+  for (const item of items) {
+    const attaches = previous !== null && drawsLetters(item) && drawsLetters(previous) && !leadingSpace(item)
+    if (!attaches && current.length) {
+      groups.push(current)
+      current = []
+    }
+    current.push(item)
+    previous = item
+  }
+  if (current.length) groups.push(current)
+  return groups
 }
 
 type Props = {
@@ -135,13 +222,17 @@ export function SettleAnswer({
   const showField = field ?? mode !== 'carve'
   const showCursor = cursor ?? mode === 'carve'
   const zoneItems = useMemo(() => (mode === 'held' ? [] : carve(state)), [mode, state])
-  const items = mode === 'flow' ? zoneItems.filter((item) => item.kind === 'word' && item.forming) : zoneItems
+  const items = useMemo(() => (mode === 'flow' ? zoneItems.filter((item) => item.kind === 'word' && item.forming) : zoneItems), [mode, zoneItems])
+  const groups = useMemo(() => groupItems(items), [items])
   const zoneEmpty = items.every((item) => item.kind === 'slot' && item.state === 'beyond')
   const pageEmpty = state.passages.length === 0 && zoneEmpty
   const ms = reduced ? 0 : voice.onset
+  const widths = useRef<Widths>(new Map()).current
   const rootRef = useRef<HTMLDivElement>(null)
   const pageEndRef = useRef<HTMLSpanElement>(null)
-  const cursorRef = useRef<HTMLSpanElement>(null)
+  const haloRef = useRef<HTMLSpanElement>(null)
+  const headRef = useRef<HTMLSpanElement>(null)
+  const trailRef = useRef<HTMLSpanElement>(null)
   const reviewId = useId()
   const [reviewing, setReviewing] = useState(false)
   const revisionKey = state.revisionText === null ? null : `${state.lastEventAtMs}:${state.revisionText}`
@@ -172,15 +263,16 @@ export function SettleAnswer({
     passagesRef.current = state.passages.length
   }, [state.passages.length, haptics, reduced])
 
-  // the cursor: a circle on the line, at the position the source just
-  // committed; after a word, like a caret; on a blank, at its center.
-  // It moves by a transition on its transform, so a new target retargets
-  // the glide from wherever it is.
+  // the cursor's target: the element covering the position the source just
+  // committed; after a word or a piece, like a caret; on a blank, at its
+  // center; at the page's end while a sentence settles and when the source
+  // is done. Measured on demand, every frame the cursor moves, so it follows
+  // a word that is still opening.
   const terminal = state.status !== 'receiving' && state.status !== 'waiting'
+  const targetRef = useRef<{ el: Element; after: boolean } | null>(null)
   useLayoutEffect(() => {
     const root = rootRef.current
-    const cur = cursorRef.current
-    if (!root || !cur || !showCursor) return
+    if (!root || !showCursor) return
     let target: Element | null = null
     let after = true
     if (!finalizing && !terminal && focus !== null) {
@@ -189,19 +281,39 @@ export function SettleAnswer({
         const end = Number(el.dataset.end ?? el.dataset.pos)
         if (focus >= start && focus <= end) {
           target = el
-          after = el.classList.contains('settle-cw')
+          after = el.classList.contains('settle-cw') || el.classList.contains('settle-cz')
           break
         }
       }
     }
     if (!target) target = pageEndRef.current
-    if (!target) return
-    const r = target.getBoundingClientRect()
-    const o = root.getBoundingClientRect()
-    const x = after ? r.right - o.left + 3 : r.left - o.left + r.width / 2
-    const y = r.top - o.top + r.height / 2
-    cur.style.transform = `translate(${x}px, ${y}px)`
+    targetRef.current = target ? { el: target, after } : null
   })
+  const measureTarget = useCallback(() => {
+    const root = rootRef.current
+    const target = targetRef.current
+    if (!root || !target) return null
+    const r = target.el.getBoundingClientRect()
+    const o = root.getBoundingClientRect()
+    const em = parseFloat(getComputedStyle(target.el).fontSize) || 16
+    return { x: target.after ? r.right - o.left + 3 : r.left - o.left + r.width / 2, y: r.top - o.top + CELL_MID_EM * em }
+  }, [])
+  const companion = useCompanion({ root: rootRef, halo: haloRef, head: headRef, trail: trailRef, target: measureTarget, active: showCursor && !terminal, reduced })
+  // any change of what the zone shows can move the target
+  useLayoutEffect(() => { if (showCursor) companion.wake() })
+
+  // the press: the cursor finalizes a word. Once per new written word.
+  const [pulse, setPulse] = useState(0)
+  const writtenRef = useRef(0)
+  const written = useMemo(() => items.filter((item) => item.kind === 'word').length, [items])
+  useEffect(() => {
+    if (written > writtenRef.current && showCursor && !reduced) {
+      companion.press()
+      setPulse((n) => n + 1)
+      if (haptics && typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(5)
+    }
+    writtenRef.current = written
+  }, [written, showCursor, reduced, companion, haptics])
 
   return (
     <div
@@ -219,15 +331,29 @@ export function SettleAnswer({
         {state.passages.map((passage) => <Passage key={passage.id} text={passage.text} />)}
         <span ref={pageEndRef} className="settle-page-end" aria-hidden="true" />
         <span className="settle-zone" aria-hidden="true">
-          {items.map((item) => {
-            if (item.kind === 'word') return <span key={`w${item.position}`}><ZoneWord text={item.text.trim()} position={item.position} span={item.span} forming={item.forming} ms={ms} animate={!reduced} /> </span>
-            if (item.kind === 'end') return <span key="end" className="settle-slot" data-state="end" data-pos={item.position} data-end={item.position + item.span - 1} />
-            return <span key={`s${item.position}`} className="settle-slot" data-state={item.state} data-pos={item.position} />
+          {groups.map((group) => {
+            const first = group[0]!
+            const key = `g${first.position}`
+            const space = leadingSpace(first) ? ' ' : ''
+            const inner = group.map((item) => {
+              if (item.kind === 'word') return <ZoneWord key={`w${item.position}`} text={item.text.trim()} position={item.position} span={item.span} forming={item.forming} ms={ms} widths={widths} />
+              if (item.kind === 'end') return <span key="end" className="settle-slot" data-state="end" data-pos={item.position} data-end={item.position + item.span - 1} />
+              return <Cell key={`c${item.position}`} item={item} ms={ms} widths={widths} />
+            })
+            return group.length === 1
+              ? <span key={key}>{space}{inner}</span>
+              : <span key={key}>{space}<span className="settle-g">{inner}</span></span>
           })}
         </span>
         {pageEmpty && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
       </div>
-      {showCursor && <span ref={cursorRef} className="settle-cursor" data-state={terminal ? 'done' : finalizing ? 'finalizing' : 'active'} aria-hidden="true" />}
+      {showCursor && (
+        <span className="settle-cursor" data-state={terminal ? 'done' : finalizing ? 'finalizing' : 'active'} aria-hidden="true">
+          <span ref={haloRef} className="settle-cursor-halo">{pulse > 0 && <span key={pulse} className="settle-cursor-ring" />}</span>
+          <span ref={trailRef} className="settle-cursor-trail" />
+          <span ref={headRef} className="settle-cursor-head" />
+        </span>
+      )}
       {showField && <Field state={state} mark={voice.mark} />}
       {status && <Margin state={state} mark={voice.mark} paused={paused} />}
       {(state.status === 'stopped' || state.status === 'error') && state.error && (

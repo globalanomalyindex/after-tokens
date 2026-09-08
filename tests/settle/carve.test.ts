@@ -7,6 +7,51 @@ import { replayTrace, settleAt, settleEnd } from '@/lib/settle/replay'
 import type { SettleEvent } from '@/lib/settle/types'
 
 const commit = (atMs: number, ...tokens: { position: number; text: string; end?: boolean }[]): SettleEvent => ({ type: 'commit', atMs, tokens })
+const draft = (atMs: number, ...guesses: { position: number; text: string; p: number }[]): SettleEvent => ({ type: 'draft', atMs, guesses })
+
+describe('the drafts in the zone', () => {
+  it('draws a guess above the floor as a draft, never as a word, and clears it when the position commits', () => {
+    let s = createSettleState('sentence', 6)
+    s = reduceSettle(s, draft(100, { position: 2, text: ' sky', p: 0.6 }, { position: 4, text: ' blue', p: 0.1 }))
+    expect(carve(s)[2]).toEqual({ kind: 'draft', position: 2, text: ' sky', p: 0.6, end: false })
+    expect(carve(s)[4]).toEqual({ kind: 'slot', position: 4, state: 'open' })
+    expect(carve(s).filter((i) => i.kind === 'word')).toHaveLength(0)
+    s = reduceSettle(s, commit(200, { position: 2, text: ' sea' }))
+    expect(carve(s)[2]).toEqual({ kind: 'piece', position: 2, text: ' sea' })
+    expect(s.drafts[2]).toBeUndefined()
+  })
+
+  it('draws a word tail only where it can attach to letters', () => {
+    let s = createSettleState('sentence', 6)
+    s = reduceSettle(s, draft(100, { position: 3, text: 'phor', p: 0.8 }))
+    // nothing before it draws letters: a stray tail stays blank
+    expect(carve(s)[3]).toEqual({ kind: 'slot', position: 3, state: 'open' })
+    s = reduceSettle(s, draft(200, { position: 2, text: ' meta', p: 0.5 }))
+    expect(carve(s)[2]).toEqual({ kind: 'draft', position: 2, text: ' meta', p: 0.5, end: false })
+    expect(carve(s)[3]).toEqual({ kind: 'draft', position: 3, text: 'phor', p: 0.8, end: false })
+    // a committed piece before it will do as well
+    let u = createSettleState('sentence', 6)
+    u = reduceSettle(u, commit(100, { position: 2, text: ' meta' }))
+    u = reduceSettle(u, draft(100, { position: 3, text: 'phor', p: 0.8 }))
+    expect(carve(u)[2]).toEqual({ kind: 'piece', position: 2, text: ' meta' })
+    expect(carve(u)[3]).toEqual({ kind: 'draft', position: 3, text: 'phor', p: 0.8, end: false })
+  })
+
+  it('draws a guessed end as an end belief and draws nothing for whitespace or other special tokens', () => {
+    let s = createSettleState('sentence', 6)
+    s = reduceSettle(s, draft(100, { position: 4, text: '<|endoftext|>', p: 0.7 }, { position: 1, text: '\n', p: 0.9 }, { position: 2, text: '<|im_start|>', p: 0.9 }))
+    expect(carve(s)[4]).toEqual({ kind: 'draft', position: 4, text: '', p: 0.7, end: true })
+    expect(carve(s)[1]).toEqual({ kind: 'slot', position: 1, state: 'open' })
+    expect(carve(s)[2]).toEqual({ kind: 'slot', position: 2, state: 'open' })
+  })
+
+  it('never draws a draft past the cut', () => {
+    let s = createSettleState('sentence', 8)
+    s = reduceSettle(s, draft(100, { position: 6, text: ' late', p: 0.9 }))
+    s = reduceSettle(s, commit(200, { position: 4, text: '<|endoftext|>', end: true }))
+    expect(carve(s).filter((i) => i.kind === 'draft')).toHaveLength(0)
+  })
+})
 
 describe('the carved zone', () => {
   it('is all open slots before anything commits, as long as the bound', () => {
@@ -18,14 +63,14 @@ describe('the carved zone', () => {
   it('draws a scattered word only when its pieces and boundaries are in', () => {
     let s = createSettleState('sentence', 8)
     s = reduceSettle(s, commit(100, { position: 3, text: ' Sapp' }))
-    expect(carve(s)[3]).toEqual({ kind: 'slot', position: 3, state: 'held' })
+    expect(carve(s)[3]).toEqual({ kind: 'piece', position: 3, text: ' Sapp' })
     s = reduceSettle(s, commit(200, { position: 4, text: 'hire' }))
     expect(carve(s).filter((i) => i.kind === 'word')).toHaveLength(0)
     s = reduceSettle(s, commit(300, { position: 5, text: ' Blue' }))
     const words = carve(s).filter((i) => i.kind === 'word')
     expect(words).toEqual([{ kind: 'word', position: 3, span: 2, text: ' Sapphire', forming: false }])
     // ' Blue' itself waits for its successor
-    expect(carve(s).find((i) => i.position === 5)).toEqual({ kind: 'slot', position: 5, state: 'held' })
+    expect(carve(s).find((i) => i.position === 5)).toEqual({ kind: 'piece', position: 5, text: ' Blue' })
   })
 
   it('holds a run whose start could be the tail of a word', () => {
@@ -33,7 +78,7 @@ describe('the carved zone', () => {
     s = reduceSettle(s, commit(100, { position: 2, text: 'hire' }, { position: 3, text: ' is' }, { position: 4, text: ' blue ' }))
     const items = carve(s)
     // 'hire' cannot be shown: position 1 is open and 'hire' does not start with whitespace
-    expect(items[2]).toEqual({ kind: 'slot', position: 2, state: 'held' })
+    expect(items[2]).toEqual({ kind: 'piece', position: 2, text: 'hire' })
     expect(items[3]).toEqual({ kind: 'word', position: 3, span: 1, text: ' is', forming: false })
     expect(items[4]).toEqual({ kind: 'word', position: 4, span: 1, text: ' blue ', forming: false })
   })
@@ -60,7 +105,7 @@ describe('the carved zone', () => {
     s = reduceSettle(s, commit(100, { position: 0, text: 'The' }, { position: 1, text: ' sun' }))
     expect(wordSafeTokens(s)).toBe(1)
     expect(carve(s)[0]).toEqual({ kind: 'word', position: 0, span: 1, text: 'The', forming: true })
-    expect(carve(s)[1]).toEqual({ kind: 'slot', position: 1, state: 'held' })
+    expect(carve(s)[1]).toEqual({ kind: 'piece', position: 1, text: ' sun' })
     s = reduceSettle(s, commit(200, { position: 2, text: ' rises. ' }))
     // a released sentence leaves the zone
     expect(carve(s).map((i) => i.position)[0]).toBe(3)

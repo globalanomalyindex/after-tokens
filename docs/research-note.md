@@ -65,7 +65,7 @@ Commits cluster around confident anchors instead of scattering uniformly: the me
 
 The sequence's length becomes certain late under both schedules that were measured: it lands close to the last words. Under the default sampler the tail sits inside the final block, so it finishes at roughly the 95 percent mark of the run while the last content word lands at roughly 99 percent. With no block schedule the sampler spends most of its steps on the empty tail before any content commits, and among the usable runs the tail still finishes only at roughly the 92 percent mark. A reveal should not commit to showing final length before the sampler itself has. For both samplers measured here, that commitment comes late.
 
-A position's provisional guess is unstable before it commits, changing a median of 5.3 times per token, and 96 percent of tokens change at least once. Rendering a legible, continuously updating guess for an uncommitted position would show most words wrong several times before showing them right. This is the measured argument for keeping uncommitted content illegible under blur. A fade to a readable draft would show the reader words the sampler is still going to change.
+A position's provisional guess is unstable before it commits, changing a median of 5.3 times per token, and 96 percent of tokens change at least once. Rendering a legible, continuously updating guess for every uncommitted position would show most words wrong several times before showing them right, which was the measured argument for keeping uncommitted content illegible in the first build. The settle surface answers it with a floor instead: a guess is drawn only at or above a probability of 0.25 (section 9.4), where it is on screen for 17 percent of open-position steps, is the token the position later commits two thirds of the time, and never changes again before committing in 61 percent of cases. Below the floor the guess is the corpus prior, and it is drawn as nothing.
 
 Confidence at commit is not uniformly high: the median committed token has probability 0.57, and 38 percent of commits happen under even odds. A reveal that renders every commit with the same visual certainty overstates confidence for a substantial minority of words; per-word confidence, which the sampler already computes, is available to drive per-word visual weight.
 
@@ -82,6 +82,7 @@ Four of the coda prompts (`diffusion-explain`, `heron-poem`, `travel`, `weather`
 - Compact trajectories (what the interface loads): `data/traces/compact/<prompt>__<config>.json`
 - Full trajectories with per-step probabilities: `data/traces/full/<prompt>__<config>.json.gz`
 - Per-trajectory and per-configuration statistics: `data/traces/manifest.json`, `data/traces/summary.json`
+- The model's drafts, written into the compact trajectories, and the statistics of section 9.4: `scripts/derive-drafts.py`, `data/traces/derived/drafts.json`
 - Schema and capture method: `data/traces/README.md`
 - Capture and summarization scripts: `scripts/capture-trajectories.py`, `scripts/summarize-trajectories.py`
 - Trace loader and typed accessors used by the interface: `lib/traces/index.ts`, `lib/diffusion/traces.ts`
@@ -90,6 +91,8 @@ Four of the coda prompts (`diffusion-explain`, `heron-poem`, `travel`, `weather`
 All of the above are released under the MIT license, in the same repository as the interface itself. Reproducing the capture requires `torch`, `transformers==4.57.0`, and a two-line stub of the `dllm` package that the model's custom code imports only under `__main__`.
 
 ## 7 Design changes derived from the measurements
+
+*Describes the crystallize build of 6 September, which the audit of section 9 superseded. The engine remains in the repository as the labeled retrospective reference the audit and the playground compare against; the decisions below are its decisions, kept as history. The floor of 0.25 in 7.1 is the one the settle surface still uses (section 9.4).*
 
 The shipped reveal was rebuilt from the glossary principles and the findings together; the reasoning in order is `docs/redesign.md`, and the twelve resulting decisions, each with its source and how its value was arrived at, are the ledger in the case study's hypothesis section (`SYNTHESIS` in `lib/traces/findings.ts`). In brief:
 
@@ -134,7 +137,7 @@ The redesign adds a metric suite that scores any reveal, whether authored or rec
 
 The phrase rule is punctuation and line breaks, stated for English and Latin script. The salience that seeds the grammar is an authored score. The reader model is one number, a fixation every quarter second, with no skimming or rereading. The medians are over eight fixtures and eighteen curated runs of a 0.6B model. Every number describes an arrival; none describes a reader. The five claims in the case study's evidence section are what a study would test.
 
-## 9 The causal audit and the settle contract (7 September 2026)
+## 9 The causal audit and the settle contract (7 and 8 September 2026)
 
 ### 9.1 The audit
 
@@ -142,31 +145,63 @@ An independent audit of the crystallize build at `ab95e6a`, run by a second agen
 
 ### 9.2 The contract
 
-`lib/settle/reader.ts` is a pure reducer over timestamped events: commits by position, a bounded finish, revisable snapshots with explicit finality, revisions, stop and error. It buffers commitments by position and extends a contiguous prefix only through positions actually received. A word boundary exists after a token when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end; text past the last boundary is held. The page receives passages under one of three policies: each word, each sentence (terminal punctuation followed by whitespace, held inside inline code, fenced code and lists and after common abbreviations), each paragraph (a blank line outside code). No timeout relabels a fragment; finality releases the exact remainder. Length is claimed only when the prefix reaches a committed end token. The replay adapter (`lib/settle/replay.ts`) reads token positions, texts and steps, the step clock and the request bound; a throwing-getter test proves it never reads the answer, the word table, the tail flags or the tail statistic.
+`lib/settle/reader.ts` is a pure reducer over timestamped events: commits by position, a bounded finish, revisable snapshots with explicit finality, revisions, stop and error. It buffers commitments by position and extends a contiguous prefix only through positions actually received. A word boundary exists after a token when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end; text past the last boundary is held. The page receives passages under one of three policies: each word, each sentence (terminal punctuation followed by whitespace, held inside inline code, fenced code and lists and after common abbreviations), each paragraph (a blank line outside code). No timeout relabels a fragment; finality releases the exact remainder. Length is claimed only when the prefix reaches a committed end token. The replay adapter (`lib/settle/replay.ts`) reads token positions, texts and steps, the recorded drafts, the step clock and the request bound; a throwing-getter test proves it never reads the answer, the word table, the tail flags or the tail statistic. A `draft` event carries the source's current guesses and changes nothing the reader can count on: no page text, no prefix, no passage, and no status beyond marking the source active.
 
 ### 9.3 The field
 
-`lib/settle/carve.ts` derives the carved zone: for every position after the word-safe prefix, an open slot, a held slot (a committed piece of a word whose other pieces or boundaries are out), a complete word (every piece committed, with a clean start and a boundary after it), or a collapsed run of end tokens. Complete words are drawn where they will stand, dim, in the sampler's own order; slots are never letters. `lib/settle/field.ts` derives the strip, one cell per position (released, forming, held, committed, end, open, beyond), the field's compact form, which is state and never text.
+`lib/settle/carve.ts` derives the carved zone: for every position after the word-safe prefix, an open slot, the source's current guess where it holds one above the floor (section 9.4), a committed piece of a word whose other pieces or boundaries are out, a complete word (every piece committed, with a clean start and a boundary after it), or a collapsed run of end tokens. Complete words are drawn where they will stand, dim, in the sampler's own order; a piece is drawn as the piece it is, since its letters are committed; an open slot without a guess is never letters. `lib/settle/phase.ts` reads a phase off the same state for the margin: the positions the answer can still occupy are the ones up to the lowest committed end, else the request's bound, and the committed share plus half the drafted share puts the run in sketching (under 0.15), drafting (under 0.5), polishing (under 0.85) or closing. The thresholds are authored and the line promises nothing about what comes next. `lib/settle/field.ts` derives the strip, one cell per position (released, forming, held, committed, end, open, beyond), the field's compact form, which is state and never text.
 
-### 9.4 The cost
+### 9.4 The drafts
+
+At every step the capture records, for every position still masked, the model's current argmax and its max softmax probability (section 2). `scripts/derive-drafts.py` writes those into the compact trajectories the interface loads, as one list per step of `[position, piece, probability]` entries, recorded while the probability is at or above a record floor of 0.2, with an empty text withdrawing a guess and a commitment ending its position's draft implicitly. The interface draws a guess only at or above a display floor of 0.25, the floor the earlier build arrived at for the same reason (section 7.1): below it the argmax of a masked position is the corpus prior and says the same word everywhere. The gap between the two floors leaves room for the reducer's hysteresis: a guess keeps being drawn while its text holds, so one sitting at the display floor does not blink.
+
+The statistics below are over content positions of every recording with at least 8 content tokens (`minContentTokens` in `data/traces/derived/drafts.json`); a pair is one open content position at one step. Both tables count what the surface would draw, under the reducer's rule at the display floor, with a draft judged correct when its decoded text is the text the position later commits.
+
+| statistic, all recordings | value |
+| --- | --- |
+| pairs at which a draft is drawn | 0.1699 |
+| drawn drafts that are the token the position later commits | 0.6657 |
+| steps at which at least one draft is drawn | 0.9272 |
+| steps a position's draft is drawn before that position commits, median | 8 |
+| drawn drafts that never change again before committing | 0.6145 |
+
+| statistic, by configuration | lowconf-b32 | random-b32 | lowconf-b128 |
+| --- | --- | --- | --- |
+| pairs at which a draft is drawn | 0.1301 | 0.1915 | 0.3115 |
+| drawn drafts that are the token the position later commits | 0.6103 | 0.718 | 0.5756 |
+| steps of drafting before the position commits, median | 4 | 14 | 11 |
+| drawn share, first tenth of the run to the last | 0.036 to 0.623 | 0.098 to 0.801 | about 0.3, then 0.537 |
+| lift on a neighbor of a just-committed position | 0.1096 (n = 1074) | 0.175 (n = 2121) | 0.1264 (n = 77) |
+| lift on every other open position | 0.0067 | 0.0048 | 0.0022 |
+
+The two schedules differ in when a draft is worth drawing. Under the block schedule a draft is rare early and common late, because a block's positions are only under consideration while their block is open: the drawn share climbs from 0.036 in the first tenth of a `lowconf-b32` run to 0.623 in the last. Without the schedule every position is under consideration from the first step, and the drawn share is roughly flat at about 0.3 until a final tenth at 0.537. Accuracy does not track breadth: `random-b32` draws more than `lowconf-b32` and is right more often (0.718 against 0.6103), while `lowconf-b128`, which draws the most, is right least often (0.5756).
+
+The neighbor lift is measured on the raw probabilities at the step after a commitment: the max probability of an open content position adjacent to a position that has just committed rises on average by 0.1096, 0.175 and 0.1264 under the three configurations, against 0.0067, 0.0048 and 0.0022 for every other open position. A commitment lifts the confidence of the positions beside it by more than an order of magnitude over the rest of the answer. This is the recorded form of the intuition that one word settling makes its neighbors settle, and it is what the carved zone shows when a word snaps in and the guesses beside it sharpen.
+
+The display floor trades silence against accuracy. On the raw probabilities, with accuracy judged by token id, a floor of 0.15 draws on 0.227 of pairs at 0.565 accuracy; 0.25 draws on 0.153 at 0.705; 0.3 draws on 0.134 at 0.752; 0.5 draws on 0.086 at 0.878. The interface keeps 0.25, which is the one floor the rest of the piece already uses.
+
+These numbers describe what one sampler's own guesses do on this corpus. They do not say that drawing a draft helps anybody read, judge or wait; that remains the unrun study of section 9.7.
+
+### 9.5 The cost
 
 `pnpm traces:settle` measures every recording under every policy on a uniform step clock (one completed forward pass per step) and on the raw forward-pass clock, and writes `lib/traces/settle.json`. Over the 57 nonempty traces: first passage at a median of 12 steps under each word, 39 under each sentence, 128 under each paragraph (1.4, 4.6 and 15.6 seconds on the capture machine); mean per-character extra hold after joining the prefix of 3.29, 24.47 and 44.65 steps; the word rule alone 3.29 steps; forming text visible for a median 90 percent of the run under sentence and paragraph release; median passages per answer 16, 3 and 1, of 8, 107 and 414 characters; maximum text held off the page 15, 629 and 710 characters. Under every policy all 60 final outputs equal the sampler's exactly and zero characters reach the page before their tokens commit. These are properties of the reducer on this corpus, on a 0.6B model at about 119 ms per step; a production model divides the seconds by an order of magnitude and changes none of the shapes.
 
-### 9.5 The literature, reviewed
+### 9.6 The literature, reviewed
 
 A review on 7 September 2026 checked each mechanism the first version cited and added the incremental-display and streaming-interface literature. Findings that bear on the design:
 
-- Revising text already on screen has a measured cost. In live captions, a flicker metric correlated with self-reported distraction (r = .33), fatigue (r = .36) and reduced reading ease (r = -.31), N = 123, and a stabilization algorithm improved five of six ratings (Liu et al., CHI 2023). A display change under a fixation is detected unless timed to the saccade (Slattery, Angele and Rayner, 2011). Preventing rereading reduced comprehension (Schotter, Tran and Rayner, 2014). Consequence: the page never changes, and earlier passages stay.
-- Visible process raises perceived value and can be preferred to an instant result (Buell and Norton, 2011); unexplained and uncertain waits feel longer (Maister, 1985); a justified delay reads as more trustworthy (Zhang, Tsiakas and Schneegass, 2024). Consequence: the field explains the wait; because the same literature implies a risk of unwarranted trust, the field never encodes confidence and the study measures false-answer acceptance.
+- Revising text already on screen has a measured cost to reader experience. In live captions, a flicker metric correlated with self-reported distraction (r = .33), fatigue (r = .36) and reduced reading ease (r = -.31), N = 123 crowdsourced, and a stabilization algorithm improved five of six ratings (Liu et al., CHI 2023 Extended Abstracts, late-breaking work). The paper measures distraction, fatigue and reading comfort, and explicitly not comprehension. A display change under a fixation is detected unless timed to the saccade (Slattery, Angele and Rayner, 2011). Preventing rereading reduced comprehension (Schotter, Tran and Rayner, 2014). Consequence: the page never changes, and earlier passages stay.
+- Visible process raises perceived value and can be preferred to an instant result when the result is good, and lowers it when the result disappoints (Buell and Norton, 2011); unexplained and uncertain waits feel longer (Maister, 1985); a justified delay reads as more trustworthy (Zhang, Tsiakas and Schneegass, 2024). Consequence: the field explains the wait; because the same literature implies a risk of unwarranted trust, the field never encodes confidence and the study measures false-answer acceptance.
 - Streaming paused at clause and sentence boundaries was rated less demanding than constant-rate streaming (Zhu et al., CHI 2026), and an instant answer was rated less thoughtful than one with a short visible delay (Tan and Nov, CHI 2026). Both concern left-to-right streaming and are recent enough that citation details are moderately confirmed. Consequence: the page takes whole sentences.
 - The Zeigarnik memory effect does not replicate as a general effect; only a pull to resume survives (Ghibellini and Meier, 2025). Gestalt closure concerns contours (Elder and Zucker, 1994). The peak-end rule is contested for mild positive experiences (Alaybek et al., 2022; and null results for simple positive experiences). Consequence: the tension budget, the closure bonus and the exhale are retired; the ending is a quiet terminal state.
-- Perceptual fluency raises judged truth (Reber and Schwarz, 1999; Alter and Oppenheimer, 2009). Consequence: a guardrail, not a goal.
+- Perceptual fluency raises judged truth (Reber and Schwarz, 1999, a small early demonstration in which the manipulation was color contrast rather than typeface; Alter and Oppenheimer, 2009, for the wider literature). Consequence: a guardrail rather than a goal.
 - Practitioner guidance converges on announcing completed messages rather than token streams to screen readers; no controlled study was found. Consequence: the status is announced on state changes only.
+- Motion has principles where it does not have measurements. Squash and stretch defines an object's rigidity and mass by distorting its shape during an action, and anticipation and follow-through place that action in time; this is a craft argument rather than a study (Lasseter, 1987, applying the principles the Disney studio developed in the 1930s, which Thomas and Johnston codified in 1981 without inventing them). Applying solidity, exaggeration and reinforcement to interface objects, so that changes are easier to follow, is a design and implementation paper with no user study and cannot be cited as evidence of measured benefit (Chang and Ungar, 1993). Where interface motion has been measured: animated transitions between statistical graphics significantly beat abrupt changes for object tracking and estimation, with simple staging helping modestly and being preferred while heavy staging hurt (Heer and Robertson, 2007); and in peripheral vision, motion is detected far better than a color change, with traveling icons rated the most distracting, then zoom, and slow linear motion and slow blink the least, so the authors recommend slow linear motion as the compromise (Bartram, Ware and Calvert, 2003, with distraction self-reported and the task a notification study with small icons beside a primary task, so it bears on peripheral motion rather than on animated text). Consequence: the cursor is one small body whose motion is short and confined to the zone, the snap is one settling of 340 ms in place, the page itself never moves, and no benefit is claimed as measured. The separation of the still page from the watched zone is carried by ink and sharpness rather than by movement, which is figure and ground in the sense Koffka (1935) set out, crediting Rubin (1915).
 - No study tests non-sequential text arrival, and no published design guidance for rendering diffusion text was found. The comparison this work proposes has not been run by anyone.
 
 The landscape review confirmed that the shipped open samplers (LLaDA, Dream, Fast-dLLM) never revisit a committed token; ReMDM and discrete flow matching corrector sampling are documented exceptions, and the production samplers behind Mercury and Gemini Diffusion are undisclosed. The contract's snapshot path exists for the reversible case.
 
-### 9.6 Hypotheses, restated
+### 9.7 Hypotheses, restated
 
 The study is two labeled experiments: an availability-faithful comparison under identical source events, and a matched-duration comparison isolating preference. Conditions: the raw prefix, each word, each sentence with forming text, each sentence without it, each paragraph, counterbalanced within participants with a Latin square over balanced questions. Primary outcomes: qualification accuracy and time to a correct usable answer, with source availability recorded separately. Secondary: perceived wait, comfort, satisfaction, delayed comprehension, brand recognition. Guardrails: false-answer acceptance and truth discrimination. Sample size from a pilot and a prespecified smallest useful effect, preregistered. No participants have been recruited.
 
@@ -188,23 +223,35 @@ Alter, A. L., and Oppenheimer, D. M. (2009). Uniting the tribes of fluency to fo
 
 Arriola, M., et al. (2025). Block Diffusion: Interpolating Between Autoregressive and Diffusion Language Models. arXiv:2503.09573.
 
-Buell, R. W., and Norton, M. I. (2011). The labor illusion: How operational transparency increases perceived value. Management Science, 57(9), 1564 to 1579.
+Bartram, L., Ware, C., and Calvert, T. (2003). Moticons: detection, distraction and task. International Journal of Human-Computer Studies, 58(5), 515 to 545.
+
+Buell, R. W., and Norton, M. I. (2011). The labor illusion: How operational transparency increases perceived value. Management Science, 57(9), 1564 to 1579. The effect reverses when the result disappoints.
+
+Chang, B.-W., and Ungar, D. (1993). Animation: From Cartoons to the User Interface. UIST '93, 45 to 55. A design and implementation paper with no user study.
 
 Elder, J., and Zucker, S. (1994). A measure of closure. Vision Research, 34(24), 3361 to 3369.
 
 Ghibellini, R., and Meier, B. (2025). Interruption, recall and resumption: a meta-analysis of the Zeigarnik and Ovsiankina effects. Humanities and Social Sciences Communications. doi:10.1057/s41599-025-05000-w.
 
-Liu, X., et al. (2023). Modeling and Improving Text Stability in Live Captions. CHI 2023 Extended Abstracts.
+Heer, J., and Robertson, G. G. (2007). Animated Transitions in Statistical Data Graphics. IEEE Transactions on Visualization and Computer Graphics, 13(6), 1240 to 1247.
+
+Koffka, K. (1935). Principles of Gestalt Psychology. Harcourt, Brace. The systematic treatment of figure and ground, credited there to Rubin (1915).
+
+Lasseter, J. (1987). Principles of Traditional Animation Applied to 3D Computer Animation. Computer Graphics (SIGGRAPH '87), 21(4), 35 to 44.
+
+Liu, X. "Bruce", Zhang, J., Ferrer, L., Xu, S., Bahirwani, V., Smus, B., Olwal, A., and Du, R. (2023). Modeling and Improving Text Stability in Live Captions. CHI 2023 Extended Abstracts (Late-Breaking Work). doi:10.1145/3544549.3585609. N = 123 crowdsourced; distraction, fatigue and reading comfort, and explicitly not comprehension.
 
 Maister, D. H. (1985). The psychology of waiting lines. In The Service Encounter.
 
-Reber, R., and Schwarz, N. (1999). Effects of perceptual fluency on judgments of truth. Consciousness and Cognition, 8(3), 338 to 342.
+Reber, R., and Schwarz, N. (1999). Effects of perceptual fluency on judgments of truth. Consciousness and Cognition, 8(3), 338 to 342. A small early demonstration, manipulating color contrast.
 
 Schotter, E. R., Tran, R., and Rayner, K. (2014). Don't believe what you read (only once): Comprehension is supported by regressions during reading. Psychological Science, 25(6), 1218 to 1226.
 
 Slattery, T. J., Angele, B., and Rayner, K. (2011). Eye movements and display change detection during reading. Journal of Experimental Psychology: Human Perception and Performance, 37(6), 1924 to 1938.
 
 Tan, F. F.-Y., and Nov, O. (2026). The Impact of Response Latency and Task Type on Human-LLM Interaction and Perception. CHI 2026. Citation details moderately confirmed at the time of writing.
+
+Thomas, F., and Johnston, O. (1981). Disney Animation: The Illusion of Life. Abbeville Press. Codified the twelve principles; it did not invent them.
 
 Wang, G., Schiff, Y., Sahoo, S., and Kuleshov, V. (2025). Remasking Discrete Diffusion Models. arXiv:2503.00307.
 

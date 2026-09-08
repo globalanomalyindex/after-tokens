@@ -1,5 +1,6 @@
 'use client'
 
+import { resolution } from '@/lib/settle/phase'
 import { formingText, heldText } from '@/lib/settle/reader'
 import type { SettleState } from '@/lib/settle/types'
 import type { MarkShape } from '@/lib/settle/voice'
@@ -17,8 +18,10 @@ export function statusSegments(state: SettleState, paused = false, detail = true
     case 'receiving': {
       if (!detail) return ['receiving']
       const settled = state.bound !== null ? `${state.receivedCount} of ${state.bound} settled` : `${state.receivedCount} settled`
-      const holding = heldText(state) || formingText(state) ? (formingText(state) ? 'forming' : 'holding') : null
-      return holding ? ['receiving', settled, holding] : ['receiving', settled]
+      // the phase is read off the field only when the source sends commitments;
+      // a snapshot stream has no field to read
+      const phase = state.source === 'commit' ? resolution(state).phase : null
+      return phase ? ['receiving', phase, settled] : ['receiving', settled]
     }
     case 'complete':
       return state.previousPassages ? ['complete', 'revision applied'] : ['complete']

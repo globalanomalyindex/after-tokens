@@ -8,8 +8,9 @@ import { TRACE_NUMBERS } from '@/lib/traces/findings'
 // The first screen: the title, the argument in one line, and beside it the
 // thing itself: a real recording, replayed through the reducer. The random
 // sampler commits in no particular order inside each block, so the cursor
-// visibly searches, writes a word here and a word there, and the sentences
-// settle onto the page as they close. Nothing in the stage was authored.
+// visibly searches, writes a word here and a word there, the model's own
+// drafts ghost in around it and sharpen, and the sentences settle onto the
+// page as they close. Nothing in the stage was authored.
 
 export function SectionHook() {
   return (
@@ -23,8 +24,8 @@ export function SectionHook() {
           <p className="standfirst mt-8 max-w-[34ch]">wait for the water to clear.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
             a concept case study on how an answer from a diffusion language model should reach a reader: only what
-            the model has committed, on a page that holds still, with the process in view and a cursor doing the
-            work. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
+            the model has committed, on a page that holds still, with the model&rsquo;s own drafts in view, ghosted
+            until they commit, and a cursor doing the work. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
             runs and an audit of the version before it. nothing here is measured on a reader.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>

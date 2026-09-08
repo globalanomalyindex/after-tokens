@@ -18,12 +18,16 @@ import { useReplay } from '@/components/settle/use-replay'
 
 const NOTES: { title: string; body: string }[] = [
   {
-    title: 'the cursor is the assistant',
-    body: 'the circle is where the model is working. it moves out of order because the model does, writes a word where the source just committed one, sweeps to the end of the page when a sentence closes, and rests when the answer is done. a reader can watch it think, and has a reason to stay.',
+    title: 'the cursor is a companion',
+    body: 'the small body is where the model is working. it has mass: it leaves quickly, stretches as it flies, arrives softly, and presses when it finalizes a word. it moves out of order because the model does, sweeps to the end of the page when a sentence closes, and rests when the answer is done. a reader can watch it think, and has a reason to stay.',
+  },
+  {
+    title: 'a draft you can watch become the answer',
+    body: 'the ghost words are the model\u2019s own current guesses, drawn only above a floor and only as guesses, sharpening as the model grows sure and snapping solid when they commit. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, with nothing invented; the margin names the phase it is in.',
   },
   {
     title: 'a tick under the thumb',
-    body: 'a short tap when a sentence settles, stillness at completion, nothing while the model is only deciding the length. on the web, android answers the vibration api and this frame uses it; ios needs core haptics in a native app. a concept until a native build carries it.',
+    body: 'a light tap when a word snaps in, a firmer one when a sentence settles, stillness at completion, nothing while the model is only deciding the length. on the web, android answers the vibration api and this frame uses it; ios needs core haptics in a native app. a concept until a native build carries it.',
   },
   {
     title: 'the slot',
@@ -31,7 +35,7 @@ const NOTES: { title: string; body: string }[] = [
   },
   {
     title: 'time on app, with a guardrail',
-    body: 'watching something unfold is why people stay. it is also the labor illusion: seeing work raises the value people put on a result whether or not it deserves it. so the study measures whether a calmer, busier surface gets believed too easily, and time on app is a signal here, never the score.',
+    body: 'watching something unfold is why people stay. it is also the labor illusion: seeing work raises the value people put on a good result, and turns on a poor one. so the study measures whether a calmer, busier surface gets believed too easily, and time on app is a signal here, never the score.',
   },
 ]
 
@@ -45,7 +49,7 @@ export function SectionConcept() {
     loadTrace('sky-blue__random-b32').then((t) => { if (!cancelled) setTrace(t) }).catch(() => {})
     return () => { cancelled = true }
   }, [])
-  const replay = useMemo(() => (trace ? replayTrace(trace, { scale: 2 }) : null), [trace])
+  const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLDivElement>(0.3)
   const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
   const waiting = clock.state.status === 'receiving' || clock.state.status === 'waiting'

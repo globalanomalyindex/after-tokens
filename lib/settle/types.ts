@@ -8,8 +8,14 @@ export type Policy = 'word' | 'sentence' | 'paragraph'
 /** One irreversible commitment: a token at a position. `end` marks an end-of-sequence token. */
 export type Commit = { position: number; text: string; end?: boolean }
 
+/** The source's current guess for a position it has not committed: its
+ *  provisional argmax and that guess's probability. An empty text withdraws
+ *  the guess. A draft is never a commitment and never reaches the page. */
+export type Draft = { position: number; text: string; p: number }
+
 export type SettleEvent =
   | { type: 'commit'; atMs: number; tokens: Commit[] }
+  | { type: 'draft'; atMs: number; guesses: Draft[] }
   | { type: 'finish'; atMs: number; tokenCount: number }
   | { type: 'snapshot'; atMs: number; text: string; final: boolean }
   | { type: 'revision'; atMs: number; text: string }
@@ -18,6 +24,7 @@ export type SettleEvent =
   | { type: 'error'; atMs: number; message: string }
 
 export type Passage = { id: string; text: string; availableAtMs: number }
+export type DraftState = { text: string; p: number; shown: boolean }
 
 export type Status = 'waiting' | 'receiving' | 'complete' | 'stopped' | 'error' | 'revision'
 
@@ -36,6 +43,9 @@ export type SettleState = {
   releasedLength: number
   /** every committed position, contiguous or not */
   tokens: Record<number, Commit>
+  /** the source's current guess at each open position it has one for;
+   *  `shown` is whether it has cleared the floor (with hysteresis) */
+  drafts: Record<number, DraftState>
   /** the first position not yet in the prefix */
   nextPosition: number
   receivedCount: number

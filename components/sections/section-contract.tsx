@@ -8,14 +8,14 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 const RULES: string[] = [
   'nothing is drawn that the source has not committed: no final text, no reserved widths, no map of which words matter, no forecast of length.',
   'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
-  'text on the page never changes, moves or reflows. when a sentence closes, the page&rsquo;s ink settles through its words&rsquo; letterforms; their shapes and places do not change. the carved zone after the page reflows as hairlines become words.',
+  'text on the page never changes, moves or reflows. when a sentence closes, the page&rsquo;s ink settles through its words&rsquo; letterforms; their shapes and places do not change. the carved zone after the page reflows as blank space, drafts and pieces become words, and every change of width is a slide.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order text appears only after the page, never inside it. an open position is reserved blank space; a piece of a word is a glimmer; a word is written where it will stand, in the secondary ink, only after every piece of it has committed. the cursor that writes it goes only where the source has been.',
+  'out-of-order text appears only after the page, never inside it. an open position is reserved blank space; the source&rsquo;s own guess for it, above a floor, is drawn as a draft and never as a word; a committed piece is drawn as a piece; a word snaps in where it will stand, in the secondary ink, only after every piece of it has committed. nothing committed is drawn as a guess, nothing guessed is drawn as committed, and no guess reaches the page. the cursor goes only where the source has been.',
   'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
   'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
   'a brand changes what cells, marks and onsets look like and how they move. it never changes when text becomes available or is released.',
-  'reduced motion removes the breath, the bloom and the onset, and changes nothing else.',
+  'reduced motion removes the breath, the bloom, the onset, the snap and the cursor&rsquo;s flight, and changes nothing else.',
 ]
 
 const FINALITY: { dt: string; dd: string }[] = [
