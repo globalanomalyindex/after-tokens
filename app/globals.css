@@ -941,32 +941,54 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    hairline, a complete word stands where it will in the secondary ink, and
    the lowest committed end is one end mark. The zone reflows as hairlines
    become words; the page before it never moves. */
+.settle-zone { display: inline; }
 .settle-carve { display: inline; }
 .settle-cw {
+  display: inline-block;
   color: var(--settle-ink-2);
   animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
 }
+.settle-fw { display: inline-block; }
+/* the marks. A placeholder is a soft mark in the shape the voice chose:
+   a haze rather than a glyph, so the unsolved part reads as suspension and
+   never as punctuation. Its box is about the width a token takes once it is
+   a word, with the mark drawn small in the middle, so a word replacing its
+   marks barely moves what follows. tick: a soft vertical; dot: a soft round;
+   dash: a soft horizontal; square: a small firm block. */
 .settle-slot {
   display: inline-block;
-  width: 1ch;
-  height: 1px;
-  margin: 0 0.12ch;
-  vertical-align: -0.08em;
-  background: currentColor;
+  width: 2.1ch;
+  height: 0.6em;
+  margin: 0 0.05ch;
+  vertical-align: -0.1em;
   opacity: var(--settle-open-alpha, 0.25);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 1.15ch 100%;
+  background-image: radial-gradient(ellipse 60% 55% at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 45%, transparent 100%);
 }
-.settle-slot[data-state="held"] { opacity: 0.55; }
-.settle-slot[data-state="end"] { width: 1.4ch; height: 2px; vertical-align: -0.1em; margin-left: 0.4ch; opacity: 0.45; border-radius: 1px; }
-/* while the source is receiving, an open hairline drifts in weight, slowly,
-   with a phase per position: the unsolved part of the answer is alive and
-   nothing more. Off under reduced motion. */
+.settle[data-mark="tick"] .settle-slot { background-size: 0.75ch 100%; background-image: radial-gradient(ellipse 45% 70% at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 45%, transparent 100%); }
+.settle[data-mark="dot"] .settle-slot { background-size: 0.8em 100%; background-image: radial-gradient(circle at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 38%, transparent 70%); }
+.settle[data-mark="dash"] .settle-slot { background-size: 1.6ch 100%; background-image: radial-gradient(ellipse 70% 30% at 50% 55%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 50%, transparent 100%); }
+.settle[data-mark="square"] .settle-slot { background-size: 0.85ch 0.4em; background-image: linear-gradient(currentColor, currentColor); opacity: calc(var(--settle-open-alpha, 0.25) * 0.7); }
+.settle-slot[data-state="held"] { opacity: 0.62; }
+.settle[data-mark="square"] .settle-slot[data-state="held"] { opacity: 0.5; }
+.settle-slot[data-state="end"] { width: 1.8ch; margin-left: 0.3ch; opacity: 0.5; background-size: 1.6ch 100%; background-image: radial-gradient(ellipse 80% 22% at 50% 60%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 55%, transparent 100%); }
+/* the wave: while the source is receiving, a slow swell travels through
+   the open marks along the answer, so the suspension moves as one body.
+   Brightness only. Off under reduced motion. */
 .settle[data-status="receiving"] .settle-slot[data-state="open"] {
-  animation: settle-hairline 3600ms ease-in-out infinite;
-  animation-delay: calc(var(--k, 0) * -233ms);
+  animation: settle-wave 2800ms ease-in-out infinite;
+  animation-delay: calc(var(--k, 0) * -46ms);
 }
-@keyframes settle-hairline {
+@keyframes settle-wave {
   0%, 100% { opacity: var(--settle-open-alpha, 0.25); }
-  50%      { opacity: calc(var(--settle-open-alpha, 0.25) + 0.12); }
+  50%      { opacity: calc(var(--settle-open-alpha, 0.25) + 0.2); }
+}
+.settle[data-mark="square"][data-status="receiving"] .settle-slot[data-state="open"] { animation-name: settle-wave-square; }
+@keyframes settle-wave-square {
+  0%, 100% { opacity: calc(var(--settle-open-alpha, 0.25) * 0.8); }
+  50%      { opacity: calc(var(--settle-open-alpha, 0.25) * 0.8 + 0.18); }
 }
 .settle[data-paused="true"] .settle-slot { animation: none; }
 

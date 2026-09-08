@@ -9,8 +9,8 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 // and the strip as the field's compact form.
 
 const REGISTERS: { label: string; body: string; sample: React.ReactNode }[] = [
-  { label: 'open', body: 'a position with no commitment yet: a hairline standing where a word will', sample: <span className="settle-carve"><span className="settle-slot" data-state="open" /> <span className="settle-slot" data-state="open" /> <span className="settle-slot" data-state="open" /></span> },
-  { label: 'held', body: 'a piece of a word is in; the rest is out, so no letters are drawn', sample: <span className="settle-carve"><span className="settle-slot" data-state="held" /> <span className="settle-slot" data-state="held" /></span> },
+  { label: 'open', body: 'a position with no commitment yet: a soft mark, in the voice&rsquo;s shape, standing where a word will', sample: <span className="settle-carve"><span className="settle-slot" data-state="open" /> <span className="settle-slot" data-state="open" /> <span className="settle-slot" data-state="open" /></span> },
+  { label: 'held', body: 'a piece of a word is in; the rest is out, so no letters are drawn; the mark firms', sample: <span className="settle-carve"><span className="settle-slot" data-state="held" /> <span className="settle-slot" data-state="held" /></span> },
   { label: 'available', body: 'every piece and its boundaries are in. the word stands where it will, in the secondary ink, readable, waiting for its sentence', sample: <span className="settle-carve"><span className="settle-cw">sunlight scatters</span></span> },
   { label: 'settled', body: 'its sentence closed under the policy: the page&rsquo;s ink settled through the letterforms, and the word has not moved', sample: <span className="settle-passage"><span className="settle-w" data-t="The sky is blue.">The sky is blue.</span></span> },
   { label: 'end', body: 'the lowest committed end token; the answer ends at or before it, so nothing past it is drawn', sample: <span className="settle-carve"><span className="settle-slot" data-state="end" /></span> },
@@ -22,7 +22,7 @@ export function SectionField() {
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what settles first</h2>
       <p className="standfirst max-w-3xl">
         the field is carved into the text. every position after the page is drawn as what the sampler has made of it:
-        a hairline while it is open, a held hairline when a piece of a word is in, the word itself in a secondary ink
+        a soft mark while it is open, a firmer mark when a piece of a word is in, the word itself in a secondary ink
         once every piece and its boundaries are in, and one end mark at the lowest position the sampler has marked as
         end, since an end token anywhere bounds the answer to before it. the zone is cut down from the tail as the model
         decides the length, words appear across it in the sampler&rsquo;s own order, and when a sentence closes the
@@ -59,7 +59,7 @@ export function SectionField() {
             accent instead.
           </p>
         </div>
-        <dl className="grid gap-5 stage p-6 md:p-8 settle" data-demo data-status="complete" style={{ ['--settle-open-alpha' as string]: 0.3, fontFamily: 'var(--font-ui)' } as CSSProperties}>
+        <dl className="grid gap-5 stage p-6 md:p-8 settle" data-demo data-status="complete" data-mark="tick" style={{ ['--settle-open-alpha' as string]: 0.3, fontFamily: 'var(--font-ui)' } as CSSProperties}>
           {REGISTERS.map((r) => (
             <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-4 items-baseline">
               <dt className="text-base" aria-label={r.label}>{r.sample}</dt>
@@ -78,17 +78,18 @@ export function SectionField() {
           <p>
             a typing indicator says that something is happening. the carved zone says what, where the answer will be: 84 of 128 positions
             settled, the end known, one hole holding the next sentence, and the words that are already sure standing where they will.
-            it costs nothing in truth, because every hairline and every word is a fact the sampler already emitted. the margin keeps a
+            it costs nothing in truth, because every mark and every word is a fact the sampler already emitted. the margin keeps a
             small status for the stretch before any readable word exists.
           </p>
           <p className="mt-4">
             a product that wants the text zone quiet can hold the carved zone and show the strip instead: one cell per position under the
-            page, the same states, the field&rsquo;s compact form. the playground offers all three: the carved field, the in-order text
+            page, the same states, the field&rsquo;s compact form. as marks become words the zone reflows, and everything that stays
+            glides to its new place rather than jumping. the playground offers all three: the carved field, the in-order text
             alone, and nothing after the page, as margin did.
           </p>
           <p className="mt-4">
             the <DefinitionTerm term="labor illusion">labor illusion</DefinitionTerm> is the reason to be careful here: seeing work raises the value
-            people put on a result whether or not the result deserves it. so a hairline is never a letter, a word is never a score, and
+            people put on a result whether or not the result deserves it. so a mark is never a letter, a word is never a score, and
             the study tests one hypothesis about this surface: that one calm transition inside newly ready words feels more coherent than
             many independent marks, without assuming a smoother presentation reads better.
           </p>

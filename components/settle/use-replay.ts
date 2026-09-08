@@ -37,6 +37,13 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
   const [elapsedMs, setElapsedMs] = useState(0)
   const [running, setRunning] = useState(autoplay)
   const [actions, setActions] = useState<SettleEvent[]>([])
+  // bumped on every reset so the frame loop starts over from zero, even
+  // when it was already running and nothing else about it changed
+  const [run, setRun] = useState(0)
+  // a generation, bumped synchronously on reset, so a frame from the old
+  // loop that lands between the reset and the new loop cannot write the
+  // old time back
+  const genRef = useRef(0)
   const elapsedRef = useRef(0)
   const reducedMotion = usePrefersReducedMotion()
   const durationMs = replay?.durationMs ?? 0
@@ -61,17 +68,21 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
   }, [events, happened, policy, replay])
 
   useEffect(() => {
+    genRef.current += 1
     elapsedRef.current = 0
     setElapsedMs(0)
     setActions([])
     setRunning(autoplay)
+    setRun((k) => k + 1)
   }, [replay, runKey, autoplay])
 
   useEffect(() => {
     if (!running || !replay) return
     let frame = 0
+    const gen = genRef.current
     const startedAt = performance.now() - elapsedRef.current
     const tick = (now: number) => {
+      if (gen !== genRef.current) return
       const next = Math.min(durationMs, Math.max(elapsedRef.current, now - startedAt))
       elapsedRef.current = next
       setElapsedMs(next)
@@ -80,16 +91,18 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     }
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [replay, running, durationMs])
+  }, [replay, running, durationMs, run])
 
   const finished = elapsedMs >= durationMs && durationMs > 0
   const play = useCallback(() => setRunning(true), [])
   const pause = useCallback(() => setRunning(false), [])
   const restart = useCallback(() => {
+    genRef.current += 1
     elapsedRef.current = 0
     setElapsedMs(0)
     setActions([])
     setRunning(true)
+    setRun((k) => k + 1)
   }, [])
   const seekToEnd = useCallback(() => {
     elapsedRef.current = durationMs
