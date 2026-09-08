@@ -22,17 +22,21 @@ import { useCompanion } from './use-companion'
 // ghost of the secondary ink that sharpens with its probability, visibly
 // provisional. A committed piece of a word that is not complete stands as
 // the piece it is. A complete word snaps in where it will stand, in the
-// secondary ink, as the cursor reaches it. When a sentence closes the cursor
-// sweeps to the end of the page and the page's ink settles through the
-// sentence. At completion the cursor rests and fades.
+// secondary ink, as the companion's motes reach it. The companion, a small
+// soft body in the brand's color, hovers over the part of the answer that
+// is still open and drifts after it; it never goes to the words, it sends
+// motes to them. When a sentence closes it rings and the page's ink settles
+// through the sentence. At completion it dissolves.
 //
 // The honesty line: nothing committed is drawn as a guess, nothing guessed
 // is drawn as committed, and no guess ever reaches the page.
 
 export type FormingMode = 'carve' | 'flow' | 'held'
 
-/** Where the cursor sits inside a cell: the middle of the lowercase letters, from the cell's top, in em. */
-const CELL_MID_EM = 0.71
+/** How far to either side of a settled word the drafts lift, in positions. */
+const LIFT_REACH = 3
+/** The drafts near a settled word lift for this long, in ms. */
+const LIFT_MS = 640
 
 /** Splits text into words and the whitespace between them, whitespace kept. */
 function pieces(text: string): string[] {
@@ -89,9 +93,10 @@ function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms
 }
 
 /** A complete word in the zone. It opens from the width its positions held
- *  to its own, and snaps in: a short settling of blur, weight and color as
- *  the cursor reaches it. Its text never changes once it is written. */
-function ZoneWord({ text, position, span, forming, ms, widths }: { text: string; position: number; span: number; forming: boolean; ms: number; widths: Widths }) {
+ *  to its own, and snaps in when the companion's mote lands on it: a short
+ *  settling of blur and weight. Until then it stands soft. Its text never
+ *  changes once it is written. */
+function ZoneWord({ text, position, span, forming, ms, widths, snap }: { text: string; position: number; span: number; forming: boolean; ms: number; widths: Widths; snap: 'pending' | 'done' }) {
   const ref = useRef<HTMLSpanElement>(null)
   const from = useCallback(() => {
     let sum = 0
@@ -106,8 +111,10 @@ function ZoneWord({ text, position, span, forming, ms, widths }: { text: string;
     for (let p = position; p < position + span; p += 1) widths.set(p, p === position ? natural : 0)
   }, [position, span, widths])
   useWidthGlide(ref, `${position}:${text}`, ms, from, after)
+  // the snap is flipped on the element by the companion when its mote
+  // lands; React writes the attribute once, at mount
   return (
-    <span ref={ref} className="settle-cw" data-pos={position} data-end={position + span - 1} data-forming={forming || undefined}>{text}</span>
+    <span ref={ref} className="settle-cw" data-pos={position} data-end={position + span - 1} data-forming={forming || undefined} data-snap={snap}>{text}</span>
   )
 }
 
@@ -162,7 +169,7 @@ function groupItems(items: CarveItem[]): CarveItem[][] {
 
 type Props = {
   state: SettleState
-  /** the position the source committed last, where the cursor goes */
+  /** the position the source committed last; kept for callers, the companion does not follow it */
   focus?: number | null
   /** a voice on top of the surrounding brand's, clamped to the ranges */
   voice?: Partial<SettleVoice>
@@ -172,7 +179,7 @@ type Props = {
   preview?: boolean
   /** draw the strip, the field's compact form (default: only when the zone is not carved) */
   field?: boolean
-  /** draw the cursor (default: in the carved zone) */
+  /** draw the companion (default: in the carved zone) */
   cursor?: boolean
   /** draw the margin's words (default true) */
   status?: boolean
@@ -190,7 +197,6 @@ type Props = {
 
 export function SettleAnswer({
   state,
-  focus = null,
   voice: voiceProp,
   forming: formingProp,
   preview,
@@ -224,9 +230,8 @@ export function SettleAnswer({
   const widths = useRef<Widths>(new Map()).current
   const rootRef = useRef<HTMLDivElement>(null)
   const pageEndRef = useRef<HTMLSpanElement>(null)
-  const haloRef = useRef<HTMLSpanElement>(null)
-  const headRef = useRef<HTMLSpanElement>(null)
-  const trailRef = useRef<HTMLSpanElement>(null)
+  const orbRef = useRef<HTMLSpanElement>(null)
+  const motesRef = useRef<HTMLSpanElement>(null)
   const reviewId = useId()
   const [reviewing, setReviewing] = useState(false)
   const revisionKey = state.revisionText === null ? null : `${state.lastEventAtMs}:${state.revisionText}`
@@ -242,8 +247,8 @@ export function SettleAnswer({
     el.style.setProperty('--settle-ink', getComputedStyle(el).color)
   }, [brand, className, style])
 
-  // a sentence closing: the cursor sweeps to the end of the page for a beat,
-  // and a device that can tick, ticks
+  // a sentence closing: the companion rings for a beat, and a device that
+  // can tick, ticks
   const [finalizing, setFinalizing] = useState(false)
   const [closings, setClosings] = useState(0)
   const passagesRef = useRef(state.passages.length)
@@ -254,7 +259,6 @@ export function SettleAnswer({
     }
     passagesRef.current = state.passages.length
   }, [state.passages.length, haptics, reduced])
-  // each closing holds the sweep for a beat; a second closing inside the beat extends it
   useEffect(() => {
     if (!closings) return
     setFinalizing(true)
@@ -262,57 +266,106 @@ export function SettleAnswer({
     return () => window.clearTimeout(timer)
   }, [closings])
 
-  // the cursor's target: the element covering the position the source just
-  // committed; after a word or a piece, like a caret; on a blank, at its
-  // center; at the page's end while a sentence settles and when the source
-  // is done. Measured on demand, every frame the cursor moves, so it follows
-  // a word that is still opening.
+  // the companion's home: in the gap under the last line written in the
+  // zone, over the middle of what is still open (blank space and drafts),
+  // so it floats in the answer's free space and never on a line of it;
+  // failing that, beside the last thing written; when the source is done,
+  // the end of the page. Measured on demand, a few times a second, and
+  // smoothed by the body's own spring.
   const terminal = state.status !== 'receiving' && state.status !== 'waiting'
-  const targetRef = useRef<{ el: Element; after: boolean } | null>(null)
-  useLayoutEffect(() => {
+  const terminalRef = useRef(terminal)
+  terminalRef.current = terminal
+  const measureHome = useCallback(() => {
     const root = rootRef.current
-    if (!root || !showCursor) return
-    let target: Element | null = null
-    let after = true
-    if (!finalizing && !terminal && focus !== null) {
-      for (const el of root.querySelectorAll<HTMLElement>('.settle-zone [data-pos]')) {
-        const start = Number(el.dataset.pos)
-        const end = Number(el.dataset.end ?? el.dataset.pos)
-        if (focus >= start && focus <= end) {
-          target = el
-          after = el.classList.contains('settle-cw') || el.classList.contains('settle-cz')
-          break
-        }
+    if (!root) return null
+    const o = root.getBoundingClientRect()
+    const em = parseFloat(getComputedStyle(root).fontSize) || 16
+    if (!terminalRef.current) {
+      const open = root.querySelectorAll<HTMLElement>('.settle-zone .settle-slot[data-state="open"], .settle-zone .settle-cz[data-state="draft"]')
+      let x = 0
+      let n = 0
+      open.forEach((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.width === 0 && r.height === 0) return
+        x += r.left - o.left + r.width / 2
+        n += 1
+      })
+      let lastBottom = -Infinity
+      let lastRight = 0
+      root.querySelectorAll<HTMLElement>('.settle-zone .settle-cw, .settle-zone .settle-cz, .settle-page .settle-w').forEach((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.width === 0) return
+        const bottom = r.bottom - o.top
+        if (bottom > lastBottom + 1) { lastBottom = bottom; lastRight = r.right - o.left }
+        else if (Math.abs(bottom - lastBottom) <= 1) lastRight = Math.max(lastRight, r.right - o.left)
+      })
+      if (lastBottom === -Infinity) {
+        const first = open[0]
+        if (first) { const r = first.getBoundingClientRect(); return { x: r.left - o.left + r.width / 2, y: r.top - o.top + r.height / 2 } }
+      } else {
+        const width = o.width
+        const cx = n ? x / n : lastRight + 1.2 * em
+        return { x: Math.min(width - 0.8 * em, Math.max(0.8 * em, cx)), y: lastBottom + 0.85 * em }
       }
     }
-    if (!target) target = pageEndRef.current
-    targetRef.current = target ? { el: target, after } : null
-  })
-  const measureTarget = useCallback(() => {
-    const root = rootRef.current
-    const target = targetRef.current
-    if (!root || !target) return null
-    const r = target.el.getBoundingClientRect()
-    const o = root.getBoundingClientRect()
-    const em = parseFloat(getComputedStyle(target.el).fontSize) || 16
-    return { x: target.after ? r.right - o.left + 3 : r.left - o.left + r.width / 2, y: r.top - o.top + CELL_MID_EM * em }
+    const end = pageEndRef.current
+    if (!end) return null
+    const r = end.getBoundingClientRect()
+    return { x: r.left - o.left + 10, y: r.top - o.top + r.height / 2 }
   }, [])
-  const companion = useCompanion({ root: rootRef, halo: haloRef, head: headRef, trail: trailRef, target: measureTarget, active: showCursor, reduced })
-  // any change of what the zone shows can move the target
-  useLayoutEffect(() => { if (showCursor) companion.wake() })
+  const companion = useCompanion({ root: rootRef, orb: orbRef, motes: motesRef, home: measureHome, active: showCursor, paused, reduced })
 
-  // the press: the cursor finalizes a word. Once per new written word.
-  const [pulse, setPulse] = useState(0)
-  const writtenRef = useRef(0)
-  const written = useMemo(() => items.filter((item) => item.kind === 'word').length, [items])
-  useEffect(() => {
-    if (written > writtenRef.current && showCursor && !reduced) {
-      companion.press()
-      setPulse((n) => n + 1)
-      if (haptics && typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(5)
+  // the drafts beside a settled word lift for a moment: the recorded
+  // neighbor lift, drawn. Set on the elements directly, cleared by timer.
+  const liftTimers = useRef(new Map<number, number>())
+  const liftNeighbors = useCallback((position: number, span: number) => {
+    const root = rootRef.current
+    if (!root) return
+    for (let p = position - LIFT_REACH; p <= position + span - 1 + LIFT_REACH; p += 1) {
+      if (p >= position && p < position + span) continue
+      const el = root.querySelector<HTMLElement>(`.settle-zone .settle-cz[data-state="draft"][data-pos="${p}"]`)
+      if (!el) continue
+      el.dataset.lift = '1'
+      const previous = liftTimers.current.get(p)
+      if (previous) window.clearTimeout(previous)
+      liftTimers.current.set(p, window.setTimeout(() => { delete el.dataset.lift; liftTimers.current.delete(p) }, LIFT_MS))
     }
-    writtenRef.current = written
-  }, [written, showCursor, reduced, companion, haptics])
+  }, [])
+  useEffect(() => {
+    const timers = liftTimers.current
+    return () => { timers.forEach((t) => window.clearTimeout(t)); timers.clear() }
+  }, [])
+
+  // a word settling: the companion sends motes to it, and it snaps as the
+  // first lands. Once per new written word; several at once get several
+  // beams at once. Without motes (reduced motion, off screen), it snaps
+  // at once.
+  const seenWords = useRef(new Set<string>())
+  const motesOn = showCursor && !reduced
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const present = new Set<string>()
+    for (const item of items) {
+      if (item.kind !== 'word') continue
+      const key = `${item.position}:${item.text}`
+      present.add(key)
+      if (seenWords.current.has(key)) continue
+      seenWords.current.add(key)
+      const el = root.querySelector<HTMLElement>(`.settle-zone .settle-cw[data-pos="${item.position}"]`)
+      if (!el) continue
+      const settle = () => {
+        el.dataset.snap = 'done'
+        liftNeighbors(item.position, item.span)
+        if (haptics && !reduced && typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(5)
+      }
+      if (!motesOn || !companion.emit(el, settle)) el.dataset.snap = 'done'
+    }
+    // words the page took, or a restart, leave the set
+    for (const key of seenWords.current) if (!present.has(key)) seenWords.current.delete(key)
+  }, [items, companion, motesOn, liftNeighbors, haptics, reduced])
+  // any change of what the zone shows can move home
+  useLayoutEffect(() => { if (showCursor) companion.wake() })
 
   return (
     <div
@@ -335,7 +388,7 @@ export function SettleAnswer({
             const key = `g${first.position}`
             const space = leadingSpace(first) ? ' ' : ''
             const inner = group.map((item) => {
-              if (item.kind === 'word') return <ZoneWord key={`w${item.position}`} text={item.text.trim()} position={item.position} span={item.span} forming={item.forming} ms={ms} widths={widths} />
+              if (item.kind === 'word') return <ZoneWord key={`w${item.position}`} text={item.text.trim()} position={item.position} span={item.span} forming={item.forming} ms={ms} widths={widths} snap={motesOn ? 'pending' : 'done'} />
               if (item.kind === 'end') return <span key="end" className="settle-slot" data-state="end" data-pos={item.position} data-end={item.position + item.span - 1} />
               return <Cell key={`c${item.position}`} item={item} ms={ms} widths={widths} />
             })
@@ -347,10 +400,14 @@ export function SettleAnswer({
         {pageEmpty && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
       </div>
       {showCursor && (
-        <span className="settle-cursor" data-state={terminal ? 'done' : finalizing ? 'finalizing' : 'active'} aria-hidden="true">
-          <span ref={haloRef} className="settle-cursor-halo">{pulse > 0 && <span key={pulse} className="settle-cursor-ring" />}</span>
-          <span ref={trailRef} className="settle-cursor-trail" />
-          <span ref={headRef} className="settle-cursor-head" />
+        <span className="settle-companion" data-state={terminal ? 'done' : finalizing ? 'finalizing' : 'active'} aria-hidden="true">
+          <span ref={motesRef} className="settle-motes" />
+          <span ref={orbRef} className="settle-orb">
+            <span className="settle-orb-wisp" data-w="1" />
+            <span className="settle-orb-wisp" data-w="2" />
+            <span className="settle-orb-core" />
+            {closings > 0 && <span key={closings} className="settle-orb-ring" />}
+          </span>
         </span>
       )}
       {showField && <Field state={state} mark={voice.mark} />}

@@ -33,7 +33,7 @@ test.describe('reduced motion full audit', () => {
     const animating = await page.evaluate(() => {
       const named = (name: string) => name !== 'none' && name !== ''
       const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
-      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-cz, .settle-cz-text, .settle-w, .settle-floor, .settle-cursor, .settle-cursor-head, .settle-cursor-halo, .settle-cursor-trail, .settle-cursor-ring')).filter((el) => named(getComputedStyle(el).animationName)).length
+      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-cz, .settle-cz-text, .settle-w, .settle-floor, .settle-orb, .settle-orb-core, .settle-orb-wisp, .settle-orb-ring, .settle-mote')).filter((el) => named(getComputedStyle(el).animationName)).length
       return before + own
     })
     expect(animating).toBe(0)

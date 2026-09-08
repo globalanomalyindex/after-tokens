@@ -51,3 +51,7 @@ next-env.d.ts
 
 # local browser-qa artifacts
 /.playwright-mcp
+
+# skill installs are tooling, never part of the piece
+.agents/
+skills-lock.json

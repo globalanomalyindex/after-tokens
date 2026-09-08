@@ -18,12 +18,12 @@ import { useReplay } from '@/components/settle/use-replay'
 
 const NOTES: { title: string; body: string }[] = [
   {
-    title: 'the cursor is a companion',
-    body: 'the small body is where the model is working. it has mass: it leaves quickly, stretches as it flies, arrives softly, and presses when it finalizes a word. it moves out of order because the model does, sweeps to the end of the page when a sentence closes, and rests when the answer is done. a reader can watch it think. whether that is a reason to stay is the study\u2019s question.',
+    title: 'the companion is the character',
+    body: 'a small cloud in the brand\u2019s color lives in the bubble\u2019s open space, over the part of the answer still being decided. it drifts after that part as the answer fills, wanders while it waits, and never sits on a line. when a word settles it sends a few motes there, and several words settling at once get several beams at once, which is what a model filling positions in parallel looks like. it rings when a sentence closes and dissolves when the answer is done. a reader can watch it think. whether that is a reason to stay is the study\u2019s question.',
   },
   {
     title: 'a draft you can watch become the answer',
-    body: 'the ghost words are the model\u2019s own current guesses, drawn only above a floor and only as guesses, sharpening as the model grows sure and snapping solid when they commit. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, with nothing invented; the margin names the phase it is in.',
+    body: 'the ghost words are the model\u2019s own current guesses, drawn only above a floor and only as guesses, breathing while they wait, lifting beside a word that has just settled, and snapping solid when they commit. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, with nothing invented; the margin names the phase it is in.',
   },
   {
     title: 'a tick under the thumb',
