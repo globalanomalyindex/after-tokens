@@ -899,6 +899,49 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   to   { opacity: 1; }
 }
 
+/* The carved zone. Every position after the word-safe prefix, drawn as what
+   the sampler has made of it: an open position is a slot of static, a piece
+   of a word whose other pieces are out is a held slot, a complete word stands
+   where it will, dim, and a run of end tokens is one end mark. Slots stand
+   inline where words will, so the zone shortens from the tail as the model
+   decides the length and words appear across it in the sampler's own order.
+   The zone reflows as slots become words; the page before it never moves. */
+.settle-carve { display: inline; }
+.settle-cw {
+  color: color-mix(in oklab, currentColor calc(100% * var(--settle-carve-alpha, 0.52)), transparent);
+  animation: settle-carve-in var(--settle-onset) var(--ease-out-expo) both;
+}
+@keyframes settle-carve-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.settle-slot {
+  display: inline-block;
+  width: 1.05ch;
+  height: 0.5em;
+  margin: 0 0.06ch;
+  vertical-align: -0.1em;
+  border-radius: 1px;
+  background: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 3px);
+  background-size: 6px 100%;
+  opacity: var(--settle-open-alpha, 0.24);
+}
+.settle-slot[data-state="held"] { background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 3px); opacity: 0.5; }
+.settle-slot[data-state="end"] { width: 1.2ch; height: 2px; vertical-align: 0.22em; margin-left: 0.3ch; background: currentColor; opacity: 0.42; }
+/* static: while the source is receiving, an open slot's grain shifts in
+   steps and its weight drifts, with a phase per position, so the unsolved
+   part of the answer reads as noise being worked. Off under reduced motion. */
+.settle[data-status="receiving"] .settle-slot[data-state="open"] {
+  animation: settle-static 1500ms steps(3, end) infinite;
+  animation-delay: calc(var(--k, 0) * -191ms);
+}
+@keyframes settle-static {
+  0%   { background-position: 0 0; opacity: var(--settle-open-alpha, 0.24); }
+  50%  { opacity: calc(var(--settle-open-alpha, 0.24) + 0.14); }
+  100% { background-position: 3px 0; opacity: var(--settle-open-alpha, 0.24); }
+}
+.settle[data-paused="true"] .settle-slot { animation: none; }
+
 /* The margin. */
 .settle-margin {
   display: flex;
@@ -970,7 +1013,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .settle-w, .settle-fw[data-fresh] { animation: none; }
+  .settle-w, .settle-fw[data-fresh], .settle-cw, .settle-slot { animation: none !important; }
   .settle-forming { transition: none; }
   .settle-cell::before { animation: none !important; transition: none; }
   .settle-floor { animation: none !important; transition: none; }

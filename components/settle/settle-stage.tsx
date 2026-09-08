@@ -16,7 +16,7 @@ import type { SettleVoice } from '@/lib/settle/voice'
 import { TRACE_META, loadTrace, type TraceId } from '@/lib/traces/index'
 import { CONFIG_IDS, CONFIG_LABELS, PROMPT_IDS, PROMPT_LABELS, isCurated, traceIdFor, type SamplerConfig } from '@/lib/traces/prompts'
 import type { CodaPrompt } from '@/lib/coda/fixtures'
-import { SettleAnswer } from './settle-answer'
+import { SettleAnswer, type FormingMode } from './settle-answer'
 import { useReplay } from './use-replay'
 
 // A demo stage: a recording, replayed through the reducer, on the dark stage,
@@ -32,7 +32,8 @@ type Props = {
   sources?: 'curated' | 'all'
   controls?: StageControl[]
   policy?: Policy
-  preview?: boolean
+  /** what the zone after the page shows */
+  forming?: FormingMode
   pace?: Pace
   brand?: BrandId
   /** a voice on top of the brand's, clamped to the ranges */
@@ -44,7 +45,7 @@ type Props = {
   /** a change restarts the replay */
   runKey?: string | number
   /** a live readout beside the stage, given the current state */
-  readout?: (info: { policy: Policy; preview: boolean; pace: Pace; brand: BrandId }) => ReactNode
+  readout?: (info: { policy: Policy; forming: FormingMode; pace: Pace; brand: BrandId }) => ReactNode
   className?: string
 }
 
@@ -79,7 +80,7 @@ export function SettleStage({
   sources = 'curated',
   controls = [],
   policy: policyProp = 'sentence',
-  preview: previewProp = true,
+  forming: formingProp = 'carve',
   pace: paceProp = { scale: 4 },
   brand: brandProp = 'after-tokens',
   voice,
@@ -92,7 +93,7 @@ export function SettleStage({
 }: Props) {
   const [sourceId, setSourceId] = useState(source)
   const [policy, setPolicy] = useState<Policy>(policyProp)
-  const [preview, setPreview] = useState(previewProp)
+  const [forming, setForming] = useState<FormingMode>(formingProp)
   const [paceId, setPaceId] = useState<string>(() => PACES.find((p) => JSON.stringify(p.pace) === JSON.stringify(paceProp))?.id ?? 'quarter')
   const [brand, setBrand] = useState<BrandId>(brandProp)
   const [comparison, setComparison] = useState(comparisonProp)
@@ -106,7 +107,7 @@ export function SettleStage({
   const { ref, inView } = useInView<HTMLDivElement>(0.25)
   // any setting change replays the recording from the start with the new
   // setting applied, so what changed is seen from its first event
-  const settingsKey = `${sourceId}|${policy}|${preview}|${brand}|${paceId}|${comparison}|${runKey ?? ''}`
+  const settingsKey = `${sourceId}|${policy}|${forming}|${brand}|${paceId}|${comparison}|${runKey ?? ''}`
   const clock = useReplay(replay, { policy, autoplay: autoplay === 'immediate' || inView, runKey: settingsKey })
   const has = (c: StageControl) => controls.includes(c)
 
@@ -142,7 +143,7 @@ export function SettleStage({
           {has('prompt') && <PromptPicker prompts={promptItems} activeId={promptId} onSelect={selectPrompt} layout="compact" />}
           {has('config') && <ToggleRail label="sampler" items={CONFIG_IDS.map((id) => ({ id, label: CONFIG_LABELS[id] }))} activeId={config} onSelect={selectConfig} />}
           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
-          {has('preview') && <ToggleRail label="forming text" items={[{ id: 'shown', label: 'shown' }, { id: 'held', label: 'held, as margin did' }]} activeId={preview ? 'shown' : 'held'} onSelect={(id) => setPreview(id === 'shown')} />}
+          {has('preview') && <ToggleRail label="after the page" items={[{ id: 'carve', label: 'the carved field' }, { id: 'flow', label: 'in order only' }, { id: 'held', label: 'held, as margin did' }]} activeId={forming} onSelect={(id) => setForming(id as FormingMode)} />}
           {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
           {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'none', label: 'nothing' }, { id: 'prefix', label: 'the raw prefix' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
@@ -170,7 +171,7 @@ export function SettleStage({
               <SettleAnswer
                 state={state}
                 voice={voice}
-                preview={preview}
+                forming={forming}
                 paused={paused}
                 onApplyRevision={clock.applyRevision}
                 className={`${compact ? 'text-[14px]' : 'text-[15px] md:text-base'} leading-relaxed`}
@@ -187,11 +188,11 @@ export function SettleStage({
             </span>
           </div>
         </BrandProvider>
-        {readout && <div className="min-w-0">{readout({ policy, preview, pace, brand })}</div>}
+        {readout && <div className="min-w-0">{readout({ policy, forming, pace, brand })}</div>}
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{formingText(state) && preview ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · slots are open positions; a word stands where it will once every piece of it is in; the page takes it when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
         </p>
       )}
     </div>

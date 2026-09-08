@@ -13,9 +13,11 @@ export function fieldCells(state: SettleState): FieldCell[] {
   const committed = Object.keys(state.tokens).map(Number)
   const maxCommitted = committed.length ? Math.max(...committed) : -1
   // the extent is the request's bound, or a horizon past the last commit.
-  // once the prefix has reached an end token, positions past it that never
-  // committed are beyond the answer; committed end tokens past it stay end
+  // a committed end token at any position bounds the answer to before it,
+  // so everything past the lowest committed end is beyond the answer
   const extent = state.bound ?? Math.max(1, maxCommitted + 1 + FIELD_HORIZON)
+  let cut: number | null = null
+  for (const position of committed) if (state.tokens[position]?.end && (cut === null || position < cut)) cut = position
 
   // character offsets of the prefix tokens, so a position can be classed by
   // whether its text is on the page, forming, or held
@@ -34,8 +36,8 @@ export function fieldCells(state: SettleState): FieldCell[] {
       cellState = end <= state.releasedLength ? 'released' : end <= state.wordSafeLength ? 'forming' : 'held'
     } else {
       const token = state.tokens[position]
-      const past = state.endAt !== null && position > state.endAt
-      cellState = token ? (token.end ? 'end' : past ? 'beyond' : 'committed') : past ? 'beyond' : 'open'
+      const past = cut !== null && position > cut
+      cellState = past ? 'beyond' : token ? (token.end ? 'end' : 'committed') : 'open'
     }
     const last = cells[cells.length - 1]
     const collapses = cellState === 'end' || cellState === 'beyond'

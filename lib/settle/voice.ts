@@ -53,6 +53,7 @@ export function settleVoiceStyle(voice: Partial<SettleVoice>): CSSProperties {
   // forming text rests between 62 and 84 percent of the page's ink, so it is
   // at least 3:1 against every brand surface and never reads as the page
   const forming = 0.84 - 0.22 * v.grain
+  const carved = forming - 0.2
   const open = 0.34 - 0.2 * v.grain
   return {
     ['--settle-bloom' as string]: v.bloom.toFixed(2),
@@ -60,6 +61,7 @@ export function settleVoiceStyle(voice: Partial<SettleVoice>): CSSProperties {
     ['--settle-breath' as string]: `${Math.round(BREATH_MS / v.tempo)}ms`,
     ['--settle-grain' as string]: v.grain.toFixed(2),
     ['--settle-forming-alpha' as string]: forming.toFixed(2),
+    ['--settle-carve-alpha' as string]: carved.toFixed(2),
     ['--settle-open-alpha' as string]: open.toFixed(2),
   } as CSSProperties
 }

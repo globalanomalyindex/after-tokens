@@ -34,6 +34,10 @@ Ten rules, in `docs/superpowers/specs/2026-09-07-settle-design.md` section 4.1, 
 
 Three policies: each word, each sentence, each paragraph. The field derives from state in `lib/settle/field.ts`. The voice is five tokens with ranges in `lib/settle/voice.ts`: mark, bloom, onset (at most 240 ms), tempo, grain.
 
+### 4b. The field, carved into the text (8 September)
+
+The first Settle build kept out-of-order state in a strip of cells beneath the page. Watched, it still read as a typewriter: the page and the forming text both grow by contiguous prefix, so everything readable arrived left to right and the diffusion lived in a strip too thin to carry it. The carved zone (`lib/settle/carve.ts`) moves the field into the text: every position after the word-safe prefix is a slot of static where a word will stand, a complete word stands where it will in the sampler's own order, a held piece stays a slot, and end runs collapse so the zone is carved down from the tail. Rule 5 now reads: out-of-order text appears only after the page, never inside it; an open position is a slot and never letters. The strip remains as the field's compact form.
+
 ### 5. The cost, measured
 
 On all sixty recordings on the uniform step clock: first passage at a median of 12 steps (word), 39 (sentence), 128 (paragraph); extra wait after text is in order at a mean of 3.3, 24.5 and 44.7 steps; forming text visible for a median 90 percent of the run under sentence and paragraph; 60 of 60 exact outputs and zero characters drawn early under every policy. Margin's sentence policy paid its 23.5-step hold in blankness; Settle draws the held text for 90 percent of the run.

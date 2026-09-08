@@ -146,7 +146,7 @@ An independent audit of the crystallize build at `ab95e6a`, run by a second agen
 
 ### 9.3 The field
 
-`lib/settle/field.ts` derives one cell per position of the request's bound: released, forming, held, committed, end or open, with runs of end cells collapsed to their share and positions past a reached end marked beyond. The field is state and never text.
+`lib/settle/carve.ts` derives the carved zone: for every position after the word-safe prefix, an open slot, a held slot (a committed piece of a word whose other pieces or boundaries are out), a complete word (every piece committed, with a clean start and a boundary after it), or a collapsed run of end tokens. Complete words are drawn where they will stand, dim, in the sampler's own order; slots are never letters. `lib/settle/field.ts` derives the strip, one cell per position (released, forming, held, committed, end, open, beyond), the field's compact form, which is state and never text.
 
 ### 9.4 The cost
 

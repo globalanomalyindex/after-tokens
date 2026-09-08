@@ -9,7 +9,7 @@ an independent product design and engineering case study on how an answer from a
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
-> **the answer.** only what the model has committed, on a page that holds still, with the process in view. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text. the field, one line of cells beneath it, shows the sampler's own positions: where it has committed, where a hole is holding the page, and how long the answer will be. between them, the forming text: committed, in-order, word-complete text that has not yet completed a passage, drawn dim and brightening into the page when it does. the margin says what the source is doing, beside a mark that is the brand's.
+> **the answer.** only what the model has committed, on a page that holds still, with the process in view. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text. the field is carved into the text after it: every open position is a slot of static standing where a word will, a word stands where it will, dim, the moment every piece of it is in, in the sampler's own order, and the zone shortens from the tail as the model decides the length. between them, the forming text: committed, in-order, word-complete text waiting for its passage to close. the margin says what the source is doing, beside a mark that is the brand's.
 
 | | |
 | --- | --- |
@@ -32,10 +32,10 @@ an independent audit of that build by a second agent (codex, 7 september 2026, u
 
 1. nothing is drawn that the source has not committed.
 2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
-3. text is appended only at the end of the contiguous prefix; nothing visible changes, except that forming text brightens into the page.
+3. text on the page never changes, moves or reflows; forming text brightens into the page; the carved zone after it reflows as slots become words.
 4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
-5. out-of-order state appears only in the field, as cell state.
-6. length is claimed only when the prefix reaches a committed end token.
+5. out-of-order text appears only after the page, never inside it: a committed word may stand where it will, dim, among slots; an open position is a slot and never letters.
+6. an exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
 8. complete, stopped, error, paused and revision available are distinct states, named in the margin.
 9. a brand changes appearance and motion envelopes, never availability.

@@ -42,6 +42,7 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
     // text is not yet a place to read and rests dim on purpose; the field is
     // state, not text. The status words carry their meaning.
     .exclude('.settle-forming')
+    .exclude('.settle-carve')
     .exclude('.settle-field')
     .exclude('.pointer-events-none[aria-hidden="true"]')
     .analyze()

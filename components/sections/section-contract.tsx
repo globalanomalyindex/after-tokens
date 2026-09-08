@@ -8,10 +8,10 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 const RULES: string[] = [
   'nothing is drawn that the source has not committed: no final text, no reserved widths, no map of which words matter, no forecast of length.',
   'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
-  'text is appended only at the end of the contiguous prefix. nothing visible changes, moves or reflows, except that forming text brightens into the page.',
+  'text on the page never changes, moves or reflows. forming text brightens into the page. the carved zone after it reflows as slots become words; it is watched, never read.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order state appears only in the field, as cell state, never as text.',
-  'length is claimed only when the prefix reaches a committed end token. before that, end tokens are shown as what they are: positions the sampler has marked as end.',
+  'out-of-order text appears only after the page, never inside it. a committed word may stand where it will, dim, among slots; an open position is a slot and never letters.',
+  'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
   'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
   'a brand changes what cells, marks and onsets look like and how they move. it never changes when text becomes available or is released.',
@@ -46,8 +46,8 @@ export function SectionContract() {
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">three policies, one prefix</h3>
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
           the raw prefix on the left is what a naive renderer would draw: every committed token in order, half-words and all. the surface
-          on the right draws the same events under the contract. change the policy to move the boundary; switch the forming text off to see
-          what the surface holds back when a product wants stillness above all. the page&rsquo;s stillness is the one rule the reading literature
+          on the right draws the same events under the contract. change the policy to move the boundary; change what follows the page to
+          see the carved field, the in-order text alone, or what the surface holds back when a product wants stillness above all. the page&rsquo;s stillness is the one rule the reading literature
           argues for directly: the eye samples the next word before it lands there (<DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm>),
           and text that changes there costs a reader time.
         </p>

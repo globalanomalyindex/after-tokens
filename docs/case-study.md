@@ -13,7 +13,7 @@
 
 Diffusion language models do not write. They hold every position of an answer open at once and commit positions in the order they are sure of them, over a hundred or so denoising steps. Every chat product renders that process with a typewriter inherited from models that write one token at a time, and the typewriter misrepresents it twice: it draws the answer in an order the sampler did not use, and it puts half-formed words under the reader whenever a token is a piece of one.
 
-After Tokens asks how an answer from this kind of model should reach a reader, and answers with a system called Settle. An answer has two surfaces and a margin. The page holds released passages as ordinary, still, selectable text. The field, one line of cells beneath the page, shows the sampler's own positions: where it has committed, where a hole is holding the page, and how long the answer will be. Between them, the forming text: committed, in-order, word-complete text that has not yet completed a passage, drawn dim and brightening into the page when it does. The margin says what the source is doing, in words, beside a mark whose shape, bloom, breath and hue are a brand's.
+After Tokens asks how an answer from this kind of model should reach a reader, and answers with a system called Settle. An answer has two surfaces and a margin. The page holds released passages as ordinary, still, selectable text. The field is carved into the text after it: every open position is a slot of static standing where a word will, a word stands where it will, dim, the moment every piece of it is in, in the sampler's own order, and the zone shortens from the tail as the model decides the answer's length. Between the page and the carved zone, the forming text: committed, in-order, word-complete text that has not yet completed a passage, brighter, brightening into the page when it does. The margin says what the source is doing, in words, beside a mark whose shape, bloom, breath and hue are a brand's.
 
 The claim is narrow and testable: under this contract nothing reaches the reader before the model commits it, every final output is exact, and the cost of waiting for complete passages is measured rather than argued away. Whether the surface helps a reader is a hypothesis with a study designed to break it.
 
@@ -87,10 +87,10 @@ Given the same events, the surface shows the same page, the same forming text, t
 
 1. Nothing is drawn that the source has not committed.
 2. A word is drawn only when it is complete. A token whose successor is uncommitted is held, because it may be the first piece of a longer word. A boundary exists when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end.
-3. Text is appended only at the end of the contiguous prefix. Nothing visible changes, except that forming text brightens into the page.
+3. Text on the page never changes, moves or reflows. Forming text brightens into the page. The carved zone after it reflows as slots become words.
 4. The page grows by whole passages under a policy: each word, each sentence, or each paragraph. No timeout relabels a fragment as complete; finality releases the exact remainder.
-5. Out-of-order state appears only in the field, as cell state.
-6. Length is claimed only when the prefix reaches a committed end token.
+5. Out-of-order text appears only after the page, never inside it. A committed word may stand where it will, dim, among slots; an open position is a slot and never letters.
+6. An exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. Revisable snapshots stay off the page until one is explicitly final. A later revision keeps the prior page and offers a review and apply action.
 8. Complete, stopped, error, paused and revision available are distinct states, named in the margin.
 9. A brand changes appearance and motion envelopes, never availability.
@@ -98,7 +98,7 @@ Given the same events, the surface shows the same page, the same forming text, t
 
 ### The field
 
-One line of cells as wide as the request's bound, one per token position. A cell is open, committed, end, held, forming or released; a run of end cells collapses into one that takes its true share, so the answer's extent reads as a floor growing in. Under the block sampler the field shows the hole, then the burst. Under the schedule-free sampler it shows the floor growing in from the right for a hundred steps, then the words landing in the last few, then the sentence settling onto the page. It replaces the three bouncing dots with a loading state that says what is happening: 84 of 128 positions settled, the end known, one hole holding the next sentence.
+The field is carved into the text. Every position after the word-safe prefix is drawn as what the sampler has made of it: a slot of static while it is open, a held slot when a piece of a word is in and the rest is out, the word itself, dim, once every piece and its boundaries are in, and one end mark where the sampler has marked the end. Words appear across the zone in the sampler's own order; the zone shortens from the tail as the model decides the length; the page sweeps over the solved part. A word's progress is its register, carried by the word where the reader is looking. Under the block sampler the zone fills scattered inside a block, then a clause joins the page at once. Under the schedule-free sampler it is carved down from the tail for a hundred steps, then the words land in the last few, then the sentence settles onto the page. A strip of one cell per position beneath the page is the field's compact form, for a product that wants the text zone quiet. Either replaces the three bouncing dots with a loading state that says what is happening, where the answer will be.
 
 ### The voice
 

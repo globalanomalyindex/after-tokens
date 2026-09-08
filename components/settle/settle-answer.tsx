@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { formingText } from '@/lib/settle/reader'
+import { carve } from '@/lib/settle/carve'
 import type { SettleState } from '@/lib/settle/types'
 import { clampSettleVoice, settleVoiceStyle, type SettleVoice } from '@/lib/settle/voice'
 import { useBrand } from '@/lib/brand/provider'
@@ -50,13 +51,32 @@ function Forming({ text, offset, seen }: { text: string; offset: number; seen: n
   )
 }
 
+export type FormingMode = 'carve' | 'flow' | 'held'
+
+/** The carved zone: slots where words will stand, words where they have. */
+function Carved({ state }: { state: SettleState }) {
+  const items = carve(state)
+  if (!items.length) return null
+  return (
+    <span className="settle-carve" aria-hidden="true">
+      {items.map((item) => {
+        if (item.kind === 'word') return <span key={`w${item.position}`} className="settle-cw">{item.text.trim()} </span>
+        if (item.kind === 'end') return <span key="end" className="settle-slot" data-state="end" />
+        return <span key={`s${item.position}`} className="settle-slot" data-state={item.state} style={{ ['--k' as string]: item.position } as CSSProperties}> </span>
+      })}
+    </span>
+  )
+}
+
 type Props = {
   state: SettleState
   /** a voice on top of the surrounding brand's, clamped to the ranges */
   voice?: Partial<SettleVoice>
-  /** draw the forming text (default true); off, the surface holds like Margin and pays Margin's wait */
+  /** what the zone after the page shows: the carved field (default), only the in-order forming text, or nothing, as Margin did */
+  forming?: FormingMode
+  /** kept for callers that only know on and off: false is 'held' */
   preview?: boolean
-  /** draw the field (default true) */
+  /** draw the strip, the field's compact form (default: only when the zone is not carved) */
   field?: boolean
   /** draw the margin's words (default true) */
   status?: boolean
@@ -73,8 +93,9 @@ type Props = {
 export function SettleAnswer({
   state,
   voice: voiceProp,
-  preview = true,
-  field = true,
+  forming: formingProp,
+  preview,
+  field,
   status = true,
   paused = false,
   onApplyRevision,
@@ -86,8 +107,11 @@ export function SettleAnswer({
   const brand = useBrand()
   const voice = useMemo(() => clampSettleVoice({ ...brand.settle, ...voiceProp }), [brand.settle, voiceProp])
   const voiceVars = useMemo(() => (voiceProp ? settleVoiceStyle(voice) : undefined), [voice, voiceProp])
-  const forming = preview ? formingText(state) : ''
-  const pageEmpty = state.passages.length === 0 && !forming
+  const mode: FormingMode = formingProp ?? (preview === false ? 'held' : 'carve')
+  const showField = field ?? mode !== 'carve'
+  const forming = mode === 'held' ? '' : formingText(state)
+  const carved = mode === 'carve' && state.status !== 'complete'
+  const pageEmpty = state.passages.length === 0 && !forming && !carved
   // how far the forming text had reached at the last render, so only words
   // past it are fresh; reset when the page grows past it
   const seenRef = useRef(0)
@@ -109,16 +133,18 @@ export function SettleAnswer({
       className={`settle ${className}`}
       data-status={state.status}
       data-paused={paused || undefined}
-      data-preview={preview}
+      data-preview={mode !== 'held'}
+      data-forming={mode}
       data-demo
       style={{ ...voiceVars, ...style }}
     >
       <div ref={answerRef} className="settle-page" role="region" aria-label={label} tabIndex={state.previousPassages ? 0 : undefined}>
         {state.passages.map((passage) => <Passage key={passage.id} text={passage.text} />)}
         {forming && <Forming text={forming} offset={state.releasedLength} seen={seen} />}
+        {carved && <Carved state={state} />}
         {pageEmpty && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
       </div>
-      {field && <Field state={state} mark={voice.mark} />}
+      {showField && <Field state={state} mark={voice.mark} />}
       {status && <Margin state={state} mark={voice.mark} paused={paused} />}
       {(state.status === 'stopped' || state.status === 'error') && state.error && (
         <p className="readout mt-2" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>{state.error}</p>
