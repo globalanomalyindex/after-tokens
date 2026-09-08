@@ -34,7 +34,7 @@ an independent audit of that build by a second agent (codex, 7 september 2026, u
 2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
 3. text on the page never changes, moves or reflows; when a sentence closes, the page's ink settles through its words' letterforms in one movement, and their shapes and places do not change; an available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
 4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
-5. out-of-order text appears only after the page, never inside it: a committed word may stand where it will, dim, among slots; an open position is a slot and never letters.
+5. out-of-order text appears only after the page, never inside it: a committed word may stand where it will, in the secondary ink, among noise; noise is never content, it cycles and never spells, and a word's letters resolve out of it only after every piece of the word has committed.
 6. an exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
 8. complete, stopped, error, paused and revision available are distinct states, named in the margin.

@@ -42,6 +42,10 @@ The first Settle build kept out-of-order state in a strip of cells beneath the p
 
 The carved zone's hatched slots gave the surface a mechanical texture, and its three registers were more than the reader needed. The refinement, from a review of the live page: a word's shape is fixed the moment it is available, and only its ink changes. An available word appears in a secondary ink that is readable (the page's ink moved toward the ground as far as a 4.5:1 floor allows, computed per brand and ground; a tint toward the accent where a palette cannot dim, as on felt). When its sentence closes, the page's ink settles through the letterforms, bottom to top, in one coordinated movement over the onset, and the word does not move. Placeholders became quiet hairlines. The hypothesis this states for the study: one calm transition inside newly ready words feels more coherent than many independent marks.
 
+### 4d. The noise (8 September)
+
+Marks, whether hairlines or haze, read as a ruler under the text and the words still arrived from nowhere. The piece's original promise was watching an answer denoise. The honest version of that promise: an open position shows a short run of noise glyphs in the answer's own face, dim, cycling slowly and never settling, so they never spell anything; when a word commits, its letters resolve out of that noise left to right over the onset, at the word's final width, in the secondary ink; when its sentence closes, the page's ink settles through it. The audit's line holds, because no letter of a word is drawn before the source has committed every piece of it, and rule 5 now says what noise is: never content.
+
 ### 5. The cost, measured
 
 On all sixty recordings on the uniform step clock: first passage at a median of 12 steps (word), 39 (sentence), 128 (paragraph); extra wait after text is in order at a mean of 3.3, 24.5 and 44.7 steps; forming text visible for a median 90 percent of the run under sentence and paragraph; 60 of 60 exact outputs and zero characters drawn early under every policy. Margin's sentence policy paid its 23.5-step hold in blankness; Settle draws the held text for 90 percent of the run.

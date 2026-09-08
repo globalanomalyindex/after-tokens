@@ -927,8 +927,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    ramp; a batch pours in from its first fresh word. It never moves, blurs
    or reweights, and a word already drawn never animates again. */
 .settle-fw[data-fresh] {
-  animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
-  animation-delay: calc(min(var(--k, 0), 16) * var(--settle-onset) / 32);
+  animation: settle-form 120ms var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 16) * 12ms);
 }
 @keyframes settle-form {
   from { opacity: 0; }
@@ -946,51 +946,30 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-cw {
   display: inline-block;
   color: var(--settle-ink-2);
-  animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
+  animation: settle-form 120ms var(--ease-out-expo) both;
 }
 .settle-fw { display: inline-block; }
-/* the marks. A placeholder is a soft mark in the shape the voice chose:
-   a haze rather than a glyph, so the unsolved part reads as suspension and
-   never as punctuation. Its box is about the width a token takes once it is
-   a word, with the mark drawn small in the middle, so a word replacing its
-   marks barely moves what follows. tick: a soft vertical; dot: a soft round;
-   dash: a soft horizontal; square: a small firm block. */
+/* the noise. An open position is a short run of noise glyphs in the
+   answer's own face, dim, that cycle slowly and never spell anything; a
+   held position (a piece of a word is in) is the same, firmer. Its box is
+   fixed at about a token's width, so a word replacing its noise barely
+   moves what follows. The end is a pilcrow. */
 .settle-slot {
   display: inline-block;
-  width: 2.1ch;
-  height: 0.6em;
+  width: 2.3ch;
   margin: 0 0.05ch;
-  vertical-align: -0.1em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: -0.04em;
+  vertical-align: baseline;
+  color: var(--settle-ink-2);
   opacity: var(--settle-open-alpha, 0.25);
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: 1.15ch 100%;
-  background-image: radial-gradient(ellipse 60% 55% at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 45%, transparent 100%);
+  user-select: none;
 }
-.settle[data-mark="tick"] .settle-slot { background-size: 0.75ch 100%; background-image: radial-gradient(ellipse 45% 70% at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 45%, transparent 100%); }
-.settle[data-mark="dot"] .settle-slot { background-size: 0.8em 100%; background-image: radial-gradient(circle at 50% 50%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 38%, transparent 70%); }
-.settle[data-mark="dash"] .settle-slot { background-size: 1.6ch 100%; background-image: radial-gradient(ellipse 70% 30% at 50% 55%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 50%, transparent 100%); }
-.settle[data-mark="square"] .settle-slot { background-size: 0.85ch 0.4em; background-image: linear-gradient(currentColor, currentColor); opacity: calc(var(--settle-open-alpha, 0.25) * 0.7); }
-.settle-slot[data-state="held"] { opacity: 0.62; }
-.settle[data-mark="square"] .settle-slot[data-state="held"] { opacity: 0.5; }
-.settle-slot[data-state="end"] { width: 1.8ch; margin-left: 0.3ch; opacity: 0.5; background-size: 1.6ch 100%; background-image: radial-gradient(ellipse 80% 22% at 50% 60%, currentColor 0%, color-mix(in oklab, currentColor 55%, transparent) 55%, transparent 100%); }
-/* the wave: while the source is receiving, a slow swell travels through
-   the open marks along the answer, so the suspension moves as one body.
-   Brightness only. Off under reduced motion. */
-.settle[data-status="receiving"] .settle-slot[data-state="open"] {
-  animation: settle-wave 2800ms ease-in-out infinite;
-  animation-delay: calc(var(--k, 0) * -46ms);
-}
-@keyframes settle-wave {
-  0%, 100% { opacity: var(--settle-open-alpha, 0.25); }
-  50%      { opacity: calc(var(--settle-open-alpha, 0.25) + 0.2); }
-}
-.settle[data-mark="square"][data-status="receiving"] .settle-slot[data-state="open"] { animation-name: settle-wave-square; }
-@keyframes settle-wave-square {
-  0%, 100% { opacity: calc(var(--settle-open-alpha, 0.25) * 0.8); }
-  50%      { opacity: calc(var(--settle-open-alpha, 0.25) * 0.8 + 0.18); }
-}
-.settle[data-paused="true"] .settle-slot { animation: none; }
+.settle-slot[data-state="held"] { opacity: 0.6; }
+.settle-slot[data-state="end"] { width: auto; margin-left: 0.3ch; opacity: 0.45; letter-spacing: 0; }
+.settle[data-paused="true"] .settle-slot { opacity: var(--settle-open-alpha, 0.25); }
 
 /* The margin. */
 .settle-margin {

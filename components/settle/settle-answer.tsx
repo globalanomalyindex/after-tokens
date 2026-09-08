@@ -20,6 +20,78 @@ function pieces(text: string): string[] {
   return text.split(/(\s+)/).filter((piece) => piece.length > 0)
 }
 
+// ----- noise --------------------------------------------------------------
+// An open position is drawn as a short run of noise glyphs that cycle slowly
+// and never settle, so they never spell anything and never become the word.
+// A word's letters resolve out of that noise only after every piece of the
+// word has committed. Noise is never content: it is the picture of an
+// unsolved position, and the contract says so.
+const NOISE = 'abcdefghijklmnopqrstuvwxyz'
+const NOISE_LENGTH = 3
+/** Deterministic noise for a position, so server and client draw the same glyphs. */
+function noiseFor(position: number, salt = 0): string {
+  let out = ''
+  let x = (position + 1) * 2654435761 + salt * 40503
+  for (let i = 0; i < NOISE_LENGTH; i += 1) {
+    x = (x ^ (x >>> 13)) * 1274126177
+    out += NOISE[Math.abs(x >>> 0) % NOISE.length]
+  }
+  return out
+}
+function noiseGlyph(): string {
+  return NOISE[Math.floor(Math.random() * NOISE.length)]!
+}
+
+/** Resolves a word's letters out of noise, left to right, over `ms`, on the
+ *  text node React owns; the span keeps its final width throughout so the
+ *  line does not move while it decodes. */
+function useDecode(ref: React.RefObject<HTMLSpanElement | null>, text: string, ms: number, enabled: boolean) {
+  useLayoutEffect(() => {
+    const el = ref.current
+    const node = el?.firstChild
+    if (!el || !node || !enabled || ms <= 0 || text.trim().length === 0) return
+    const width = el.getBoundingClientRect().width
+    el.style.width = `${width}px`
+    el.style.whiteSpace = 'nowrap'
+    el.style.overflow = 'hidden'
+    const chars = Array.from(text)
+    const start = performance.now()
+    let frame = 0
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / ms)
+      const solved = Math.floor(p * chars.length)
+      node.nodeValue = chars.map((c, i) => (i < solved || /\s/.test(c) ? c : noiseGlyph())).join('')
+      if (p < 1) frame = requestAnimationFrame(tick)
+      else {
+        node.nodeValue = text
+        el.style.width = ''
+        el.style.whiteSpace = ''
+        el.style.overflow = ''
+      }
+    }
+    frame = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(frame)
+      node.nodeValue = text
+      el.style.width = ''
+      el.style.whiteSpace = ''
+      el.style.overflow = ''
+    }
+  }, [ref, text, ms, enabled])
+}
+
+function CarvedWord({ text, position, ms, decode }: { text: string; position: number; ms: number; decode: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  useDecode(ref, text, ms, decode)
+  return <span ref={ref} data-fk={`w${position}`} className="settle-cw">{text}</span>
+}
+
+function FormingWord({ text, start, fresh, k, ms, decode }: { text: string; start: number; fresh: boolean; k: number; ms: number; decode: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  useDecode(ref, text, ms, decode && fresh)
+  return <span ref={ref} data-fk={`f${start}`} className="settle-fw" style={{ ['--k' as string]: k } as CSSProperties} data-fresh={fresh || undefined}>{text}</span>
+}
+
 /** A passage as word spans. Each word carries a copy of itself for the
  *  settling: the page's ink fills the letterforms bottom to top, one
  *  coordinated movement across the sentence, and the word never moves. */
@@ -36,8 +108,8 @@ function Passage({ text }: { text: string }) {
 
 /** The forming text as word spans keyed by their offset in the prefix, so a
  *  word that is already drawn never re-animates, and a batch of new words
- *  pours in from its first word. */
-function Forming({ text, offset, seen }: { text: string; offset: number; seen: number }) {
+ *  decodes from its first word. */
+function Forming({ text, offset, seen, ms, decode }: { text: string; offset: number; seen: number; ms: number; decode: boolean }) {
   let at = offset
   let k = 0
   return (
@@ -47,7 +119,7 @@ function Forming({ text, offset, seen }: { text: string; offset: number; seen: n
         at += piece.length
         if (/^\s+$/.test(piece)) return piece
         const fresh = start >= seen
-        return <span key={start} data-fk={`f${start}`} className="settle-fw" style={{ ['--k' as string]: fresh ? k++ : 0 } as CSSProperties} data-fresh={fresh || undefined}>{piece}</span>
+        return <FormingWord key={start} text={piece} start={start} fresh={fresh} k={fresh ? k++ : 0} ms={ms} decode={decode} />
       })}
     </span>
   )
@@ -55,16 +127,36 @@ function Forming({ text, offset, seen }: { text: string; offset: number; seen: n
 
 export type FormingMode = 'carve' | 'flow' | 'held'
 
-/** The carved zone: slots where words will stand, words where they have. */
-function Carved({ state }: { state: SettleState }) {
+/** The carved zone: noise where words will stand, words where they have. */
+function Carved({ state, ms, live, decode }: { state: SettleState; ms: number; live: boolean; decode: boolean }) {
   const items = carve(state)
+  const ref = useRef<HTMLSpanElement>(null)
+  // the noise cycles: on a slow tick, each open position changes one of its
+  // glyphs about half the time and a held position every time, on the text
+  // nodes React owns and never updates. Off when paused or under reduced motion.
+  useEffect(() => {
+    const zone = ref.current
+    if (!zone || !live) return
+    const id = window.setInterval(() => {
+      for (const slot of zone.querySelectorAll<HTMLSpanElement>('.settle-slot[data-state="open"], .settle-slot[data-state="held"]')) {
+        const node = slot.firstChild
+        if (!node || !node.nodeValue) continue
+        if (slot.dataset.state === 'open' && Math.random() < 0.5) continue
+        const chars = Array.from(node.nodeValue)
+        const i = Math.floor(Math.random() * chars.length)
+        chars[i] = noiseGlyph()
+        node.nodeValue = chars.join('')
+      }
+    }, 120)
+    return () => window.clearInterval(id)
+  }, [live])
   if (!items.length) return null
   return (
-    <span className="settle-carve" aria-hidden="true">
+    <span ref={ref} className="settle-carve" aria-hidden="true">
       {items.map((item) => {
-        if (item.kind === 'word') return <span key={`w${item.position}`} data-fk={`w${item.position}`} className="settle-cw">{item.text.trim()} </span>
-        if (item.kind === 'end') return <span key="end" data-fk="end" className="settle-slot" data-state="end" />
-        return <span key={`s${item.position}`} data-fk={`s${item.position}`} className="settle-slot" data-state={item.state} style={{ ['--k' as string]: item.position } as CSSProperties}> </span>
+        if (item.kind === 'word') return <span key={`w${item.position}`}><CarvedWord text={item.text.trim()} position={item.position} ms={ms} decode={decode} /> </span>
+        if (item.kind === 'end') return <span key="end" data-fk="end" className="settle-slot" data-state="end">¶</span>
+        return <span key={`s${item.position}`} data-fk={`s${item.position}`} className="settle-slot" data-state={item.state}>{noiseFor(item.position, item.state === 'held' ? 1 : 0)}</span>
       })}
     </span>
   )
@@ -107,6 +199,7 @@ export function SettleAnswer({
   style,
 }: Props) {
   const brand = useBrand()
+  const reduced = usePrefersReducedMotion()
   const voice = useMemo(() => clampSettleVoice({ ...brand.settle, ...voiceProp }), [brand.settle, voiceProp])
   const voiceVars = useMemo(
     () => (voiceProp ? settleVoiceStyle(voice, { ink: brand.ink, surface: brand.surface, stageText: brand.stageText, stage: brand.stage, accent: brand.accent }) : undefined),
@@ -121,12 +214,11 @@ export function SettleAnswer({
     el.style.removeProperty('--settle-ink')
     el.style.setProperty('--settle-ink', getComputedStyle(el).color)
   }, [brand, className, style])
-  // the zone after the page reflows as marks become words. Rather than
-  // snapping to each new layout, every mark and word that persists glides
-  // from where it was to where it is (a FLIP on the zone, retargeted from
-  // the current visual position when a glide is already under way).
-  // Reduced motion snaps.
-  const reduced = usePrefersReducedMotion()
+  // the zone after the page reflows as noise becomes words. Rather than
+  // snapping to each new layout, every run of noise and every word that
+  // persists glides from where it was to where it is (a FLIP on the zone,
+  // retargeted from the current visual position when a glide is already
+  // under way). Reduced motion snaps.
   const zoneRef = useRef<HTMLSpanElement>(null)
   const placed = useRef(new Map<string, { left: number; top: number }>())
   useLayoutEffect(() => {
@@ -175,6 +267,7 @@ export function SettleAnswer({
   const showField = field ?? mode !== 'carve'
   const forming = mode === 'held' ? '' : formingText(state)
   const carved = mode === 'carve' && state.status !== 'complete'
+  const decodeMs = voice.onset
   const pageEmpty = state.passages.length === 0 && !forming && !carved
   // how far the forming text had reached at the last render, so only words
   // past it are fresh; reset when the page grows past it
@@ -207,8 +300,8 @@ export function SettleAnswer({
       <div ref={answerRef} className="settle-page" role="region" aria-label={label} tabIndex={state.previousPassages ? 0 : undefined}>
         {state.passages.map((passage) => <Passage key={passage.id} text={passage.text} />)}
         <span ref={zoneRef} className="settle-zone">
-          {forming && <Forming text={forming} offset={state.releasedLength} seen={seen} />}
-          {carved && <Carved state={state} />}
+          {forming && <Forming text={forming} offset={state.releasedLength} seen={seen} ms={decodeMs} decode={!reduced} />}
+          {carved && <Carved state={state} ms={decodeMs} live={!reduced && !paused && state.status === 'receiving'} decode={!reduced} />}
         </span>
         {pageEmpty && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
       </div>

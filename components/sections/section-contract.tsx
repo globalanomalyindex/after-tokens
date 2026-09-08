@@ -10,7 +10,7 @@ const RULES: string[] = [
   'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
   'text on the page never changes, moves or reflows. when a sentence closes, the page&rsquo;s ink settles through its words&rsquo; letterforms; their shapes and places do not change. the carved zone after the page reflows as hairlines become words.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order text appears only after the page, never inside it. a committed word may stand where it will, dim, among slots; an open position is a slot and never letters.',
+  'out-of-order text appears only after the page, never inside it. a committed word may stand where it will, in the secondary ink, among noise. noise is never content: the glyphs at an open position are random, they cycle, they never settle, and a word&rsquo;s letters resolve out of them only after every piece of the word has committed.',
   'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
   'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
