@@ -15,9 +15,9 @@ import { MARK_SHAPES, SETTLE_RANGES, type MarkShape, type SettleVoice } from '@/
 const TOKENS: { key: keyof SettleVoice; range: string; changes: string; keeps: string }[] = [
   { key: 'mark', range: 'tick, dot, dash, square', changes: 'the shape of the strip&rsquo;s cells and of the margin mark', keeps: 'every state legible at every size' },
   { key: 'bloom', range: '0 to 1', changes: 'how much a cell flares when it commits', keeps: 'gone within 240 ms; no flare on released text' },
-  { key: 'onset', range: '0 to 240 ms', changes: 'how long an arriving word takes to resolve out of the noise, and how long the page&rsquo;s ink takes to settle through a released sentence', keeps: 'a word keeps its width while it decodes; nothing moves; under reduced motion both changes happen at once' },
+  { key: 'onset', range: '0 to 240 ms', changes: 'how long a written word takes to open from the space it reserved and soften in, and how long the page&rsquo;s ink takes to settle through a released sentence', keeps: 'nothing on the page moves; under reduced motion both changes happen at once' },
   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breath of the margin mark while receiving', keeps: 'rest at every terminal state' },
-  { key: 'grain', range: '0 to 1', changes: 'how far the available ink sits from the page&rsquo;s, and how faint the noise rests', keeps: 'the available ink at least 4.5:1 on both of the brand&rsquo;s grounds; a tint carries the state where a palette cannot dim' },
+  { key: 'grain', range: '0 to 1', changes: 'how far the available ink sits from the page&rsquo;s', keeps: 'the available ink at least 4.5:1 on both of the brand&rsquo;s grounds; a tint carries the state where a palette cannot dim' },
 ]
 
 const SLIDERS: { key: Exclude<keyof SettleVoice, 'mark'>; step: number; unit?: string }[] = [
@@ -43,7 +43,7 @@ export function SectionVoice() {
       <p className="standfirst max-w-3xl">
         a brand does not get a new reveal. it gets five tokens on the one surface, each inside a range that is an
         invariant, so a brand can color the arrival and cannot change when text becomes available, whether it moves,
-        or what the margin says.
+        or what the margin says. the cursor takes the brand&rsquo;s accent; its breath is the tempo.
       </p>
       <div className="mt-12 md:mt-16 overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -76,7 +76,7 @@ export function SectionVoice() {
         <SettleStage
           key={brand}
           source="trace:golden-sunflower__lowconf-b32"
-          pace={{ scale: 4 }}
+         
           brand={brand}
           voice={voice}
           runKey={run}

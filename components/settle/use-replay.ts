@@ -13,6 +13,8 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 
 export type ReplayControls = {
   state: SettleState
+  /** the position the latest event committed, where the cursor goes; null when the latest event was not a commit */
+  focus: number | null
   elapsedMs: number
   running: boolean
   finished: boolean
@@ -66,6 +68,12 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     for (let i = 0; i < happened; i += 1) s = reduceSettle(s, events[i]!)
     return s
   }, [events, happened, policy, replay])
+  const focus = useMemo(() => {
+    const last = events[happened - 1]
+    if (!last || last.type !== 'commit' || !last.tokens.length) return null
+    const content = last.tokens.filter((t) => !t.end)
+    return (content.length ? content : last.tokens)[content.length ? content.length - 1 : last.tokens.length - 1]!.position
+  }, [events, happened])
 
   useEffect(() => {
     genRef.current += 1
@@ -115,5 +123,5 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     setElapsedMs(elapsedRef.current)
   }, [durationMs])
 
-  return { state, elapsedMs, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
+  return { state, focus, elapsedMs, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
 }

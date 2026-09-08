@@ -26,12 +26,13 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
     loadTrace(traceId).then((t) => { if (!cancelled) setTrace(t) }).catch(() => {})
     return () => { cancelled = true }
   }, [traceId])
-  const replay = useMemo(() => (trace ? replayTrace(trace, { scale: 4 }) : null), [trace])
+  const replay = useMemo(() => (trace ? replayTrace(trace, { scale: 2 }) : null), [trace])
   const { ref, inView } = useInView<HTMLElement>(0.3)
   const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
   const answer = (
     <SettleAnswer
       state={clock.state}
+      focus={clock.focus}
       paused={clock.paused}
       status={false}
       label="assistant answer"
@@ -75,7 +76,7 @@ export function SectionPreviews() {
       <p className="standfirst max-w-3xl">
         the surface in three products: a desktop assistant thread, a search answer, a phone. each frame runs the
         reducer over a real recording on its brand&rsquo;s own surface and voice, in the system type an assistant
-        actually uses. the answers are the model&rsquo;s, unedited, at a quarter of the recorded pace; the earlier
+        actually uses. the answers are the model&rsquo;s, unedited, at half the recorded pace; the earlier
         turns in the thread are authored context.
       </p>
       <div className="mt-12 md:mt-16 grid gap-6 md:grid-cols-3 items-stretch">

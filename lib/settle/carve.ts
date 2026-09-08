@@ -13,23 +13,31 @@ import type { Commit, SettleState } from './types'
 // drawn only when every token of it and its boundaries are in.
 
 export type CarveItem =
-  | { kind: 'word'; position: number; span: number; text: string }
-  | { kind: 'slot'; position: number; state: 'open' | 'held' }
+  | { kind: 'word'; position: number; span: number; text: string; forming: boolean }
+  | { kind: 'slot'; position: number; state: 'open' | 'held' | 'beyond' }
   | { kind: 'end'; position: number; span: number }
 
 const startsWithSpace = (t: Commit | undefined) => Boolean(t && /^\s/.test(t.text))
 const endsWithSpace = (t: Commit | undefined) => Boolean(t && /\s$/.test(t.text))
 
-/** How many prefix tokens are inside the word-safe length. */
-export function wordSafeTokens(state: SettleState): number {
+/** How many prefix tokens are inside a character length of the prefix. */
+function tokensWithin(state: SettleState, chars: number): number {
   let count = 0
   let length = 0
   for (const token of state.prefixTokens) {
-    if (length + token.text.length > state.wordSafeLength) break
+    if (length + token.text.length > chars) break
     length += token.text.length
     count += 1
   }
   return count
+}
+/** How many prefix tokens are inside the word-safe length. */
+export function wordSafeTokens(state: SettleState): number {
+  return tokensWithin(state, state.wordSafeLength)
+}
+/** How many prefix tokens are on the page. */
+export function releasedTokens(state: SettleState): number {
+  return tokensWithin(state, state.releasedLength)
 }
 
 /** The lowest committed end position: an upper bound on the answer's length. */
@@ -49,15 +57,21 @@ export function carve(state: SettleState): CarveItem[] {
   const maxCommitted = committed.length ? Math.max(...committed) : -1
   const extent = state.bound ?? Math.max(1, maxCommitted + 1 + FIELD_HORIZON)
   const cut = lowestEnd(state)
+  const safe = wordSafeTokens(state)
   const items: CarveItem[] = []
-  let p = wordSafeTokens(state)
+  // the zone begins where the page ends: in-order words waiting for their
+  // passage are its first items, marked forming
+  let p = releasedTokens(state)
   while (p < extent) {
     if (cut !== null && p >= cut) {
       // the answer ends at or before the lowest committed end: one mark,
-      // spanning the run of end tokens that starts there, and nothing after
+      // spanning the run of end tokens that starts there. What lies past it
+      // is beyond the answer; it is kept as collapsed positions so a
+      // surface can close them smoothly rather than dropping them at once
       let span = 1
       while (tokens[cut + span]?.end) span += 1
       if (p === cut) items.push({ kind: 'end', position: cut, span })
+      for (let b = Math.max(p, cut + 1); b < extent; b += 1) items.push({ kind: 'slot', position: b, state: 'beyond' })
       break
     }
     const token = tokens[p]
@@ -82,7 +96,7 @@ export function carve(state: SettleState): CarveItem[] {
       if (clean) {
         let text = ''
         for (let j = wordStart; j <= i; j += 1) text += tokens[j]!.text
-        items.push({ kind: 'word', position: wordStart, span: i - wordStart + 1, text })
+        items.push({ kind: 'word', position: wordStart, span: i - wordStart + 1, text, forming: i < safe })
       } else {
         for (let j = wordStart; j <= i; j += 1) items.push({ kind: 'slot', position: j, state: 'held' })
       }

@@ -13,6 +13,7 @@ export const NAV_ITEMS: { id: string; label: string }[] = [
   { id: 'cost', label: 'the cost' },
   { id: 'voice', label: 'the voice' },
   { id: 'previews', label: 'in the wild' },
+  { id: 'concept', label: 'the wait' },
   { id: 'playground', label: 'try it' },
   { id: 'evidence', label: 'what is known' },
   { id: 'open', label: 'open' },

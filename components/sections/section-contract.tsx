@@ -10,7 +10,7 @@ const RULES: string[] = [
   'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
   'text on the page never changes, moves or reflows. when a sentence closes, the page&rsquo;s ink settles through its words&rsquo; letterforms; their shapes and places do not change. the carved zone after the page reflows as hairlines become words.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order text appears only after the page, never inside it. a committed word may stand where it will, in the secondary ink, among noise. noise is never content: the glyphs at an open position are random, they cycle, they never settle, and a word&rsquo;s letters resolve out of them only after every piece of the word has committed.',
+  'out-of-order text appears only after the page, never inside it. an open position is reserved blank space; a piece of a word is a glimmer; a word is written where it will stand, in the secondary ink, only after every piece of it has committed. the cursor that writes it goes only where the source has been.',
   'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
   'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
@@ -51,7 +51,7 @@ export function SectionContract() {
           argues for directly: the eye samples the next word before it lands there (<DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm>),
           and text that changes there costs a reader time.
         </p>
-        <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison pace={{ scale: 4 }} />
+        <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison />
       </div>
 
       <div className="mt-16 md:mt-24 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] rule pt-8">

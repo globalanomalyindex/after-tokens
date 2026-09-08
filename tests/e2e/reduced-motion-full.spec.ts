@@ -7,9 +7,9 @@ test.describe('reduced motion full audit', () => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     // The eleven-section cut: the thing itself, the wrong shape, the audit,
-    // the contract, the field, the cost, the voice, in the wild, try it,
-    // what is known, and open.
-    const sectionIds = ['hook', 'problem', 'audit', 'contract', 'field', 'cost', 'voice', 'previews', 'playground', 'evidence', 'open']
+    // the contract, the field, the cost, the voice, in the wild, the wait,
+    // try it, what is known, and open.
+    const sectionIds = ['hook', 'problem', 'audit', 'contract', 'field', 'cost', 'voice', 'previews', 'concept', 'playground', 'evidence', 'open']
     await expect(page.locator('[data-section]')).toHaveCount(sectionIds.length)
 
     const demos = page.locator('[data-demo]')
@@ -33,7 +33,7 @@ test.describe('reduced motion full audit', () => {
     const animating = await page.evaluate(() => {
       const named = (name: string) => name !== 'none' && name !== ''
       const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
-      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-w, .settle-fw, .settle-floor')).filter((el) => named(getComputedStyle(el).animationName)).length
+      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-w, .settle-floor, .settle-cursor')).filter((el) => named(getComputedStyle(el).animationName)).length
       return before + own
     })
     expect(animating).toBe(0)

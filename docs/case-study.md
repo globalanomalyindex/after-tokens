@@ -6,7 +6,7 @@
 |---|---|
 | Role | Product design, interaction design, prototyping, front-end engineering (solo, with Claude as design and engineering partner; the causal audit and the first implementation of the reading contract by Codex, 7 September 2026) |
 | Timeline | May to September 2026 |
-| Status | Working prototype; the cost measured on sixty recorded runs; reader benefits untested; a two-experiment study designed |
+| Status | A concept exploration in a working prototype; the cost measured on sixty recorded runs; untested on readers; a two-experiment study designed |
 | Live | https://after-tokens.vercel.app · source: https://github.com/globalanomalyindex/after-tokens |
 
 ## Overview
@@ -89,7 +89,7 @@ Given the same events, the surface shows the same page, the same forming text, t
 2. A word is drawn only when it is complete. A token whose successor is uncommitted is held, because it may be the first piece of a longer word. A boundary exists when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end.
 3. Text on the page never changes, moves or reflows. When a sentence closes, the page's ink settles through its words' letterforms, bottom to top, in one movement; their shapes and places do not change. An available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
 4. The page grows by whole passages under a policy: each word, each sentence, or each paragraph. No timeout relabels a fragment as complete; finality releases the exact remainder.
-5. Out-of-order text appears only after the page, never inside it. A committed word may stand where it will, in the secondary ink, among noise. Noise is never content: the glyphs at an open position are random, cycle, and never settle, and a word's letters resolve out of them only after every piece of the word has committed.
+5. Out-of-order text appears only after the page, never inside it. An open position is reserved blank space; a piece of a word is a glimmer; a word is written where it will stand, in the secondary ink, only after every piece of it has committed. The cursor that writes it goes only where the source has been.
 6. An exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. Revisable snapshots stay off the page until one is explicitly final. A later revision keeps the prior page and offers a review and apply action.
 8. Complete, stopped, error, paused and revision available are distinct states, named in the margin.

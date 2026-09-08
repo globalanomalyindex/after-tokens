@@ -7,7 +7,7 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
   // Bring the stages up before scanning so axe covers the demo content and
   // the controls beside it. A stage mounts its surface at once; the replay
   // starts when it enters the viewport.
-  for (const id of ['hook', 'contract', 'field', 'voice', 'previews', 'playground']) {
+  for (const id of ['hook', 'contract', 'field', 'voice', 'previews', 'concept', 'playground']) {
     await page.locator(`#${id} [data-demo]`).first().scrollIntoViewIfNeeded()
     await expect(page.locator(`#${id} .settle`).first()).toBeVisible({ timeout: 15_000 })
   }

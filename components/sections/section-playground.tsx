@@ -20,7 +20,7 @@ export function SectionPlayground() {
         <SettleStage
           source="trace:heist-plot__lowconf-b32"
           controls={['prompt', 'config', 'policy', 'preview', 'voice', 'pace', 'comparison']}
-          pace={{ scale: 4 }}
+         
           readout={({ policy, forming }) => {
             const u = SETTLE.all60[policy].uniform
             const r = SETTLE.all60[policy].recorded

@@ -6,9 +6,10 @@ import { SettleStage } from '@/components/settle/settle-stage'
 import { TRACE_NUMBERS } from '@/lib/traces/findings'
 
 // The first screen: the title, the argument in one line, and beside it the
-// thing itself: a real recording, replayed through the reducer. The field's
-// end settles in from the right, the words land, the sentence settles onto
-// the page. Nothing in the stage was authored.
+// thing itself: a real recording, replayed through the reducer. The random
+// sampler commits in no particular order inside each block, so the cursor
+// visibly searches, writes a word here and a word there, and the sentences
+// settle onto the page as they close. Nothing in the stage was authored.
 
 export function SectionHook() {
   return (
@@ -21,9 +22,10 @@ export function SectionHook() {
           </h1>
           <p className="standfirst mt-8 max-w-[34ch]">wait for the water to clear.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
-            a product design and engineering case study on how an answer from a diffusion language model should
-            reach a reader: only what the model has committed, on a page that holds still, with the process in
-            view. built on {TRACE_NUMBERS.trajectories} recorded sampler runs and an audit of the version that came before it.
+            a concept case study on how an answer from a diffusion language model should reach a reader: only what
+            the model has committed, on a page that holds still, with the process in view and a cursor doing the
+            work. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
+            runs and an audit of the version before it. nothing here is measured on a reader.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>
             <div>
@@ -36,12 +38,12 @@ export function SectionHook() {
             </div>
             <div>
               <dt className="label mb-1">status</dt>
-              <dd style={{ color: 'var(--ink)' }}>working prototype, reader benefits untested</dd>
+              <dd style={{ color: 'var(--ink)' }}>concept, working prototype, untested on readers</dd>
             </div>
           </dl>
         </div>
         <Reveal delay={260} className="min-w-0">
-          <SettleStage source="trace:heist-plot__lowconf-b128" autoplay="immediate" pace={{ scale: 4 }} compact />
+          <SettleStage source="trace:weather__random-b32" autoplay="immediate" compact />
         </Reveal>
       </div>
     </Section>

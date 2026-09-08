@@ -926,50 +926,117 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 /* An available word appears once, in the secondary ink, on a short opacity
    ramp; a batch pours in from its first fresh word. It never moves, blurs
    or reweights, and a word already drawn never animates again. */
-.settle-fw[data-fresh] {
-  animation: settle-form 120ms var(--ease-out-expo) both;
-  animation-delay: calc(min(var(--k, 0), 16) * 12ms);
-}
 @keyframes settle-form {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* The carved zone. Every position after the word-safe prefix, drawn as what
-   the sampler has made of it: an open position is a short hairline where a
-   word will stand, a piece of a word whose other pieces are out is a held
-   hairline, a complete word stands where it will in the secondary ink, and
-   the lowest committed end is one end mark. The zone reflows as hairlines
-   become words; the page before it never moves. */
+/* The zone. Every position after the page, in order. An open position is
+   reserved blank space about a token wide; a position holding a piece of a
+   word is a glimmer; a complete word stands where it will in the secondary
+   ink; the end is a small mark; positions past the end close to nothing.
+   Every change of width is a transition, so the line slides, never jumps. */
 .settle-zone { display: inline; }
-.settle-carve { display: inline; }
 .settle-cw {
   display: inline-block;
   color: var(--settle-ink-2);
-  animation: settle-form 120ms var(--ease-out-expo) both;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* the letters soften in as the cursor reaches them */
+  animation: settle-write var(--settle-onset) var(--ease-out-expo) both;
+  animation-delay: 180ms;
 }
-.settle-fw { display: inline-block; }
-/* the noise. An open position is a short run of noise glyphs in the
-   answer's own face, dim, that cycle slowly and never spell anything; a
-   held position (a piece of a word is in) is the same, firmer. Its box is
-   fixed at about a token's width, so a word replacing its noise barely
-   moves what follows. The end is a pilcrow. */
+@keyframes settle-write {
+  from { opacity: 0; filter: blur(2px); }
+  to   { opacity: 1; filter: blur(0); }
+}
 .settle-slot {
   display: inline-block;
+  position: relative;
   width: 2.3ch;
+  height: 1em;
   margin: 0 0.05ch;
-  overflow: hidden;
-  white-space: nowrap;
-  text-align: center;
-  letter-spacing: -0.04em;
-  vertical-align: baseline;
-  color: var(--settle-ink-2);
-  opacity: var(--settle-open-alpha, 0.25);
-  user-select: none;
+  vertical-align: bottom;
+  transition: width var(--settle-onset) var(--ease-out-expo), margin var(--settle-onset) var(--ease-out-expo), opacity 300ms var(--ease-out-strong);
 }
-.settle-slot[data-state="held"] { opacity: 0.6; }
-.settle-slot[data-state="end"] { width: auto; margin-left: 0.3ch; opacity: 0.45; letter-spacing: 0; }
-.settle[data-paused="true"] .settle-slot { opacity: var(--settle-open-alpha, 0.25); }
+/* the glimmer: a piece of a word is in; a soft light, breathing, never a glyph */
+.settle-slot[data-state="held"]::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.6ch;
+  height: 0.55em;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, var(--settle-ink-2) 0%, transparent 70%);
+  opacity: 0.35;
+  animation: settle-glimmer var(--settle-breath) ease-in-out infinite;
+}
+@keyframes settle-glimmer {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.5; }
+}
+.settle-slot[data-state="end"] { width: 0.5ch; margin-left: 0.2ch; }
+.settle-slot[data-state="end"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: 0.7em;
+  transform: translateY(-50%);
+  background: var(--settle-ink-2);
+  opacity: 0.45;
+}
+.settle-slot[data-state="beyond"] { width: 0; margin: 0; }
+.settle-page-end { display: inline-block; width: 0; height: 1em; vertical-align: bottom; }
+
+/* The cursor. A circle centered on the line, the brand's color, that glides
+   to wherever the source just committed, sits after the word it wrote like
+   a caret, sweeps to the page's end when a sentence closes, and rests and
+   fades when the source is done. It moves by a transition on its transform,
+   so a new destination retargets the glide from wherever it is. */
+.settle { position: relative; }
+.settle-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0.62em;
+  height: 0.62em;
+  margin: -0.31em 0 0 -0.31em;
+  border-radius: 50%;
+  background: var(--settle-cursor, var(--settle-released, var(--accent, currentColor)));
+  box-shadow: 0 0 0 0.22em color-mix(in oklab, var(--settle-cursor, var(--settle-released, var(--accent, currentColor))) 18%, transparent);
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 400ms var(--ease-out-strong);
+  animation: settle-cursor-breath var(--settle-breath) ease-in-out infinite;
+}
+.settle-cursor[data-state="finalizing"] { transition-duration: 320ms; animation: none; transform-origin: center; }
+.settle-cursor[data-state="done"] { opacity: 0; animation: none; }
+.settle[data-paused="true"] .settle-cursor { animation: none; }
+@keyframes settle-cursor-breath {
+  0%, 100% { scale: 1; opacity: 1; }
+  50%      { scale: 0.82; opacity: 0.75; }
+}
+
+/* In the legend only, a blank slot shows its extent and a held one its glimmer at rest. */
+.settle-legend .settle-slot[data-state="open"] { outline: 1px dashed color-mix(in oklab, currentColor 28%, transparent); outline-offset: -1px; margin: 0 0.15ch; }
+.settle-legend .settle-slot[data-state="held"]::after { animation: none; opacity: 0.4; }
+.settle-legend-cursor { display: inline-flex; align-items: center; height: 1.6em; }
+
+/* The concept phone's slot: a card that appears with the wait and leaves with the answer. */
+.concept-slot {
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--accent) 18%, var(--surface));
+  border: 0.6px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  transition: opacity 400ms var(--ease-out-strong), transform 400ms var(--ease-out-expo);
+}
+.concept-slot[data-shown="false"] { opacity: 0; transform: translateY(6px); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .concept-slot { transition: none; } }
 
 /* The margin. */
 .settle-margin {
@@ -1042,7 +1109,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .settle-w, .settle-fw[data-fresh], .settle-cw, .settle-slot { animation: none !important; }
+  .settle-w, .settle-cw, .settle-slot, .settle-slot::after, .settle-cursor { animation: none !important; transition: none !important; }
+  .settle-cw { opacity: 1; filter: none; }
   .settle-w { color: var(--settle-ink, currentColor); -webkit-text-fill-color: var(--settle-ink, currentColor); background-image: none; }
   .settle-forming { transition: none; }
   .settle-cell::before { animation: none !important; transition: none; }
