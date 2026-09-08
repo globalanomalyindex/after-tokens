@@ -64,7 +64,7 @@ export function BrandProvider({
       ['--font-brand-mono' as string]: tokens.fontMono,
       ['--brand-radius' as string]: `${tokens.cornerRadius}px`,
       ...voiceStyle(tokens.voice),
-      ...settleVoiceStyle(tokens.settle),
+      ...settleVoiceStyle(tokens.settle, { ink: tokens.ink, surface: tokens.surface, stageText: tokens.stageText, stage: tokens.stage, accent: tokens.accent }),
     }),
     [tokens],
   )

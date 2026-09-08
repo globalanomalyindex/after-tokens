@@ -755,14 +755,24 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    what the source is doing, in words, beside a mark that breathes while it
    is active. The voice sets --settle-* on a wrapper (lib/settle/voice.ts). */
 .settle {
-  --settle-onset: 160ms;
+  --settle-onset: 200ms;
   --settle-breath: 2400ms;
   --settle-bloom: 0.6;
-  --settle-forming-alpha: 0.73;
-  --settle-open-alpha: 0.24;
+  --settle-open-alpha: 0.25;
+  --settle-ink-2-keep: 71%;
+  --settle-ink-2-tint: 0%;
+  /* the secondary ink: the page's ink moved toward the ground as far as the
+     contrast floor allows, then tinted toward the accent where there was
+     no room to dim. --settle-ink is measured by the surface at mount;
+     --settle-ground is set by the stage or the frame the surface sits in. */
+  --settle-ink-2: color-mix(in oklab,
+    color-mix(in oklab, var(--settle-ink, currentColor) var(--settle-ink-2-keep), var(--settle-ground, transparent)) calc(100% - var(--settle-ink-2-tint)),
+    var(--accent, currentColor));
   position: relative;
   min-width: 0;
 }
+.stage { --settle-ground: var(--stage); }
+.frame { --settle-ground: var(--surface); }
 .settle-page {
   font-family: var(--font-ui);
   white-space: pre-wrap;
@@ -770,19 +780,51 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   user-select: text;
 }
 .settle-page::selection, .settle-page ::selection { background: color-mix(in oklab, currentColor 22%, transparent); }
-/* a passage arrives once, whole, on an opacity ramp and nothing else. With
-   the forming text shown it starts where that text rested, so the reader
-   sees a brightening; otherwise it starts from nothing. */
+/* Ink settling. A released word keeps its shape and its place; only its
+   ink changes. It starts in the secondary ink it was available in, and the
+   page's ink fills its letterforms from the bottom up, in one movement
+   across the sentence, over the onset. The fill is a copy of the word laid
+   exactly over it and revealed by a clip; at the end the copy hides and the
+   word's own color snaps to the page's ink, so nothing is drawn twice. */
 .settle-passage { display: inline; }
-@keyframes settle-onset {
-  from { opacity: var(--settle-onset-from, 0); }
-  to   { opacity: 1; }
+.settle-w {
+  color: var(--settle-ink-2);
+  animation: settle-ink var(--settle-onset) var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 12) * 5ms);
 }
-.settle[data-preview="true"] { --settle-onset-from: var(--settle-forming-alpha); }
+/* the two inks stacked in one gradient behind the letterforms, twice the
+   word's height, slid upward over the onset so the page's ink rises through
+   the glyphs; at the end the gradient is dropped and the word is plain text
+   in the page's ink. Discrete properties hold their first value until the
+   last keyframe, which is what keeps the clip in place for the whole fill. */
+@keyframes settle-ink {
+  0% {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 50%, var(--settle-ink-2) 50% 100%);
+    background-size: 100% 200%;
+    background-position: 0 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+  99.9% {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 50%, var(--settle-ink-2) 50% 100%);
+    background-size: 100% 200%;
+    background-position: 0 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+  100% {
+    color: var(--settle-ink, currentColor);
+    -webkit-text-fill-color: var(--settle-ink, currentColor);
+    background-image: none;
+  }
+}
 .settle-forming {
-  color: color-mix(in oklab, currentColor calc(100% * var(--settle-forming-alpha)), transparent);
+  color: var(--settle-ink-2);
   user-select: none;
-  transition: color var(--settle-onset) var(--ease-out-expo);
 }
 .settle-empty {
   color: color-mix(in oklab, currentColor 46%, transparent);
@@ -881,15 +923,9 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-field[data-status="complete"] .settle-floor { opacity: 0.26; }
 .settle-field[data-still] .settle-cell::before, .settle-field[data-still] .settle-floor { animation: none; transition: none; }
 
-/* Words. A passage arrives once, whole, on an opacity ramp swept across its
-   words: each starts a little after the last, never later than half the
-   onset in, so the sweep is over within one and a half onsets. The forming
-   text pours in the same way, from the first fresh word of a batch. Neither
-   ever moves, blurs or reweights; reduced motion removes both. */
-.settle-w {
-  animation: settle-onset var(--settle-onset) var(--ease-out-expo) both;
-  animation-delay: calc(min(var(--k, 0), 16) * var(--settle-onset) / 32);
-}
+/* An available word appears once, in the secondary ink, on a short opacity
+   ramp; a batch pours in from its first fresh word. It never moves, blurs
+   or reweights, and a word already drawn never animates again. */
 .settle-fw[data-fresh] {
   animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
   animation-delay: calc(min(var(--k, 0), 16) * var(--settle-onset) / 32);
@@ -900,45 +936,37 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 }
 
 /* The carved zone. Every position after the word-safe prefix, drawn as what
-   the sampler has made of it: an open position is a slot of static, a piece
-   of a word whose other pieces are out is a held slot, a complete word stands
-   where it will, dim, and a run of end tokens is one end mark. Slots stand
-   inline where words will, so the zone shortens from the tail as the model
-   decides the length and words appear across it in the sampler's own order.
-   The zone reflows as slots become words; the page before it never moves. */
+   the sampler has made of it: an open position is a short hairline where a
+   word will stand, a piece of a word whose other pieces are out is a held
+   hairline, a complete word stands where it will in the secondary ink, and
+   the lowest committed end is one end mark. The zone reflows as hairlines
+   become words; the page before it never moves. */
 .settle-carve { display: inline; }
 .settle-cw {
-  color: color-mix(in oklab, currentColor calc(100% * var(--settle-carve-alpha, 0.52)), transparent);
-  animation: settle-carve-in var(--settle-onset) var(--ease-out-expo) both;
-}
-@keyframes settle-carve-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  color: var(--settle-ink-2);
+  animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
 }
 .settle-slot {
   display: inline-block;
-  width: 1.05ch;
-  height: 0.5em;
-  margin: 0 0.06ch;
-  vertical-align: -0.1em;
-  border-radius: 1px;
-  background: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 3px);
-  background-size: 6px 100%;
-  opacity: var(--settle-open-alpha, 0.24);
+  width: 1ch;
+  height: 1px;
+  margin: 0 0.12ch;
+  vertical-align: -0.08em;
+  background: currentColor;
+  opacity: var(--settle-open-alpha, 0.25);
 }
-.settle-slot[data-state="held"] { background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 3px); opacity: 0.5; }
-.settle-slot[data-state="end"] { width: 1.2ch; height: 2px; vertical-align: 0.22em; margin-left: 0.3ch; background: currentColor; opacity: 0.42; }
-/* static: while the source is receiving, an open slot's grain shifts in
-   steps and its weight drifts, with a phase per position, so the unsolved
-   part of the answer reads as noise being worked. Off under reduced motion. */
+.settle-slot[data-state="held"] { opacity: 0.55; }
+.settle-slot[data-state="end"] { width: 1.4ch; height: 2px; vertical-align: -0.1em; margin-left: 0.4ch; opacity: 0.45; border-radius: 1px; }
+/* while the source is receiving, an open hairline drifts in weight, slowly,
+   with a phase per position: the unsolved part of the answer is alive and
+   nothing more. Off under reduced motion. */
 .settle[data-status="receiving"] .settle-slot[data-state="open"] {
-  animation: settle-static 1500ms steps(3, end) infinite;
-  animation-delay: calc(var(--k, 0) * -191ms);
+  animation: settle-hairline 3600ms ease-in-out infinite;
+  animation-delay: calc(var(--k, 0) * -233ms);
 }
-@keyframes settle-static {
-  0%   { background-position: 0 0; opacity: var(--settle-open-alpha, 0.24); }
-  50%  { opacity: calc(var(--settle-open-alpha, 0.24) + 0.14); }
-  100% { background-position: 3px 0; opacity: var(--settle-open-alpha, 0.24); }
+@keyframes settle-hairline {
+  0%, 100% { opacity: var(--settle-open-alpha, 0.25); }
+  50%      { opacity: calc(var(--settle-open-alpha, 0.25) + 0.12); }
 }
 .settle[data-paused="true"] .settle-slot { animation: none; }
 
@@ -1014,6 +1042,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 
 @media (prefers-reduced-motion: reduce) {
   .settle-w, .settle-fw[data-fresh], .settle-cw, .settle-slot { animation: none !important; }
+  .settle-w { color: var(--settle-ink, currentColor); -webkit-text-fill-color: var(--settle-ink, currentColor); background-image: none; }
   .settle-forming { transition: none; }
   .settle-cell::before { animation: none !important; transition: none; }
   .settle-floor { animation: none !important; transition: none; }

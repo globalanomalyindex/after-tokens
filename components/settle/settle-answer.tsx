@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { formingText } from '@/lib/settle/reader'
 import { carve } from '@/lib/settle/carve'
 import type { SettleState } from '@/lib/settle/types'
@@ -19,15 +19,16 @@ function pieces(text: string): string[] {
   return text.split(/(\s+)/).filter((piece) => piece.length > 0)
 }
 
-/** A passage as word spans, so its arrival can sweep across it: each word
- *  starts its ramp a few milliseconds after the last, inside the onset. */
+/** A passage as word spans. Each word carries a copy of itself for the
+ *  settling: the page's ink fills the letterforms bottom to top, one
+ *  coordinated movement across the sentence, and the word never moves. */
 function Passage({ text }: { text: string }) {
   let k = 0
   return (
     <span className="settle-passage">
       {pieces(text).map((piece, i) => /^\s+$/.test(piece)
         ? piece
-        : <span key={i} className="settle-w" style={{ ['--k' as string]: k++ } as CSSProperties}>{piece}</span>)}
+        : <span key={i} className="settle-w" data-t={piece} style={{ ['--k' as string]: k++ } as CSSProperties}>{piece}</span>)}
     </span>
   )
 }
@@ -106,7 +107,19 @@ export function SettleAnswer({
 }: Props) {
   const brand = useBrand()
   const voice = useMemo(() => clampSettleVoice({ ...brand.settle, ...voiceProp }), [brand.settle, voiceProp])
-  const voiceVars = useMemo(() => (voiceProp ? settleVoiceStyle(voice) : undefined), [voice, voiceProp])
+  const voiceVars = useMemo(
+    () => (voiceProp ? settleVoiceStyle(voice, { ink: brand.ink, surface: brand.surface, stageText: brand.stageText, stage: brand.stage, accent: brand.accent }) : undefined),
+    [voice, voiceProp, brand],
+  )
+  // the page's ink, measured where the surface sits, so the settling can
+  // name the color it fills toward and the secondary ink can be mixed from it
+  const rootRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = rootRef.current
+    if (!el) return
+    el.style.removeProperty('--settle-ink')
+    el.style.setProperty('--settle-ink', getComputedStyle(el).color)
+  }, [brand, className, style])
   const mode: FormingMode = formingProp ?? (preview === false ? 'held' : 'carve')
   const showField = field ?? mode !== 'carve'
   const forming = mode === 'held' ? '' : formingText(state)
@@ -130,6 +143,7 @@ export function SettleAnswer({
 
   return (
     <div
+      ref={rootRef}
       className={`settle ${className}`}
       data-status={state.status}
       data-paused={paused || undefined}

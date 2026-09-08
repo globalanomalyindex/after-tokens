@@ -8,7 +8,7 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 const RULES: string[] = [
   'nothing is drawn that the source has not committed: no final text, no reserved widths, no map of which words matter, no forecast of length.',
   'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
-  'text on the page never changes, moves or reflows. forming text brightens into the page. the carved zone after it reflows as slots become words; it is watched, never read.',
+  'text on the page never changes, moves or reflows. when a sentence closes, the page&rsquo;s ink settles through its words&rsquo; letterforms; their shapes and places do not change. the carved zone after the page reflows as hairlines become words.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
   'out-of-order text appears only after the page, never inside it. a committed word may stand where it will, dim, among slots; an open position is a slot and never letters.',
   'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
@@ -37,7 +37,7 @@ export function SectionContract() {
         {RULES.map((rule, i) => (
           <Reveal as="li" key={rule} delay={i * 40} className="grid grid-cols-[2.2rem_1fr] gap-3 items-baseline">
             <span className="readout" style={{ color: 'var(--muted)' }}>{String(i + 1).padStart(2, '0')}</span>
-            <span className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>{rule}</span>
+            <span className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }} dangerouslySetInnerHTML={{ __html: rule }} />
           </Reveal>
         ))}
       </ol>

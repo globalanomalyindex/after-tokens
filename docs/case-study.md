@@ -87,7 +87,7 @@ Given the same events, the surface shows the same page, the same forming text, t
 
 1. Nothing is drawn that the source has not committed.
 2. A word is drawn only when it is complete. A token whose successor is uncommitted is held, because it may be the first piece of a longer word. A boundary exists when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end.
-3. Text on the page never changes, moves or reflows. Forming text brightens into the page. The carved zone after it reflows as slots become words.
+3. Text on the page never changes, moves or reflows. When a sentence closes, the page's ink settles through its words' letterforms, bottom to top, in one movement; their shapes and places do not change. An available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
 4. The page grows by whole passages under a policy: each word, each sentence, or each paragraph. No timeout relabels a fragment as complete; finality releases the exact remainder.
 5. Out-of-order text appears only after the page, never inside it. A committed word may stand where it will, dim, among slots; an open position is a slot and never letters.
 6. An exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
