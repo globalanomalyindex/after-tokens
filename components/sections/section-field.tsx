@@ -56,8 +56,10 @@ export function SectionField() {
           {CELLS.map((c) => (
             <div key={c.state} className="grid grid-cols-[3rem_1fr] gap-4 items-start">
               <dt className="settle" style={{ ['--settle-open-alpha' as string]: 0.28 } as React.CSSProperties}>
-                <span className="settle-field" data-mark="tick" aria-hidden="true" style={{ ['--n' as string]: 6, marginTop: '0.35rem' } as React.CSSProperties}>
-                  {[0, 1, 2, 3, 4, 5].map((i) => <span key={i} className="settle-cell" data-state={c.state} style={{ animation: 'none' }} />)}
+                <span className="settle-field" data-mark="tick" data-still aria-hidden="true" style={{ ['--n' as string]: 6, marginTop: '0.35rem' } as React.CSSProperties}>
+                  {c.state === 'end'
+                    ? <span className="settle-floor" style={{ left: 0, width: '100%' }} />
+                    : [0, 1, 2, 3, 4, 5].map((i) => <span key={i} className="settle-cell" data-state={c.state} />)}
                 </span>
                 <span className="settle-sr">{c.label}</span>
               </dt>

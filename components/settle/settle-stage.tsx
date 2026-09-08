@@ -104,7 +104,10 @@ export function SettleStage({
   const replay: Replay | null = useMemo(() => (trace ? replayTrace(trace, pace) : authored), [trace, authored, pace])
 
   const { ref, inView } = useInView<HTMLDivElement>(0.25)
-  const clock = useReplay(replay, { policy, autoplay: autoplay === 'immediate' || inView, runKey })
+  // any setting change replays the recording from the start with the new
+  // setting applied, so what changed is seen from its first event
+  const settingsKey = `${sourceId}|${policy}|${preview}|${brand}|${paceId}|${comparison}|${runKey ?? ''}`
+  const clock = useReplay(replay, { policy, autoplay: autoplay === 'immediate' || inView, runKey: settingsKey })
   const has = (c: StageControl) => controls.includes(c)
 
   // the prompt picker: one pill per prompt whose run under this sampler is offered

@@ -10,7 +10,45 @@ import { Margin, statusWords } from './margin'
 
 // The product component: page, forming text, field, margin. It renders a
 // state; it never runs a clock, never sees an answer, and never animates a
-// readable glyph. Give it a state from settleAt() or from a live adapter.
+// readable glyph beyond a single opacity ramp on arrival. Give it a state
+// from settleAt() or from a live adapter.
+
+/** Splits text into words and the whitespace between them, whitespace kept. */
+function pieces(text: string): string[] {
+  return text.split(/(\s+)/).filter((piece) => piece.length > 0)
+}
+
+/** A passage as word spans, so its arrival can sweep across it: each word
+ *  starts its ramp a few milliseconds after the last, inside the onset. */
+function Passage({ text }: { text: string }) {
+  let k = 0
+  return (
+    <span className="settle-passage">
+      {pieces(text).map((piece, i) => /^\s+$/.test(piece)
+        ? piece
+        : <span key={i} className="settle-w" style={{ ['--k' as string]: k++ } as CSSProperties}>{piece}</span>)}
+    </span>
+  )
+}
+
+/** The forming text as word spans keyed by their offset in the prefix, so a
+ *  word that is already drawn never re-animates, and a batch of new words
+ *  pours in from its first word. */
+function Forming({ text, offset, seen }: { text: string; offset: number; seen: number }) {
+  let at = offset
+  let k = 0
+  return (
+    <span className="settle-forming" aria-hidden="true">
+      {pieces(text).map((piece) => {
+        const start = at
+        at += piece.length
+        if (/^\s+$/.test(piece)) return piece
+        const fresh = start >= seen
+        return <span key={start} className="settle-fw" style={{ ['--k' as string]: fresh ? k++ : 0 } as CSSProperties} data-fresh={fresh || undefined}>{piece}</span>
+      })}
+    </span>
+  )
+}
 
 type Props = {
   state: SettleState
@@ -50,6 +88,14 @@ export function SettleAnswer({
   const voiceVars = useMemo(() => (voiceProp ? settleVoiceStyle(voice) : undefined), [voice, voiceProp])
   const forming = preview ? formingText(state) : ''
   const pageEmpty = state.passages.length === 0 && !forming
+  // how far the forming text had reached at the last render, so only words
+  // past it are fresh; reset when the page grows past it
+  const seenRef = useRef(0)
+  // a state that shrank is a restart: everything is fresh again
+  const seen = seenRef.current > state.wordSafeLength ? state.releasedLength : Math.max(seenRef.current, state.releasedLength)
+  useEffect(() => {
+    seenRef.current = Math.max(state.releasedLength, state.wordSafeLength)
+  })
   const reviewId = useId()
   const [reviewing, setReviewing] = useState(false)
   const answerRef = useRef<HTMLDivElement>(null)
@@ -68,10 +114,8 @@ export function SettleAnswer({
       style={{ ...voiceVars, ...style }}
     >
       <div ref={answerRef} className="settle-page" role="region" aria-label={label} tabIndex={state.previousPassages ? 0 : undefined}>
-        {state.passages.map((passage) => (
-          <span key={passage.id} className="settle-passage">{passage.text}</span>
-        ))}
-        {forming && <span className="settle-forming" aria-hidden="true">{forming}</span>}
+        {state.passages.map((passage) => <Passage key={passage.id} text={passage.text} />)}
+        {forming && <Forming text={forming} offset={state.releasedLength} seen={seen} />}
         {pageEmpty && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
       </div>
       {field && <Field state={state} mark={voice.mark} />}

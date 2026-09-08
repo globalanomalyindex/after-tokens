@@ -15,7 +15,7 @@ import { MARK_SHAPES, SETTLE_RANGES, type MarkShape, type SettleVoice } from '@/
 const TOKENS: { key: keyof SettleVoice; range: string; changes: string; keeps: string }[] = [
   { key: 'mark', range: 'tick, dot, dash, square', changes: 'the glyph of a field cell and of the margin mark', keeps: 'every cell state legible at every size' },
   { key: 'bloom', range: '0 to 1', changes: 'how much a cell flares when it commits', keeps: 'gone within 240 ms; no flare on released text' },
-  { key: 'onset', range: '0 to 240 ms', changes: 'the opacity ramp of a passage arriving on the page', keeps: 'never a transform, never a blur, zero under reduced motion' },
+  { key: 'onset', range: '0 to 240 ms', changes: 'the opacity ramp of a passage arriving on the page, swept across its words', keeps: 'never a transform, never a blur, zero under reduced motion' },
   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breath of the margin mark while receiving', keeps: 'rest at every terminal state' },
   { key: 'grain', range: '0 to 1', changes: 'how faint open cells rest, how dim the forming text rests', keeps: 'forming text at least 3:1 against its surface' },
 ]
@@ -30,6 +30,10 @@ const SLIDERS: { key: Exclude<keyof SettleVoice, 'mark'>; step: number; unit?: s
 export function SectionVoice() {
   const [brand, setBrand] = useState<BrandId>('after-tokens')
   const [override, setOverride] = useState<Partial<SettleVoice>>({})
+  // the stage replays from the start when a voice setting is committed: a
+  // pill at once, a slider when it is let go
+  const [run, setRun] = useState(0)
+  const replay = () => setRun((k) => k + 1)
   const base = brands[brand].settle
   const voice: SettleVoice = { ...base, ...override }
   const set = (key: keyof SettleVoice, value: number | MarkShape) => setOverride((o) => ({ ...o, [key]: value }))
@@ -67,7 +71,7 @@ export function SectionVoice() {
       <div className="mt-12 md:mt-16">
         <div className="grid gap-4 mb-6">
           <ToggleRail label="brand" items={(Object.keys(brands) as BrandId[]).map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => { setBrand(id as BrandId); setOverride({}) }} />
-          <ToggleRail label="mark" items={MARK_SHAPES.map((m) => ({ id: m, label: m }))} activeId={voice.mark} onSelect={(id) => set('mark', id as MarkShape)} />
+          <ToggleRail label="mark" items={MARK_SHAPES.map((m) => ({ id: m, label: m }))} activeId={voice.mark} onSelect={(id) => { set('mark', id as MarkShape); replay() }} />
         </div>
         <SettleStage
           key={brand}
@@ -75,6 +79,7 @@ export function SectionVoice() {
           pace={{ scale: 4 }}
           brand={brand}
           voice={voice}
+          runKey={run}
           readout={() => (
             <div className="grid gap-5 pt-1">
               {SLIDERS.map((s) => {
@@ -86,7 +91,7 @@ export function SectionVoice() {
                       <label htmlFor={id} className="label">{s.key}</label>
                       <span className="readout" style={{ color: 'var(--ink)' }}>{s.key === 'onset' ? Math.round(voice.onset) : voice[s.key].toFixed(2)}{s.unit ? ` ${s.unit}` : ''}</span>
                     </div>
-                    <input id={id} type="range" className="voice-range" min={lo} max={hi} step={s.step} value={voice[s.key]} onChange={(e) => set(s.key, Number(e.target.value))} />
+                    <input id={id} type="range" className="voice-range" min={lo} max={hi} step={s.step} value={voice[s.key]} onChange={(e) => set(s.key, Number(e.target.value))} onPointerUp={replay} onKeyUp={(e) => { if (/^Arrow|Home|End|Page/.test(e.key)) replay() }} />
                     <div className="flex justify-between readout" style={{ color: 'var(--muted)' }}><span>{lo}</span><span>{hi}</span></div>
                   </div>
                 )

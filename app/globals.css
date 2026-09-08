@@ -773,9 +773,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 /* a passage arrives once, whole, on an opacity ramp and nothing else. With
    the forming text shown it starts where that text rested, so the reader
    sees a brightening; otherwise it starts from nothing. */
-.settle-passage {
-  animation: settle-onset var(--settle-onset) var(--ease-out-expo) both;
-}
+.settle-passage { display: inline; }
 @keyframes settle-onset {
   from { opacity: var(--settle-onset-from, 0); }
   to   { opacity: 1; }
@@ -791,10 +789,11 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   user-select: none;
 }
 
-/* The field. n columns for the bound; a collapsed run of end cells spans its
-   share, so the line is always exactly as wide as the request and the end
-   reads as a bar growing in from the right. */
+/* The field. n columns for the bound; a run of end cells is one floor whose
+   edges move as the run grows, so the line is always exactly as wide as the
+   request and the answer's extent reads as a floor settling in. */
 .settle-field {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr));
   column-gap: 1px;
@@ -819,7 +818,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   width: var(--cell-w, 1px);
   height: var(--cell-h, 10px);
   border-radius: var(--cell-r, 0);
-  transition: opacity 220ms var(--ease-out-strong);
+  transition: opacity 600ms var(--ease-out-strong);
 }
 .settle-field[data-mark="tick"]   { --cell-w: 1px; --cell-h: 10px; }
 .settle-field[data-mark="dot"]    { --cell-w: min(100%, 3px); --cell-h: 3px; --cell-r: 9999px; }
@@ -830,27 +829,74 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-cell[data-state="held"]      { --cell-alpha: 0.85; }
 .settle-cell[data-state="forming"]   { --cell-alpha: 0.85; }
 .settle-cell[data-state="released"]  { --cell-alpha: 1; color: var(--settle-released, var(--accent, currentColor)); }
-/* an end cell is a low line: the answer's extent settling, drawn as a floor */
-.settle-cell[data-state="end"]::before { --cell-alpha: 0.42; width: 100%; height: 2px; border-radius: 1px; }
+.settle-cell[data-state="end"]::before,
 .settle-cell[data-state="beyond"]::before { display: none; }
-/* the bloom: a cell that just committed flares once so the eye can find
-   where the sampler worked; sized by the voice, over within 240 ms */
+/* the floor: a run of end tokens, the answer's extent settling. Its edges
+   move smoothly as the run grows; it never scales. */
+.settle-floor {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.42;
+  transition: left 320ms var(--ease-out-expo), width 320ms var(--ease-out-expo), opacity 600ms var(--ease-out-strong);
+  animation: settle-floor-in 320ms var(--ease-out-expo) both;
+}
+@keyframes settle-floor-in {
+  from { opacity: calc(0.42 + 0.45 * var(--settle-bloom)); }
+  to   { opacity: 0.42; }
+}
+/* the settle: a cell that just committed drops into place, sized by the
+   voice's bloom, and a run that changed together sweeps from its start. Over
+   within 240 ms of its start; the sweep adds at most 200 ms. */
 .settle-cell[data-state="committed"]::before,
+.settle-cell[data-state="held"]::before,
 .settle-cell[data-state="forming"]::before,
 .settle-cell[data-state="released"]::before {
-  animation: settle-bloom 240ms var(--ease-out-expo) both;
+  animation: settle-drop 240ms var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 25) * 8ms);
 }
-/* a collapsed end run can be wide, so its bloom is a flash and never a scale */
-.settle-cell[data-state="end"]::before {
-  animation: settle-bloom-flat 240ms var(--ease-out-expo) both;
+@keyframes settle-drop {
+  0%   { transform: translateY(calc(-4px - 4px * var(--settle-bloom))) scaleY(calc(1 + 0.6 * var(--settle-bloom))); opacity: 0; }
+  55%  { opacity: 1; }
+  100% { transform: none; opacity: var(--cell-alpha, 1); }
 }
-@keyframes settle-bloom {
-  0%   { transform: scale(calc(1 + 0.9 * var(--settle-bloom))); opacity: 1; }
-  100% { transform: scale(1); opacity: var(--cell-alpha, 1); }
+/* the suspension: while the source is receiving, open cells drift, a slow
+   and faint change in weight with a phase per cell, so the stretch in which
+   the floor grows and nothing else commits still reads as a process. State
+   does not change; only brightness moves. Off under reduced motion. */
+.settle-field[data-status="receiving"] .settle-cell[data-state="open"]::before {
+  animation: settle-drift 3400ms ease-in-out infinite;
+  animation-delay: calc(var(--k, 0) * -173ms);
 }
-@keyframes settle-bloom-flat {
-  0%   { opacity: calc(0.42 + 0.5 * var(--settle-bloom)); }
-  100% { opacity: 0.42; }
+@keyframes settle-drift {
+  0%, 100% { opacity: var(--settle-open-alpha); }
+  50%      { opacity: calc(var(--settle-open-alpha) + 0.14); }
+}
+/* the rest: at completion the field quiets once. released cells ease back
+   from full to a resting weight, the floor recedes; nothing moves. */
+.settle-field[data-status="complete"] .settle-cell[data-state="released"] { --cell-alpha: 0.82; }
+.settle-field[data-status="complete"] .settle-floor { opacity: 0.26; }
+.settle-field[data-still] .settle-cell::before, .settle-field[data-still] .settle-floor { animation: none; transition: none; }
+
+/* Words. A passage arrives once, whole, on an opacity ramp swept across its
+   words: each starts a little after the last, never later than half the
+   onset in, so the sweep is over within one and a half onsets. The forming
+   text pours in the same way, from the first fresh word of a batch. Neither
+   ever moves, blurs or reweights; reduced motion removes both. */
+.settle-w {
+  animation: settle-onset var(--settle-onset) var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 16) * var(--settle-onset) / 32);
+}
+.settle-fw[data-fresh] {
+  animation: settle-form var(--settle-onset) var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 16) * var(--settle-onset) / 32);
+}
+@keyframes settle-form {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* The margin. */
@@ -924,8 +970,9 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .settle-passage { animation: none; }
+  .settle-w, .settle-fw[data-fresh] { animation: none; }
   .settle-forming { transition: none; }
   .settle-cell::before { animation: none !important; transition: none; }
+  .settle-floor { animation: none !important; transition: none; }
   .settle-mark::before { animation: none !important; }
 }
