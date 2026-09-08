@@ -2,10 +2,9 @@
 
 an independent product design and engineering case study on how an answer from a diffusion language model should reach a reader.
 
-- live (vercel): https://after-tokens.vercel.app
 - live (github pages): https://globalanomalyindex.github.io/after-tokens/
 
-![after tokens: a product design and engineering case study](https://after-tokens.vercel.app/opengraph-image)
+![after tokens: a product design and engineering case study]
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
@@ -100,7 +99,7 @@ pnpm dev
 
 ## deploys
 
-vercel builds `main` on push. github pages builds the same commit with `GITHUB_PAGES=true`, which switches to a static export under the `/after-tokens` base path.
+github pages builds main with `GITHUB_PAGES=true`, which switches to a static export under the `/after-tokens` base path.
 
 ## credits
 
