@@ -1,3 +1,5 @@
+import type { SettleVoice } from '@/lib/settle/voice'
+
 export type BrandId = 'after-tokens' | 'halcyon' | 'felt' | 'pulse' | 'voltage'
 
 // The voice: six tokens on the one grammar. Each has a range that keeps every
@@ -35,5 +37,8 @@ export type BrandTokens = {
   fontBody: string
   fontMono: string
   cornerRadius: number
+  /** the legacy reveal's voice, kept for the retrospective reference */
   voice: BrandVoice
+  /** the settle voice: mark, bloom, onset, tempo, grain */
+  settle: SettleVoice
 }

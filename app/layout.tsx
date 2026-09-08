@@ -10,9 +10,9 @@ const iconBase = process.env.GITHUB_PAGES === 'true' ? '/after-tokens' : ''
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://after-tokens.vercel.app'),
-  title: 'After Tokens: an arrival grammar for diffusion text',
+  title: 'After Tokens: a causal reading surface for diffusion text',
   description:
-    'A product design and engineering case study: the same answer, arriving in a shape the mind pays out for. One reveal grammar for diffusion language models, specified by the Zeigarnik effect, gestalt closure, the peak-end rule, and reading fluency, measured on sixty recorded sampler trajectories, and brand-able through a voice.',
+    'A product design and engineering case study on how an answer from a diffusion language model should reach a reader: only what the model has committed, on a page that holds still, with the process in view. A reading contract, a field, five brand voices, sixty recorded sampler trajectories, and a measured cost.',
   authors: [
     {
       name: 'Christopher Robin Fiore',
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     shortcut: `${iconBase}/favicon.ico`,
   },
   openGraph: {
-    title: 'After Tokens: an arrival grammar for diffusion text',
+    title: 'After Tokens: a causal reading surface for diffusion text',
     description:
-      'How an answer from a diffusion language model should arrive on screen: one reveal grammar, four psychological properties, sixty recorded trajectories, five brand voices.',
+      'How an answer from a diffusion language model should reach a reader: a causal reading contract, a field that shows the process where it is real, five brand voices, sixty recorded trajectories.',
     url: '/',
     siteName: 'After Tokens',
     locale: 'en_US',
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'After Tokens: an arrival grammar for diffusion text',
+    title: 'After Tokens: a causal reading surface for diffusion text',
     description:
-      'How an answer from a diffusion language model should arrive on screen: one reveal grammar, four psychological properties, sixty recorded trajectories, five brand voices.',
+      'How an answer from a diffusion language model should reach a reader: a causal reading contract, a field that shows the process where it is real, five brand voices, sixty recorded trajectories.',
   },
 }
 

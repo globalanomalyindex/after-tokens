@@ -1,56 +1,99 @@
-# The arrival grammar, reasoned from the ground up
+# The design record, in order
 
-This is the design record for the redesigned reveal: the argument in the order it was made, from the question to the engine. Every number cited here is generated into `lib/traces/arrival.json` by `pnpm traces:arrival` and read through `lib/traces/findings.ts`, or comes from the recorded trajectories in `data/traces/`. The earlier record (four nature modes, the reward grammar, the ledger of twenty decisions) is in the git history at commit ff07f88; this record supersedes it.
+Three passes made this piece. Each is recorded here with what it got right, what it got wrong, and what the next pass kept. The first two records are preserved in full below the third, because the argument of the case study is the sequence.
 
-## 1. The question, and what it hides
+## Pass three: Settle (7 September 2026)
 
-How do we make diffusion text rendering clean, simple, beautiful, and brand-able, using psychological principles such as the Zeigarnik effect, gestalt closure, and the peak-end rule, so that the same answer feels better to read through presentation alone?
+### 1. The question, restated
 
-The premise worth stating: the words are fixed. A diffusion model produces a whole answer and refines it in parallel, so the interface chooses the temporal shape in which the words reach the reader. Every shape is a design. The typewriter is one. A fade is one. The sampler's own commit order is one. The question asks which shape reads best, and how a product can own it without breaking it.
+The brief asks how text from a diffusion language model should reach a reader so that the same answer feels clean, calm, beautiful and brand-able. The crystallize pass answered with a choreography of the final answer. The Margin pass answered with a still page and a breathing mark. Both answered a narrower question than the brief.
 
-## 2. Diagnosis of the earlier build
+A diffusion sampler produces two kinds of fact at every step: it commits tokens, at positions, irreversibly, and by committing it reveals the shape of the answer. A typewriter shows only the first kind. Crystallize invented the second from the answer key. Margin threw it away. Settle shows both, each where a reader can use it.
 
-Reviewed against the question, the shipped piece had four structural problems. Many levers and no spine: nineteen glossary terms, six reward levers, twenty ledger rows, four authored modes and a recorded one. Four metaphors diluting the system: brand-ability argued by multiplying modes, which is the opposite of a system. Psychology cited rather than operationalized: principles justified decisions after the fact, and nothing could say how many open loops a reveal held at second two. And chrome competing with the work: a custom cursor, registration marks, spines, a grid, chips in nineteen hues. One more, admitted in the piece's own close: reading order is a real cost the earlier reveal deferred to a study.
+### 2. The audit, accepted
 
-## 3. Arrival as a design object
+The Codex pass of 7 September audited `ab95e6a` against its own recordings. Its findings are reproduced by `pnpm traces:settle` and cited from `lib/traces/findings.ts`:
 
-An arrival is one number per word: the time it becomes legible. From that vector, the phrase structure, and each word's salience, four properties follow, each grounded in one mechanism. Together they are the arrival profile (`lib/arrival/profile.ts`), and any reveal can be scored on it.
+- The reveal knew the answer: it joined the final word table, measured it, and reserved every word's final width before the first step.
+- 700 of 3,880 words (18.04 percent; 188 of 1,205 in the curated set) span more than one commit step, and the old rule drew their final spelling at the first piece. 353 matched the model's guess at that moment.
+- The "length fixed" label was a retrospective statistic; it preceded the causally known length in 42 of 60 runs.
+- "No phrase ever reads out of order" was contradicted by the report's own 0.056 median inversion share.
+- The 540 ms and 36 percent figures described a shaped replay of 18 curated runs and are not comparable to any causal cost.
 
-- **Tension** (Zeigarnik, 1927). Open phrases over time: the maximum and the time-weighted mean. Rule: one or two at a time, never more than three.
-- **Closure** (Wertheimer, 1923; Topolinski and Reber, 2010). Closures, lock clusters as steps, the share of steps that complete a phrase. Rule: batch commits so a step tends to close a phrase.
-- **Peak and end** (Kahneman et al., 1993). Salience-weighted intensity in the 400 ms attention window, the peak's position, the gist time, the end weight. Rule: peak at the gist, end quiet.
-- **Fluency** (Rayner, 1998; Reber, Schwarz and Winkielman, 2004). Within-phrase inversions, Kendall's tau at the answer scale, and a reader model: one fixation per 250 ms, charged when the next word is still illegible at the end of the fixation. Rule: nothing crisp before commit, crisp text never changes, inside a phrase one crisp anchor then reading order.
+### 3. What Margin got right, and where it stopped
 
-A phrase is the perceptual unit of closure: a line break or a list marker starts one, terminal punctuation ends one, a comma ends one after three words, and eight words is the cap. Stated as a limit for English and Latin script.
+Kept: the event contract (commits by position, a bounded finish, snapshots with explicit finality, revisions as events, stop and error as distinct states); the reducer's discipline (validate a batch before releasing any of it; the prefix grows only through received positions; a terminal state cannot be overwritten); release by complete passage with no timeout; readable text that never blurs, scrambles, pulses or moves; brand outside the glyphs; status in words; reduced motion changes decoration only; the cost instrument.
 
-## 4. What the profile said about the earlier arrivals
+Rejected: rendering nothing diffusion-specific; a 7-pixel bracket in three hues as a brand surface; paying the whole hold in blankness; a case study that argued against its predecessor and stopped.
 
-Scored over the eight coda fixtures at matched durations: the typewriter holds one loop, makes no reader wait, and reads in order at every scale (tau +1). The fade holds no loop and lands 6.4 times the mean intensity in its last stretch. The scatter opens 4.5 loops at the median and makes a reader wait on 14 percent of fixations. Fog and aurora hold every phrase open through their sweep and end at 2.9 and 1.8 times the mean. Mitosis scatters inside phrases. Mycelium, the earlier growth mode, opened 4.5 loops at once and made a reader wait on 19 percent of fixations; it bought the earliest gist of any arrival, 56 percent of the run. That trade is the one the redesign had to decide.
+### 4. The system
 
-## 5. The grammar: crystallize
+The page: released passages, still, selectable. The forming text: committed, contiguous, word-complete text beyond the last passage, dim, brightening into the page. The field: one line of cells, one per token position of the request's bound, showing open, committed, end, held, forming and released, with end runs collapsed to their share. The margin: status words and a breathing mark.
 
-Nature anchor: crystallization. A supersaturated solution nucleates at a few sites; each crystal grows locally along its lattice; grains meet at boundaries; the finished crystal is ordered and still. Rate-limited nucleation is the tension budget. Lattice growth is reading order inside a phrase. Grains meeting are closures. The still crystal is the fluent end.
+Ten rules, in `docs/superpowers/specs/2026-09-07-settle-design.md` section 4.1, kept by `lib/settle/reader.ts`. The word rule, new in this pass: a token boundary is a word boundary when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end. It costs 3.3 steps on average and closes the 18 percent exposure.
 
-**Order.** At most two phrases are open at once; that is the grammar's constant. The next phrase to open is the most salient one left, pulled toward the part of the answer nothing has touched, so the gist opens first wherever it sits and the connective tissue opens last. When a phrase opens, its most salient word (the nucleus) locks the same step, ahead of the words before it, and crisp legibility then proceeds from the phrase's first word. Every open front advances every step, never fewer words per step than fronts, and a phrase whose remaining words fit in its share plus one takes all of them, so steps end on closures.
+Three policies: each word, each sentence, each paragraph. The field derives from state in `lib/settle/field.ts`. The voice is five tokens with ranges in `lib/settle/voice.ts`: mark, bloom, onset (at most 240 ms), tempo, grain.
 
-**Cadence.** A 320 ms pre-roll while the extent appears, about twenty steps 140 to 260 ms apart, linear on average because the recorded cadence is linear, an eight percent long-short swing from the voice, a 70 ms spread inside a step in reading order. A word ghosts one step before it locks; the ghost is the final word and never changes. Pending glyphs churn every 390 ms, the sampler's measured rate.
+### 5. The cost, measured
 
-**Lock, peak, exhale.** A lock is crisp at once, heavier by the voice's weight, with a settle sized to salience (or to commit probability in the recorded mode) and a halo gone within a second. The nucleus settles hardest and its halo lingers longest: the peak is where the meaning arrives. At the last lock, after 420 ms, the field quiets once: slot markers fade, weights equalize over 700 ms. No wave, no pulse.
+On all sixty recordings on the uniform step clock: first passage at a median of 12 steps (word), 39 (sentence), 128 (paragraph); extra wait after text is in order at a mean of 3.3, 24.5 and 44.7 steps; forming text visible for a median 90 percent of the run under sentence and paragraph; 60 of 60 exact outputs and zero characters drawn early under every policy. Margin's sentence policy paid its 23.5-step hold in blankness; Settle draws the held text for 90 percent of the run.
 
-**The numbers it produces** (medians over the eight fixtures): two loops at most, mean 1.5; no reader waits; 9 percent of within-phrase pairs out of order, all of them anchors; tau +0.13 at the phrase scale; a phrase closed on 36 percent of steps against the typewriter's 18; the peak at 28 percent of the run; the last stretch at 0.83 of the mean. The gist lands at 68 percent of the run, the same as the typewriter's 69; the budget costs the earlier growth mode's tenth of the run, and the fifth claim tests whether calm is worth it.
+### 6. Retired
 
-## 6. The two-channel reveal for recorded runs
+The tension budget, the salience map and nucleus, the two-channel reveal, the arrival profile as a design instrument (kept as a tool), the exhale, the "length fixed" label, the 540 ms and 36 percent figures, the sections that presented them, and the reward-grammar psychology as design law. The legacy engine remains as the labeled retrospective reference the audit figure compares against.
 
-A recording contributes the sampler's order, timing, and confidence. Rendering every commit crisp the moment it lands puts crisp text to the right of the eye in an order the eye cannot read. So `withReadingOrder` (`lib/arrival/reading-order.ts`) splits the signal. In the state channel a word ghosts the moment its tokens commit. In the reading channel a word becomes crisp only when every word before it in its phrase is crisp, at least 40 ms after the previous one, with the phrase's earliest commit kept as its one crisp anchor. On the eighteen curated runs at the shaped pace, legibility trails commitment by a median of 540 ms on the 36 percent of words that wait, the answer's total duration barely moves, tau in the reading channel rises from 0.86 to 0.91, and inside phrases the out-of-order pairs fall from 22 percent to 6 percent, all anchors. The transform cannot remove a wait the sampler itself imposes, and the report carries both numbers.
+### 7. The literature, corrected
 
-## 7. The voice
+Recorded in `docs/research-note.md` section 9. In short: stability of read text is the one well-quantified harm (Liu et al. 2023), rereading must be preserved (Schotter, Tran and Rayner 2014), visible process and explained waits raise perceived value (Buell and Norton 2011; Maister 1985) and therefore need a guardrail (Reber and Schwarz 1999), pacing at linguistic boundaries is preferred (Zhu et al. 2026), the Zeigarnik memory effect does not replicate (Ghibellini and Meier 2025), closure is about contours, and peak-end is contested for mild experiences. No study tests non-sequential text arrival.
 
-A brand gets a voice on the one grammar: tempo (0.7 to 1.4), attack (90 to 280 ms), weight (0 to 1), glow (0 to 1), hush (0 to 1), swing (0 to 0.12). Each range is an invariant: tempo keeps every step inside 100 to 390 ms, attack never softens past the aha, hush never makes a pending word legible, swing keeps the average linear. The budget, the phrases, the forming lead, and the exhale are grammar, outside the voice. Five presets ship.
+### 8. Credits
 
-## 8. What was retired, and why
+The causal audit and the first implementation of the reading contract were made by Codex on 7 September 2026 under the name Margin, on branch `codex/after-tokens-margin`, with a handoff document that this pass absorbs. The reducer in `lib/settle/reader.ts` is Margin's reducer extended; the boundary rules and the authored fixtures are Margin's; the cost instrument extends Margin's report.
 
-Fog, aurora, and mitosis (fail the profile; kept as reference arrivals). Unbounded seeding (over the budget). The closing wave and the whole-field pulse (flourishes where the rule wants completion). The four hand-built specimens and the glyph styles (separate animations where a system needs one). The drafting chrome (the reveal is the design). The body face moved from a monospace to a reading grotesk, for the same reason the piece exists: the same words read better with a better presentation.
+---
 
-## 9. What is authored and what is measured
+## Pass two: the arrival grammar, reasoned from the ground up (6 September 2026)
 
-The order model's shape, the cadence bounds, the churn rate, the guess floor, the confidence scaling, and the phrase and reader models' constants are fitted to or set by the data and the literature. The blur radius, the opacity floor, the settle sizes, the spread, the swing, the recede range, the gap bonus, and the exhale timing are tuned by eye and labeled so. The profile numbers describe arrivals. Nothing here shows that the reveal helps a reader; that is what the five claims and the study are for.
+*Preserved as written. The audit above found that the reveal it describes required the final answer; its profile numbers describe a replay that knew the answer and are cited nowhere else.*
+
+### 1. The question, and what it hides
+
+The brief was a question with a hidden premise: how do we make diffusion text rendering clean, simple, beautiful, and brand-able, using psychological principles such as the Zeigarnik effect, gestalt closure, and the peak-end rule, so that the same answer feels better through presentation alone? The premise was that the words are fixed and the arrival is free. That made the arrival a design object.
+
+### 2. Diagnosis of the earlier build
+
+Four structural problems: many levers and no spine; four nature metaphors diluting a system into four products; psychology cited rather than operationalized; chrome competing with the work.
+
+### 3. Arrival as a design object
+
+An arrival is one number per word, the time it becomes legible. From that vector, the phrase structure, and each word's salience, four properties follow: tension, closure, peak and end, fluency. Together they were the arrival profile, computed in `lib/arrival/profile.ts`.
+
+### 4. What the profile said about the earlier arrivals
+
+Fog and aurora held every phrase open through their sweep; mitosis scattered inside phrases; mycelium opened 4.5 loops at once. They stayed as reference arrivals.
+
+### 5. The grammar: crystallize
+
+At most two phrases open at once; the next phrase opened by salience; the nucleus locked first; every front advanced every step; a 320 ms pre-roll; about twenty steps at 140 to 260 ms; a ghost one step before a lock; an exhale after the last lock.
+
+### 6. The two-channel reveal for recorded runs
+
+The state channel ghosted a word at its first token commit; the reading channel made a word crisp only when every word before it in its phrase was crisp. The audit found the first channel drew final text at the first token and the second still left 5.6 percent of within-phrase pairs out of order.
+
+### 7. The voice
+
+Six tokens with ranges: tempo, attack, weight, glow, hush, swing.
+
+### 8. What was retired, and why
+
+The four metaphors' unbounded seeding, the closing wave, the four specimens, the drafting chrome, the monospace body face.
+
+### 9. What is authored and what is measured
+
+The trajectories measured a sampler; the profile measured arrivals; nothing measured a reader.
+
+---
+
+## Pass one: the four metaphors (27 May to 4 September 2026)
+
+Fog dissipating, aurora, mitosis and mycelium as four reveal modes, each a nature metaphor for non-sequential arrival; a recorded-sampler mode added on 4 September; a reward grammar citing the Zeigarnik effect, gestalt closure and the peak-end rule. Superseded by pass two, which scored the four modes and retired them, and by pass three, which retired the psychology as design law.

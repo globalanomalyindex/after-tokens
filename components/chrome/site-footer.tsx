@@ -2,8 +2,9 @@
 const LINKS: { label: string; href: string; note: string }[] = [
   { label: 'source', href: 'https://github.com/globalanomalyindex/after-tokens', note: 'the engine, the metric suite, the tests' },
   { label: 'case study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/case-study.md', note: 'the written version, for reading offline' },
-  { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, the arrival profile, limits' },
-  { label: 'design record', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/redesign.md', note: 'the reasoning, in order' },
+  { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, the causal audit, the literature ledger, limits' },
+  { label: 'design record', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/redesign.md', note: 'the reasoning, in order, margin included' },
+  { label: 'the spec', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/superpowers/specs/2026-09-07-settle-design.md', note: 'the contract, the field, the voice, the acceptance criteria' },
   { label: 'data', href: 'https://github.com/globalanomalyindex/after-tokens/tree/main/data/traces', note: 'sixty recorded trajectories, mit' },
 ]
 
@@ -14,11 +15,11 @@ export function SiteFooter() {
         <div>
           <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--ink-2)' }}>
             after tokens is an independent product design and engineering case study on how an answer from a
-            diffusion language model should arrive on screen. one reveal grammar, four measurable properties,
-            sixty recorded trajectories, five brand voices, and five claims a study can break.
+            diffusion language model should reach a reader. a causal reading contract, a field that shows the
+            process where it is real, five brand voices, sixty recorded trajectories, and a cost that is measured.
           </p>
           <p className="mt-5 readout max-w-md" style={{ color: 'var(--muted)' }}>
-            cite as: fiore, c. r. (2026). after tokens: an arrival grammar for diffusion text.
+            cite as: fiore, c. r. (2026). after tokens: a causal reading surface for diffusion text.
             github.com/globalanomalyindex/after-tokens
           </p>
         </div>

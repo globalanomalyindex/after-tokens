@@ -29,6 +29,13 @@ export type GlossaryTerm = {
 }
 
 export const GLOSSARY: Record<string, GlossaryTerm> = {
+  commitment: {
+    pron: 'kə-ˈmit-mənt',
+    pos: 'noun',
+    def: 'in a masked diffusion sampler, a position is committed at the first step after which it is never masked again. with the shipped samplers a committed token is final.',
+    src: 'nie et al., 2025; sahoo et al., 2024',
+    color: 'oklch(0.80 0.12 250)', // slate blue
+  },
   'predictive coding': {
     pron: 'prə-ˈdik-tiv ˈkō-diŋ',
     pos: 'noun',
@@ -53,22 +60,22 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
   'zeigarnik effect': {
     pron: 'zī-ˈgär-nik i-ˈfekt',
     pos: 'noun',
-    def: 'the mind holds onto unfinished tasks far more tightly than ones already complete.',
-    src: 'zeigarnik, 1927',
+    def: 'zeigarnik reported interrupted tasks recalled about twice as often as finished ones. a 2025 meta-analysis found no general memory advantage; only a pull to resume survives.',
+    src: 'zeigarnik, 1927; ghibellini & meier, 2025',
     color: 'oklch(0.84 0.16 90)', // amber
   },
   'gestalt closure': {
     pron: 'gə-ˈshtält ˈklō-zhər',
     pos: 'noun',
-    def: 'shown a broken figure, the mind supplies the missing pieces and perceives a whole.',
-    src: 'wertheimer, 1923',
+    def: 'shown a broken figure, the mind supplies the missing pieces and perceives a whole. a finding about contours, with no result for a sentence completing.',
+    src: 'wertheimer, 1923; elder & zucker, 1994',
     color: 'oklch(0.72 0.17 300)', // violet
   },
   'peak-end rule': {
     pron: 'ˈpēk-ˌend ˈrül',
     pos: 'noun',
-    def: 'we judge an experience by its most intense moment and its ending.',
-    src: 'kahneman et al., 1993',
+    def: 'we judge an experience by its most intense moment and its ending, about as much as by its average; contested for mild positive experiences.',
+    src: 'kahneman et al., 1993; alaybek et al., 2022',
     color: 'oklch(0.77 0.15 165)', // emerald
   },
   'trust calibration': {

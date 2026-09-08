@@ -1,0 +1,67 @@
+// Settle: the causal reading surface. The renderer receives events, never an
+// answer, and draws only what the source has committed. The contract is in
+// docs/superpowers/specs/2026-09-07-settle-design.md, section 4.1.
+
+/** What lands on the page: each complete word, each complete sentence, or each complete paragraph. */
+export type Policy = 'word' | 'sentence' | 'paragraph'
+
+/** One irreversible commitment: a token at a position. `end` marks an end-of-sequence token. */
+export type Commit = { position: number; text: string; end?: boolean }
+
+export type SettleEvent =
+  | { type: 'commit'; atMs: number; tokens: Commit[] }
+  | { type: 'finish'; atMs: number; tokenCount: number }
+  | { type: 'snapshot'; atMs: number; text: string; final: boolean }
+  | { type: 'revision'; atMs: number; text: string }
+  | { type: 'apply-revision'; atMs: number }
+  | { type: 'stop'; atMs: number }
+  | { type: 'error'; atMs: number; message: string }
+
+export type Passage = { id: string; text: string; availableAtMs: number }
+
+export type Status = 'waiting' | 'receiving' | 'complete' | 'stopped' | 'error' | 'revision'
+
+export type SettleState = {
+  policy: Policy
+  status: Status
+  /** what is on the page, in order */
+  passages: Passage[]
+  /** the contiguous committed prefix, as the tokens that make it */
+  prefixTokens: Commit[]
+  /** the contiguous committed prefix, as text; or an explicitly final snapshot */
+  prefix: string
+  /** how much of the prefix is word-complete, as a character length */
+  wordSafeLength: number
+  /** how much of the prefix is on the page, as a character length */
+  releasedLength: number
+  /** every committed position, contiguous or not */
+  tokens: Record<number, Commit>
+  /** the first position not yet in the prefix */
+  nextPosition: number
+  receivedCount: number
+  /** the request's bound on positions, when known */
+  bound: number | null
+  /** the position of the committed end token the prefix reached, once it has */
+  endAt: number | null
+  lastEventAtMs: number
+  revisionText: string | null
+  error: string | null
+  /** a stream is commitments or snapshots; it cannot switch */
+  source: 'commit' | 'snapshot' | null
+  version: number
+  previousPassages: Passage[] | null
+}
+
+export type Replay = {
+  id: string
+  label: string
+  provenance: string
+  events: SettleEvent[]
+  durationMs: number
+  /** the request's bound, known before the first event */
+  bound?: number
+}
+
+/** One cell of the field: a token position and what the source has done with it. */
+export type CellState = 'released' | 'forming' | 'held' | 'committed' | 'end' | 'open' | 'beyond'
+export type FieldCell = { position: number; state: CellState; span: number }

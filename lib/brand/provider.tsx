@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useMemo, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { clampSettleVoice, settleVoiceStyle, type SettleVoice } from '@/lib/settle/voice'
 import { clampVoice, getBrand } from './brands'
 import type { BrandId, BrandTokens, BrandVoice } from './types'
 
@@ -23,8 +24,10 @@ export function voiceStyle(voice: BrandVoice): CSSProperties {
 
 type BrandProviderProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
   brand?: BrandId
-  /** a voice override on top of the brand's own, clamped to the ranges */
+  /** a legacy-voice override on top of the brand's own, clamped to the ranges */
   voice?: Partial<BrandVoice>
+  /** a settle-voice override on top of the brand's own, clamped to the ranges */
+  settle?: Partial<SettleVoice>
   children: ReactNode
   as?: keyof React.JSX.IntrinsicElements
 }
@@ -32,6 +35,7 @@ type BrandProviderProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
 export function BrandProvider({
   brand = 'after-tokens',
   voice: voiceProp,
+  settle: settleProp,
   children,
   as = 'div',
   className,
@@ -40,8 +44,10 @@ export function BrandProvider({
 }: BrandProviderProps) {
   const tokens = useMemo<BrandTokens>(() => {
     const base = getBrand(brand)
-    return voiceProp ? { ...base, voice: clampVoice({ ...base.voice, ...voiceProp }) } : base
-  }, [brand, voiceProp])
+    const voice = voiceProp ? clampVoice({ ...base.voice, ...voiceProp }) : base.voice
+    const settle = settleProp ? clampSettleVoice({ ...base.settle, ...settleProp }) : base.settle
+    return voice === base.voice && settle === base.settle ? base : { ...base, voice, settle }
+  }, [brand, voiceProp, settleProp])
   const tokenStyle = useMemo<CSSProperties>(
     () => ({
       ['--surface' as string]: tokens.surface,
@@ -58,6 +64,7 @@ export function BrandProvider({
       ['--font-brand-mono' as string]: tokens.fontMono,
       ['--brand-radius' as string]: `${tokens.cornerRadius}px`,
       ...voiceStyle(tokens.voice),
+      ...settleVoiceStyle(tokens.settle),
     }),
     [tokens],
   )

@@ -122,6 +122,8 @@ The recorded trajectories are the stimuli for all four.
 
 ## 8 The arrival profile
 
+*Retired as a design instrument on 7 September 2026 (section 9). The numbers below describe a replay that knew the answer; the reveal they score cannot be produced by a live renderer. They are kept as history.*
+
 The redesign adds a metric suite that scores any reveal, whether authored or recorded, on four properties (`lib/arrival/profile.ts`; the definitions are in `docs/redesign.md`, section 3). Over the eight coda fixtures at matched durations, the shipped grammar holds two phrases open at most (mean 1.5), makes a reader at one fixation per 250 ms wait on no fixation, closes a phrase on 36 percent of its steps against the typewriter's 18, arrives out of order at the phrase scale (τ +0.13), peaks at 28 percent of the run, and carries 0.83 of the mean intensity in its last stretch. The earlier growth mode (mycelium) opened 4.5 loops at the median and made a reader wait on 19 percent of fixations; fog and aurora ended at 2.9 and 1.8 times the mean; a uniform fade at 6.4.
 
 ### 8.1 The two-channel reveal on the recorded runs
@@ -131,6 +133,42 @@ The redesign adds a metric suite that scores any reveal, whether authored or rec
 ### 8.2 Limits of the profile
 
 The phrase rule is punctuation and line breaks, stated for English and Latin script. The salience that seeds the grammar is an authored score. The reader model is one number, a fixation every quarter second, with no skimming or rereading. The medians are over eight fixtures and eighteen curated runs of a 0.6B model. Every number describes an arrival; none describes a reader. The five claims in the case study's evidence section are what a study would test.
+
+## 9 The causal audit and the settle contract (7 September 2026)
+
+### 9.1 The audit
+
+An independent audit of the crystallize build at `ab95e6a`, run by a second agent (Codex) and reproduced by `tests/settle/report.test.ts`, established four facts. The reveal joined the final word table into a string, tokenized and measured it before the first step, and reserved every word's final width. Of the corpus's 3,880 words, 700 (18.04 percent) commit across more than one step; the curated subset has 188 of 1,205 (15.60 percent). The old rule rendered the final spelling of each at its first token, and 353 of the 700 matched the model's provisional guess at that moment. The stored `tail_done_step` statistic, labeled "length fixed" on the page, is the last commit anywhere in a tail identified after the fact; the causally known length is the step by which every position up to and including the first end token has committed, and the stored statistic precedes it in 42 of 60 traces. The reading-order transform described in section 8.1 allowed each phrase's anchor to jump the queue and left a median 0.056 of within-phrase pairs out of order under a page claim that none did. The 540 ms and 36 percent figures are medians of per-trace summaries at a shaped replay pace on 18 curated traces and are not comparable to any causal cost.
+
+### 9.2 The contract
+
+`lib/settle/reader.ts` is a pure reducer over timestamped events: commits by position, a bounded finish, revisable snapshots with explicit finality, revisions, stop and error. It buffers commitments by position and extends a contiguous prefix only through positions actually received. A word boundary exists after a token when the next committed token begins with whitespace, the token itself ends with whitespace, or the next position is a committed end; text past the last boundary is held. The page receives passages under one of three policies: each word, each sentence (terminal punctuation followed by whitespace, held inside inline code, fenced code and lists and after common abbreviations), each paragraph (a blank line outside code). No timeout relabels a fragment; finality releases the exact remainder. Length is claimed only when the prefix reaches a committed end token. The replay adapter (`lib/settle/replay.ts`) reads token positions, texts and steps, the step clock and the request bound; a throwing-getter test proves it never reads the answer, the word table, the tail flags or the tail statistic.
+
+### 9.3 The field
+
+`lib/settle/field.ts` derives one cell per position of the request's bound: released, forming, held, committed, end or open, with runs of end cells collapsed to their share and positions past a reached end marked beyond. The field is state and never text.
+
+### 9.4 The cost
+
+`pnpm traces:settle` measures every recording under every policy on a uniform step clock (one completed forward pass per step) and on the raw forward-pass clock, and writes `lib/traces/settle.json`. Over the 57 nonempty traces: first passage at a median of 12 steps under each word, 39 under each sentence, 128 under each paragraph (1.4, 4.6 and 15.6 seconds on the capture machine); mean per-character extra hold after joining the prefix of 3.29, 24.47 and 44.65 steps; the word rule alone 3.29 steps; forming text visible for a median 90 percent of the run under sentence and paragraph release; median passages per answer 16, 3 and 1, of 8, 107 and 414 characters; maximum text held off the page 15, 629 and 710 characters. Under every policy all 60 final outputs equal the sampler's exactly and zero characters reach the page before their tokens commit. These are properties of the reducer on this corpus, on a 0.6B model at about 119 ms per step; a production model divides the seconds by an order of magnitude and changes none of the shapes.
+
+### 9.5 The literature, reviewed
+
+A review on 7 September 2026 checked each mechanism the first version cited and added the incremental-display and streaming-interface literature. Findings that bear on the design:
+
+- Revising text already on screen has a measured cost. In live captions, a flicker metric correlated with self-reported distraction (r = .33), fatigue (r = .36) and reduced reading ease (r = -.31), N = 123, and a stabilization algorithm improved five of six ratings (Liu et al., CHI 2023). A display change under a fixation is detected unless timed to the saccade (Slattery, Angele and Rayner, 2011). Preventing rereading reduced comprehension (Schotter, Tran and Rayner, 2014). Consequence: the page never changes, and earlier passages stay.
+- Visible process raises perceived value and can be preferred to an instant result (Buell and Norton, 2011); unexplained and uncertain waits feel longer (Maister, 1985); a justified delay reads as more trustworthy (Zhang, Tsiakas and Schneegass, 2024). Consequence: the field explains the wait; because the same literature implies a risk of unwarranted trust, the field never encodes confidence and the study measures false-answer acceptance.
+- Streaming paused at clause and sentence boundaries was rated less demanding than constant-rate streaming (Zhu et al., CHI 2026), and an instant answer was rated less thoughtful than one with a short visible delay (Tan and Nov, CHI 2026). Both concern left-to-right streaming and are recent enough that citation details are moderately confirmed. Consequence: the page takes whole sentences.
+- The Zeigarnik memory effect does not replicate as a general effect; only a pull to resume survives (Ghibellini and Meier, 2025). Gestalt closure concerns contours (Elder and Zucker, 1994). The peak-end rule is contested for mild positive experiences (Alaybek et al., 2022; and null results for simple positive experiences). Consequence: the tension budget, the closure bonus and the exhale are retired; the ending is a quiet terminal state.
+- Perceptual fluency raises judged truth (Reber and Schwarz, 1999; Alter and Oppenheimer, 2009). Consequence: a guardrail, not a goal.
+- Practitioner guidance converges on announcing completed messages rather than token streams to screen readers; no controlled study was found. Consequence: the status is announced on state changes only.
+- No study tests non-sequential text arrival, and no published design guidance for rendering diffusion text was found. The comparison this work proposes has not been run by anyone.
+
+The landscape review confirmed that the shipped open samplers (LLaDA, Dream, Fast-dLLM) never revisit a committed token; ReMDM and discrete flow matching corrector sampling are documented exceptions, and the production samplers behind Mercury and Gemini Diffusion are undisclosed. The contract's snapshot path exists for the reversible case.
+
+### 9.6 Hypotheses, restated
+
+The study is two labeled experiments: an availability-faithful comparison under identical source events, and a matched-duration comparison isolating preference. Conditions: the raw prefix, each word, each sentence with forming text, each sentence without it, each paragraph, counterbalanced within participants with a Latin square over balanced questions. Primary outcomes: qualification accuracy and time to a correct usable answer, with source availability recorded separately. Secondary: perceived wait, comfort, satisfaction, delayed comprehension, brand recognition. Guardrails: false-answer acceptance and truth discrimination. Sample size from a pilot and a prespecified smallest useful effect, preregistered. No participants have been recruited.
 
 ## References
 
@@ -143,3 +181,35 @@ Dream 7B (diffusion language model release).
 dLLM: a survey and toolkit for diffusion large language models. arXiv:2602.22661.
 
 Hugging Face model card, `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1`.
+
+Alaybek, B., et al. (2022). A meta-analysis of the peak-end rule. Organizational Behavior and Human Decision Processes. doi:10.1016/j.obhdp.2022.104149.
+
+Alter, A. L., and Oppenheimer, D. M. (2009). Uniting the tribes of fluency to form a metacognitive nation. Personality and Social Psychology Review, 13(3), 219 to 235.
+
+Arriola, M., et al. (2025). Block Diffusion: Interpolating Between Autoregressive and Diffusion Language Models. arXiv:2503.09573.
+
+Buell, R. W., and Norton, M. I. (2011). The labor illusion: How operational transparency increases perceived value. Management Science, 57(9), 1564 to 1579.
+
+Elder, J., and Zucker, S. (1994). A measure of closure. Vision Research, 34(24), 3361 to 3369.
+
+Ghibellini, R., and Meier, B. (2025). Interruption, recall and resumption: a meta-analysis of the Zeigarnik and Ovsiankina effects. Humanities and Social Sciences Communications. doi:10.1057/s41599-025-05000-w.
+
+Liu, X., et al. (2023). Modeling and Improving Text Stability in Live Captions. CHI 2023 Extended Abstracts.
+
+Maister, D. H. (1985). The psychology of waiting lines. In The Service Encounter.
+
+Reber, R., and Schwarz, N. (1999). Effects of perceptual fluency on judgments of truth. Consciousness and Cognition, 8(3), 338 to 342.
+
+Schotter, E. R., Tran, R., and Rayner, K. (2014). Don't believe what you read (only once): Comprehension is supported by regressions during reading. Psychological Science, 25(6), 1218 to 1226.
+
+Slattery, T. J., Angele, B., and Rayner, K. (2011). Eye movements and display change detection during reading. Journal of Experimental Psychology: Human Perception and Performance, 37(6), 1924 to 1938.
+
+Tan, F. F.-Y., and Nov, O. (2026). The Impact of Response Latency and Task Type on Human-LLM Interaction and Perception. CHI 2026. Citation details moderately confirmed at the time of writing.
+
+Wang, G., Schiff, Y., Sahoo, S., and Kuleshov, V. (2025). Remasking Discrete Diffusion Models. arXiv:2503.00307.
+
+Wu, C., et al. (2025). Fast-dLLM: Training-free Acceleration of Diffusion LLM by Enabling KV Cache and Parallel Decoding. arXiv:2505.22618.
+
+Zhang, Z., Tsiakas, K., and Schneegass, C. (2024). Explaining the Wait: How Justifying Chatbot Response Delays Impact User Trust. ACM CUI 2024.
+
+Zhu, H., et al. (2026). Just-in-Time Tokens: Adaptive Token Pacing for Cognitive-Friendly LLM Streaming. CHI 2026 Extended Abstracts. Citation details moderately confirmed at the time of writing.

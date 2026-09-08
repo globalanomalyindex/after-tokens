@@ -1,60 +1,97 @@
-'use client'
-
 import { Section } from '@/components/section'
 import { Reveal } from '@/components/motion/reveal'
-import { ArrivalsTrio } from '@/components/arrival/arrivals-trio'
-import { codaPrompts } from '@/lib/coda/fixtures'
 import { TRACE_NUMBERS } from '@/lib/traces/findings'
+import { DefinitionTerm } from '@/components/chrome/definition-term'
 
-const TRIO = codaPrompts.find((p) => p.id === 'travel')!
+// The problem, in three parts: what a diffusion sampler actually does, the
+// two habits an interface inherits from the models before it, and why a
+// fragment is the risky part of an answer.
 
-const BREAKS: { title: string; body: string }[] = [
+const HABITS: { title: string; body: string }[] = [
   {
-    title: 'the cursor',
-    body: 'a blinking caret says more text is coming next, at one insertion point. a masked diffusion sampler can commit many positions in the same denoising step, anywhere in the answer.',
+    title: 'the typewriter',
+    body: 'one token at a time, left to right, a cursor at the end. it draws the answer in an order the sampler did not use, hides the shape the model is committing, and puts a half-formed word under the reader whenever a token is a piece of one.',
   },
   {
-    title: 'the growing bubble',
-    body: 'bubble height tracks emitted tokens, so a bubble that grows says this much is written. a diffusion answer has its whole extent from the start; the interface can reserve the surface at once.',
-  },
-  {
-    title: 'partial-output trust',
-    body: `streaming makes earlier text look committed. in the recorded runs the model's provisional guess for a position changed about ${TRACE_NUMBERS.flipsPerTokenLowconf.toFixed(1)} times before it committed, so a legible draft would show most words wrong before showing them right.`,
+    title: 'the reveal that knows the answer',
+    body: 'words ghost in and sharpen in a designed order. it looks like the process and it is a picture of the result: it needs the final words, their widths and a map of which matter, and a live source has none of those. this case study shipped one. the next chapter is its audit.',
   },
 ]
 
 export function SectionProblem() {
+  const pct = (x: number) => `${Math.round(x * 100)}%`
   return (
-    <Section id="problem" title="The problem">
-      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">same words, three arrivals</h2>
+    <Section id="problem" title="The wrong shape">
+      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">the typewriter is the wrong shape for this source</h2>
       <p className="standfirst max-w-3xl">
-        a diffusion language model produces a whole answer and refines it in parallel. the words are fixed before the
-        interface draws a single one, so the interface chooses the shape of the arrival. every chat product ships the
-        typewriter. here are three shapes, on the same words and the same clock.
+        a diffusion model does not write. it holds every position of an answer open at once and{' '}
+        <DefinitionTerm term="commitment">commits</DefinitionTerm> them in the order it is sure of them, over a hundred or so steps. an interface inherits one of two habits from the
+        models before it, and both misrepresent what is happening.
       </p>
-      <Reveal className="mt-12 md:mt-16">
-        <ArrivalsTrio prompt={TRIO.prompt} answer={TRIO.response} />
-      </Reveal>
-      <div className="mt-16 md:mt-24 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+      <div className="mt-12 md:mt-16 grid gap-10 md:grid-cols-2">
+        {HABITS.map((h, i) => (
+          <Reveal key={h.title} delay={i * 80} className="rule pt-6">
+            <h3 className="text-2xl font-bold tracking-tight leading-tight">{h.title}</h3>
+            <p className="mt-3 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>{h.body}</p>
+          </Reveal>
+        ))}
+      </div>
+
+      <div className="mt-16 md:mt-24 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] items-start">
         <div>
-          <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight max-w-md">the typewriter made three promises the sampler cannot keep</h3>
-          <p className="mt-5 text-base leading-relaxed max-w-[48ch]" style={{ color: 'var(--ink-2)' }}>
-            so the question is a design question. which arrival reads best, and how does a product own the answer&rsquo;s
-            arrival without breaking it? the rest of the piece answers it in order: a way to measure an arrival, what a
-            real sampler does, the grammar, its voice, and what would prove it wrong.
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what a sampler actually does</h3>
+          <p className="mt-4 text-base leading-relaxed max-w-[48ch]" style={{ color: 'var(--ink-2)' }}>
+            {TRACE_NUMBERS.trajectories} runs of a {TRACE_NUMBERS.params} masked diffusion model were recorded, token by token, with the step each
+            position committed. three shapes recur, and the surface is built around them.
           </p>
         </div>
-        <dl className="grid gap-6 rule pt-6">
-          {BREAKS.map((b, i) => (
-            <Reveal key={b.title} delay={i * 80} className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:gap-6">
-              <dt className="text-base font-semibold">{b.title}</dt>
-              <dd className="text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-                {b.body}
-              </dd>
-            </Reveal>
-          ))}
+        <dl className="grid gap-6 sm:grid-cols-3 rule pt-6">
+          <Reveal>
+            <dt className="label mb-2">in blocks, mostly in order</dt>
+            <dd className="text-3xl font-bold tracking-tighter font-display">{pct(TRACE_NUMBERS.adjacentFrac.lowconfB32)}</dd>
+            <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
+              of consecutive commits land beside the previous one under the block sampler. inside a block the order is free; a
+              readable prefix therefore grows in bursts, a clause at a time, whenever the one hard position fills.
+            </dd>
+          </Reveal>
+          <Reveal delay={80}>
+            <dt className="label mb-2">the end before the words</dt>
+            <dd className="text-3xl font-bold tracking-tighter font-display">{pct(TRACE_NUMBERS.tailFirstFracNoBlock)}</dd>
+            <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
+              of usable schedule-free runs committed their end-of-sequence tail before their last word. the answer&rsquo;s extent settles first;
+              its words land last, in a rush.
+            </dd>
+          </Reveal>
+          <Reveal delay={160}>
+            <dt className="label mb-2">a token is a piece</dt>
+            <dd className="text-3xl font-bold tracking-tighter font-display">{pct(700 / 3880)}</dd>
+            <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
+              of the corpus&rsquo;s words are spelled across more than one commit. a surface that draws a word at its first piece is guessing
+              the rest.
+            </dd>
+          </Reveal>
         </dl>
       </div>
+
+      <figure className="stage mt-16 md:mt-24 p-6 md:p-10 m-0" data-demo>
+        <div className="grid gap-8 md:grid-cols-2">
+          <div>
+            <p className="readout mb-4" style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>the available prefix, at one moment</p>
+            <p className="m-0 text-xl md:text-2xl leading-relaxed" style={{ fontFamily: 'var(--font-ui)' }}>The file can be deleted</p>
+          </div>
+          <div className="md:pl-8 md:border-l" style={{ borderColor: 'color-mix(in oklab, var(--stage-text) 18%, transparent)' }}>
+            <p className="readout mb-4" style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)' }}>the complete sentence</p>
+            <p className="m-0 text-xl md:text-2xl leading-relaxed" style={{ fontFamily: 'var(--font-ui)' }}>
+              The file can be deleted{' '}
+              <span style={{ textDecoration: 'underline', textDecorationColor: 'color-mix(in oklab, var(--stage-text) 50%, transparent)', textUnderlineOffset: '0.22em', textDecorationThickness: '1px' }}>only after the backup has been verified.</span>
+            </p>
+          </div>
+        </div>
+        <figcaption className="readout mt-8 pt-6 leading-relaxed" style={{ color: 'color-mix(in oklab, var(--stage-text) 70%, transparent)', borderTop: '1px solid color-mix(in oklab, var(--stage-text) 18%, transparent)' }}>
+          the risky part of an answer is the fragment. a condition can arrive later than the action it qualifies, and a reader who acts on the
+          prefix acts on the wrong sentence. authored illustration; no model timing or reader outcome is implied.
+        </figcaption>
+      </figure>
     </Section>
   )
 }

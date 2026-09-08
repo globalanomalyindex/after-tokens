@@ -1,111 +1,95 @@
 # after tokens
 
-an independent product design and engineering case study on how text from a diffusion language model should arrive on screen.
+an independent product design and engineering case study on how an answer from a diffusion language model should reach a reader.
 
 - live (vercel): https://after-tokens.vercel.app
 - live (github pages): https://globalanomalyindex.github.io/after-tokens/
 
 ![after tokens: a product design and engineering case study](https://after-tokens.vercel.app/opengraph-image)
 
-> **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, using psychological principles such as the zeigarnik effect, gestalt closure, and the peak-end rule, so that the same answer feels better to read through presentation alone?
+> **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
-> **the answer.** treat the arrival as a design object. an arrival is one number per word, the time it becomes legible; from it, four measurable properties follow, each grounded in one mechanism from the psychology of reading and reward. one reveal grammar, crystallize, is built to keep all four inside their rules, any brand gets a voice on it, and every other arrival (the typewriter, a fade, a scatter, the earlier nature modes, a real sampler) is scored on the same profile.
+> **the answer.** only what the model has committed, on a page that holds still, with the process in view. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text. the field, one line of cells beneath it, shows the sampler's own positions: where it has committed, where a hole is holding the page, and how long the answer will be. between them, the forming text: committed, in-order, word-complete text that has not yet completed a passage, drawn dim and brightening into the page when it does. the margin says what the source is doing, beside a mark that is the brand's.
 
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | the `DiffusionText` engine, the crystallize grammar, the arrival profile (a metric suite for any reveal), the two-channel reveal for recorded sampler runs, five brand voices, three live product previews, a playground, sixty recorded trajectories, a structured weather answer |
-| **status** | working prototype. every arrival in the piece is scored; a five-claim study is designed and its stimuli ship in the repository. no reader has been measured. |
-| **stack** | next.js, typescript, motion, tailwind, vitest, playwright, axe-core |
+| **built** | a pure reducer and its ten-rule contract, a replay adapter that cannot read the answer, the field, a five-token brand voice with invariants, three live product frames, a playground, a cost instrument over sixty recorded trajectories, a causal audit of the version before, a corrected literature ledger, a study design |
+| **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing is drawn early. no reader has been measured. |
+| **stack** | next.js, typescript, tailwind, vitest, playwright, axe-core |
 
-## the problem
+## the wrong shape
 
-a diffusion language model produces a whole answer and refines it in parallel. the words are fixed before the interface draws a single one, so the interface chooses the temporal shape of the arrival. every chat product ships one shape, the typewriter, which makes three promises a sampler cannot keep: one insertion point, a bubble that grows with the text, and partial output you can trust. in the recorded runs the model's provisional guess for a position changed about 5.3 times before it committed.
+a diffusion model holds every position of an answer open at once and commits them in the order it is sure of them. the typewriter draws the answer in an order the sampler did not use and puts half-formed words under the reader. a reveal that choreographs the answer, which this case study shipped on september 6, needs the final words, their widths and a map of which matter, and a live source has none of those.
 
-## the arrival profile
+## the audit
 
-`lib/arrival/` is the research contribution: a way to measure any reveal.
+an independent audit of that build by a second agent (codex, 7 september 2026, under the name margin) found that 700 of 3,880 corpus words (18 percent) were drawn in their final spelling before all their tokens had committed, that "length fixed" was announced from a retrospective statistic in 42 of 60 runs, and that a claim of "no phrase ever reads out of order" was contradicted by the report's own 5.6 percent. every finding is accepted, reproduced by `pnpm traces:settle`, and built against. the design record is [`docs/redesign.md`](docs/redesign.md).
 
-| property | mechanism | what it measures | the rule it yields |
+## the contract
+
+`lib/settle/` is the engine. given the same events, the surface shows the same page, the same forming text, the same field and the same status, whatever comes later. ten rules, kept by a pure reducer:
+
+1. nothing is drawn that the source has not committed.
+2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
+3. text is appended only at the end of the contiguous prefix; nothing visible changes, except that forming text brightens into the page.
+4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
+5. out-of-order state appears only in the field, as cell state.
+6. length is claimed only when the prefix reaches a committed end token.
+7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
+8. complete, stopped, error, paused and revision available are distinct states, named in the margin.
+9. a brand changes appearance and motion envelopes, never availability.
+10. reduced motion removes the breath, the bloom and the onset, and nothing else.
+
+the spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpowers/specs/2026-09-07-settle-design.md).
+
+## the cost
+
+`pnpm traces:settle` measures every policy on every recording, on a uniform step clock and the raw forward-pass clock, and writes `lib/traces/settle.json`; `lib/traces/findings.ts` is the only source of numbers the copy may cite.
+
+| measure | each word | each sentence | each paragraph |
 | --- | --- | --- | --- |
-| tension | zeigarnik effect | how many phrases are partly settled at once | one or two open loops; never more than three |
-| closure | gestalt closure, the aha effect | how often a step completes a phrase | batch commits so a step tends to close a phrase |
-| peak and end | peak-end rule | where salience-weighted intensity peaks, how heavy the end is | peak at the gist; end on one quiet completion |
-| fluency | parafoveal preview, processing fluency | whether a reader at one fixation per 250 ms would wait for the next word | nothing crisp before commit; inside a phrase, one crisp anchor, then reading order |
+| first passage on the page, median | 12 steps | 39 steps | 128 steps |
+| extra wait after text is in order, mean | 3.3 steps | 24.5 steps | 44.7 steps |
+| forming text visible, median share of the run | 0% | 90% | 90% |
+| exact final output | 60 of 60 | 60 of 60 | 60 of 60 |
+| characters drawn before commitment | 0 | 0 | 0 |
 
-a phrase is the perceptual unit: a line break or a list marker starts one, terminal punctuation ends one, a comma ends one after three words, eight words is the cap. `pnpm traces:arrival` scores eight arrivals of the same texts at matched durations and the eighteen curated recorded runs, and writes `lib/traces/arrival.json`; `lib/traces/findings.ts` is the only source of numbers the copy may cite.
-
-medians over the eight fixtures:
-
-| arrival | loops at most | reader waits | phrase-scale order (τ) | end weight | gist at |
-| --- | --- | --- | --- | --- | --- |
-| typewriter | 1 | 0% | +1.00 | 1.02× | 68% |
-| fade | 0 | 0% | 0.00 | 6.44× | 90% |
-| scatter | 4.5 | 14% | +0.03 | 1.07× | 80% |
-| mycelium (earlier growth mode) | 4.5 | 19% | +0.19 | 0.86× | 56% |
-| crystallize | 2 | 0% | +0.13 | 0.83× | 68% |
-
-## the grammar: crystallize
-
-nature anchor: crystallization. a few sites nucleate, each crystal grows along its lattice, grains meet, the finished crystal is still. in the grammar: at most two phrases are open at once; the next opens by salience, spread across the answer, so the gist opens first wherever it sits; when a phrase opens its most salient word locks at once and crisp legibility proceeds from the phrase's first word; every front advances every step and steps end on closures; a lock is crisp at once, heavier, with a settle sized to salience and a halo gone within a second; after the last lock the field quiets once, no wave, no pulse. the reasoning in order is [`docs/redesign.md`](docs/redesign.md); the design spec is [`docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md`](docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md).
-
-for a recorded sampler run, `withReadingOrder` splits the signal into a state channel (a word ghosts when its tokens commit) and a reading channel (crisp legibility in reading order inside each phrase, the phrase's earliest commit kept as its anchor). on the curated runs legibility trails commitment by a median of 540 ms on the 36% of words that wait, and no phrase reads out of order.
-
-## in the wild, and the playground
-
-three live product frames (a desktop assistant thread, a search answer, a phone) run the real engine on their brand's surface and voice. the playground frees every axis to combine: arrival (the grammar, the three reference arrivals, the four earlier modes, the recorded sampler), the tension budget, the glyph vocabulary (words, blocks, matrix, binary), reveal time, and color, with the profile read live off the words as they settle.
+a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop; a production model divides the seconds by an order of magnitude and changes none of the shapes.
 
 ## the voice
 
-a brand gets six tokens on the one grammar: tempo, attack, weight, glow, hush, swing, each inside a range that keeps every property of the profile inside its rule. the budget, the phrases, the forming lead, and the exhale are grammar, outside the voice. five presets ship: after tokens, halcyon, felt, pulse, voltage.
+a brand gets five tokens on the one surface, each inside a range that is an invariant: mark (tick, dot, dash, square), bloom (0 to 1), onset (0 to 240 ms), tempo (0.7 to 1.4), grain (0 to 1). five presets ship: after tokens, halcyon, felt, pulse, voltage.
 
 ## real trajectories
 
-sixty denoising trajectories were recorded from `dllm-hub/qwen3-0.6b-diffusion-mdlm-v0.1` (0.6b parameters, instruction tuned, apache-2.0), run greedily on an apple m3, twenty prompts under three sampler configurations, plus a four-run llada-8b-instruct corroboration set. the findings that drive the grammar: commit order is local growth from anchors (half of consecutive commits land beside the last one), the answer's length is known late (the tail commits at the 92 to 95% mark), and confidence at commit varies (median 0.57, 38% under even odds). the method, the statistics, and the limits are in [`docs/research-note.md`](docs/research-note.md); the data is in [`data/traces/`](data/traces).
+`data/traces/` holds sixty recorded denoising trajectories from `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1` (twenty prompts, three sampler configurations, greedy, on an apple m3) and a four-run llada-8b corroboration set. the research note is [`docs/research-note.md`](docs/research-note.md); section 9 holds the audit, the contract, the cost and the literature ledger.
 
 ## evidence and limits
 
-five claims a study can break: state legibility (h1), reading cost (h2), trust calibration (h3), felt quality (h4), and the tension budget (h5). the stimuli ship: the recorded runs, the reference arrivals, the grammar at every budget. the profile measures arrivals and the trajectories measure a sampler; neither measures a reader. the phrase rule is language-naive, the salience score is authored, the reader model is one number, and the glyph choreography is tuned for english and latin script.
+three claims about the repository, each tested: zero characters reach the page before their tokens commit, every final page equals the sampler's output, and the cost of each policy is reported per run with denominators. nothing is claimed about a reader. a two-experiment study is designed with the stimuli in the repository; nobody has run it. the written case study is [`docs/case-study.md`](docs/case-study.md).
 
-## run it
+## run
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-then open http://localhost:3000.
-
-## scripts
-
-| command | what it does |
+| script | what it does |
 | --- | --- |
-| `pnpm dev` | start the dev server |
-| `pnpm lint` | run eslint across the project |
-| `pnpm typecheck` | type check without emitting |
-| `pnpm test` | run the unit suite (vitest) |
-| `pnpm test:e2e` | run the browser tests (playwright) |
-| `pnpm traces:arrival` | score every arrival and regenerate `lib/traces/arrival.json` |
-| `pnpm traces:index` | regenerate the trajectory loader from `data/traces/compact` |
+| `pnpm dev` | development server |
 | `pnpm build` | production build |
-| `pnpm check` | lint, typecheck, unit tests, and a production build |
+| `pnpm check` | lint, types, tests, build |
+| `pnpm test` | unit tests, including the reducer over all sixty recordings |
+| `pnpm test:e2e:chromium` | axe at wcag 2.1 aa and reduced motion, in chromium |
+| `pnpm traces:settle` | regenerate the cost report and the causal audit |
+| `pnpm traces:index` | regenerate the trace index after a capture |
 
 ## deploys
 
-the same app ships to two hosts from one codebase. vercel serves the default build at the domain root. github pages builds with `GITHUB_PAGES=true`, which switches on static export and a `/after-tokens` base path, and publishes the static `out` directory. pull requests run lint, typecheck, unit tests, both builds, and chromium playwright checks.
+vercel builds `main` on push. github pages builds the same commit with `GITHUB_PAGES=true`, which switches to a static export under the `/after-tokens` base path.
 
-## reference
+## credits
 
-- written case study: [`docs/case-study.md`](docs/case-study.md)
-- design record: [`docs/redesign.md`](docs/redesign.md)
-- design spec: [`docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md`](docs/superpowers/specs/2026-09-06-crystallize-arrival-grammar-design.md)
-- research note: [`docs/research-note.md`](docs/research-note.md)
-- type system notes: [`docs/fonts.md`](docs/fonts.md)
-
-## credit
-
-designed and built by [globalanomalyindex](https://github.com/globalanomalyindex), product designer and design engineer, with claude as design and engineering partner. portfolio theme: looking to nature for answers.
-
-## license
-
-[mit](LICENSE) © 2026 christopher robin fiore.
+designed and built by globalanomalyindex (christopher robin fiore), with claude as design and engineering partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026 under the name margin. recorded trajectories and text are cc by 4.0; code is mit.

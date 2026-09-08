@@ -1,3 +1,4 @@
+import { SETTLE_PRESETS } from '@/lib/settle/voice'
 import type { BrandId, BrandTokens, BrandVoice } from './types'
 
 export const VOICE_RANGES: Record<keyof BrandVoice, readonly [number, number]> = {
@@ -49,6 +50,7 @@ export const brands: Record<BrandId, BrandTokens> = {
     fontMono: 'var(--font-mono)',
     cornerRadius: 12,
     voice: clampVoice({ tempo: 1, attack: 110, weight: 0.66, glow: 0.6, hush: 0.5, swing: 0.08 }),
+    settle: SETTLE_PRESETS['after-tokens'],
   },
   halcyon: {
     id: 'halcyon',
@@ -67,6 +69,7 @@ export const brands: Record<BrandId, BrandTokens> = {
     fontMono: 'var(--font-mono)',
     cornerRadius: 8,
     voice: clampVoice({ tempo: 0.85, attack: 220, weight: 0.4, glow: 0.25, hush: 0.6, swing: 0.05 }),
+    settle: SETTLE_PRESETS.halcyon,
   },
   felt: {
     id: 'felt',
@@ -85,6 +88,7 @@ export const brands: Record<BrandId, BrandTokens> = {
     fontMono: 'var(--font-mono)',
     cornerRadius: 16,
     voice: clampVoice({ tempo: 1.05, attack: 110, weight: 0.9, glow: 0.9, hush: 0.45, swing: 0.1 }),
+    settle: SETTLE_PRESETS.felt,
   },
   pulse: {
     id: 'pulse',
@@ -103,6 +107,7 @@ export const brands: Record<BrandId, BrandTokens> = {
     fontMono: 'var(--font-mono)',
     cornerRadius: 12,
     voice: clampVoice({ tempo: 0.95, attack: 150, weight: 0.5, glow: 0.4, hush: 0.65, swing: 0.06 }),
+    settle: SETTLE_PRESETS.pulse,
   },
   voltage: {
     id: 'voltage',
@@ -121,6 +126,7 @@ export const brands: Record<BrandId, BrandTokens> = {
     fontMono: 'var(--font-mono)',
     cornerRadius: 4,
     voice: clampVoice({ tempo: 1.3, attack: 90, weight: 1, glow: 0, hush: 0.35, swing: 0.02 }),
+    settle: SETTLE_PRESETS.voltage,
   },
 }
 

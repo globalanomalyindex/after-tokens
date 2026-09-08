@@ -6,15 +6,16 @@ import { useEffect, useRef, useState } from 'react'
 // to jump. Desktop only, where the column leaves a gutter.
 export const NAV_ITEMS: { id: string; label: string }[] = [
   { id: 'hook', label: 'after tokens' },
-  { id: 'problem', label: 'the problem' },
-  { id: 'profile', label: 'the profile' },
-  { id: 'sampler', label: 'the sampler' },
-  { id: 'grammar', label: 'the grammar' },
+  { id: 'problem', label: 'the wrong shape' },
+  { id: 'audit', label: 'the audit' },
+  { id: 'contract', label: 'the contract' },
+  { id: 'field', label: 'the field' },
+  { id: 'cost', label: 'the cost' },
   { id: 'voice', label: 'the voice' },
   { id: 'previews', label: 'in the wild' },
   { id: 'playground', label: 'try it' },
-  { id: 'evidence', label: 'the evidence' },
-  { id: 'open', label: 'what is open' },
+  { id: 'evidence', label: 'what is known' },
+  { id: 'open', label: 'open' },
 ]
 
 export function SectionNav() {
