@@ -4,7 +4,7 @@ an independent product design and engineering case study on how an answer from a
 
 - live (github pages): https://globalanomalyindex.github.io/after-tokens/
 
-![after tokens: a product design and engineering case study]
+# after tokens: a product design and engineering case study
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
