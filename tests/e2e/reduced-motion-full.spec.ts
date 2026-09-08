@@ -32,9 +32,10 @@ test.describe('reduced motion full audit', () => {
     // and no word ramps.
     const animating = await page.evaluate(() => {
       const named = (name: string) => name !== 'none' && name !== ''
-      const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
-      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-cz, .settle-cz-text, .settle-w, .settle-floor, .settle-orb, .settle-orb-core, .settle-orb-wisp, .settle-orb-ring, .settle-mote')).filter((el) => named(getComputedStyle(el).animationName)).length
-      return before + own
+      const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark, .settle-slot')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
+      const after = Array.from(document.querySelectorAll('.settle-slot')).filter((el) => named(getComputedStyle(el, '::after').animationName)).length
+      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-w, .settle-floor')).filter((el) => named(getComputedStyle(el).animationName)).length
+      return before + after + own
     })
     expect(animating).toBe(0)
   })

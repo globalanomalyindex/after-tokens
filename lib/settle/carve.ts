@@ -72,14 +72,17 @@ const hasLetters = (item: CarveItem | undefined) => Boolean(item && (item.kind =
  * place: a guess that continues a word (no leading whitespace, has letters)
  * is drawn only when the position before it draws letters it can attach to,
  * so a stray word tail never floats in blank space. A guess of the end
- * spelling is drawn as an end belief. Whitespace alone and other special
- * tokens draw nothing.
+ * spelling is drawn as an end belief. A guess of a line break is drawn as
+ * a break (the message's shape arrives before its words); other whitespace
+ * alone and other special tokens draw nothing.
  */
 function draftAt(state: SettleState, position: number, previous: CarveItem | undefined): CarveItem | null {
   const draft = state.drafts[position]
   if (!draft?.shown) return null
   if (END_SPELLINGS.has(draft.text)) return { kind: 'draft', position, text: '', p: draft.p, end: true }
-  if (SPECIAL.test(draft.text) || !draft.text.trim()) return null
+  if (SPECIAL.test(draft.text)) return null
+  // a guessed line break is the shape of the message before its words: drawn as a break, never as letters
+  if (!draft.text.trim()) return draft.text.includes('\n') ? { kind: 'draft', position, text: '\n', p: draft.p, end: false } : null
   const continues = !/^\s/.test(draft.text) && /[\p{L}\p{N}]/u.test(draft.text)
   if (continues && !hasLetters(previous)) return null
   return { kind: 'draft', position, text: draft.text, p: draft.p, end: false }

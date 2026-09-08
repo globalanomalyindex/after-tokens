@@ -57,12 +57,13 @@ describe('the drafts in the zone', () => {
     expect(carve(u)[3]).toEqual({ kind: 'draft', position: 3, text: 'phor', p: 0.8, end: false })
   })
 
-  it('draws a guessed end as an end belief and draws nothing for whitespace or other special tokens', () => {
+  it('draws a guessed end as an end belief, a guessed line break as a break, and nothing for other whitespace or special tokens', () => {
     let s = createSettleState('sentence', 6)
-    s = reduceSettle(s, draft(100, { position: 4, text: '<|endoftext|>', p: 0.7 }, { position: 1, text: '\n', p: 0.9 }, { position: 2, text: '<|im_start|>', p: 0.9 }))
+    s = reduceSettle(s, draft(100, { position: 4, text: '<|endoftext|>', p: 0.7 }, { position: 1, text: '\n', p: 0.9 }, { position: 2, text: '<|im_start|>', p: 0.9 }, { position: 3, text: ' ', p: 0.9 }))
     expect(carve(s)[4]).toEqual({ kind: 'draft', position: 4, text: '', p: 0.7, end: true })
-    expect(carve(s)[1]).toEqual({ kind: 'slot', position: 1, state: 'open' })
+    expect(carve(s)[1]).toEqual({ kind: 'draft', position: 1, text: '\n', p: 0.9, end: false })
     expect(carve(s)[2]).toEqual({ kind: 'slot', position: 2, state: 'open' })
+    expect(carve(s)[3]).toEqual({ kind: 'slot', position: 3, state: 'open' })
   })
 
   it('never draws a draft past the cut', () => {

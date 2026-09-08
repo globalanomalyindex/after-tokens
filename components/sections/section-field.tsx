@@ -12,13 +12,13 @@ const pct = (x: number) => `${Math.round(x * 100)}%`
 // and the strip as the field's compact form.
 
 const REGISTERS: { label: string; body: string; sample: React.ReactNode }[] = [
-  { label: 'open', body: 'a position with no commitment and no confident guess: reserved blank space, about a token wide, standing where a word will', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="open" /><span className="settle-slot" data-state="open" /><span className="settle-slot" data-state="open" /></span> },
+  { label: 'open', body: 'a position with no commitment and no confident guess: reserved space, about a token wide, standing where a word may be. across the open positions runs a faint stream of the brand\u2019s light with a slow flock of glowing dots drifting along it, so the undecided part of the answer is alive without being noisy. the stream shortens from the tail as the model decides the length', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 0 } as CSSProperties} /><span className="settle-slot" data-state="open" data-dot style={{ ['--k' as string]: 4 } as CSSProperties} /><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 8 } as CSSProperties} /></span> },
   { label: 'draft', body: 'the source\u2019s current guess for an open position, above the floor: the model\u2019s own prediction, in a ghost of the secondary ink that sharpens with its probability. it can change or vanish, and it never reaches the page', sample: <span className="settle-zone settle-legend"><span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.15 } as CSSProperties}>sunlight</span> <span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.8 } as CSSProperties}>scatters</span></span> },
   { label: 'piece', body: 'a committed piece of a word that is not complete. its letters are facts, in the secondary ink at full weight; the snap is what marks the word closing', sample: <span className="settle-zone settle-legend"><span className="settle-g"><span className="settle-cz" data-state="piece">scat</span><span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.5 } as CSSProperties}>ters</span></span></span> },
-  { label: 'written', body: 'every piece and its boundaries are in. the companion sends a mote to it and the word snaps in where it stands, in the secondary ink, waiting for its sentence', sample: <span className="settle-zone settle-legend"><span className="settle-cw" data-snap="done">sunlight scatters</span></span> },
-  { label: 'settled', body: 'its sentence closed under the policy: the companion rang, the page\u2019s ink settled through the letterforms, and the word has not moved', sample: <span className="settle-passage"><span className="settle-w" data-t="The sky is blue." style={{ animation: 'none', color: 'var(--stage-text)' }}>The sky is blue.</span></span> },
+  { label: 'written', body: 'every piece and its boundaries are in. the word builds where it stands, each letter coming into focus on its own beat from the middle outward, in the secondary ink, waiting for its sentence', sample: <span className="settle-zone settle-legend"><span className="settle-cw">sunlight scatters</span></span> },
+  { label: 'settled', body: 'its sentence closed under the policy: the page\u2019s ink settled through the letterforms, and the word has not moved', sample: <span className="settle-passage"><span className="settle-w" data-t="The sky is blue." style={{ animation: 'none', color: 'var(--stage-text)' }}>The sky is blue.</span></span> },
   { label: 'end', body: 'the lowest committed end token; the answer ends at or before it, so the positions past it close to nothing', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="end" /></span> },
-  { label: 'the companion', body: 'a small soft body in the brand\u2019s color that lives in the answer\u2019s open space. it hovers over the part still open and drifts after it, wanders a little while it waits, sends motes to a word as it settles, rings when a sentence closes, and dissolves when the answer is done. it never sits on a line and never goes to the words', sample: <span className="settle-legend settle-legend-cursor"><span className="settle-companion" data-state="active"><span className="settle-orb"><span className="settle-orb-wisp" data-w="1" /><span className="settle-orb-wisp" data-w="2" /><span className="settle-orb-core" /></span></span></span> },
+
 ]
 
 export function SectionField() {
@@ -26,15 +26,18 @@ export function SectionField() {
     <Section id="field" title="What settles first">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what settles first</h2>
       <p className="standfirst max-w-3xl">
-        the field is carved into the text, and a companion keeps it company. every position after the page is reserved
-        space about a token wide. where the model already holds a confident guess, that guess stands in the space as a
-        draft: ghosted, breathing, sharpening as the model grows sure, and never a word until it commits. when the
-        sampler commits a piece of a word, the piece stands as a fact. when every piece is in, the companion sends a
-        mote to it and the word snaps solid where it stands, in a secondary ink, opening from the space it held so the
-        line slides rather than jumps; the drafts beside it lift for a beat, because a commitment really does lift its
-        neighbors. the companion hovers over whatever is still open, so it moves as the answer fills, in the model&rsquo;s
-        order, and the space is carved down from the tail as the model decides the length. nothing guessed is drawn as
-        committed, and nothing committed as a guess.
+        the field is carved into the text. every position after the page is reserved space about a token wide, and
+        across the open positions runs a faint stream of light with a slow flock of glowing dots drifting along it:
+        where words may be but are not decided yet. the shape of the message arrives first: its length is carved down
+        from the tail as the model commits its end, and a line break, committed or only guessed, is drawn as a break, so
+        a list or a paragraph shows its outline before its words. where the model already holds a confident guess,
+        that guess stands in the space as a draft: ghosted, breathing, sharpening as the model grows sure, and never a
+        word until it commits. when the sampler commits a piece of a word, the piece stands as a fact. when every piece
+        is in, the word builds where it stands, each letter coming into focus on its own beat from the middle of the
+        word outward, in a secondary ink, opening from the space it held so the line slides rather than jumps; the
+        drafts beside it lift for a beat, because a commitment really does lift its neighbors, and words settling in
+        several places settle in several places at once. nothing guessed is drawn as committed, and nothing committed
+        as a guess.
       </p>
 
       <div className="mt-12 md:mt-16 grid gap-8 lg:grid-cols-2 items-start">
@@ -60,8 +63,8 @@ export function SectionField() {
         <div>
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">the registers</h3>
           <p className="mt-3 text-base leading-relaxed max-w-[44ch]" style={{ color: 'var(--ink-2)' }}>
-            a word&rsquo;s progress is its ink: a ghost while the model only guesses it, its own letters in the secondary ink once a
-            mote has snapped it in, then the page&rsquo;s. it is carried by the word, where the reader is looking, and by nothing else. the
+            a word&rsquo;s progress is its ink: a ghost while the model only guesses it, its own letters in the secondary ink once they
+            have built, then the page&rsquo;s. it is carried by the word, where the reader is looking, and by nothing else. the
             secondary ink is the page&rsquo;s ink moved toward the ground as far as a 4.5:1 contrast floor allows, because an available
             word is a word people will read; where a palette leaves no room to dim, the state is carried by a tint toward the brand&rsquo;s
             accent instead.
