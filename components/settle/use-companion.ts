@@ -24,7 +24,7 @@ type Options = {
   trail: RefObject<HTMLElement | null>
   /** where the cursor should be, in the root's coordinates, measured on demand */
   target: () => CompanionTarget
-  /** whether the cursor is on duty; off duty it rests where it is */
+  /** whether the cursor is drawn at all; off duty the loop does not run */
   active: boolean
   reduced: boolean
 }
@@ -95,7 +95,9 @@ export function useCompanion({ root, halo, head, trail, target, active, reduced 
   const loop = useCallback((now: number) => {
     frame.current = 0
     const b = bodies.current
-    const { target: getTarget, reduced: isReduced } = optsRef.current
+    const { target: getTarget, reduced: isReduced, active } = optsRef.current
+    // off duty (the cursor is not drawn), the body rests where it is
+    if (!active) return
     const t = getTarget()
     const dt = Math.min(0.032, Math.max(0.001, (now - (last.current || now)) / 1000))
     last.current = now

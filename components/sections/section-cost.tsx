@@ -58,7 +58,7 @@ export function SectionCost() {
             the clock here is a 0.6B model at {TRACE_NUMBERS.msPerStepRecorded} ms a step on a laptop. a production diffusion model runs its steps
             an order of magnitude faster, which shrinks every second in the table without changing a single shape: the bursts, the holes and
             the end settling first are properties of the sampler, and the surface renders the same events at any tempo. the stages on this page
-            play at a quarter of the recorded pace and say so.
+            play at the recorded clock unless a control says otherwise, and every stage names the clock it is on.
           </p>
         </div>
       </div>

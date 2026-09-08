@@ -74,8 +74,11 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
   if (event.type === 'apply-revision') {
     if (state.status !== 'revision' || state.revisionText === null) return state
     const text = state.revisionText
+    // the revised page replaces the answer whole: nothing of the earlier
+    // field remains to draw beneath it
     return release({
       ...next, status: 'complete', prefix: text, prefixTokens: [], wordSafeLength: text.length, releasedLength: 0,
+      tokens: {}, drafts: {}, endAt: null,
       passages: [], previousPassages: state.passages, version: state.version + 1, revisionText: null,
     }, true)
   }

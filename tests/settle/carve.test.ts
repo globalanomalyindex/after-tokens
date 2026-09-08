@@ -2,12 +2,32 @@ import { describe, expect, it } from 'vitest'
 import brainstormJson from '@/data/traces/compact/brainstorm__lowconf-b128.json'
 import { asTrace } from '@/lib/diffusion/traces'
 import { carve, wordSafeTokens } from '@/lib/settle/carve'
-import { createSettleState, reduceSettle } from '@/lib/settle/reader'
+import { createSettleState, pageText, reduceSettle } from '@/lib/settle/reader'
 import { replayTrace, settleAt, settleEnd } from '@/lib/settle/replay'
 import type { SettleEvent } from '@/lib/settle/types'
 
 const commit = (atMs: number, ...tokens: { position: number; text: string; end?: boolean }[]): SettleEvent => ({ type: 'commit', atMs, tokens })
 const draft = (atMs: number, ...guesses: { position: number; text: string; p: number }[]): SettleEvent => ({ type: 'draft', atMs, guesses })
+
+describe('the zone after the page', () => {
+  it('draws only the part of a token the page has not taken when a boundary falls inside it', () => {
+    let s = createSettleState('sentence', 6)
+    s = reduceSettle(s, commit(100, { position: 0, text: 'Yes' }, { position: 1, text: '.' }, { position: 2, text: ' If' }, { position: 3, text: ' so ' }))
+    // the page took the space that begins ' If'
+    expect(pageText(s)).toBe('Yes. ')
+    expect(carve(s)[0]).toEqual({ kind: 'word', position: 2, span: 1, text: 'If', forming: true })
+  })
+
+  it('draws nothing after a revised page', () => {
+    let s = createSettleState('sentence', 4)
+    s = reduceSettle(s, commit(100, { position: 0, text: 'One.' }, { position: 1, text: '<|im_end|>', end: true }))
+    s = reduceSettle(s, { type: 'revision', atMs: 200, text: 'Two.' })
+    s = reduceSettle(s, { type: 'apply-revision', atMs: 300 })
+    expect(pageText(s)).toBe('Two.')
+    expect(carve(s)).toEqual([])
+    expect(s.tokens).toEqual({})
+  })
+})
 
 describe('the drafts in the zone', () => {
   it('draws a guess above the floor as a draft, never as a word, and clears it when the position commits', () => {

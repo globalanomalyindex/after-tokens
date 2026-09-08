@@ -952,43 +952,39 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-slot, .settle-page-end { vertical-align: -0.27em; }
 .settle-page-end { width: 0; }
 /* the written word: it snaps in as the cursor reaches it. A short settling
-   of blur, weight and color: it arrives soft and a shade toward the accent,
-   the cursor's touch, and dries into the secondary ink in place. Never a
-   change of width from the snap itself; the width is the slide. */
-.settle-cw {
-  --settle-snap-ink: color-mix(in oklab, var(--accent, currentColor) 55%, var(--settle-ink-2));
-  animation: settle-snap 340ms var(--ease-out-expo) both;
-}
+   of blur and weight, a rise, and a glow of the accent around the letters,
+   the cursor's touch, that fades as the word dries in place. The letters
+   themselves are in the secondary ink at full opacity on an unchanged
+   ground from the first frame, so a written word clears the contrast floor
+   at every moment of its snap; the softness is the blur and the glow, which
+   change no color under the text. Never a change of width from the snap
+   itself; the width is the slide. */
+.settle-cw { animation: settle-snap 340ms var(--ease-out-expo) both; }
 @keyframes settle-snap {
-  0%   { opacity: 0.45; filter: blur(1.6px); transform: translateY(0.09em); color: var(--settle-snap-ink); text-shadow: 0 0 0.45em color-mix(in oklab, var(--accent, currentColor) 55%, transparent); }
-  38%  { opacity: 1; filter: blur(0); transform: translateY(-0.025em); color: var(--settle-snap-ink); text-shadow: 0 0 0.3em color-mix(in oklab, var(--accent, currentColor) 30%, transparent); }
+  0%   { filter: blur(1.6px); transform: translateY(0.09em); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 70%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 60%, transparent); }
+  38%  { filter: blur(0); transform: translateY(-0.025em); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 40%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 30%, transparent); }
   62%  { transform: translateY(0.008em); }
-  100% { transform: none; color: var(--settle-ink-2); text-shadow: 0 0 0 transparent; }
+  100% { transform: none; text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
 }
 /* the draft: the source's current guess, in a ghost of the secondary ink
    that sharpens with its probability (--sure runs from the floor to
    certainty). When the source changes its mind the draft reconsiders: a
-   short blur and dip, once per change, alternating two equal animations so
-   each change restarts it. */
+   short blur and dip on its letters, once per change, because the letters
+   are remounted whenever their text changes. */
 .settle-cz[data-state="draft"] {
   opacity: calc(0.32 + 0.48 * var(--sure, 0));
   filter: blur(calc((1 - var(--sure, 0)) * 1px));
   transition: opacity 420ms var(--ease-out-strong), filter 420ms var(--ease-out-strong);
 }
-.settle-cz[data-flip="a"] { animation: settle-rethink-a 380ms var(--ease-out-expo); }
-.settle-cz[data-flip="b"] { animation: settle-rethink-b 380ms var(--ease-out-expo); }
-@keyframes settle-rethink-a {
+.settle-cz[data-state="draft"] .settle-cz-text { display: inline-block; animation: settle-rethink 380ms var(--ease-out-expo) both; }
+@keyframes settle-rethink {
   0%   { filter: blur(2.4px); opacity: 0.2; transform: translateY(0.06em); }
-  100% { filter: blur(calc((1 - var(--sure, 0)) * 1px)); opacity: calc(0.32 + 0.48 * var(--sure, 0)); transform: none; }
-}
-@keyframes settle-rethink-b {
-  0%   { filter: blur(2.4px); opacity: 0.2; transform: translateY(0.06em); }
-  100% { filter: blur(calc((1 - var(--sure, 0)) * 1px)); opacity: calc(0.32 + 0.48 * var(--sure, 0)); transform: none; }
+  100% { filter: blur(0); opacity: 1; transform: none; }
 }
 /* the piece: a committed part of a word that is not complete. Its letters
-   are facts, drawn a shade lighter than a written word until the rest of
-   the word is in; the snap is what marks the word closing. */
-.settle-cz[data-state="piece"] { opacity: 0.8; transition: opacity 300ms var(--ease-out-strong); }
+   are facts, in the secondary ink at full weight, because committed letters
+   are letters people will read; the snap is what marks the word closing. */
+.settle-cz[data-state="piece"] { opacity: 1; }
 /* blank space: an open position reserves about a token's width, and so does
    a position where the source only guesses the answer ends (the guess is
    kept for the reducer; it draws no mark, because the answer's extent is
@@ -1173,7 +1169,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .settle-w, .settle-cw, .settle-cz, .settle-slot, .settle-slot::after, .settle-cursor, .settle-cursor-head, .settle-cursor-ring { animation: none !important; transition: none !important; }
+  .settle-w, .settle-cw, .settle-cz, .settle-cz-text, .settle-slot, .settle-slot::after, .settle-cursor, .settle-cursor-head, .settle-cursor-halo, .settle-cursor-trail, .settle-cursor-ring { animation: none !important; transition: none !important; }
   .settle-cw { opacity: 1; filter: none; }
   .settle-cz[data-state="draft"] { filter: none; }
   .settle-cursor-trail, .settle-cursor-ring { display: none; }

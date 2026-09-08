@@ -58,12 +58,14 @@ A review on 7 September 2026 checked each mechanism the first version had cited,
 | stability of text under the eye (Liu et al., CHI EA 2023, late-breaking work; Slattery, Angele and Rayner, 2011) | revising text already on screen went with self-reported distraction and fatigue and lower reading comfort, all reader experience rather than comprehension; a change under a fixation is detected unless timed to a saccade | the page never changes, moves, blurs or reweights |
 | rereading (Schotter, Tran and Rayner, 2014) | preventing return to earlier words reduced comprehension | earlier passages stay, in place, selectable |
 | visible process and explained waits (Buell and Norton, 2011; Maister, 1985; Zhang et al., 2024) | showing work raises perceived value when the result is good and lowers it when the result disappoints; unexplained and uncertain waits feel longer | the field shows what the sampler has done and why the page waits, and it never encodes confidence or correctness |
-| pacing at linguistic boundaries (Zhu et al., CHI 2026; Tan and Nov, CHI 2026) | streaming paused at clause boundaries rated less demanding; an instant answer rated less thoughtful than a short visible delay | the page takes whole sentences; the forming text and field carry the delay |
+| pacing at linguistic boundaries (Zhu et al., CHI 2026; Tan and Nov, CHI 2026; forthcoming, citation details only moderately confirmed) | streaming paused at clause boundaries rated less demanding; an instant answer rated less thoughtful than a short visible delay; both stream left to right | the page takes whole sentences; the forming text and field carry the delay |
 | Zeigarnik effect (Ghibellini and Meier, 2025, meta-analysis) | the memory advantage for interrupted tasks does not replicate as a general effect | retired; the first version's tension budget is gone |
 | gestalt closure (Elder and Zucker, 1994) | concerns contours of shapes | retired; a passage boundary is a linguistic rule, chosen and priced |
 | peak-end (Alaybek et al., 2022; contested for mild experiences) | endings matter, and so does the average | kept only as: end quietly, at a real terminal state |
 | fluency and truth (Reber and Schwarz, 1999, a small early demonstration with color contrast; Alter and Oppenheimer, 2009) | easier-to-process statements are judged more likely true | a guardrail: the study measures false-answer acceptance |
 | motion that carries mass (Lasseter, 1987; Thomas and Johnston, 1981; Chang and Ungar, 1993) | craft arguments and a design paper with no user study: squash and stretch defines an object's rigidity and mass, and solidity and reinforcement make an interface's changes easier to follow | the cursor is a body with mass and the snap is one short settling; nothing is claimed as measured benefit |
+| motion in the periphery (Bartram, Ware and Calvert, 2003) | motion beside a primary task is detected far better than a color change; traveling and zooming icons were rated most distracting, slow linear motion and slow blink least; distraction was self-reported, on notification icons beside a task rather than on text | a guardrail: a draft changes by a slow fade and never blinks, and the only thing that travels is the one thing the reader is meant to follow |
+| animated transitions (Heer and Robertson, 2007) | animated transitions beat abrupt changes for tracking objects and judging change; simple staging helped a little and was preferred, heavy staging hurt; measured on charts rather than on text | every change of width in the zone is a slide, a word opens from the space it held, and nothing is staged in several steps |
 
 No study tests non-sequential text arrival. No published design guidance for rendering diffusion text was found. Both gaps are part of why the work exists.
 
@@ -120,7 +122,7 @@ A brand gets five tokens on the one surface, each inside a range that is an inva
 | bloom | 0 to 1 | how much a cell flares when it commits | gone within 240 ms |
 | onset | 0 to 240 ms | the opacity ramp of a passage arriving | never a transform, never a blur, zero under reduced motion |
 | tempo | 0.7 to 1.4 | the breath of the margin mark | rest at every terminal state |
-| grain | 0 to 1 | how faint open cells rest, how dim forming text rests | forming text at least 3:1 |
+| grain | 0 to 1 | how faint open cells rest, how far the secondary ink sits from the page's | available words at least 4.5:1 on both of the brand's grounds |
 
 Five presets ship: After Tokens (tick), Halcyon (dot, slow, soft), Felt (square, heavy bloom), Pulse (dash, calm), Voltage (tick, no bloom, no onset).
 
@@ -159,7 +161,7 @@ The drafts, over the same recordings (content positions of every recording with 
 | a commitment's lift on a neighbor's probability | 0.1096 (n = 1074) | 0.175 (n = 2121) | 0.1264 (n = 77) |
 | the same lift on every other open position | 0.0067 | 0.0048 | 0.0022 |
 
-Two thirds of what the surface draws as a guess is the word that later lands there, and a commitment lifts the confidence of the positions beside it by more than an order of magnitude over the rest of the answer: one word settling really does make its neighbors settle, and the surface shows it happening. Raising the floor buys accuracy with silence (0.227 of pairs drawn at 0.565 accuracy at a floor of 0.15; 0.153 at 0.705 at 0.25; 0.134 at 0.752 at 0.3; 0.086 at 0.878 at 0.5), and 0.25 keeps the one floor the piece already used. None of these numbers says that drawing a draft helps a reader.
+Two thirds of what the surface draws as a guess is the word that later lands there, and a commitment lifts the confidence of the positions beside it by more than an order of magnitude over the rest of the answer: one word settling raises the confidence of the positions beside it, and the surface shows that happening. Raising the floor buys accuracy with silence (0.227 of pairs drawn at 0.565 accuracy at a floor of 0.15; 0.153 at 0.705 at 0.25; 0.134 at 0.752 at 0.3; 0.086 at 0.878 at 0.5), and 0.25 keeps the one floor the piece already used. None of these numbers says that drawing a draft helps a reader.
 
 ## Process and decisions
 

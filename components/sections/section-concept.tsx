@@ -19,7 +19,7 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'the cursor is a companion',
-    body: 'the small body is where the model is working. it has mass: it leaves quickly, stretches as it flies, arrives softly, and presses when it finalizes a word. it moves out of order because the model does, sweeps to the end of the page when a sentence closes, and rests when the answer is done. a reader can watch it think, and has a reason to stay.',
+    body: 'the small body is where the model is working. it has mass: it leaves quickly, stretches as it flies, arrives softly, and presses when it finalizes a word. it moves out of order because the model does, sweeps to the end of the page when a sentence closes, and rests when the answer is done. a reader can watch it think. whether that is a reason to stay is the study\u2019s question.',
   },
   {
     title: 'a draft you can watch become the answer',

@@ -10,6 +10,8 @@ export const FIELD_HORIZON = 16
 
 export function fieldCells(state: SettleState): FieldCell[] {
   if (state.source === 'snapshot') return []
+  // a completed answer with no committed positions is a revised page: no field beneath it
+  if (state.status === 'complete' && Object.keys(state.tokens).length === 0) return []
   const committed = Object.keys(state.tokens).map(Number)
   const maxCommitted = committed.length ? Math.max(...committed) : -1
   // the extent is the request's bound, or a horizon past the last commit.

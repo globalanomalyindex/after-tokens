@@ -38,11 +38,17 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
-    // The forming text and the field are aria-hidden by design: the forming
-    // text is not yet a place to read and rests dim on purpose; the field is
-    // state, not text. The status words carry their meaning.
-    .exclude('.settle-forming')
-    .exclude('.settle-carve')
+    // The field is aria-hidden by design: state, not text, and the status
+    // words carry its meaning. In the zone, a draft is the source's own
+    // guess, drawn as a ghost on purpose and exempted as incidental,
+    // provisional text: the answer never depends on it, the page and the
+    // margin carry everything the contract promises, and a reader who
+    // cannot see a ghost loses nothing that is promised. Every committed
+    // letter in the zone (a piece, a written word, at every frame of its
+    // snap) is held to the floor. The register legend's samples are
+    // decorative illustrations of those same registers.
+    .exclude('.settle-zone .settle-cz[data-state="draft"]')
+    .exclude('.settle-legend')
     .exclude('.settle-field')
     .exclude('.pointer-events-none[aria-hidden="true"]')
     .analyze()

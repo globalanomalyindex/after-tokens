@@ -1,5 +1,6 @@
 import type { SettleState } from './types'
 import { lowestEnd } from './carve'
+import { FIELD_HORIZON } from './field'
 
 // The phase of an answer, read off the field: how much of it is committed and
 // how much of the rest the source already holds a confident guess for. It is
@@ -21,7 +22,8 @@ export type Resolution = {
 export function resolution(state: SettleState): Resolution {
   const cut = lowestEnd(state)
   const keys = Object.keys(state.tokens).map(Number)
-  const positions = Math.max(1, cut ?? state.bound ?? (keys.length ? Math.max(...keys) + 1 : 1))
+  // with no bound and no end, the field extends a horizon past the last commitment, as the zone does
+  const positions = Math.max(1, cut ?? state.bound ?? ((keys.length ? Math.max(...keys) + 1 : 0) + FIELD_HORIZON))
   let committed = 0
   for (const position of keys) if (position < positions && !state.tokens[position]?.end) committed += 1
   let drafted = 0

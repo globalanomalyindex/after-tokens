@@ -1,6 +1,6 @@
 import { Section } from '@/components/section'
 import { Reveal } from '@/components/motion/reveal'
-import { TRACE_NUMBERS } from '@/lib/traces/findings'
+import { TRACE_NUMBERS, CAUSAL } from '@/lib/traces/findings'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 
 // The problem, in three parts: what a diffusion sampler actually does, the
@@ -64,7 +64,7 @@ export function SectionProblem() {
           </Reveal>
           <Reveal delay={160}>
             <dt className="label mb-2">a token is a piece</dt>
-            <dd className="text-3xl font-bold tracking-tighter font-display">{pct(700 / 3880)}</dd>
+            <dd className="text-3xl font-bold tracking-tighter font-display">{pct(CAUSAL.multiStepShare)}</dd>
             <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
               of the corpus&rsquo;s words are spelled across more than one commit. a surface that draws a word at its first piece is guessing
               the rest.

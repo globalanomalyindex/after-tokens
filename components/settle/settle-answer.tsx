@@ -113,18 +113,13 @@ function ZoneWord({ text, position, span, forming, ms, widths }: { text: string;
 
 /** One position of the zone that is not a complete word: reserved space, a
  *  draft, a committed piece, or an end belief. Keyed by position, so a
- *  position that changes register keeps its element and slides its width. */
+ *  position that changes register keeps its element and slides its width.
+ *  A draft's letters are keyed by their text, so a change of mind remounts
+ *  them and they reconsider. */
 function Cell({ item, ms, widths }: { item: Extract<CarveItem, { kind: 'piece' | 'draft' | 'slot' }>; ms: number; widths: Widths }) {
   const ref = useRef<HTMLSpanElement>(null)
   const text = item.kind === 'piece' || (item.kind === 'draft' && !item.end) ? item.text.trim() : ''
   const register = item.kind === 'slot' ? item.state : item.kind === 'draft' && item.end ? 'end-belief' : item.kind
-  const changes = useRef(0)
-  const lastText = useRef(text)
-  if (item.kind === 'draft' && text !== lastText.current) {
-    // the source changed its mind here: the draft reconsiders, once per change
-    changes.current += 1
-    lastText.current = text
-  }
   const after = useCallback((natural: number) => widths.set(item.position, natural), [item.position, widths])
   useWidthGlide(ref, `${register}:${text}`, ms, undefined, after)
   const p = item.kind === 'draft' ? item.p : undefined
@@ -136,9 +131,8 @@ function Cell({ item, ms, widths }: { item: Extract<CarveItem, { kind: 'piece' |
       className={text ? 'settle-cz' : 'settle-slot'}
       data-state={register}
       data-pos={item.position}
-      data-flip={item.kind === 'draft' && changes.current > 0 ? (changes.current % 2 ? 'a' : 'b') : undefined}
       style={sure === undefined ? undefined : ({ ['--sure' as string]: sure.toFixed(3) } as CSSProperties)}
-    >{text || null}</span>
+    >{text ? (item.kind === 'draft' ? <span key={text} className="settle-cz-text">{text}</span> : text) : null}</span>
   )
 }
 
@@ -251,17 +245,22 @@ export function SettleAnswer({
   // a sentence closing: the cursor sweeps to the end of the page for a beat,
   // and a device that can tick, ticks
   const [finalizing, setFinalizing] = useState(false)
+  const [closings, setClosings] = useState(0)
   const passagesRef = useRef(state.passages.length)
   useEffect(() => {
     if (state.passages.length > passagesRef.current) {
-      setFinalizing(true)
+      setClosings((n) => n + 1)
       if (haptics && !reduced && typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(12)
-      const timer = window.setTimeout(() => setFinalizing(false), 360)
-      passagesRef.current = state.passages.length
-      return () => window.clearTimeout(timer)
     }
     passagesRef.current = state.passages.length
   }, [state.passages.length, haptics, reduced])
+  // each closing holds the sweep for a beat; a second closing inside the beat extends it
+  useEffect(() => {
+    if (!closings) return
+    setFinalizing(true)
+    const timer = window.setTimeout(() => setFinalizing(false), 360)
+    return () => window.clearTimeout(timer)
+  }, [closings])
 
   // the cursor's target: the element covering the position the source just
   // committed; after a word or a piece, like a caret; on a blank, at its
@@ -298,7 +297,7 @@ export function SettleAnswer({
     const em = parseFloat(getComputedStyle(target.el).fontSize) || 16
     return { x: target.after ? r.right - o.left + 3 : r.left - o.left + r.width / 2, y: r.top - o.top + CELL_MID_EM * em }
   }, [])
-  const companion = useCompanion({ root: rootRef, halo: haloRef, head: headRef, trail: trailRef, target: measureTarget, active: showCursor && !terminal, reduced })
+  const companion = useCompanion({ root: rootRef, halo: haloRef, head: headRef, trail: trailRef, target: measureTarget, active: showCursor, reduced })
   // any change of what the zone shows can move the target
   useLayoutEffect(() => { if (showCursor) companion.wake() })
 

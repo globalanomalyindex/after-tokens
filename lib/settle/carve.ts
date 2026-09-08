@@ -89,14 +89,24 @@ export function carve(state: SettleState): CarveItem[] {
   if (state.source === 'snapshot') return []
   const tokens = state.tokens
   const committed = Object.keys(tokens).map(Number)
+  // a completed answer with no committed positions is a revised page: nothing stands after it
+  if (state.status === 'complete' && committed.length === 0) return []
   const maxCommitted = committed.length ? Math.max(...committed) : -1
   const extent = state.bound ?? Math.max(1, maxCommitted + 1 + FIELD_HORIZON)
   const cut = lowestEnd(state)
   const safe = wordSafeTokens(state)
   const items: CarveItem[] = []
   // the zone begins where the page ends: in-order words waiting for their
-  // passage are its first items, marked forming
-  let p = releasedTokens(state)
+  // passage are its first items, marked forming. A passage boundary can
+  // fall inside a token (the whitespace after a sentence is usually the
+  // first character of the next token), so the first token draws only the
+  // part of it the page has not taken
+  const first = releasedTokens(state)
+  let consumed = 0
+  for (let i = 0; i < first; i += 1) consumed += state.prefixTokens[i]!.text.length
+  const offset = Math.max(0, state.releasedLength - consumed)
+  const textOf = (j: number) => (j === first ? tokens[j]!.text.slice(offset) : tokens[j]!.text)
+  let p = first
   while (p < extent) {
     if (cut !== null && p >= cut) {
       // the answer ends at or before the lowest committed end: one mark,
@@ -130,16 +140,16 @@ export function carve(state: SettleState): CarveItem[] {
       if (!boundary) continue
       if (clean) {
         let text = ''
-        for (let j = wordStart; j <= i; j += 1) text += tokens[j]!.text
+        for (let j = wordStart; j <= i; j += 1) text += textOf(j)
         items.push({ kind: 'word', position: wordStart, span: i - wordStart + 1, text, forming: i < safe })
       } else {
-        for (let j = wordStart; j <= i; j += 1) items.push({ kind: 'piece', position: j, text: tokens[j]!.text })
+        for (let j = wordStart; j <= i; j += 1) items.push({ kind: 'piece', position: j, text: textOf(j) })
       }
       wordStart = i + 1
       clean = true
     }
     // whatever is left of the run has no boundary after it: pieces
-    for (let j = wordStart; j < q; j += 1) items.push({ kind: 'piece', position: j, text: tokens[j]!.text })
+    for (let j = wordStart; j < q; j += 1) items.push({ kind: 'piece', position: j, text: textOf(j) })
     p = q
   }
   return items
