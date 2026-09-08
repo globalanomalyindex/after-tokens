@@ -15,7 +15,7 @@ an independent product design and engineering case study on how an answer from a
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
 | **built** | a pure reducer and its ten-rule contract, a replay adapter that cannot read the answer, the carved field with the model's own drafts in it, a cursor with mass, a five-token brand voice with invariants, three live product frames, a playground, a cost instrument over sixty recorded trajectories, a causal audit of the version before, a corrected literature ledger, a study design |
-| **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing is drawn early. no reader has been measured. |
+| **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing committed is drawn as a guess, nothing guessed is drawn as committed, and no guess reaches the page. no reader has been measured. |
 | **stack** | next.js, typescript, tailwind, vitest, playwright, axe-core |
 
 ## the wrong shape
