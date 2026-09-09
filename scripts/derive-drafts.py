@@ -15,6 +15,13 @@ leaves a little room for hysteresis.
                        its probability moves by DP or more; [pos, "", 0] when
                        it falls back below the floor while still open. A
                        commit at a position ends its draft implicitly.
+  compact[id].spins    the reel below the floor: one list per step of
+                       [pos, text, p] entries, recorded whenever an open
+                       position's argmax changes at all, at any probability
+                       (the first step records every position). The site
+                       draws these as an unreadable smear, so the reel spins
+                       everywhere the model is guessing; a draft (above) is
+                       the same guess once it clears the floor.
   derived/drafts.json  what the drafts do, over every recording whose answer
                        has at least MIN_CONTENT content tokens: how often a
                        draft is visible, how often it is right, how long it
@@ -104,9 +111,23 @@ def main():
                     entries.append([pos, "", 0])
             prev = now
             drafts.append(entries)
+        # ---- the spins: every change of argmax at an open position ----
+        spins = []
+        last_id = {}
+        for si, s in enumerate(steps):
+            pm, am = s["pmax"], s["argmax"]
+            entries = []
+            for pos in range(n):
+                if commit_step[pos] <= si:
+                    continue
+                if last_id.get(pos) != am[pos]:
+                    last_id[pos] = am[pos]
+                    entries.append([pos, piece(am[pos]), q(pm[pos])])
+            spins.append(entries)
         cp = os.path.join(COMPACT, os.path.basename(fn).replace(".json.gz", ".json"))
         compact = json.load(open(cp))
         compact["drafts"] = drafts
+        compact["spins"] = spins
         # ---- what the surface shows: the compact entries under the reducer's
         # rule (shown above the display floor, kept while the text holds) ----
         if len(content) >= MIN_CONTENT:

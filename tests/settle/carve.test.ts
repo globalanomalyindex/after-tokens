@@ -144,3 +144,34 @@ describe('the carved zone', () => {
     expect(carve(settleEnd(replay)).filter((i) => !(i.kind === 'slot' && i.state === 'beyond'))).toEqual([{ kind: 'end', position: 8, span: 1 }])
   })
 })
+
+describe('the reel below the floor', () => {
+  it('draws a spin as a spin only where a draft is not shown, never for a break, whitespace, punctuation, an end or a special token, and never continuing a word from blank space', () => {
+    let s = createSettleState('sentence', 8)
+    s = reduceSettle(s, { type: 'commit', atMs: 100, tokens: [{ position: 0, text: 'The' }] })
+    s = reduceSettle(s, { type: 'draft', atMs: 200, guesses: [{ position: 2, text: ' sea', p: 0.6 }] })
+    s = reduceSettle(s, { type: 'spin', atMs: 200, guesses: [
+      { position: 1, text: ' sky', p: 0.1 },
+      { position: 2, text: ' sea', p: 0.6 },
+      { position: 3, text: '\n', p: 0.1 },
+      { position: 4, text: ' ', p: 0.1 },
+      { position: 5, text: '<|im_end|>', p: 0.1 },
+      { position: 6, text: 'ing', p: 0.1 },
+      { position: 7, text: ' is', p: 0.2 },
+    ] })
+    s = reduceSettle(s, { type: 'spin', atMs: 250, guesses: [{ position: 4, text: '.', p: 0.1 }] })
+    const items = carve(s)
+    const at = (position: number) => items.find((item) => 'position' in item && item.position === position)
+    expect(at(1)).toEqual({ kind: 'spin', position: 1, text: ' sky', p: 0.1 })
+    expect(at(2)?.kind).toBe('draft')
+    expect(at(3)).toEqual({ kind: 'slot', position: 3, state: 'open' })
+    expect(at(4)).toEqual({ kind: 'slot', position: 4, state: 'open' })
+    expect(at(5)).toEqual({ kind: 'slot', position: 5, state: 'open' })
+    expect(at(6)).toEqual({ kind: 'slot', position: 6, state: 'open' })
+    expect(at(7)).toEqual({ kind: 'spin', position: 7, text: ' is', p: 0.2 })
+    // a spin that continues a word attaches to letters before it
+    s = reduceSettle(s, { type: 'spin', atMs: 300, guesses: [{ position: 1, text: 'ir', p: 0.1 }] })
+    expect(carve(s).find((item) => 'position' in item && item.position === 1)).toEqual({ kind: 'spin', position: 1, text: 'ir', p: 0.1 })
+  })
+})
+

@@ -19,11 +19,11 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'the shape first',
-    body: 'the reserved space is the message\u2019s shape: its length, carved down from the tail as the model commits its end; its paragraphs and its list, drawn as breaks the moment they are committed or confidently guessed. what is still undecided runs as a faint stream of light with a slow flock of glowing dots hovering over it, and a word lands into the light rather than the light leaving the words, so the bubble is never blank and never noisy. a reader sees how big the answer is and how it is built before a word of it is final.',
+    body: 'the reserved space is the message\u2019s shape: its length, carved down from the tail as the model commits its end; its paragraphs and its list, drawn as breaks the moment they are committed or confidently guessed. what is still undecided is a bank of reels, each spinning through the model\u2019s own guesses as smears until one comes into focus, so the bubble is never blank and never noisy. a reader sees how big the answer is and how it is built before a word of it is final.',
   },
   {
     title: 'a draft you can watch become the answer',
-    body: 'the ghost words are the model\u2019s own current guesses, drawn only above a floor and only as guesses, breathing while they wait, lifting beside a word that has just settled. every position is a reel: a guess the model drops rolls up and out as the next rolls in beneath it, and the word it commits rolls in last and snaps solid. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, at several places at once, with nothing invented; the margin names the phase it is in.',
+    body: 'the ghost words are the model\u2019s own current guesses, legible only above a floor and only as guesses, breathing while they wait, lifting beside a word that has just settled. every position is a reel: below the floor it spins through the model\u2019s guesses as smears, a guess the model drops rolls up and out as the next rolls in beneath it, and the word it commits rolls in last and stops the reel with a bounce. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, at several places at once, with nothing invented; the margin names the phase it is in.',
   },
   {
     title: 'a tick under the thumb',

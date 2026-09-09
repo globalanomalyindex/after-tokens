@@ -8,10 +8,9 @@ import { TRACE_NUMBERS } from '@/lib/traces/findings'
 // The first screen: the title, the argument in one line, and beside it the
 // thing itself: a real recording, replayed through the reducer. The random
 // sampler commits in no particular order inside each block, so words build
-// here and there at once, the model's own drafts ghost in around them and
-// breathe, the guesses it drops roll off their reels, the stream of light
-// runs where nothing is decided yet, and the sentences set onto the page as
-// they close. Nothing in the stage was
+// here and there at once, the model's own guesses spin on their reels as
+// smears, come into focus as drafts, roll off when dropped, and the
+// sentences set onto the page as they close. Nothing in the stage was
 // authored.
 
 export function SectionHook() {

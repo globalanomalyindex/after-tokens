@@ -23,16 +23,17 @@ import { Margin, statusWords } from './margin'
 // the piece it is. A complete word snaps in where it will stand, in the
 // secondary ink, built from a blur letter by letter in no particular order,
 // so the answer visibly constructs at several places at once. An open
-// position is a stream of light with a slow flock of glowing dots hovering
-// over it: where words may be but are not decided yet. Every position is a
-// reel: a guess rolls up out of the stream, a guess the model drops rolls
-// on up and out, blurred, as the next rolls in beneath it, and the word it
-// commits rolls in last and snaps, so the space a word will fill is visible
-// as space until the word fills it. A line break, once committed or
-// guessed, is drawn as a break, so the message's shape (its length, its
-// paragraphs, its list) is carved out before its words. When a sentence
-// closes the page sets: the words press and come to rest, the page's ink
-// rises through the letterforms, and a bloom under the sentence fades.
+// position is reserved blank space, and every position is a reel: below
+// the floor the model's guesses spin past as smears blurred past reading, a guess
+// that clears the floor comes into focus as a draft, a guess the model
+// drops rolls on up and out as the next rolls in beneath it, and the word
+// it commits rolls in last and stops with a bounce, so an answer is a bank
+// of reels settling one by one in the model's own order. A line break,
+// once committed or confidently guessed, is drawn as a break, so the
+// message's shape (its length, its paragraphs, its list) is carved out
+// before its words. When a sentence closes the page sets: the words press
+// and come to rest, the page's ink rises through the letterforms, and a
+// glow around the sentence cools.
 //
 // The honesty line: nothing committed is drawn as a guess, nothing guessed
 // is drawn as committed, and no guess ever reaches the page.
@@ -122,15 +123,15 @@ function buildOrder(count: number): number[] {
   return order
 }
 
-/** A position's phase, 0 to 10, for the stream's shimmer, the flock and a
- *  draft's breath: scrambled (7 is coprime with 11), so neighbors are never
- *  in step and no wave travels along the line. */
+/** A position's phase, 0 to 10, for a draft's breath: scrambled (7 is
+ *  coprime with 11), so neighbors are never in step and no wave travels
+ *  along the line. */
 const phase = (position: number) => (position * 7) % 11
 
 /** How long a dropped guess takes to roll out of its position, in ms. Matches the stylesheet. */
 const REEL_MS = 520
 
-type Register = 'word' | 'piece' | 'draft' | 'open' | 'beyond' | 'end-belief'
+type Register = 'word' | 'piece' | 'draft' | 'spin' | 'open' | 'beyond' | 'end-belief'
 type Row = { text: string; seq: number; born: Register }
 type Reel = { row: Row; past: Row | null }
 
@@ -168,7 +169,7 @@ type CellItem = Exclude<CarveItem, { kind: 'end' }>
  *  never changes once it is written. */
 function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const raw = item.kind === 'word' || item.kind === 'piece' || (item.kind === 'draft' && !item.end) ? item.text : ''
+  const raw = item.kind === 'word' || item.kind === 'piece' || item.kind === 'spin' || (item.kind === 'draft' && !item.end) ? item.text : ''
   // a word that ends a line keeps its break outside the sliding box, so the
   // box measures the letters and the break still breaks the line
   const nl = /\n+$/.exec(raw)
@@ -195,6 +196,8 @@ function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths
   const p = item.kind === 'draft' ? item.p : undefined
   // the draft's sharpness: its probability, from the floor to certainty
   const sure = p === undefined ? undefined : Math.max(0, Math.min(1, (p - DRAFT_FLOOR) / (1 - DRAFT_FLOOR)))
+  // a spin's weight: its probability below the floor, 0 to 1
+  const weight = item.kind === 'spin' ? Math.max(0, Math.min(1, item.p / DRAFT_FLOOR)) : undefined
   const breaks = nl && Array.from(nl[0]).map((_, i) => <br key={i} className="settle-nl" data-state={register} />)
   // a piece or a guess that is only a line break is drawn as the break
   if (!text && nl) return <>{breaks}</>
@@ -207,8 +210,7 @@ function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths
         data-pos={position}
         data-end={item.kind === 'word' ? position + span - 1 : undefined}
         data-forming={item.kind === 'word' && item.forming ? '' : undefined}
-        data-dot={(register === 'open' && position % 3 === 1) || undefined}
-        style={{ ...(sure === undefined ? {} : { ['--sure' as string]: sure.toFixed(3) }), ['--k' as string]: phase(position) } as CSSProperties}
+        style={{ ...(sure === undefined ? {} : { ['--sure' as string]: sure.toFixed(3) }), ...(weight === undefined ? {} : { ['--p' as string]: weight.toFixed(3) }), ['--k' as string]: phase(position) } as CSSProperties}
       >
         {past && <span key={`r${past.seq}`} className="settle-cz-text" data-past="">{past.text}</span>}
         {text && <span key={`r${row.seq}`} className="settle-cz-text" data-land={lands ? '' : undefined}>{register === 'word' ? <Broken text={text} letters /> : text}</span>}
@@ -219,8 +221,8 @@ function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths
 }
 
 /** Whether an item draws letters that a following piece attaches to. */
-const drawsLetters = (item: CarveItem) => item.kind === 'word' || item.kind === 'piece' || (item.kind === 'draft' && !item.end && item.text.trim() !== '')
-const leadingSpace = (item: CarveItem) => (item.kind === 'word' || item.kind === 'piece' || item.kind === 'draft') && /^\s/.test(item.text)
+const drawsLetters = (item: CarveItem) => item.kind === 'word' || item.kind === 'piece' || item.kind === 'spin' || (item.kind === 'draft' && !item.end && item.text.trim() !== '')
+const leadingSpace = (item: CarveItem) => (item.kind === 'word' || item.kind === 'piece' || item.kind === 'draft' || item.kind === 'spin') && /^\s/.test(item.text)
 
 /** The zone's items grouped for wrapping: a piece that continues the letters
  *  before it stays on their line. A group begins at a leading space, at a

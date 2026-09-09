@@ -1,6 +1,6 @@
 import { PROVISIONAL_FLOOR } from '@/lib/diffusion/traces'
 import { passageBoundary, wordSafeLength } from './boundary'
-import type { Commit, DraftState, Policy, SettleEvent, SettleState } from './types'
+import type { Commit, DraftState, Policy, SettleEvent, SettleState, SpinState } from './types'
 
 /** A draft is shown once its probability clears this floor; below it the
  *  source's guess is the corpus prior and would say the same word everywhere.
@@ -15,7 +15,7 @@ export const DRAFT_FLOOR = PROVISIONAL_FLOOR
 export function createSettleState(policy: Policy = 'sentence', bound: number | null = null): SettleState {
   return {
     policy, status: 'waiting', passages: [], prefixTokens: [], prefix: '', wordSafeLength: 0, releasedLength: 0,
-    tokens: {}, drafts: {}, nextPosition: 0, receivedCount: 0, bound: Number.isSafeInteger(bound) && bound! > 0 ? bound : null,
+    tokens: {}, drafts: {}, spins: {}, nextPosition: 0, receivedCount: 0, bound: Number.isSafeInteger(bound) && bound! > 0 ? bound : null,
     endAt: null, lastEventAtMs: 0, revisionText: null, error: null, source: null, version: 0, previousPassages: null,
   }
 }
@@ -78,7 +78,7 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
     // field remains to draw beneath it
     return release({
       ...next, status: 'complete', prefix: text, prefixTokens: [], wordSafeLength: text.length, releasedLength: 0,
-      tokens: {}, drafts: {}, endAt: null,
+      tokens: {}, drafts: {}, spins: {}, endAt: null,
       passages: [], previousPassages: state.passages, version: state.version + 1, revisionText: null,
     }, true)
   }
@@ -106,6 +106,19 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
     }
     return { ...next, drafts, source: 'commit', status: state.status === 'waiting' ? 'receiving' : state.status }
   }
+  if (event.type === 'spin') {
+    // the reel below the floor: the source's argmax at an open position at
+    // any probability. It changes nothing the reader can count on, is never
+    // legible, and is ignored at a committed position; an empty text
+    // withdraws it.
+    const spins: Record<number, SpinState> = { ...state.spins }
+    for (const guess of event.guesses) {
+      if (!Number.isSafeInteger(guess.position) || guess.position < 0 || state.tokens[guess.position]) continue
+      if (guess.text === '') { delete spins[guess.position]; continue }
+      spins[guess.position] = { text: guess.text, p: Number.isFinite(guess.p) ? Math.max(0, guess.p) : 0 }
+    }
+    return { ...next, spins, source: 'commit', status: state.status === 'waiting' ? 'receiving' : state.status }
+  }
   if (event.type === 'finish') {
     if (!Number.isSafeInteger(event.tokenCount) || event.tokenCount < 0) return failed(next, 'Invalid final token count.')
     if (state.nextPosition !== event.tokenCount || state.receivedCount !== event.tokenCount) return failed(next, 'Incomplete or contradictory final token prefix.')
@@ -114,6 +127,7 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
 
   const tokens = { ...state.tokens }
   const drafts = { ...state.drafts }
+  const spins = { ...state.spins }
   // The whole batch is validated before any of it extends the prefix: a
   // conflict must never expose the other tokens of its batch.
   for (const token of event.tokens) {
@@ -122,8 +136,9 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
     const existing = tokens[token.position]
     if (existing && (existing.text !== token.text || Boolean(existing.end) !== Boolean(token.end))) return failed(next, `Conflicting commitment at position ${token.position}.`)
     tokens[token.position] = { ...token }
-    // a commitment ends the guess at its position
+    // a commitment ends the guess at its position, and the reel with it
     delete drafts[token.position]
+    delete spins[token.position]
   }
   const prefixTokens: Commit[] = [...state.prefixTokens]
   let { prefix, nextPosition } = state
@@ -141,7 +156,7 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
     nextPosition += 1
   }
   return release({
-    ...next, status: complete ? 'complete' : 'receiving', source: 'commit', tokens, drafts: complete ? {} : drafts, prefix, prefixTokens, nextPosition, endAt,
+    ...next, status: complete ? 'complete' : 'receiving', source: 'commit', tokens, drafts: complete ? {} : drafts, spins: complete ? {} : spins, prefix, prefixTokens, nextPosition, endAt,
     wordSafeLength: wordSafeLength(prefixTokens, complete), receivedCount: Object.keys(tokens).length,
   }, complete)
 }

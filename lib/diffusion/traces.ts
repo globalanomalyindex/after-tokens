@@ -71,6 +71,12 @@ export type TraceCompact = {
    *  in probability; [position, "", 0] withdraws one. A commitment at a
    *  position ends its draft implicitly. See scripts/derive-drafts.py. */
   drafts?: [number, string, number][][]
+  /** the reel below the floor: one list per denoising step of [position,
+   *  piece, probability] entries, recorded whenever an open position's
+   *  provisional argmax changes at all, at any probability (the first step
+   *  records every position). Drawn only as a smear blurred past reading; the same
+   *  guess is a draft once it clears the floor. See scripts/derive-drafts.py. */
+  spins?: [number, string, number][][]
   stats: TraceStats
 }
 

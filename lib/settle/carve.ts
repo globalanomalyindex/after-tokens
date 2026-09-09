@@ -21,6 +21,8 @@ export type CarveItem =
   | { kind: 'piece'; position: number; text: string }
   /** the source's current guess at an open position, above the floor; end when it guesses the answer ends here */
   | { kind: 'draft'; position: number; text: string; p: number; end: boolean }
+  /** the reel below the floor: the source's argmax at an open position at any probability, drawn as a smear blurred past reading */
+  | { kind: 'spin'; position: number; text: string; p: number }
   /** an open position with no guess worth drawing, or a position past the answer's end */
   | { kind: 'slot'; position: number; state: 'open' | 'beyond' }
   /** the lowest committed end and the run of end tokens that starts there */
@@ -64,7 +66,7 @@ export function lowestEnd(state: SettleState): number | null {
 }
 
 /** Whether an item draws letters a following piece could attach to. */
-const hasLetters = (item: CarveItem | undefined) => Boolean(item && (item.kind === 'word' || item.kind === 'piece' || (item.kind === 'draft' && !item.end)))
+const hasLetters = (item: CarveItem | undefined) => Boolean(item && (item.kind === 'word' || item.kind === 'piece' || item.kind === 'spin' || (item.kind === 'draft' && !item.end)))
 
 /**
  * The draft to draw at an open position, if any. A guess shows only above the
@@ -78,7 +80,7 @@ const hasLetters = (item: CarveItem | undefined) => Boolean(item && (item.kind =
  */
 function draftAt(state: SettleState, position: number, previous: CarveItem | undefined): CarveItem | null {
   const draft = state.drafts[position]
-  if (!draft?.shown) return null
+  if (!draft?.shown) return spinAt(state, position, previous)
   if (END_SPELLINGS.has(draft.text)) return { kind: 'draft', position, text: '', p: draft.p, end: true }
   if (SPECIAL.test(draft.text)) return null
   // a guessed line break is the shape of the message before its words: drawn as a break, never as letters
@@ -86,6 +88,24 @@ function draftAt(state: SettleState, position: number, previous: CarveItem | und
   const continues = !/^\s/.test(draft.text) && /[\p{L}\p{N}]/u.test(draft.text)
   if (continues && !hasLetters(previous)) return null
   return { kind: 'draft', position, text: draft.text, p: draft.p, end: false }
+}
+
+/**
+ * The reel below the floor at an open position with no draft to show: the
+ * source's argmax at any probability, drawn as a smear blurred past reading
+ * so the reel spins wherever the model is guessing. Only a piece with letters or
+ * digits is drawn (the end spelling, a special token, a break, whitespace
+ * and bare punctuation draw nothing: the shape of the message is carved
+ * from confident guesses only, and a smear of punctuation would read as
+ * one), and a piece that continues a word waits for letters to attach to,
+ * as a draft does.
+ */
+function spinAt(state: SettleState, position: number, previous: CarveItem | undefined): CarveItem | null {
+  const spin = state.spins[position]
+  if (!spin || END_SPELLINGS.has(spin.text) || SPECIAL.test(spin.text) || !/[\p{L}\p{N}]/u.test(spin.text)) return null
+  const continues = !/^\s/.test(spin.text)
+  if (continues && !hasLetters(previous)) return null
+  return { kind: 'spin', position, text: spin.text, p: spin.p }
 }
 
 export function carve(state: SettleState): CarveItem[] {

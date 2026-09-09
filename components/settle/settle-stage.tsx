@@ -193,7 +193,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · the ghost words are the model\u2019s own drafts, drawn above a floor and never as words; every position is a reel; the stream runs where nothing is decided yet; a word rolls in once every piece of it is in; the page sets when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · the smears and the ghost words are the model\u2019s own guesses, blurred past reading below a floor and never words; every position is a reel; a word rolls in once every piece of it is in; the page sets when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
         </p>
       )}
     </div>

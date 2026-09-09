@@ -238,3 +238,30 @@ describe('the reducer', () => {
     expect(prefixOnly.passages).toEqual(a.passages.slice(0, 1))
   })
 })
+
+const spin = (atMs: number, ...guesses: { position: number; text: string; p: number }[]): SettleEvent => ({ type: 'spin', atMs, guesses })
+
+describe('the reel below the floor', () => {
+  it('changes nothing the reader can count on, is ignored at a committed position, and ends at a commitment', () => {
+    const before = run([commit(100, { position: 0, text: 'Yes' })])
+    const after = reduceSettle(before, spin(200, { position: 0, text: 'No', p: 0.1 }, { position: 1, text: ' the', p: 0.06 }, { position: 2, text: ' sea', p: 0.3 }))
+    expect(after.prefix).toBe(before.prefix)
+    expect(after.passages).toEqual(before.passages)
+    expect(after.wordSafeLength).toBe(before.wordSafeLength)
+    expect(after.spins[0]).toBeUndefined()
+    expect(after.spins[1]).toEqual({ text: ' the', p: 0.06 })
+    expect(after.spins[2]).toEqual({ text: ' sea', p: 0.3 })
+    expect(after.drafts[2]).toBeUndefined()
+    const spun = reduceSettle(after, spin(300, { position: 1, text: '', p: 0 }))
+    expect(spun.spins[1]).toBeUndefined()
+    const committed = reduceSettle(spun, commit(400, { position: 2, text: ' sky' }))
+    expect(committed.spins[2]).toBeUndefined()
+  })
+
+  it('leaves no spin on a completed answer', () => {
+    const done = run([spin(100, { position: 2, text: ' more', p: 0.1 }), commit(200, { position: 0, text: 'Yes.' }, { position: 1, text: '<|im_end|>', end: true })])
+    expect(done.status).toBe('complete')
+    expect(done.spins).toEqual({})
+  })
+})
+

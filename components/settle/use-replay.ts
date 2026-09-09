@@ -73,7 +73,7 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
   const focus = useMemo(() => {
     for (let i = happened - 1; i >= 0; i -= 1) {
       const event = events[i]!
-      if (event.type === 'draft') continue
+      if (event.type === 'draft' || event.type === 'spin') continue
       if (event.type !== 'commit' || !event.tokens.length) return null
       const content = event.tokens.filter((t) => !t.end)
       const tokens = content.length ? content : event.tokens

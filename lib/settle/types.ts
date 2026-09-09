@@ -16,6 +16,8 @@ export type Draft = { position: number; text: string; p: number }
 export type SettleEvent =
   | { type: 'commit'; atMs: number; tokens: Commit[] }
   | { type: 'draft'; atMs: number; guesses: Draft[] }
+  /** the source's provisional argmax at open positions at any probability: the reel below the floor, never legible, never a commitment */
+  | { type: 'spin'; atMs: number; guesses: Draft[] }
   | { type: 'finish'; atMs: number; tokenCount: number }
   | { type: 'snapshot'; atMs: number; text: string; final: boolean }
   | { type: 'revision'; atMs: number; text: string }
@@ -25,6 +27,7 @@ export type SettleEvent =
 
 export type Passage = { id: string; text: string; availableAtMs: number }
 export type DraftState = { text: string; p: number; shown: boolean }
+export type SpinState = { text: string; p: number }
 
 export type Status = 'waiting' | 'receiving' | 'complete' | 'stopped' | 'error' | 'revision'
 
@@ -46,6 +49,9 @@ export type SettleState = {
   /** the source's current guess at each open position it has one for;
    *  `shown` is whether it has cleared the floor (with hysteresis) */
   drafts: Record<number, DraftState>
+  /** the source's current provisional argmax at each open position, at any
+   *  probability: what the reel spins through below the floor. Never text. */
+  spins: Record<number, SpinState>
   /** the first position not yet in the prefix */
   nextPosition: number
   receivedCount: number

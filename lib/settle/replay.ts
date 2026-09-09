@@ -47,20 +47,27 @@ export function replayTrace(trace: TraceCompact, pace: Pace): Replay {
     byStep.set(token.step, commits)
   }
   const drafts = trace.drafts ?? []
+  const spins = trace.spins ?? []
+  const guessesOf = (entries: unknown[] | undefined): Draft[] => {
+    const guesses: Draft[] = []
+    for (const entry of entries ?? []) {
+      if (!Array.isArray(entry) || entry.length < 3) continue
+      const [position, text, p] = entry as [unknown, unknown, unknown]
+      if (!Number.isSafeInteger(position) || typeof text !== 'string' || typeof p !== 'number' || !Number.isFinite(p)) continue
+      guesses.push({ position: position as number, text, p })
+    }
+    return guesses
+  }
   const events: SettleEvent[] = []
   for (let step = 0; step < stepEnds.length; step += 1) {
     const tokens = byStep.get(step)
     if (tokens) events.push({ type: 'commit', atMs: stepEnds[step]!, tokens })
-    const entries = drafts[step]
-    if (!entries?.length) continue
-    const guesses: Draft[] = []
-    for (const entry of entries) {
-      if (!Array.isArray(entry) || entry.length < 3) continue
-      const [position, text, p] = entry
-      if (!Number.isSafeInteger(position) || typeof text !== 'string' || !Number.isFinite(p)) continue
-      guesses.push({ position, text, p })
-    }
-    if (guesses.length) events.push({ type: 'draft', atMs: stepEnds[step]!, guesses })
+    // a step's guesses follow its commitment at the same instant: the
+    // drafts above the floor, then the reel below it
+    const drafted = guessesOf(drafts[step])
+    if (drafted.length) events.push({ type: 'draft', atMs: stepEnds[step]!, guesses: drafted })
+    const spun = guessesOf(spins[step])
+    if (spun.length) events.push({ type: 'spin', atMs: stepEnds[step]!, guesses: spun })
   }
   events.push({ type: 'finish', atMs: durationMs, tokenCount: trace.sampler.max_new_tokens })
   return {

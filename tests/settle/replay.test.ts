@@ -116,3 +116,22 @@ describe('the replay adapter', () => {
     }
   }, 30_000)
 })
+
+describe('the spins', () => {
+  it('turns the recorded spins into spin events after the drafts of their step, and the page is the same without them', () => {
+    const replay = replayTrace(heron, 1)
+    const spins = replay.events.filter((e) => e.type === 'spin')
+    expect(spins.length).toBeGreaterThan(20)
+    for (let i = 1; i < replay.events.length; i += 1) {
+      const previous = replay.events[i - 1]!
+      const event = replay.events[i]!
+      if (event.type === 'draft' && previous.atMs === event.atMs) expect(previous.type).not.toBe('spin')
+    }
+    const bare = replayTrace({ ...heron, spins: undefined }, 1)
+    expect(settleEnd(replay).passages).toEqual(settleEnd(bare).passages)
+    const mid = settleAt(replay, replay.durationMs / 2)
+    expect(Object.keys(mid.spins).length).toBeGreaterThan(0)
+    for (const key of Object.keys(mid.spins)) expect(mid.tokens[Number(key)]).toBeUndefined()
+  })
+})
+
