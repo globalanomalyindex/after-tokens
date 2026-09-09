@@ -9,10 +9,10 @@ import './globals.css'
 const iconBase = process.env.GITHUB_PAGES === 'true' ? '/after-tokens' : ''
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://after-tokens.vercel.app'),
-  title: 'After Tokens: a causal reading surface for diffusion text',
+  metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
+  title: 'After Tokens: an ambient motion study for generated text',
   description:
-    'A product design and engineering case study on how an answer from a diffusion language model should reach a reader: only what the model has committed, on a page that holds still, with the process in view. A reading contract, a field, five brand voices, sixty recorded sampler trajectories, and a measured cost.',
+    'Soft loading bars, a whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
   authors: [
     {
       name: 'Christopher Robin Fiore',
@@ -21,26 +21,26 @@ export const metadata: Metadata = {
   ],
   creator: 'Christopher Robin Fiore',
   alternates: {
-    canonical: '/',
+    canonical: 'https://globalanomalyindex.github.io/after-tokens/',
   },
   icons: {
     icon: [{ url: `${iconBase}/icon.png`, type: 'image/png', sizes: '32x32' }],
     shortcut: `${iconBase}/favicon.ico`,
   },
   openGraph: {
-    title: 'After Tokens: a causal reading surface for diffusion text',
+    title: 'After Tokens: an ambient motion study for generated text',
     description:
-      'How an answer from a diffusion language model should reach a reader: a causal reading contract, a field that shows the process where it is real, five brand voices, sixty recorded trajectories.',
-    url: '/',
+      'A continuous waiting composition, one readable answer arrival, and an honest account of its cost. Research, real diffusion captures and an interactive motion comparison.',
+    url: 'https://globalanomalyindex.github.io/after-tokens/',
     siteName: 'After Tokens',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'After Tokens: a causal reading surface for diffusion text',
+    title: 'After Tokens: an ambient motion study for generated text',
     description:
-      'How an answer from a diffusion language model should reach a reader: a causal reading contract, a field that shows the process where it is real, five brand voices, sixty recorded trajectories.',
+      'A continuous waiting composition, one readable answer arrival, and an honest account of its cost. Research, real diffusion captures and an interactive motion comparison.',
   },
 }
 

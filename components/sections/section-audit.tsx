@@ -53,7 +53,7 @@ export function SectionAudit() {
           <p>
             the old engine joined the final word table into a string, tokenized and measured it before the first step, reserved every
             word&rsquo;s final width, scored every word&rsquo;s salience, and then played the recording&rsquo;s order over that finished
-            geometry. a live renderer receives commits: a position, a token, a step. it has no table, no widths, no map, and no length.
+            geometry. a live renderer receives commits: a position, a token, a step. it has no final word table, exact final widths or future salience map. a configured token budget does not supply that geometry.
           </p>
           <p className="mt-4">
             the arrival profile that scored the old grammar measured reveals a live source cannot produce. its numbers, including the

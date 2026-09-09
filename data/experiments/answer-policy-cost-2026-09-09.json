@@ -1,0 +1,4133 @@
+{
+  "generatedAtUtc": "2026-09-09T18:36:57.039Z",
+  "generator": "ANSWER_POLICY_REPORT=1 pnpm exec vitest run tests/settle/answer-policy.test.ts",
+  "status": "reducer-cost comparison; no motion-performance or reader-outcome measurements",
+  "definitions": {
+    "corpus": "The original TRACE_IDS 60 captures only; excludes the newer parallel-model experiments. Three empty answers are retained for exact-output audits and excluded from latency summaries.",
+    "clock": "Raw cumulative recorded step_ms: synchronized forward-pass timings on the capture machine, in milliseconds. Playback scale is 1. This is not request-to-answer latency, network latency, or a current model speed estimate.",
+    "finality": "First committed EOS reached by the contiguous prefix, valid explicit finish, or explicitly final snapshot. Source stop/error and guessed EOS do not release an answer.",
+    "answerPolicy": "Releases no passages or forming text before finality. At finality, the exact nonempty answer becomes one passage immediately. This deliberately sacrifices early reading; it does not accelerate inference.",
+    "firstPassageAt": "Reducer eligibility time of the first released passage, not measured browser paint or legibility time. For answer policy it equals source finality on every nonempty completed capture.",
+    "completionAt": "First terminal source state time retained by the reducer; may precede the end of the stored recording when the contiguous prefix reaches EOS early.",
+    "meanExtraHold": "Per trace, character-mean passage release time minus time that UTF-16 code unit joined the contiguous committed prefix. It is not measured relative to an out-of-order token commitment.",
+    "meanOfTraceMeanExtraHoldMs": "Arithmetic mean of each nonempty trace meanExtraHold; traces receive equal weight.",
+    "characterWeightedMeanExtraHoldMs": "Total hold over UTF-16 code units divided by total code units across nonempty traces.",
+    "meanWordSafeLag": "Per trace, character-mean word-safe time minus contiguous-prefix join time; underlying word-safety accounting is unchanged by answer policy.",
+    "formingShare": "Share of stored replay duration for which formingText(state) is nonempty. Answer policy returns no forming text; this is a logical presentation contract, not an observed viewport exposure metric.",
+    "maxQueued": "Largest prefix.length minus releasedLength at an event boundary, measured in UTF-16 code units including whitespace.",
+    "exactFinalAndPrecommitExposure": "Final decoded text is used only by the retrospective instrument as an equality oracle; the reducer and release decision never receive it."
+  },
+  "implementation": [
+    {
+      "path": "lib/settle/types.ts",
+      "sha256": "1549064366d6ce5013757fa6c3884935b469b1458307ace647d7d158578e7f88"
+    },
+    {
+      "path": "lib/settle/boundary.ts",
+      "sha256": "7806ffe057f0464792f777c2f10eb5ceba2e9514ade90891fc82f6949d6fd691"
+    },
+    {
+      "path": "lib/settle/reader.ts",
+      "sha256": "997471ad542dc875790dd2e50cd4939d0fb52c8c4948bfcb5d3f2d812e3c5a99"
+    },
+    {
+      "path": "lib/settle/cost.ts",
+      "sha256": "2851b1e09b4f03ff0d43477cd8fecb6ae76d101272517d9d9da5923f14d1923b"
+    },
+    {
+      "path": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    }
+  ],
+  "all60": {
+    "word": {
+      "traces": 60,
+      "nonemptyTraces": 57,
+      "exactFinalOutputs": 60,
+      "precommitExposure": 0,
+      "characters": 22131,
+      "medianFirstPassageAtMs": 1430,
+      "medianCompletionAtMs": 15789.6,
+      "meanOfTraceMeanExtraHoldMs": 403.5892,
+      "characterWeightedMeanExtraHoldMs": 162.2533,
+      "medianPassages": 16,
+      "medianMaxQueuedCharacters": 11,
+      "maximumQueuedCharacters": 15,
+      "medianFormingShare": 0
+    },
+    "sentence": {
+      "traces": 60,
+      "nonemptyTraces": 57,
+      "exactFinalOutputs": 60,
+      "precommitExposure": 0,
+      "characters": 22131,
+      "medianFirstPassageAtMs": 4555.4,
+      "medianCompletionAtMs": 15789.6,
+      "meanOfTraceMeanExtraHoldMs": 3011.517,
+      "characterWeightedMeanExtraHoldMs": 2820.0227,
+      "medianPassages": 3,
+      "medianMaxQueuedCharacters": 120,
+      "maximumQueuedCharacters": 629,
+      "medianFormingShare": 0.9048
+    },
+    "paragraph": {
+      "traces": 60,
+      "nonemptyTraces": 57,
+      "exactFinalOutputs": 60,
+      "precommitExposure": 0,
+      "characters": 22131,
+      "medianFirstPassageAtMs": 15625.6,
+      "medianCompletionAtMs": 15789.6,
+      "meanOfTraceMeanExtraHoldMs": 5472.6253,
+      "characterWeightedMeanExtraHoldMs": 6271.0232,
+      "medianPassages": 1,
+      "medianMaxQueuedCharacters": 413,
+      "maximumQueuedCharacters": 710,
+      "medianFormingShare": 0.9048
+    },
+    "answer": {
+      "traces": 60,
+      "nonemptyTraces": 57,
+      "exactFinalOutputs": 60,
+      "precommitExposure": 0,
+      "characters": 22131,
+      "medianFirstPassageAtMs": 15789.6,
+      "medianCompletionAtMs": 15789.6,
+      "meanOfTraceMeanExtraHoldMs": 6296.8396,
+      "characterWeightedMeanExtraHoldMs": 7409.2515,
+      "medianPassages": 1,
+      "medianMaxQueuedCharacters": 490,
+      "maximumQueuedCharacters": 710,
+      "medianFormingShare": 0
+    }
+  },
+  "curated18": {
+    "word": {
+      "traces": 18,
+      "nonemptyTraces": 18,
+      "exactFinalOutputs": 18,
+      "precommitExposure": 0,
+      "characters": 7114,
+      "medianFirstPassageAtMs": 655.65,
+      "medianCompletionAtMs": 15774.3,
+      "meanOfTraceMeanExtraHoldMs": 239.7636,
+      "characterWeightedMeanExtraHoldMs": 158.0475,
+      "medianPassages": 17,
+      "medianMaxQueuedCharacters": 11,
+      "maximumQueuedCharacters": 15,
+      "medianFormingShare": 0
+    },
+    "sentence": {
+      "traces": 18,
+      "nonemptyTraces": 18,
+      "exactFinalOutputs": 18,
+      "precommitExposure": 0,
+      "characters": 7114,
+      "medianFirstPassageAtMs": 3941.25,
+      "medianCompletionAtMs": 15774.3,
+      "meanOfTraceMeanExtraHoldMs": 2450.2428,
+      "characterWeightedMeanExtraHoldMs": 2378.8992,
+      "medianPassages": 4,
+      "medianMaxQueuedCharacters": 115,
+      "maximumQueuedCharacters": 491,
+      "medianFormingShare": 0.9253
+    },
+    "paragraph": {
+      "traces": 18,
+      "nonemptyTraces": 18,
+      "exactFinalOutputs": 18,
+      "precommitExposure": 0,
+      "characters": 7114,
+      "medianFirstPassageAtMs": 15721.05,
+      "medianCompletionAtMs": 15774.3,
+      "meanOfTraceMeanExtraHoldMs": 5618.8155,
+      "characterWeightedMeanExtraHoldMs": 6772.5919,
+      "medianPassages": 1,
+      "medianMaxQueuedCharacters": 493,
+      "maximumQueuedCharacters": 559,
+      "medianFormingShare": 0.9253
+    },
+    "answer": {
+      "traces": 18,
+      "nonemptyTraces": 18,
+      "exactFinalOutputs": 18,
+      "precommitExposure": 0,
+      "characters": 7114,
+      "medianFirstPassageAtMs": 15774.3,
+      "medianCompletionAtMs": 15774.3,
+      "meanOfTraceMeanExtraHoldMs": 6157.3778,
+      "characterWeightedMeanExtraHoldMs": 7552.5533,
+      "medianPassages": 1,
+      "medianMaxQueuedCharacters": 495.5,
+      "maximumQueuedCharacters": 567,
+      "medianFormingShare": 0
+    }
+  },
+  "pairedAnswerMinusSentence": {
+    "nonemptyPairs": 57,
+    "medianFirstPassageDelayMs": 10473.6,
+    "meanAdditionalTraceMeanHoldMs": 3285.3227
+  },
+  "rows": [
+    {
+      "id": "brainstorm__lowconf-b128",
+      "curated": false,
+      "characters": 23,
+      "sourceFile": "data/traces/compact/brainstorm__lowconf-b128.json",
+      "sourceSha256": "c39958592eb0db31cbddf93b5f561a1731504b3b103d27bd72fad6a70916dc7a",
+      "recordedReplayDurationMs": 17118.5,
+      "costs": {
+        "word": {
+          "firstPassageAt": 17118.5,
+          "completionAt": 17118.5,
+          "meanExtraHold": 62.447826086956645,
+          "meanWordSafeLag": 62.447826086956645,
+          "maxQueued": 2,
+          "passages": 1,
+          "medianPassageChars": 23,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 23
+        },
+        "sentence": {
+          "firstPassageAt": 17118.5,
+          "completionAt": 17118.5,
+          "meanExtraHold": 62.447826086956645,
+          "meanWordSafeLag": 62.447826086956645,
+          "maxQueued": 2,
+          "passages": 1,
+          "medianPassageChars": 23,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 23
+        },
+        "paragraph": {
+          "firstPassageAt": 17118.5,
+          "completionAt": 17118.5,
+          "meanExtraHold": 62.447826086956645,
+          "meanWordSafeLag": 62.447826086956645,
+          "maxQueued": 2,
+          "passages": 1,
+          "medianPassageChars": 23,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 23
+        },
+        "answer": {
+          "firstPassageAt": 17118.5,
+          "completionAt": 17118.5,
+          "meanExtraHold": 62.447826086956645,
+          "meanWordSafeLag": 62.447826086956645,
+          "maxQueued": 2,
+          "passages": 1,
+          "medianPassageChars": 23,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 23
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "brainstorm__lowconf-b32",
+      "curated": false,
+      "characters": 482,
+      "sourceFile": "data/traces/compact/brainstorm__lowconf-b32.json",
+      "sourceSha256": "2c8b1706c64449b7c3645fe0382d3b2a82838b6cf0f9e34527fff90901815a5d",
+      "recordedReplayDurationMs": 15215.400000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 727.1,
+          "completionAt": 15215.400000000001,
+          "meanExtraHold": 90.81244813278006,
+          "meanWordSafeLag": 90.81244813278006,
+          "maxQueued": 6,
+          "passages": 19,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 482
+        },
+        "sentence": {
+          "firstPassageAt": 15215.400000000001,
+          "completionAt": 15215.400000000001,
+          "meanExtraHold": 6580.800207468933,
+          "meanWordSafeLag": 90.81244813278006,
+          "maxQueued": 419,
+          "passages": 1,
+          "medianPassageChars": 482,
+          "formingShare": 0.9522128895724069,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 482
+        },
+        "paragraph": {
+          "firstPassageAt": 15215.400000000001,
+          "completionAt": 15215.400000000001,
+          "meanExtraHold": 6580.800207468933,
+          "meanWordSafeLag": 90.81244813278006,
+          "maxQueued": 419,
+          "passages": 1,
+          "medianPassageChars": 482,
+          "formingShare": 0.9522128895724069,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 482
+        },
+        "answer": {
+          "firstPassageAt": 15215.400000000001,
+          "completionAt": 15215.400000000001,
+          "meanExtraHold": 6580.800207468933,
+          "meanWordSafeLag": 90.81244813278006,
+          "maxQueued": 419,
+          "passages": 1,
+          "medianPassageChars": 482,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 482
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "brainstorm__random-b32",
+      "curated": false,
+      "characters": 457,
+      "sourceFile": "data/traces/compact/brainstorm__random-b32.json",
+      "sourceSha256": "738f660b6bdfeabe3a5de4bb61eafa94618a75bbb1182bfdcc3416ebf76d2d43",
+      "recordedReplayDurationMs": 15295.9,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1964.5,
+          "completionAt": 15295.9,
+          "meanExtraHold": 144.1859956236324,
+          "meanWordSafeLag": 144.1859956236324,
+          "maxQueued": 12,
+          "passages": 18,
+          "medianPassageChars": 14,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 457
+        },
+        "sentence": {
+          "firstPassageAt": 15295.9,
+          "completionAt": 15295.9,
+          "meanExtraHold": 6592.162582056917,
+          "meanWordSafeLag": 144.1859956236324,
+          "maxQueued": 445,
+          "passages": 1,
+          "medianPassageChars": 457,
+          "formingShare": 0.8715668904739179,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 457
+        },
+        "paragraph": {
+          "firstPassageAt": 15295.9,
+          "completionAt": 15295.9,
+          "meanExtraHold": 6592.162582056917,
+          "meanWordSafeLag": 144.1859956236324,
+          "maxQueued": 445,
+          "passages": 1,
+          "medianPassageChars": 457,
+          "formingShare": 0.8715668904739179,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 457
+        },
+        "answer": {
+          "firstPassageAt": 15295.9,
+          "completionAt": 15295.9,
+          "meanExtraHold": 6592.162582056917,
+          "meanWordSafeLag": 144.1859956236324,
+          "maxQueued": 445,
+          "passages": 1,
+          "medianPassageChars": 457,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 457
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "capital__lowconf-b128",
+      "curated": false,
+      "characters": 75,
+      "sourceFile": "data/traces/compact/capital__lowconf-b128.json",
+      "sourceSha256": "b6ce4d81c34414501a3de1f668bb26fb999843e60895f975bd4f3eee0afb2c17",
+      "recordedReplayDurationMs": 15863.900000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 517.1,
+          "completionAt": 15863.900000000001,
+          "meanExtraHold": 1251.9093333333328,
+          "meanWordSafeLag": 1251.9093333333328,
+          "maxQueued": 10,
+          "passages": 8,
+          "medianPassageChars": 8.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "sentence": {
+          "firstPassageAt": 15476.2,
+          "completionAt": 15863.900000000001,
+          "meanExtraHold": 7621.905333333328,
+          "meanWordSafeLag": 1251.9093333333328,
+          "maxQueued": 41,
+          "passages": 2,
+          "medianPassageChars": 37.5,
+          "formingShare": 0.9674039801057748,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "paragraph": {
+          "firstPassageAt": 15863.900000000001,
+          "completionAt": 15863.900000000001,
+          "meanExtraHold": 7818.339999999992,
+          "meanWordSafeLag": 1251.9093333333328,
+          "maxQueued": 59,
+          "passages": 1,
+          "medianPassageChars": 75,
+          "formingShare": 0.9674039801057748,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "answer": {
+          "firstPassageAt": 15863.900000000001,
+          "completionAt": 15863.900000000001,
+          "meanExtraHold": 7818.339999999992,
+          "meanWordSafeLag": 1251.9093333333328,
+          "maxQueued": 59,
+          "passages": 1,
+          "medianPassageChars": 75,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 387.7000000000007,
+        "meanExtraHoldMs": 196.43466666666427
+      }
+    },
+    {
+      "id": "capital__lowconf-b32",
+      "curated": false,
+      "characters": 591,
+      "sourceFile": "data/traces/compact/capital__lowconf-b32.json",
+      "sourceSha256": "a652cc3cf4f5cf30eb1df7cd562230e83916811d304b5a4936ca40c7e3582116",
+      "recordedReplayDurationMs": 14808.199999999995,
+      "costs": {
+        "word": {
+          "firstPassageAt": 504,
+          "completionAt": 14808.199999999995,
+          "meanExtraHold": 168.43062605752976,
+          "meanWordSafeLag": 168.43062605752976,
+          "maxQueued": 11,
+          "passages": 63,
+          "medianPassageChars": 9,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 591
+        },
+        "sentence": {
+          "firstPassageAt": 1420.1,
+          "completionAt": 14808.199999999995,
+          "meanExtraHold": 1294.4829103214868,
+          "meanWordSafeLag": 168.43062605752976,
+          "maxQueued": 85,
+          "passages": 8,
+          "medianPassageChars": 82,
+          "formingShare": 0.9659648032846666,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 591
+        },
+        "paragraph": {
+          "firstPassageAt": 14808.199999999995,
+          "completionAt": 14808.199999999995,
+          "meanExtraHold": 7731.27275803726,
+          "meanWordSafeLag": 168.43062605752976,
+          "maxQueued": 590,
+          "passages": 1,
+          "medianPassageChars": 591,
+          "formingShare": 0.9659648032846666,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 591
+        },
+        "answer": {
+          "firstPassageAt": 14808.199999999995,
+          "completionAt": 14808.199999999995,
+          "meanExtraHold": 7731.27275803726,
+          "meanWordSafeLag": 168.43062605752976,
+          "maxQueued": 590,
+          "passages": 1,
+          "medianPassageChars": 591,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 591
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 13388.099999999995,
+        "meanExtraHoldMs": 6436.789847715773
+      }
+    },
+    {
+      "id": "capital__random-b32",
+      "curated": false,
+      "characters": 596,
+      "sourceFile": "data/traces/compact/capital__random-b32.json",
+      "sourceSha256": "9ae40e8d06c30248c2f2bf66fd3d4b73cea6c3bdd3c2f46443ad4ad502d782ac",
+      "recordedReplayDurationMs": 16093.999999999993,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1430,
+          "completionAt": 16093.999999999993,
+          "meanExtraHold": 166.49630872483212,
+          "meanWordSafeLag": 166.49630872483212,
+          "maxQueued": 11,
+          "passages": 18,
+          "medianPassageChars": 24.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 596
+        },
+        "sentence": {
+          "firstPassageAt": 3654,
+          "completionAt": 16093.999999999993,
+          "meanExtraHold": 2020.1724832214743,
+          "meanWordSafeLag": 166.49630872483212,
+          "maxQueued": 154,
+          "passages": 8,
+          "medianPassageChars": 56.5,
+          "formingShare": 0.9111470113085621,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 596
+        },
+        "paragraph": {
+          "firstPassageAt": 16093.999999999993,
+          "completionAt": 16093.999999999993,
+          "meanExtraHold": 7082.70100671135,
+          "meanWordSafeLag": 166.49630872483212,
+          "maxQueued": 554,
+          "passages": 1,
+          "medianPassageChars": 596,
+          "formingShare": 0.9111470113085621,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 596
+        },
+        "answer": {
+          "firstPassageAt": 16093.999999999993,
+          "completionAt": 16093.999999999993,
+          "meanExtraHold": 7082.70100671135,
+          "meanWordSafeLag": 166.49630872483212,
+          "maxQueued": 554,
+          "passages": 1,
+          "medianPassageChars": 596,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 596
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12439.999999999993,
+        "meanExtraHoldMs": 5062.528523489876
+      }
+    },
+    {
+      "id": "compiler-error__lowconf-b128",
+      "curated": false,
+      "characters": 0,
+      "sourceFile": "data/traces/compact/compiler-error__lowconf-b128.json",
+      "sourceSha256": "2fe0e4e870692222232e4a66e1d6b04e63278e36942c007680a5a1cbebb9a434",
+      "recordedReplayDurationMs": 15193.8,
+      "costs": {
+        "word": {
+          "firstPassageAt": null,
+          "completionAt": 14942.8,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "sentence": {
+          "firstPassageAt": null,
+          "completionAt": 14942.8,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "paragraph": {
+          "firstPassageAt": null,
+          "completionAt": 14942.8,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "answer": {
+          "firstPassageAt": null,
+          "completionAt": 14942.8,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": null,
+        "meanExtraHoldMs": null
+      }
+    },
+    {
+      "id": "compiler-error__lowconf-b32",
+      "curated": false,
+      "characters": 543,
+      "sourceFile": "data/traces/compact/compiler-error__lowconf-b32.json",
+      "sourceSha256": "da4fde53157872646f62fa51ade1b07bcc909d5310a5286408091d5b264f31a7",
+      "recordedReplayDurationMs": 15029,
+      "costs": {
+        "word": {
+          "firstPassageAt": 417,
+          "completionAt": 15029,
+          "meanExtraHold": 167.60110497237548,
+          "meanWordSafeLag": 167.60110497237548,
+          "maxQueued": 13,
+          "passages": 43,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 543
+        },
+        "sentence": {
+          "firstPassageAt": 4555.400000000001,
+          "completionAt": 15029,
+          "meanExtraHold": 2670.280110497243,
+          "meanWordSafeLag": 167.60110497237548,
+          "maxQueued": 229,
+          "passages": 3,
+          "medianPassageChars": 181,
+          "formingShare": 0.9722536429569499,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 543
+        },
+        "paragraph": {
+          "firstPassageAt": 7455.5,
+          "completionAt": 15029,
+          "meanExtraHold": 3636.980110497257,
+          "meanWordSafeLag": 167.60110497237548,
+          "maxQueued": 229,
+          "passages": 2,
+          "medianPassageChars": 271.5,
+          "formingShare": 0.9722536429569499,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 543
+        },
+        "answer": {
+          "firstPassageAt": 15029,
+          "completionAt": 15029,
+          "meanExtraHold": 7639.916574585652,
+          "meanWordSafeLag": 167.60110497237548,
+          "maxQueued": 516,
+          "passages": 1,
+          "medianPassageChars": 543,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 543
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 10473.599999999999,
+        "meanExtraHoldMs": 4969.6364640884085
+      }
+    },
+    {
+      "id": "compiler-error__random-b32",
+      "curated": true,
+      "characters": 595,
+      "sourceFile": "data/traces/compact/compiler-error__random-b32.json",
+      "sourceSha256": "eb0336ea2f95dfced306d8618f3bd96863936e32f4d9ff812c4757a30e6c063b",
+      "recordedReplayDurationMs": 16135.2,
+      "costs": {
+        "word": {
+          "firstPassageAt": 3902.9000000000005,
+          "completionAt": 16010,
+          "meanExtraHold": 113.63714285714275,
+          "meanWordSafeLag": 113.63714285714275,
+          "maxQueued": 12,
+          "passages": 13,
+          "medianPassageChars": 36,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 595
+        },
+        "sentence": {
+          "firstPassageAt": 3902.9000000000005,
+          "completionAt": 16010,
+          "meanExtraHold": 2225.7786554621753,
+          "meanWordSafeLag": 113.63714285714275,
+          "maxQueued": 235,
+          "passages": 5,
+          "medianPassageChars": 78,
+          "formingShare": 0.7503532649114978,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 595
+        },
+        "paragraph": {
+          "firstPassageAt": 8063.4,
+          "completionAt": 16010,
+          "meanExtraHold": 2838.559831932763,
+          "meanWordSafeLag": 113.63714285714275,
+          "maxQueued": 242,
+          "passages": 3,
+          "medianPassageChars": 248,
+          "formingShare": 0.7503532649114978,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 595
+        },
+        "answer": {
+          "firstPassageAt": 16010,
+          "completionAt": 16010,
+          "meanExtraHold": 6604.109411764694,
+          "meanWordSafeLag": 113.63714285714275,
+          "maxQueued": 567,
+          "passages": 1,
+          "medianPassageChars": 595,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 595
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12107.099999999999,
+        "meanExtraHoldMs": 4378.330756302519
+      }
+    },
+    {
+      "id": "concise-rewrite__lowconf-b128",
+      "curated": true,
+      "characters": 47,
+      "sourceFile": "data/traces/compact/concise-rewrite__lowconf-b128.json",
+      "sourceSha256": "4330d455927d5835f7a048a2b36af2aecc5adbaf5ed69fa960a17afe7b29fb44",
+      "recordedReplayDurationMs": 16366.200000000004,
+      "costs": {
+        "word": {
+          "firstPassageAt": 16088.800000000005,
+          "completionAt": 16366.200000000004,
+          "meanExtraHold": 172.5425531914895,
+          "meanWordSafeLag": 172.5425531914895,
+          "maxQueued": 10,
+          "passages": 3,
+          "medianPassageChars": 10,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 47
+        },
+        "sentence": {
+          "firstPassageAt": 16366.200000000004,
+          "completionAt": 16366.200000000004,
+          "meanExtraHold": 219.9297872340427,
+          "meanWordSafeLag": 172.5425531914895,
+          "maxQueued": 21,
+          "passages": 1,
+          "medianPassageChars": 47,
+          "formingShare": 0.016949566790091748,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 47
+        },
+        "paragraph": {
+          "firstPassageAt": 16366.200000000004,
+          "completionAt": 16366.200000000004,
+          "meanExtraHold": 219.9297872340427,
+          "meanWordSafeLag": 172.5425531914895,
+          "maxQueued": 21,
+          "passages": 1,
+          "medianPassageChars": 47,
+          "formingShare": 0.016949566790091748,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 47
+        },
+        "answer": {
+          "firstPassageAt": 16366.200000000004,
+          "completionAt": 16366.200000000004,
+          "meanExtraHold": 219.9297872340427,
+          "meanWordSafeLag": 172.5425531914895,
+          "maxQueued": 21,
+          "passages": 1,
+          "medianPassageChars": 47,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 47
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "concise-rewrite__lowconf-b32",
+      "curated": false,
+      "characters": 557,
+      "sourceFile": "data/traces/compact/concise-rewrite__lowconf-b32.json",
+      "sourceSha256": "6437095562a8c0aafdd45418c55af3f0709b5c00b5c99fe7d8935334c396ec7b",
+      "recordedReplayDurationMs": 17163.199999999997,
+      "costs": {
+        "word": {
+          "firstPassageAt": 568.5,
+          "completionAt": 17163.199999999997,
+          "meanExtraHold": 217.3526032315975,
+          "meanWordSafeLag": 217.3526032315975,
+          "maxQueued": 14,
+          "passages": 45,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 557
+        },
+        "sentence": {
+          "firstPassageAt": 2823.8999999999996,
+          "completionAt": 17163.199999999997,
+          "meanExtraHold": 1269.0059245960515,
+          "meanWordSafeLag": 217.3526032315975,
+          "maxQueued": 100,
+          "passages": 7,
+          "medianPassageChars": 101,
+          "formingShare": 0.8832094248158853,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 557
+        },
+        "paragraph": {
+          "firstPassageAt": 2823.8999999999996,
+          "completionAt": 17163.199999999997,
+          "meanExtraHold": 1269.0059245960515,
+          "meanWordSafeLag": 217.3526032315975,
+          "maxQueued": 100,
+          "passages": 7,
+          "medianPassageChars": 101,
+          "formingShare": 0.8832094248158853,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 557
+        },
+        "answer": {
+          "firstPassageAt": 17163.199999999997,
+          "completionAt": 17163.199999999997,
+          "meanExtraHold": 9298.332315978452,
+          "meanWordSafeLag": 217.3526032315975,
+          "maxQueued": 556,
+          "passages": 1,
+          "medianPassageChars": 557,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 557
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 14339.299999999997,
+        "meanExtraHoldMs": 8029.326391382401
+      }
+    },
+    {
+      "id": "concise-rewrite__random-b32",
+      "curated": false,
+      "characters": 559,
+      "sourceFile": "data/traces/compact/concise-rewrite__random-b32.json",
+      "sourceSha256": "724fe95cc31144dfff2ee8a7ac548c4d9147d7685d33e9bdbd331062b9fe194a",
+      "recordedReplayDurationMs": 16530.700000000004,
+      "costs": {
+        "word": {
+          "firstPassageAt": 3525.2000000000003,
+          "completionAt": 16530.700000000004,
+          "meanExtraHold": 107.413953488372,
+          "meanWordSafeLag": 107.413953488372,
+          "maxQueued": 11,
+          "passages": 12,
+          "medianPassageChars": 21.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 559
+        },
+        "sentence": {
+          "firstPassageAt": 4016.0000000000005,
+          "completionAt": 16530.700000000004,
+          "meanExtraHold": 736.7404293381062,
+          "meanWordSafeLag": 107.413953488372,
+          "maxQueued": 91,
+          "passages": 9,
+          "medianPassageChars": 73,
+          "formingShare": 0.5920015486337542,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 559
+        },
+        "paragraph": {
+          "firstPassageAt": 4016.0000000000005,
+          "completionAt": 16530.700000000004,
+          "meanExtraHold": 736.7404293381062,
+          "meanWordSafeLag": 107.413953488372,
+          "maxQueued": 91,
+          "passages": 9,
+          "medianPassageChars": 73,
+          "formingShare": 0.5920015486337542,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 559
+        },
+        "answer": {
+          "firstPassageAt": 16530.700000000004,
+          "completionAt": 16530.700000000004,
+          "meanExtraHold": 7467.782110912297,
+          "meanWordSafeLag": 107.413953488372,
+          "maxQueued": 558,
+          "passages": 1,
+          "medianPassageChars": 559,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 559
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12514.700000000004,
+        "meanExtraHoldMs": 6731.041681574191
+      }
+    },
+    {
+      "id": "diffusion-explain__lowconf-b128",
+      "curated": true,
+      "characters": 89,
+      "sourceFile": "data/traces/compact/diffusion-explain__lowconf-b128.json",
+      "sourceSha256": "0954bb16a9eb51c84ba511dadfcbd169f55b1efdd6e971aa24291bf36f47adcc",
+      "recordedReplayDurationMs": 17536.799999999992,
+      "costs": {
+        "word": {
+          "firstPassageAt": 358.9,
+          "completionAt": 17536.799999999992,
+          "meanExtraHold": 643.6876404494379,
+          "meanWordSafeLag": 643.6876404494379,
+          "maxQueued": 11,
+          "passages": 6,
+          "medianPassageChars": 11.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 89
+        },
+        "sentence": {
+          "firstPassageAt": 17536.799999999992,
+          "completionAt": 17536.799999999992,
+          "meanExtraHold": 5747.955056179769,
+          "meanWordSafeLag": 643.6876404494379,
+          "maxQueued": 59,
+          "passages": 1,
+          "medianPassageChars": 89,
+          "formingShare": 0.9795344646685825,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 89
+        },
+        "paragraph": {
+          "firstPassageAt": 17536.799999999992,
+          "completionAt": 17536.799999999992,
+          "meanExtraHold": 5747.955056179769,
+          "meanWordSafeLag": 643.6876404494379,
+          "maxQueued": 59,
+          "passages": 1,
+          "medianPassageChars": 89,
+          "formingShare": 0.9795344646685825,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 89
+        },
+        "answer": {
+          "firstPassageAt": 17536.799999999992,
+          "completionAt": 17536.799999999992,
+          "meanExtraHold": 5747.955056179769,
+          "meanWordSafeLag": 643.6876404494379,
+          "maxQueued": 59,
+          "passages": 1,
+          "medianPassageChars": 89,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 89
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "diffusion-explain__lowconf-b32",
+      "curated": true,
+      "characters": 536,
+      "sourceFile": "data/traces/compact/diffusion-explain__lowconf-b32.json",
+      "sourceSha256": "1f2e19d2f6354f4fc2b1a15059d0664ee69ea3791d3e03d7a02cf7bbbe17480e",
+      "recordedReplayDurationMs": 15292.199999999997,
+      "costs": {
+        "word": {
+          "firstPassageAt": 380.4,
+          "completionAt": 15176.999999999996,
+          "meanExtraHold": 123.64925373134322,
+          "meanWordSafeLag": 123.64925373134322,
+          "maxQueued": 12,
+          "passages": 30,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "sentence": {
+          "firstPassageAt": 3678.7,
+          "completionAt": 15176.999999999996,
+          "meanExtraHold": 2068.6412313432797,
+          "meanWordSafeLag": 123.64925373134322,
+          "maxQueued": 139,
+          "passages": 4,
+          "medianPassageChars": 138.5,
+          "formingShare": 0.9675913210656412,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "paragraph": {
+          "firstPassageAt": 15176.999999999996,
+          "completionAt": 15176.999999999996,
+          "meanExtraHold": 8755.371082089452,
+          "meanWordSafeLag": 123.64925373134322,
+          "maxQueued": 536,
+          "passages": 1,
+          "medianPassageChars": 536,
+          "formingShare": 0.9675913210656412,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "answer": {
+          "firstPassageAt": 15176.999999999996,
+          "completionAt": 15176.999999999996,
+          "meanExtraHold": 8755.371082089452,
+          "meanWordSafeLag": 123.64925373134322,
+          "maxQueued": 536,
+          "passages": 1,
+          "medianPassageChars": 536,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11498.299999999996,
+        "meanExtraHoldMs": 6686.729850746173
+      }
+    },
+    {
+      "id": "diffusion-explain__random-b32",
+      "curated": false,
+      "characters": 625,
+      "sourceFile": "data/traces/compact/diffusion-explain__random-b32.json",
+      "sourceSha256": "0a3a4be2e2e1bb8684c53df394f9833814334210ed676d5f6ce40641cb7264ac",
+      "recordedReplayDurationMs": 15597.500000000007,
+      "costs": {
+        "word": {
+          "firstPassageAt": 3823.1000000000004,
+          "completionAt": 15597.500000000007,
+          "meanExtraHold": 173.6462400000001,
+          "meanWordSafeLag": 173.6462400000001,
+          "maxQueued": 12,
+          "passages": 12,
+          "medianPassageChars": 43.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 625
+        },
+        "sentence": {
+          "firstPassageAt": 3950.6000000000004,
+          "completionAt": 15597.500000000007,
+          "meanExtraHold": 1292.4481599999976,
+          "meanWordSafeLag": 173.6462400000001,
+          "maxQueued": 165,
+          "passages": 5,
+          "medianPassageChars": 120,
+          "formingShare": 0.7548902067639046,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 625
+        },
+        "paragraph": {
+          "firstPassageAt": 15597.500000000007,
+          "completionAt": 15597.500000000007,
+          "meanExtraHold": 6820.783839999931,
+          "meanWordSafeLag": 173.6462400000001,
+          "maxQueued": 541,
+          "passages": 1,
+          "medianPassageChars": 625,
+          "formingShare": 0.7548902067639046,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 625
+        },
+        "answer": {
+          "firstPassageAt": 15597.500000000007,
+          "completionAt": 15597.500000000007,
+          "meanExtraHold": 6820.783839999931,
+          "meanWordSafeLag": 173.6462400000001,
+          "maxQueued": 541,
+          "passages": 1,
+          "medianPassageChars": 625,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 625
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11646.900000000007,
+        "meanExtraHoldMs": 5528.335679999933
+      }
+    },
+    {
+      "id": "golden-sunflower__lowconf-b128",
+      "curated": false,
+      "characters": 17,
+      "sourceFile": "data/traces/compact/golden-sunflower__lowconf-b128.json",
+      "sourceSha256": "135e08324656ce1973e26bd104b26295e041b68f940c620bc4a5f5c4df7207b4",
+      "recordedReplayDurationMs": 15284.600000000004,
+      "costs": {
+        "word": {
+          "firstPassageAt": 238.7,
+          "completionAt": 15284.600000000004,
+          "meanExtraHold": 5338.658823529413,
+          "meanWordSafeLag": 5338.658823529413,
+          "maxQueued": 7,
+          "passages": 3,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 17
+        },
+        "sentence": {
+          "firstPassageAt": 15284.600000000004,
+          "completionAt": 15284.600000000004,
+          "meanExtraHold": 14140.270588235298,
+          "meanWordSafeLag": 5338.658823529413,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 17,
+          "formingShare": 0.9843829737121025,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 17
+        },
+        "paragraph": {
+          "firstPassageAt": 15284.600000000004,
+          "completionAt": 15284.600000000004,
+          "meanExtraHold": 14140.270588235298,
+          "meanWordSafeLag": 5338.658823529413,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 17,
+          "formingShare": 0.9843829737121025,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 17
+        },
+        "answer": {
+          "firstPassageAt": 15284.600000000004,
+          "completionAt": 15284.600000000004,
+          "meanExtraHold": 14140.270588235298,
+          "meanWordSafeLag": 5338.658823529413,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 17,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 17
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "golden-sunflower__lowconf-b32",
+      "curated": true,
+      "characters": 503,
+      "sourceFile": "data/traces/compact/golden-sunflower__lowconf-b32.json",
+      "sourceSha256": "91cd013b5b57de44ab991e8d16ed7bebe35180b9394ee3a2eb7ec90b3761a83f",
+      "recordedReplayDurationMs": 15910.500000000005,
+      "costs": {
+        "word": {
+          "firstPassageAt": 235.4,
+          "completionAt": 15910.500000000005,
+          "meanExtraHold": 168.58886679920462,
+          "meanWordSafeLag": 168.58886679920462,
+          "maxQueued": 15,
+          "passages": 48,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 503
+        },
+        "sentence": {
+          "firstPassageAt": 3556.399999999999,
+          "completionAt": 15910.500000000005,
+          "meanExtraHold": 2396.273161033795,
+          "meanWordSafeLag": 168.58886679920462,
+          "maxQueued": 146,
+          "passages": 4,
+          "medianPassageChars": 125.5,
+          "formingShare": 0.9852047390088305,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 503
+        },
+        "paragraph": {
+          "firstPassageAt": 15910.500000000005,
+          "completionAt": 15910.500000000005,
+          "meanExtraHold": 9158.56679920476,
+          "meanWordSafeLag": 168.58886679920462,
+          "maxQueued": 495,
+          "passages": 1,
+          "medianPassageChars": 503,
+          "formingShare": 0.9852047390088305,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 503
+        },
+        "answer": {
+          "firstPassageAt": 15910.500000000005,
+          "completionAt": 15910.500000000005,
+          "meanExtraHold": 9158.56679920476,
+          "meanWordSafeLag": 168.58886679920462,
+          "maxQueued": 495,
+          "passages": 1,
+          "medianPassageChars": 503,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 503
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12354.100000000006,
+        "meanExtraHoldMs": 6762.293638170965
+      }
+    },
+    {
+      "id": "golden-sunflower__random-b32",
+      "curated": false,
+      "characters": 549,
+      "sourceFile": "data/traces/compact/golden-sunflower__random-b32.json",
+      "sourceSha256": "f0293184e5f94422ee3f04e8f3995569220453ce1f62c6c0a7536106c4af0b5a",
+      "recordedReplayDurationMs": 15941.499999999998,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1517.1,
+          "completionAt": 15941.499999999998,
+          "meanExtraHold": 130.11839708561024,
+          "meanWordSafeLag": 130.11839708561024,
+          "maxQueued": 13,
+          "passages": 19,
+          "medianPassageChars": 14,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 549
+        },
+        "sentence": {
+          "firstPassageAt": 3532.2999999999997,
+          "completionAt": 15941.499999999998,
+          "meanExtraHold": 1475.8781420764954,
+          "meanWordSafeLag": 130.11839708561024,
+          "maxQueued": 128,
+          "passages": 5,
+          "medianPassageChars": 124,
+          "formingShare": 0.90483329674121,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 549
+        },
+        "paragraph": {
+          "firstPassageAt": 15941.499999999998,
+          "completionAt": 15941.499999999998,
+          "meanExtraHold": 7281.19581056465,
+          "meanWordSafeLag": 130.11839708561024,
+          "maxQueued": 531,
+          "passages": 1,
+          "medianPassageChars": 549,
+          "formingShare": 0.90483329674121,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 549
+        },
+        "answer": {
+          "firstPassageAt": 15941.499999999998,
+          "completionAt": 15941.499999999998,
+          "meanExtraHold": 7281.19581056465,
+          "meanWordSafeLag": 130.11839708561024,
+          "maxQueued": 531,
+          "passages": 1,
+          "medianPassageChars": 549,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 549
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12409.199999999999,
+        "meanExtraHoldMs": 5805.317668488155
+      }
+    },
+    {
+      "id": "hash-function__lowconf-b128",
+      "curated": true,
+      "characters": 88,
+      "sourceFile": "data/traces/compact/hash-function__lowconf-b128.json",
+      "sourceSha256": "8940d899570614da77b2de3483d6662b3a88cf4ad1e819f006737810786ec611",
+      "recordedReplayDurationMs": 15680.199999999995,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1624.4999999999995,
+          "completionAt": 15680.199999999995,
+          "meanExtraHold": 375.28749999999997,
+          "meanWordSafeLag": 375.28749999999997,
+          "maxQueued": 9,
+          "passages": 10,
+          "medianPassageChars": 7.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 88
+        },
+        "sentence": {
+          "firstPassageAt": 15680.199999999995,
+          "completionAt": 15680.199999999995,
+          "meanExtraHold": 3699.1079545454504,
+          "meanWordSafeLag": 375.28749999999997,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 88,
+          "formingShare": 0.8963980051274856,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 88
+        },
+        "paragraph": {
+          "firstPassageAt": 15680.199999999995,
+          "completionAt": 15680.199999999995,
+          "meanExtraHold": 3699.1079545454504,
+          "meanWordSafeLag": 375.28749999999997,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 88,
+          "formingShare": 0.8963980051274856,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 88
+        },
+        "answer": {
+          "firstPassageAt": 15680.199999999995,
+          "completionAt": 15680.199999999995,
+          "meanExtraHold": 3699.1079545454504,
+          "meanWordSafeLag": 375.28749999999997,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 88,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 88
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "hash-function__lowconf-b32",
+      "curated": true,
+      "characters": 576,
+      "sourceFile": "data/traces/compact/hash-function__lowconf-b32.json",
+      "sourceSha256": "df74fee9bf22c3e8340a4214577625ec8297ed6c8bf3305491a0cfb6f8e8ffd1",
+      "recordedReplayDurationMs": 15701.8,
+      "costs": {
+        "word": {
+          "firstPassageAt": 401.8,
+          "completionAt": 15701.8,
+          "meanExtraHold": 145.57013888888898,
+          "meanWordSafeLag": 145.57013888888898,
+          "maxQueued": 14,
+          "passages": 72,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 576
+        },
+        "sentence": {
+          "firstPassageAt": 3287.500000000001,
+          "completionAt": 15701.8,
+          "meanExtraHold": 1946.911805555553,
+          "meanWordSafeLag": 145.57013888888898,
+          "maxQueued": 157,
+          "passages": 5,
+          "medianPassageChars": 109,
+          "formingShare": 0.9744105771312842,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 576
+        },
+        "paragraph": {
+          "firstPassageAt": 15701.8,
+          "completionAt": 15701.8,
+          "meanExtraHold": 8413.790277777774,
+          "meanWordSafeLag": 145.57013888888898,
+          "maxQueued": 559,
+          "passages": 1,
+          "medianPassageChars": 576,
+          "formingShare": 0.9744105771312842,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 576
+        },
+        "answer": {
+          "firstPassageAt": 15701.8,
+          "completionAt": 15701.8,
+          "meanExtraHold": 8413.790277777774,
+          "meanWordSafeLag": 145.57013888888898,
+          "maxQueued": 559,
+          "passages": 1,
+          "medianPassageChars": 576,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 576
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12414.3,
+        "meanExtraHoldMs": 6466.878472222222
+      }
+    },
+    {
+      "id": "hash-function__random-b32",
+      "curated": false,
+      "characters": 512,
+      "sourceFile": "data/traces/compact/hash-function__random-b32.json",
+      "sourceSha256": "ad52aac8ffb53d1a736babe58ea32edec57429940dd1be360bfca2e249c135dc",
+      "recordedReplayDurationMs": 16044.700000000003,
+      "costs": {
+        "word": {
+          "firstPassageAt": 3262.6,
+          "completionAt": 15789.600000000002,
+          "meanExtraHold": 92.07460937500002,
+          "meanWordSafeLag": 92.07460937500002,
+          "maxQueued": 6,
+          "passages": 13,
+          "medianPassageChars": 31,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "sentence": {
+          "firstPassageAt": 4008.5,
+          "completionAt": 15789.600000000002,
+          "meanExtraHold": 1834.747656249993,
+          "meanWordSafeLag": 92.07460937500002,
+          "maxQueued": 120,
+          "passages": 4,
+          "medianPassageChars": 123.5,
+          "formingShare": 0.7807562621924997,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "paragraph": {
+          "firstPassageAt": 15789.600000000002,
+          "completionAt": 15789.600000000002,
+          "meanExtraHold": 7168.266210937551,
+          "meanWordSafeLag": 92.07460937500002,
+          "maxQueued": 475,
+          "passages": 1,
+          "medianPassageChars": 512,
+          "formingShare": 0.7807562621924997,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "answer": {
+          "firstPassageAt": 15789.600000000002,
+          "completionAt": 15789.600000000002,
+          "meanExtraHold": 7168.266210937551,
+          "meanWordSafeLag": 92.07460937500002,
+          "maxQueued": 475,
+          "passages": 1,
+          "medianPassageChars": 512,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11781.100000000002,
+        "meanExtraHoldMs": 5333.518554687557
+      }
+    },
+    {
+      "id": "heist-plot__lowconf-b128",
+      "curated": true,
+      "characters": 77,
+      "sourceFile": "data/traces/compact/heist-plot__lowconf-b128.json",
+      "sourceSha256": "c75ad8d2928735af528df8e467181139adbc98065797f30487ec3985984d1545",
+      "recordedReplayDurationMs": 16181.300000000008,
+      "costs": {
+        "word": {
+          "firstPassageAt": 14660.50000000001,
+          "completionAt": 16181.300000000008,
+          "meanExtraHold": 89.01688311688304,
+          "meanWordSafeLag": 89.01688311688304,
+          "maxQueued": 9,
+          "passages": 8,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "sentence": {
+          "firstPassageAt": 16181.300000000008,
+          "completionAt": 16181.300000000008,
+          "meanExtraHold": 528.5155844155847,
+          "meanWordSafeLag": 89.01688311688304,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0.09398503210496056,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "paragraph": {
+          "firstPassageAt": 16181.300000000008,
+          "completionAt": 16181.300000000008,
+          "meanExtraHold": 528.5155844155847,
+          "meanWordSafeLag": 89.01688311688304,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0.09398503210496056,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "answer": {
+          "firstPassageAt": 16181.300000000008,
+          "completionAt": 16181.300000000008,
+          "meanExtraHold": 528.5155844155847,
+          "meanWordSafeLag": 89.01688311688304,
+          "maxQueued": 71,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "heist-plot__lowconf-b32",
+      "curated": true,
+      "characters": 524,
+      "sourceFile": "data/traces/compact/heist-plot__lowconf-b32.json",
+      "sourceSha256": "2ece295e803918eda0da5c1f9b53eb1978cd75cbe50d3fd4771a96d0823165e8",
+      "recordedReplayDurationMs": 15869.800000000008,
+      "costs": {
+        "word": {
+          "firstPassageAt": 499.1,
+          "completionAt": 15869.800000000008,
+          "meanExtraHold": 138.7826335877864,
+          "meanWordSafeLag": 138.7826335877864,
+          "maxQueued": 14,
+          "passages": 33,
+          "medianPassageChars": 9,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 524
+        },
+        "sentence": {
+          "firstPassageAt": 3091.7000000000003,
+          "completionAt": 15869.800000000008,
+          "meanExtraHold": 1970.6328244274844,
+          "meanWordSafeLag": 138.7826335877864,
+          "maxQueued": 107,
+          "passages": 5,
+          "medianPassageChars": 112,
+          "formingShare": 0.968550328296513,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 524
+        },
+        "paragraph": {
+          "firstPassageAt": 15869.800000000008,
+          "completionAt": 15869.800000000008,
+          "meanExtraHold": 8201.814312977081,
+          "meanWordSafeLag": 138.7826335877864,
+          "maxQueued": 514,
+          "passages": 1,
+          "medianPassageChars": 524,
+          "formingShare": 0.968550328296513,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 524
+        },
+        "answer": {
+          "firstPassageAt": 15869.800000000008,
+          "completionAt": 15869.800000000008,
+          "meanExtraHold": 8201.814312977081,
+          "meanWordSafeLag": 138.7826335877864,
+          "maxQueued": 514,
+          "passages": 1,
+          "medianPassageChars": 524,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 524
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12778.100000000008,
+        "meanExtraHoldMs": 6231.181488549597
+      }
+    },
+    {
+      "id": "heist-plot__random-b32",
+      "curated": false,
+      "characters": 461,
+      "sourceFile": "data/traces/compact/heist-plot__random-b32.json",
+      "sourceSha256": "387864ee747e67cde195be0986bf1290a29fa5f9e40ed35cc14f3d7e476fb9e0",
+      "recordedReplayDurationMs": 15458.000000000002,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1623.5,
+          "completionAt": 15066.600000000002,
+          "meanExtraHold": 180.58676789587864,
+          "meanWordSafeLag": 180.58676789587864,
+          "maxQueued": 10,
+          "passages": 16,
+          "medianPassageChars": 16.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 461
+        },
+        "sentence": {
+          "firstPassageAt": 3706.2000000000003,
+          "completionAt": 15066.600000000002,
+          "meanExtraHold": 1685.4462039045584,
+          "meanWordSafeLag": 180.58676789587864,
+          "maxQueued": 135,
+          "passages": 4,
+          "medianPassageChars": 115,
+          "formingShare": 0.8696532539785224,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 461
+        },
+        "paragraph": {
+          "firstPassageAt": 15066.600000000002,
+          "completionAt": 15066.600000000002,
+          "meanExtraHold": 7837.278091106282,
+          "meanWordSafeLag": 180.58676789587864,
+          "maxQueued": 460,
+          "passages": 1,
+          "medianPassageChars": 461,
+          "formingShare": 0.8696532539785224,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 461
+        },
+        "answer": {
+          "firstPassageAt": 15066.600000000002,
+          "completionAt": 15066.600000000002,
+          "meanExtraHold": 7837.278091106282,
+          "meanWordSafeLag": 180.58676789587864,
+          "maxQueued": 460,
+          "passages": 1,
+          "medianPassageChars": 461,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 461
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11360.400000000001,
+        "meanExtraHoldMs": 6151.8318872017235
+      }
+    },
+    {
+      "id": "heron-poem__lowconf-b128",
+      "curated": false,
+      "characters": 15,
+      "sourceFile": "data/traces/compact/heron-poem__lowconf-b128.json",
+      "sourceSha256": "dc9fd3ad7fe8aea0eb52927c5b26da34d0608370e9256446c6b39b8467309888",
+      "recordedReplayDurationMs": 17567.9,
+      "costs": {
+        "word": {
+          "firstPassageAt": 17309.000000000004,
+          "completionAt": 17567.9,
+          "meanExtraHold": 94.47999999999932,
+          "meanWordSafeLag": 94.47999999999932,
+          "maxQueued": 6,
+          "passages": 3,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 15
+        },
+        "sentence": {
+          "firstPassageAt": 17567.9,
+          "completionAt": 17567.9,
+          "meanExtraHold": 163.85999999999888,
+          "meanWordSafeLag": 94.47999999999932,
+          "maxQueued": 10,
+          "passages": 1,
+          "medianPassageChars": 15,
+          "formingShare": 0.014737105743998873,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 15
+        },
+        "paragraph": {
+          "firstPassageAt": 17567.9,
+          "completionAt": 17567.9,
+          "meanExtraHold": 163.85999999999888,
+          "meanWordSafeLag": 94.47999999999932,
+          "maxQueued": 10,
+          "passages": 1,
+          "medianPassageChars": 15,
+          "formingShare": 0.014737105743998873,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 15
+        },
+        "answer": {
+          "firstPassageAt": 17567.9,
+          "completionAt": 17567.9,
+          "meanExtraHold": 163.85999999999888,
+          "meanWordSafeLag": 94.47999999999932,
+          "maxQueued": 10,
+          "passages": 1,
+          "medianPassageChars": 15,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 15
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "heron-poem__lowconf-b32",
+      "curated": false,
+      "characters": 414,
+      "sourceFile": "data/traces/compact/heron-poem__lowconf-b32.json",
+      "sourceSha256": "9addf4f4d7281ee67924ca9e6fd95c856be4adc28c3b8970a0ff0cf8b2b96569",
+      "recordedReplayDurationMs": 15002.800000000003,
+      "costs": {
+        "word": {
+          "firstPassageAt": 281.79999999999995,
+          "completionAt": 15002.800000000003,
+          "meanExtraHold": 117.01304347826093,
+          "meanWordSafeLag": 117.01304347826093,
+          "maxQueued": 6,
+          "passages": 23,
+          "medianPassageChars": 13,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 414
+        },
+        "sentence": {
+          "firstPassageAt": 15002.800000000003,
+          "completionAt": 15002.800000000003,
+          "meanExtraHold": 6945.0731884057595,
+          "meanWordSafeLag": 117.01304347826093,
+          "maxQueued": 413,
+          "passages": 1,
+          "medianPassageChars": 414,
+          "formingShare": 0.9812168395232891,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 414
+        },
+        "paragraph": {
+          "firstPassageAt": 15002.800000000003,
+          "completionAt": 15002.800000000003,
+          "meanExtraHold": 6945.0731884057595,
+          "meanWordSafeLag": 117.01304347826093,
+          "maxQueued": 413,
+          "passages": 1,
+          "medianPassageChars": 414,
+          "formingShare": 0.9812168395232891,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 414
+        },
+        "answer": {
+          "firstPassageAt": 15002.800000000003,
+          "completionAt": 15002.800000000003,
+          "meanExtraHold": 6945.0731884057595,
+          "meanWordSafeLag": 117.01304347826093,
+          "maxQueued": 413,
+          "passages": 1,
+          "medianPassageChars": 414,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 414
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "heron-poem__random-b32",
+      "curated": false,
+      "characters": 391,
+      "sourceFile": "data/traces/compact/heron-poem__random-b32.json",
+      "sourceSha256": "8ca2bba52ce44e72dfec730aabe9af96a930aa113f71d03a9e735ba96e78bdcf",
+      "recordedReplayDurationMs": 15855.8,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2839.9,
+          "completionAt": 15599.2,
+          "meanExtraHold": 136.9583120204603,
+          "meanWordSafeLag": 136.9583120204603,
+          "maxQueued": 6,
+          "passages": 14,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 391
+        },
+        "sentence": {
+          "firstPassageAt": 15599.2,
+          "completionAt": 15599.2,
+          "meanExtraHold": 6788.63529411759,
+          "meanWordSafeLag": 136.9583120204603,
+          "maxQueued": 368,
+          "passages": 1,
+          "medianPassageChars": 391,
+          "formingShare": 0.8047086870419657,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 391
+        },
+        "paragraph": {
+          "firstPassageAt": 15599.2,
+          "completionAt": 15599.2,
+          "meanExtraHold": 6788.63529411759,
+          "meanWordSafeLag": 136.9583120204603,
+          "maxQueued": 368,
+          "passages": 1,
+          "medianPassageChars": 391,
+          "formingShare": 0.8047086870419657,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 391
+        },
+        "answer": {
+          "firstPassageAt": 15599.2,
+          "completionAt": 15599.2,
+          "meanExtraHold": 6788.63529411759,
+          "meanWordSafeLag": 136.9583120204603,
+          "maxQueued": 368,
+          "passages": 1,
+          "medianPassageChars": 391,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 391
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "houseplants__lowconf-b128",
+      "curated": false,
+      "characters": 49,
+      "sourceFile": "data/traces/compact/houseplants__lowconf-b128.json",
+      "sourceSha256": "a7898acd44e7a24614ed2215fa62f463e2f80e4367d913a4d8e2fad73b1dfec4",
+      "recordedReplayDurationMs": 15940.500000000002,
+      "costs": {
+        "word": {
+          "firstPassageAt": 15807.800000000001,
+          "completionAt": 15940.500000000002,
+          "meanExtraHold": 34.8204081632654,
+          "meanWordSafeLag": 34.8204081632654,
+          "maxQueued": 7,
+          "passages": 2,
+          "medianPassageChars": 24.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 49
+        },
+        "sentence": {
+          "firstPassageAt": 15940.500000000002,
+          "completionAt": 15940.500000000002,
+          "meanExtraHold": 53.77755102040835,
+          "meanWordSafeLag": 34.8204081632654,
+          "maxQueued": 13,
+          "passages": 1,
+          "medianPassageChars": 49,
+          "formingShare": 0.008324707506038123,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 49
+        },
+        "paragraph": {
+          "firstPassageAt": 15940.500000000002,
+          "completionAt": 15940.500000000002,
+          "meanExtraHold": 53.77755102040835,
+          "meanWordSafeLag": 34.8204081632654,
+          "maxQueued": 13,
+          "passages": 1,
+          "medianPassageChars": 49,
+          "formingShare": 0.008324707506038123,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 49
+        },
+        "answer": {
+          "firstPassageAt": 15940.500000000002,
+          "completionAt": 15940.500000000002,
+          "meanExtraHold": 53.77755102040835,
+          "meanWordSafeLag": 34.8204081632654,
+          "maxQueued": 13,
+          "passages": 1,
+          "medianPassageChars": 49,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 49
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "houseplants__lowconf-b32",
+      "curated": true,
+      "characters": 583,
+      "sourceFile": "data/traces/compact/houseplants__lowconf-b32.json",
+      "sourceSha256": "400846b804f1d72904fda6740a74ee6afff7d2688d6df29d87c9ef1de2abcb1a",
+      "recordedReplayDurationMs": 15910.300000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 350.3,
+          "completionAt": 15910.300000000001,
+          "meanExtraHold": 103.3077186963979,
+          "meanWordSafeLag": 103.3077186963979,
+          "maxQueued": 8,
+          "passages": 40,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "sentence": {
+          "firstPassageAt": 15910.300000000001,
+          "completionAt": 15910.300000000001,
+          "meanExtraHold": 7520.532075471686,
+          "meanWordSafeLag": 103.3077186963979,
+          "maxQueued": 491,
+          "passages": 1,
+          "medianPassageChars": 583,
+          "formingShare": 0.9779828161631146,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "paragraph": {
+          "firstPassageAt": 15910.300000000001,
+          "completionAt": 15910.300000000001,
+          "meanExtraHold": 7520.532075471686,
+          "meanWordSafeLag": 103.3077186963979,
+          "maxQueued": 491,
+          "passages": 1,
+          "medianPassageChars": 583,
+          "formingShare": 0.9779828161631146,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "answer": {
+          "firstPassageAt": 15910.300000000001,
+          "completionAt": 15910.300000000001,
+          "meanExtraHold": 7520.532075471686,
+          "meanWordSafeLag": 103.3077186963979,
+          "maxQueued": 491,
+          "passages": 1,
+          "medianPassageChars": 583,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "houseplants__random-b32",
+      "curated": false,
+      "characters": 472,
+      "sourceFile": "data/traces/compact/houseplants__random-b32.json",
+      "sourceSha256": "7f7d955e6b59650251abb4fbf330fccfb2fe08b21ced43542e4d28450dd5d889",
+      "recordedReplayDurationMs": 16287.799999999994,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2891.4,
+          "completionAt": 16028.099999999993,
+          "meanExtraHold": 126.64618644067784,
+          "meanWordSafeLag": 126.64618644067784,
+          "maxQueued": 11,
+          "passages": 12,
+          "medianPassageChars": 21.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 472
+        },
+        "sentence": {
+          "firstPassageAt": 3884.3000000000006,
+          "completionAt": 16028.099999999993,
+          "meanExtraHold": 5235.418220338952,
+          "meanWordSafeLag": 126.64618644067784,
+          "maxQueued": 371,
+          "passages": 2,
+          "medianPassageChars": 236,
+          "formingShare": 0.8065361804540822,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 472
+        },
+        "paragraph": {
+          "firstPassageAt": 3884.3000000000006,
+          "completionAt": 16028.099999999993,
+          "meanExtraHold": 5235.418220338952,
+          "meanWordSafeLag": 126.64618644067784,
+          "maxQueued": 371,
+          "passages": 2,
+          "medianPassageChars": 236,
+          "formingShare": 0.8065361804540822,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 472
+        },
+        "answer": {
+          "firstPassageAt": 16028.099999999993,
+          "completionAt": 16028.099999999993,
+          "meanExtraHold": 6753.393220338963,
+          "meanWordSafeLag": 126.64618644067784,
+          "maxQueued": 430,
+          "passages": 1,
+          "medianPassageChars": 472,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 472
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12143.799999999992,
+        "meanExtraHoldMs": 1517.9750000000113
+      }
+    },
+    {
+      "id": "lighthouse-haiku__lowconf-b128",
+      "curated": false,
+      "characters": 26,
+      "sourceFile": "data/traces/compact/lighthouse-haiku__lowconf-b128.json",
+      "sourceSha256": "1eb8b40705bad64e65ab02a06356ecfb26ad677a6446e2fa21561c6dee91ea5d",
+      "recordedReplayDurationMs": 15664.000000000002,
+      "costs": {
+        "word": {
+          "firstPassageAt": 15430.700000000003,
+          "completionAt": 15664.000000000002,
+          "meanExtraHold": 111.95769230769237,
+          "meanWordSafeLag": 111.95769230769237,
+          "maxQueued": 10,
+          "passages": 3,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 26
+        },
+        "sentence": {
+          "firstPassageAt": 15664.000000000002,
+          "completionAt": 15664.000000000002,
+          "meanExtraHold": 237.84230769230746,
+          "meanWordSafeLag": 111.95769230769237,
+          "maxQueued": 25,
+          "passages": 1,
+          "medianPassageChars": 26,
+          "formingShare": 0.014894024514810984,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 26
+        },
+        "paragraph": {
+          "firstPassageAt": 15664.000000000002,
+          "completionAt": 15664.000000000002,
+          "meanExtraHold": 237.84230769230746,
+          "meanWordSafeLag": 111.95769230769237,
+          "maxQueued": 25,
+          "passages": 1,
+          "medianPassageChars": 26,
+          "formingShare": 0.014894024514810984,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 26
+        },
+        "answer": {
+          "firstPassageAt": 15664.000000000002,
+          "completionAt": 15664.000000000002,
+          "meanExtraHold": 237.84230769230746,
+          "meanWordSafeLag": 111.95769230769237,
+          "maxQueued": 25,
+          "passages": 1,
+          "medianPassageChars": 26,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 26
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "lighthouse-haiku__lowconf-b32",
+      "curated": false,
+      "characters": 452,
+      "sourceFile": "data/traces/compact/lighthouse-haiku__lowconf-b32.json",
+      "sourceSha256": "3fcdf2b6e0d7f2738441028adaab5e3557cbf865973b10b1e35bfce3b587a09b",
+      "recordedReplayDurationMs": 15386.999999999998,
+      "costs": {
+        "word": {
+          "firstPassageAt": 346.1,
+          "completionAt": 15386.999999999998,
+          "meanExtraHold": 158.91172566371722,
+          "meanWordSafeLag": 158.91172566371722,
+          "maxQueued": 10,
+          "passages": 50,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 452
+        },
+        "sentence": {
+          "firstPassageAt": 15386.999999999998,
+          "completionAt": 15386.999999999998,
+          "meanExtraHold": 8390.739159292036,
+          "meanWordSafeLag": 158.91172566371722,
+          "maxQueued": 451,
+          "passages": 1,
+          "medianPassageChars": 452,
+          "formingShare": 0.9775069864171053,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 452
+        },
+        "paragraph": {
+          "firstPassageAt": 15386.999999999998,
+          "completionAt": 15386.999999999998,
+          "meanExtraHold": 8390.739159292036,
+          "meanWordSafeLag": 158.91172566371722,
+          "maxQueued": 451,
+          "passages": 1,
+          "medianPassageChars": 452,
+          "formingShare": 0.9775069864171053,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 452
+        },
+        "answer": {
+          "firstPassageAt": 15386.999999999998,
+          "completionAt": 15386.999999999998,
+          "meanExtraHold": 8390.739159292036,
+          "meanWordSafeLag": 158.91172566371722,
+          "maxQueued": 451,
+          "passages": 1,
+          "medianPassageChars": 452,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 452
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "lighthouse-haiku__random-b32",
+      "curated": false,
+      "characters": 512,
+      "sourceFile": "data/traces/compact/lighthouse-haiku__random-b32.json",
+      "sourceSha256": "94d1dd5c64ef791f4956ea0a45acfe0617425f526483a5cae130c3b0c5aba7de",
+      "recordedReplayDurationMs": 16086.300000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2977.1,
+          "completionAt": 16086.300000000001,
+          "meanExtraHold": 180.81777343750005,
+          "meanWordSafeLag": 180.81777343750005,
+          "maxQueued": 11,
+          "passages": 19,
+          "medianPassageChars": 11,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "sentence": {
+          "firstPassageAt": 3960.8999999999996,
+          "completionAt": 16086.300000000001,
+          "meanExtraHold": 1404.1794921875005,
+          "meanWordSafeLag": 180.81777343750005,
+          "maxQueued": 94,
+          "passages": 5,
+          "medianPassageChars": 103,
+          "formingShare": 0.8073764632016063,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "paragraph": {
+          "firstPassageAt": 3960.8999999999996,
+          "completionAt": 16086.300000000001,
+          "meanExtraHold": 1404.1794921875005,
+          "meanWordSafeLag": 180.81777343750005,
+          "maxQueued": 94,
+          "passages": 5,
+          "medianPassageChars": 103,
+          "formingShare": 0.8073764632016063,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        },
+        "answer": {
+          "firstPassageAt": 16086.300000000001,
+          "completionAt": 16086.300000000001,
+          "meanExtraHold": 7056.265234375003,
+          "meanWordSafeLag": 180.81777343750005,
+          "maxQueued": 480,
+          "passages": 1,
+          "medianPassageChars": 512,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 512
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12125.400000000001,
+        "meanExtraHoldMs": 5652.085742187503
+      }
+    },
+    {
+      "id": "out-of-office__lowconf-b128",
+      "curated": false,
+      "characters": 0,
+      "sourceFile": "data/traces/compact/out-of-office__lowconf-b128.json",
+      "sourceSha256": "dd68ff9803aeb7fbe388e0ef7a158badc2f176a75e90a3854c7dbbbcf72e2741",
+      "recordedReplayDurationMs": 15425.800000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": null,
+          "completionAt": 15168.7,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "sentence": {
+          "firstPassageAt": null,
+          "completionAt": 15168.7,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "paragraph": {
+          "firstPassageAt": null,
+          "completionAt": 15168.7,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "answer": {
+          "firstPassageAt": null,
+          "completionAt": 15168.7,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": null,
+        "meanExtraHoldMs": null
+      }
+    },
+    {
+      "id": "out-of-office__lowconf-b32",
+      "curated": false,
+      "characters": 384,
+      "sourceFile": "data/traces/compact/out-of-office__lowconf-b32.json",
+      "sourceSha256": "70da9287265a72039e0091fb97b266a91a7f8741ae4603b9ba9e31af2a0ca6e0",
+      "recordedReplayDurationMs": 15864.799999999996,
+      "costs": {
+        "word": {
+          "firstPassageAt": 234.89999999999998,
+          "completionAt": 15864.799999999996,
+          "meanExtraHold": 175.68281249999995,
+          "meanWordSafeLag": 175.68281249999995,
+          "maxQueued": 14,
+          "passages": 56,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 384
+        },
+        "sentence": {
+          "firstPassageAt": 2633.8,
+          "completionAt": 15864.799999999996,
+          "meanExtraHold": 2720.3140625000024,
+          "meanWordSafeLag": 175.68281249999995,
+          "maxQueued": 142,
+          "passages": 4,
+          "medianPassageChars": 84,
+          "formingShare": 0.9851936362261107,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 384
+        },
+        "paragraph": {
+          "firstPassageAt": 8122.4,
+          "completionAt": 15864.799999999996,
+          "meanExtraHold": 5154.905208333311,
+          "meanWordSafeLag": 175.68281249999995,
+          "maxQueued": 221,
+          "passages": 2,
+          "medianPassageChars": 192,
+          "formingShare": 0.9851936362261107,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 384
+        },
+        "answer": {
+          "firstPassageAt": 15864.799999999996,
+          "completionAt": 15864.799999999996,
+          "meanExtraHold": 9933.417708333312,
+          "meanWordSafeLag": 175.68281249999995,
+          "maxQueued": 383,
+          "passages": 1,
+          "medianPassageChars": 384,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 384
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 13230.999999999996,
+        "meanExtraHoldMs": 7213.10364583331
+      }
+    },
+    {
+      "id": "out-of-office__random-b32",
+      "curated": false,
+      "characters": 515,
+      "sourceFile": "data/traces/compact/out-of-office__random-b32.json",
+      "sourceSha256": "d78f3b4ff62f55fe9467374b0db9c625778680eb3ffdccc7c86dd6f0de90bd04",
+      "recordedReplayDurationMs": 15673.999999999995,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2892.1000000000004,
+          "completionAt": 15445.099999999995,
+          "meanExtraHold": 165.24233009708718,
+          "meanWordSafeLag": 165.24233009708718,
+          "maxQueued": 9,
+          "passages": 15,
+          "medianPassageChars": 17,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 515
+        },
+        "sentence": {
+          "firstPassageAt": 4050.6000000000004,
+          "completionAt": 15445.099999999995,
+          "meanExtraHold": 983.656504854369,
+          "meanWordSafeLag": 165.24233009708718,
+          "maxQueued": 103,
+          "passages": 5,
+          "medianPassageChars": 107,
+          "formingShare": 0.8008804389434732,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 515
+        },
+        "paragraph": {
+          "firstPassageAt": 15445.099999999995,
+          "completionAt": 15445.099999999995,
+          "meanExtraHold": 6854.7310679611655,
+          "meanWordSafeLag": 165.24233009708718,
+          "maxQueued": 502,
+          "passages": 1,
+          "medianPassageChars": 515,
+          "formingShare": 0.8008804389434732,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 515
+        },
+        "answer": {
+          "firstPassageAt": 15445.099999999995,
+          "completionAt": 15445.099999999995,
+          "meanExtraHold": 6854.7310679611655,
+          "meanWordSafeLag": 165.24233009708718,
+          "maxQueued": 502,
+          "passages": 1,
+          "medianPassageChars": 515,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 515
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11394.499999999995,
+        "meanExtraHoldMs": 5871.074563106797
+      }
+    },
+    {
+      "id": "research-summary__lowconf-b128",
+      "curated": false,
+      "characters": 44,
+      "sourceFile": "data/traces/compact/research-summary__lowconf-b128.json",
+      "sourceSha256": "7eff37d2d2a971843695a2cc33987f8072e04677414788fb0a46693a3a99ff66",
+      "recordedReplayDurationMs": 17860.199999999997,
+      "costs": {
+        "word": {
+          "firstPassageAt": 16131.999999999998,
+          "completionAt": 17860.199999999997,
+          "meanExtraHold": 364.30227272727285,
+          "meanWordSafeLag": 364.30227272727285,
+          "maxQueued": 8,
+          "passages": 5,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 44
+        },
+        "sentence": {
+          "firstPassageAt": 17860.199999999997,
+          "completionAt": 17860.199999999997,
+          "meanExtraHold": 895.8022727272731,
+          "meanWordSafeLag": 364.30227272727285,
+          "maxQueued": 30,
+          "passages": 1,
+          "medianPassageChars": 44,
+          "formingShare": 0.09676263423701857,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 44
+        },
+        "paragraph": {
+          "firstPassageAt": 17860.199999999997,
+          "completionAt": 17860.199999999997,
+          "meanExtraHold": 895.8022727272731,
+          "meanWordSafeLag": 364.30227272727285,
+          "maxQueued": 30,
+          "passages": 1,
+          "medianPassageChars": 44,
+          "formingShare": 0.09676263423701857,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 44
+        },
+        "answer": {
+          "firstPassageAt": 17860.199999999997,
+          "completionAt": 17860.199999999997,
+          "meanExtraHold": 895.8022727272731,
+          "meanWordSafeLag": 364.30227272727285,
+          "maxQueued": 30,
+          "passages": 1,
+          "medianPassageChars": 44,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 44
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "research-summary__lowconf-b32",
+      "curated": false,
+      "characters": 541,
+      "sourceFile": "data/traces/compact/research-summary__lowconf-b32.json",
+      "sourceSha256": "a8568ae09187879aadb5b5da40c8f429555620c66f30f6043b34e20b018cf973",
+      "recordedReplayDurationMs": 15221.000000000002,
+      "costs": {
+        "word": {
+          "firstPassageAt": 347.20000000000005,
+          "completionAt": 15221.000000000002,
+          "meanExtraHold": 145.73733826247698,
+          "meanWordSafeLag": 145.73733826247698,
+          "maxQueued": 14,
+          "passages": 62,
+          "medianPassageChars": 5.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 541
+        },
+        "sentence": {
+          "firstPassageAt": 5793.700000000001,
+          "completionAt": 15221.000000000002,
+          "meanExtraHold": 2285.944916820702,
+          "meanWordSafeLag": 145.73733826247698,
+          "maxQueued": 213,
+          "passages": 4,
+          "medianPassageChars": 138,
+          "formingShare": 0.9618881808028381,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 541
+        },
+        "paragraph": {
+          "firstPassageAt": 8474.800000000001,
+          "completionAt": 15221.000000000002,
+          "meanExtraHold": 3704.348983364131,
+          "meanWordSafeLag": 145.73733826247698,
+          "maxQueued": 339,
+          "passages": 2,
+          "medianPassageChars": 270.5,
+          "formingShare": 0.9618881808028381,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 541
+        },
+        "answer": {
+          "firstPassageAt": 15221.000000000002,
+          "completionAt": 15221.000000000002,
+          "meanExtraHold": 7969.044731977833,
+          "meanWordSafeLag": 145.73733826247698,
+          "maxQueued": 523,
+          "passages": 1,
+          "medianPassageChars": 541,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 541
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 9427.300000000001,
+        "meanExtraHoldMs": 5683.099815157131
+      }
+    },
+    {
+      "id": "research-summary__random-b32",
+      "curated": false,
+      "characters": 641,
+      "sourceFile": "data/traces/compact/research-summary__random-b32.json",
+      "sourceSha256": "c6c29ebec18d8c2bdb4ddd2106ae1005ee8d9bd130f704f2feabb4f2f08e6883",
+      "recordedReplayDurationMs": 15750.200000000003,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2661.2999999999997,
+          "completionAt": 15631.900000000003,
+          "meanExtraHold": 136.32932917316708,
+          "meanWordSafeLag": 136.32932917316708,
+          "maxQueued": 11,
+          "passages": 15,
+          "medianPassageChars": 12,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 641
+        },
+        "sentence": {
+          "firstPassageAt": 6887.799999999996,
+          "completionAt": 15631.900000000003,
+          "meanExtraHold": 2365.584243369752,
+          "meanWordSafeLag": 136.32932917316708,
+          "maxQueued": 160,
+          "passages": 4,
+          "medianPassageChars": 146.5,
+          "formingShare": 0.823519701337126,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 641
+        },
+        "paragraph": {
+          "firstPassageAt": 11705.099999999999,
+          "completionAt": 15631.900000000003,
+          "meanExtraHold": 3574.560374414992,
+          "meanWordSafeLag": 136.32932917316708,
+          "maxQueued": 301,
+          "passages": 2,
+          "medianPassageChars": 320.5,
+          "formingShare": 0.823519701337126,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 641
+        },
+        "answer": {
+          "firstPassageAt": 15631.900000000003,
+          "completionAt": 15631.900000000003,
+          "meanExtraHold": 5884.082371294803,
+          "meanWordSafeLag": 136.32932917316708,
+          "maxQueued": 543,
+          "passages": 1,
+          "medianPassageChars": 641,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 641
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 8744.100000000008,
+        "meanExtraHoldMs": 3518.498127925051
+      }
+    },
+    {
+      "id": "rust-or-go__lowconf-b128",
+      "curated": false,
+      "characters": 9,
+      "sourceFile": "data/traces/compact/rust-or-go__lowconf-b128.json",
+      "sourceSha256": "600d60769fc0e64f794f31ade59b31799aef35f3b2ef58948ba4ed807274054e",
+      "recordedReplayDurationMs": 15743.400000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 15389.800000000003,
+          "completionAt": 15625.600000000002,
+          "meanExtraHold": 330.66666666666583,
+          "meanWordSafeLag": 330.66666666666583,
+          "maxQueued": 7,
+          "passages": 2,
+          "medianPassageChars": 4.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 9
+        },
+        "sentence": {
+          "firstPassageAt": 15625.600000000002,
+          "completionAt": 15625.600000000002,
+          "meanExtraHold": 383.0666666666657,
+          "meanWordSafeLag": 330.66666666666583,
+          "maxQueued": 9,
+          "passages": 1,
+          "medianPassageChars": 9,
+          "formingShare": 0.014977704943023695,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 9
+        },
+        "paragraph": {
+          "firstPassageAt": 15625.600000000002,
+          "completionAt": 15625.600000000002,
+          "meanExtraHold": 383.0666666666657,
+          "meanWordSafeLag": 330.66666666666583,
+          "maxQueued": 9,
+          "passages": 1,
+          "medianPassageChars": 9,
+          "formingShare": 0.014977704943023695,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 9
+        },
+        "answer": {
+          "firstPassageAt": 15625.600000000002,
+          "completionAt": 15625.600000000002,
+          "meanExtraHold": 383.0666666666657,
+          "meanWordSafeLag": 330.66666666666583,
+          "maxQueued": 9,
+          "passages": 1,
+          "medianPassageChars": 9,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 9
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "rust-or-go__lowconf-b32",
+      "curated": false,
+      "characters": 522,
+      "sourceFile": "data/traces/compact/rust-or-go__lowconf-b32.json",
+      "sourceSha256": "881bc38480acf6e736a27f7924fe2592e4af547d85e76541f086c1ff47f52c22",
+      "recordedReplayDurationMs": 15795.199999999999,
+      "costs": {
+        "word": {
+          "firstPassageAt": 232,
+          "completionAt": 15795.199999999999,
+          "meanExtraHold": 165.16091954022988,
+          "meanWordSafeLag": 165.16091954022988,
+          "maxQueued": 12,
+          "passages": 69,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 522
+        },
+        "sentence": {
+          "firstPassageAt": 2910.8,
+          "completionAt": 15795.199999999999,
+          "meanExtraHold": 2089.539080459773,
+          "meanWordSafeLag": 165.16091954022988,
+          "maxQueued": 169,
+          "passages": 4,
+          "medianPassageChars": 138.5,
+          "formingShare": 0.9853119935170178,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 522
+        },
+        "paragraph": {
+          "firstPassageAt": 15795.199999999999,
+          "completionAt": 15795.199999999999,
+          "meanExtraHold": 9038.93946360152,
+          "meanWordSafeLag": 165.16091954022988,
+          "maxQueued": 498,
+          "passages": 1,
+          "medianPassageChars": 522,
+          "formingShare": 0.9853119935170178,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 522
+        },
+        "answer": {
+          "firstPassageAt": 15795.199999999999,
+          "completionAt": 15795.199999999999,
+          "meanExtraHold": 9038.93946360152,
+          "meanWordSafeLag": 165.16091954022988,
+          "maxQueued": 498,
+          "passages": 1,
+          "medianPassageChars": 522,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 522
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12884.399999999998,
+        "meanExtraHoldMs": 6949.400383141748
+      }
+    },
+    {
+      "id": "rust-or-go__random-b32",
+      "curated": false,
+      "characters": 562,
+      "sourceFile": "data/traces/compact/rust-or-go__random-b32.json",
+      "sourceSha256": "f1910e03d5c027a111dceb4d5f43adfe784cdc165cf3070ce98f6da4ef76eb96",
+      "recordedReplayDurationMs": 16042.600000000008,
+      "costs": {
+        "word": {
+          "firstPassageAt": 837.1,
+          "completionAt": 15925.400000000007,
+          "meanExtraHold": 113.86156583629894,
+          "meanWordSafeLag": 113.86156583629894,
+          "maxQueued": 11,
+          "passages": 16,
+          "medianPassageChars": 10.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 562
+        },
+        "sentence": {
+          "firstPassageAt": 4033.899999999999,
+          "completionAt": 15925.400000000007,
+          "meanExtraHold": 1892.6290035587263,
+          "meanWordSafeLag": 113.86156583629894,
+          "maxQueued": 105,
+          "passages": 5,
+          "medianPassageChars": 116,
+          "formingShare": 0.9405146297981624,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 562
+        },
+        "paragraph": {
+          "firstPassageAt": 15925.400000000007,
+          "completionAt": 15925.400000000007,
+          "meanExtraHold": 7081.427224199353,
+          "meanWordSafeLag": 113.86156583629894,
+          "maxQueued": 513,
+          "passages": 1,
+          "medianPassageChars": 562,
+          "formingShare": 0.9405146297981624,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 562
+        },
+        "answer": {
+          "firstPassageAt": 15925.400000000007,
+          "completionAt": 15925.400000000007,
+          "meanExtraHold": 7081.427224199353,
+          "meanWordSafeLag": 113.86156583629894,
+          "maxQueued": 513,
+          "passages": 1,
+          "medianPassageChars": 562,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 562
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11891.500000000007,
+        "meanExtraHoldMs": 5188.798220640627
+      }
+    },
+    {
+      "id": "sky-blue__lowconf-b128",
+      "curated": true,
+      "characters": 77,
+      "sourceFile": "data/traces/compact/sky-blue__lowconf-b128.json",
+      "sourceSha256": "0a531dd3dc9bcc0cf29e7acbc35651126ec2ccc12e6ac1e938c5f1aab60db6ac",
+      "recordedReplayDurationMs": 15214.400000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1387.6000000000001,
+          "completionAt": 15214.400000000001,
+          "meanExtraHold": 740.8675324675323,
+          "meanWordSafeLag": 740.8675324675323,
+          "maxQueued": 9,
+          "passages": 7,
+          "medianPassageChars": 9,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "sentence": {
+          "firstPassageAt": 15214.400000000001,
+          "completionAt": 15214.400000000001,
+          "meanExtraHold": 1725.503896103897,
+          "meanWordSafeLag": 740.8675324675323,
+          "maxQueued": 61,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0.9087969292249448,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "paragraph": {
+          "firstPassageAt": 15214.400000000001,
+          "completionAt": 15214.400000000001,
+          "meanExtraHold": 1725.503896103897,
+          "meanWordSafeLag": 740.8675324675323,
+          "maxQueued": 61,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0.9087969292249448,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        },
+        "answer": {
+          "firstPassageAt": 15214.400000000001,
+          "completionAt": 15214.400000000001,
+          "meanExtraHold": 1725.503896103897,
+          "meanWordSafeLag": 740.8675324675323,
+          "maxQueued": 61,
+          "passages": 1,
+          "medianPassageChars": 77,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 77
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "sky-blue__lowconf-b32",
+      "curated": false,
+      "characters": 711,
+      "sourceFile": "data/traces/compact/sky-blue__lowconf-b32.json",
+      "sourceSha256": "4adc0cac14d60e29bb7c4cc106d76c628f0cbc53ab74e0483a1c268883701479",
+      "recordedReplayDurationMs": 15893.199999999995,
+      "costs": {
+        "word": {
+          "firstPassageAt": 350.29999999999995,
+          "completionAt": 15893.199999999995,
+          "meanExtraHold": 124.54852320675097,
+          "meanWordSafeLag": 124.54852320675097,
+          "maxQueued": 12,
+          "passages": 96,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 711
+        },
+        "sentence": {
+          "firstPassageAt": 1955.3,
+          "completionAt": 15893.199999999995,
+          "meanExtraHold": 6555.915330520378,
+          "meanWordSafeLag": 124.54852320675097,
+          "maxQueued": 629,
+          "passages": 2,
+          "medianPassageChars": 355.5,
+          "formingShare": 0.9779591271738858,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 711
+        },
+        "paragraph": {
+          "firstPassageAt": 15893.199999999995,
+          "completionAt": 15893.199999999995,
+          "meanExtraHold": 8143.77735583686,
+          "meanWordSafeLag": 124.54852320675097,
+          "maxQueued": 710,
+          "passages": 1,
+          "medianPassageChars": 711,
+          "formingShare": 0.9779591271738858,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 711
+        },
+        "answer": {
+          "firstPassageAt": 15893.199999999995,
+          "completionAt": 15893.199999999995,
+          "meanExtraHold": 8143.77735583686,
+          "meanWordSafeLag": 124.54852320675097,
+          "maxQueued": 710,
+          "passages": 1,
+          "medianPassageChars": 711,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 711
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 13937.899999999996,
+        "meanExtraHoldMs": 1587.8620253164818
+      }
+    },
+    {
+      "id": "sky-blue__random-b32",
+      "curated": true,
+      "characters": 536,
+      "sourceFile": "data/traces/compact/sky-blue__random-b32.json",
+      "sourceSha256": "17795db6dfe3551594bee66928af594d4430a682e4312dda7e8c49f93ec858c9",
+      "recordedReplayDurationMs": 16187.599999999991,
+      "costs": {
+        "word": {
+          "firstPassageAt": 812.2,
+          "completionAt": 16058.699999999992,
+          "meanExtraHold": 153.47089552238808,
+          "meanWordSafeLag": 153.47089552238808,
+          "maxQueued": 11,
+          "passages": 16,
+          "medianPassageChars": 10.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "sentence": {
+          "firstPassageAt": 3974.2999999999997,
+          "completionAt": 16058.699999999992,
+          "meanExtraHold": 1509.832835820895,
+          "meanWordSafeLag": 153.47089552238808,
+          "maxQueued": 107,
+          "passages": 5,
+          "medianPassageChars": 108,
+          "formingShare": 0.9418629074106105,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "paragraph": {
+          "firstPassageAt": 16058.699999999992,
+          "completionAt": 16058.699999999992,
+          "meanExtraHold": 7550.841791044784,
+          "meanWordSafeLag": 153.47089552238808,
+          "maxQueued": 519,
+          "passages": 1,
+          "medianPassageChars": 536,
+          "formingShare": 0.9418629074106105,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        },
+        "answer": {
+          "firstPassageAt": 16058.699999999992,
+          "completionAt": 16058.699999999992,
+          "meanExtraHold": 7550.841791044784,
+          "meanWordSafeLag": 153.47089552238808,
+          "maxQueued": 519,
+          "passages": 1,
+          "medianPassageChars": 536,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 536
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12084.399999999992,
+        "meanExtraHoldMs": 6041.00895522389
+      }
+    },
+    {
+      "id": "sleep-tips__lowconf-b128",
+      "curated": false,
+      "characters": 38,
+      "sourceFile": "data/traces/compact/sleep-tips__lowconf-b128.json",
+      "sourceSha256": "83365edc60c20a782d28b362f131b82a5286c8f848095330ff43866e52b0ce0f",
+      "recordedReplayDurationMs": 15946.500000000002,
+      "costs": {
+        "word": {
+          "firstPassageAt": 15695.100000000002,
+          "completionAt": 15946.500000000002,
+          "meanExtraHold": 68.78947368421052,
+          "meanWordSafeLag": 68.78947368421052,
+          "maxQueued": 6,
+          "passages": 3,
+          "medianPassageChars": 16,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 38
+        },
+        "sentence": {
+          "firstPassageAt": 15946.500000000002,
+          "completionAt": 15946.500000000002,
+          "meanExtraHold": 207.57894736842087,
+          "meanWordSafeLag": 68.78947368421052,
+          "maxQueued": 28,
+          "passages": 1,
+          "medianPassageChars": 38,
+          "formingShare": 0.015765214937447064,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 38
+        },
+        "paragraph": {
+          "firstPassageAt": 15946.500000000002,
+          "completionAt": 15946.500000000002,
+          "meanExtraHold": 207.57894736842087,
+          "meanWordSafeLag": 68.78947368421052,
+          "maxQueued": 28,
+          "passages": 1,
+          "medianPassageChars": 38,
+          "formingShare": 0.015765214937447064,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 38
+        },
+        "answer": {
+          "firstPassageAt": 15946.500000000002,
+          "completionAt": 15946.500000000002,
+          "meanExtraHold": 207.57894736842087,
+          "meanWordSafeLag": 68.78947368421052,
+          "maxQueued": 28,
+          "passages": 1,
+          "medianPassageChars": 38,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 38
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "sleep-tips__lowconf-b32",
+      "curated": true,
+      "characters": 558,
+      "sourceFile": "data/traces/compact/sleep-tips__lowconf-b32.json",
+      "sourceSha256": "dd275874997de95a604b92ac5fe2e930e315ab55bc6aa681af6f37940318d6f1",
+      "recordedReplayDurationMs": 15628.800000000003,
+      "costs": {
+        "word": {
+          "firstPassageAt": 456.3,
+          "completionAt": 15628.800000000003,
+          "meanExtraHold": 141.06559139784915,
+          "meanWordSafeLag": 141.06559139784915,
+          "maxQueued": 11,
+          "passages": 53,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 558
+        },
+        "sentence": {
+          "firstPassageAt": 6060.1,
+          "completionAt": 15628.800000000003,
+          "meanExtraHold": 2882.7116487455232,
+          "meanWordSafeLag": 141.06559139784915,
+          "maxQueued": 211,
+          "passages": 3,
+          "medianPassageChars": 191,
+          "formingShare": 0.9054949836199837,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 558
+        },
+        "paragraph": {
+          "firstPassageAt": 6060.1,
+          "completionAt": 15628.800000000003,
+          "meanExtraHold": 2882.7116487455232,
+          "meanWordSafeLag": 141.06559139784915,
+          "maxQueued": 211,
+          "passages": 3,
+          "medianPassageChars": 191,
+          "formingShare": 0.9054949836199837,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 558
+        },
+        "answer": {
+          "firstPassageAt": 15628.800000000003,
+          "completionAt": 15628.800000000003,
+          "meanExtraHold": 8811.284050179222,
+          "meanWordSafeLag": 141.06559139784915,
+          "maxQueued": 495,
+          "passages": 1,
+          "medianPassageChars": 558,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 558
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 9568.700000000003,
+        "meanExtraHoldMs": 5928.572401433698
+      }
+    },
+    {
+      "id": "sleep-tips__random-b32",
+      "curated": false,
+      "characters": 485,
+      "sourceFile": "data/traces/compact/sleep-tips__random-b32.json",
+      "sourceSha256": "3fade51df6a0aad18e7b3546864d187129c3f7a835ae6deff627582ff363effe",
+      "recordedReplayDurationMs": 15981.100000000006,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2007.6,
+          "completionAt": 15981.100000000006,
+          "meanExtraHold": 134.51113402061858,
+          "meanWordSafeLag": 134.51113402061858,
+          "maxQueued": 8,
+          "passages": 18,
+          "medianPassageChars": 15,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 485
+        },
+        "sentence": {
+          "firstPassageAt": 15981.100000000006,
+          "completionAt": 15981.100000000006,
+          "meanExtraHold": 6889.017113402053,
+          "meanWordSafeLag": 134.51113402061858,
+          "maxQueued": 476,
+          "passages": 1,
+          "medianPassageChars": 485,
+          "formingShare": 0.8743766073674528,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 485
+        },
+        "paragraph": {
+          "firstPassageAt": 15981.100000000006,
+          "completionAt": 15981.100000000006,
+          "meanExtraHold": 6889.017113402053,
+          "meanWordSafeLag": 134.51113402061858,
+          "maxQueued": 476,
+          "passages": 1,
+          "medianPassageChars": 485,
+          "formingShare": 0.8743766073674528,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 485
+        },
+        "answer": {
+          "firstPassageAt": 15981.100000000006,
+          "completionAt": 15981.100000000006,
+          "meanExtraHold": 6889.017113402053,
+          "meanWordSafeLag": 134.51113402061858,
+          "maxQueued": 476,
+          "passages": 1,
+          "medianPassageChars": 485,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 485
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "solder-project__lowconf-b128",
+      "curated": true,
+      "characters": 75,
+      "sourceFile": "data/traces/compact/solder-project__lowconf-b128.json",
+      "sourceSha256": "d132813cd39594984f800e75d636c3cf5f167e5af2f55daea369b13b30e5230e",
+      "recordedReplayDurationMs": 15808.300000000001,
+      "costs": {
+        "word": {
+          "firstPassageAt": 8455.9,
+          "completionAt": 15808.300000000001,
+          "meanExtraHold": 641.0959999999995,
+          "meanWordSafeLag": 641.0959999999995,
+          "maxQueued": 7,
+          "passages": 7,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "sentence": {
+          "firstPassageAt": 15808.300000000001,
+          "completionAt": 15808.300000000001,
+          "meanExtraHold": 4346.068000000002,
+          "meanWordSafeLag": 641.0959999999995,
+          "maxQueued": 69,
+          "passages": 1,
+          "medianPassageChars": 75,
+          "formingShare": 0.4650974488085374,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "paragraph": {
+          "firstPassageAt": 15808.300000000001,
+          "completionAt": 15808.300000000001,
+          "meanExtraHold": 4346.068000000002,
+          "meanWordSafeLag": 641.0959999999995,
+          "maxQueued": 69,
+          "passages": 1,
+          "medianPassageChars": 75,
+          "formingShare": 0.4650974488085374,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        },
+        "answer": {
+          "firstPassageAt": 15808.300000000001,
+          "completionAt": 15808.300000000001,
+          "meanExtraHold": 4346.068000000002,
+          "meanWordSafeLag": 641.0959999999995,
+          "maxQueued": 69,
+          "passages": 1,
+          "medianPassageChars": 75,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 75
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "solder-project__lowconf-b32",
+      "curated": false,
+      "characters": 509,
+      "sourceFile": "data/traces/compact/solder-project__lowconf-b32.json",
+      "sourceSha256": "dbafa7e14da63b2f0448e6af65437a8efd5911cc12707bbf8772b05199ea2f89",
+      "recordedReplayDurationMs": 15014.099999999999,
+      "costs": {
+        "word": {
+          "firstPassageAt": 929.1,
+          "completionAt": 15014.099999999999,
+          "meanExtraHold": 168.3206286836937,
+          "meanWordSafeLag": 168.3206286836937,
+          "maxQueued": 12,
+          "passages": 44,
+          "medianPassageChars": 7.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 509
+        },
+        "sentence": {
+          "firstPassageAt": 3115.5,
+          "completionAt": 15014.099999999999,
+          "meanExtraHold": 1591.0223968565797,
+          "meanWordSafeLag": 168.3206286836937,
+          "maxQueued": 129,
+          "passages": 5,
+          "medianPassageChars": 100,
+          "formingShare": 0.938118168921214,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 509
+        },
+        "paragraph": {
+          "firstPassageAt": 15014.099999999999,
+          "completionAt": 15014.099999999999,
+          "meanExtraHold": 8436.730844793774,
+          "meanWordSafeLag": 168.3206286836937,
+          "maxQueued": 498,
+          "passages": 1,
+          "medianPassageChars": 509,
+          "formingShare": 0.938118168921214,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 509
+        },
+        "answer": {
+          "firstPassageAt": 15014.099999999999,
+          "completionAt": 15014.099999999999,
+          "meanExtraHold": 8436.730844793774,
+          "meanWordSafeLag": 168.3206286836937,
+          "maxQueued": 498,
+          "passages": 1,
+          "medianPassageChars": 509,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 509
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11898.599999999999,
+        "meanExtraHoldMs": 6845.708447937194
+      }
+    },
+    {
+      "id": "solder-project__random-b32",
+      "curated": true,
+      "characters": 534,
+      "sourceFile": "data/traces/compact/solder-project__random-b32.json",
+      "sourceSha256": "20e6d06c1532a43582822aa9465d2385b7e1347b4234c11130135d70935f533b",
+      "recordedReplayDurationMs": 15540.100000000006,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2632.9000000000005,
+          "completionAt": 15283.700000000006,
+          "meanExtraHold": 161.16947565543055,
+          "meanWordSafeLag": 161.16947565543055,
+          "maxQueued": 14,
+          "passages": 15,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 534
+        },
+        "sentence": {
+          "firstPassageAt": 3546.8000000000006,
+          "completionAt": 15283.700000000006,
+          "meanExtraHold": 1597.158801498129,
+          "meanWordSafeLag": 161.16947565543055,
+          "maxQueued": 158,
+          "passages": 5,
+          "medianPassageChars": 105,
+          "formingShare": 0.8140745555047909,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 534
+        },
+        "paragraph": {
+          "firstPassageAt": 15283.700000000006,
+          "completionAt": 15283.700000000006,
+          "meanExtraHold": 6625.017977528153,
+          "meanWordSafeLag": 161.16947565543055,
+          "maxQueued": 496,
+          "passages": 1,
+          "medianPassageChars": 534,
+          "formingShare": 0.8140745555047909,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 534
+        },
+        "answer": {
+          "firstPassageAt": 15283.700000000006,
+          "completionAt": 15283.700000000006,
+          "meanExtraHold": 6625.017977528153,
+          "meanWordSafeLag": 161.16947565543055,
+          "maxQueued": 496,
+          "passages": 1,
+          "medianPassageChars": 534,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 534
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11736.900000000005,
+        "meanExtraHoldMs": 5027.859176030024
+      }
+    },
+    {
+      "id": "travel__lowconf-b128",
+      "curated": false,
+      "characters": 0,
+      "sourceFile": "data/traces/compact/travel__lowconf-b128.json",
+      "sourceSha256": "e69ede829170ad3e8ecb22b8721ef7164dfdd348c861b83095990b4bdbf0d425",
+      "recordedReplayDurationMs": 15700.199999999997,
+      "costs": {
+        "word": {
+          "firstPassageAt": null,
+          "completionAt": 15318.099999999999,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "sentence": {
+          "firstPassageAt": null,
+          "completionAt": 15318.099999999999,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "paragraph": {
+          "firstPassageAt": null,
+          "completionAt": 15318.099999999999,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        },
+        "answer": {
+          "firstPassageAt": null,
+          "completionAt": 15318.099999999999,
+          "meanExtraHold": null,
+          "meanWordSafeLag": null,
+          "maxQueued": 0,
+          "passages": 0,
+          "medianPassageChars": null,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 0
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": null,
+        "meanExtraHoldMs": null
+      }
+    },
+    {
+      "id": "travel__lowconf-b32",
+      "curated": true,
+      "characters": 583,
+      "sourceFile": "data/traces/compact/travel__lowconf-b32.json",
+      "sourceSha256": "0f42b441c0ed7f53e5b41e8e97eaea3f3692d75d120fb9d7b735be4fca36caa5",
+      "recordedReplayDurationMs": 15740.300000000003,
+      "costs": {
+        "word": {
+          "firstPassageAt": 456.6,
+          "completionAt": 15740.300000000003,
+          "meanExtraHold": 154.03687821612365,
+          "meanWordSafeLag": 154.03687821612365,
+          "maxQueued": 12,
+          "passages": 43,
+          "medianPassageChars": 7,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "sentence": {
+          "firstPassageAt": 2294.7,
+          "completionAt": 15740.300000000003,
+          "meanExtraHold": 1363.0114922813048,
+          "meanWordSafeLag": 154.03687821612365,
+          "maxQueued": 120,
+          "passages": 6,
+          "medianPassageChars": 95,
+          "formingShare": 0.9709916583546692,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "paragraph": {
+          "firstPassageAt": 15740.300000000003,
+          "completionAt": 15740.300000000003,
+          "meanExtraHold": 8299.167924528285,
+          "meanWordSafeLag": 154.03687821612365,
+          "maxQueued": 536,
+          "passages": 1,
+          "medianPassageChars": 583,
+          "formingShare": 0.9709916583546692,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        },
+        "answer": {
+          "firstPassageAt": 15740.300000000003,
+          "completionAt": 15740.300000000003,
+          "meanExtraHold": 8299.167924528285,
+          "meanWordSafeLag": 154.03687821612365,
+          "maxQueued": 536,
+          "passages": 1,
+          "medianPassageChars": 583,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 583
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 13445.600000000002,
+        "meanExtraHoldMs": 6936.15643224698
+      }
+    },
+    {
+      "id": "travel__random-b32",
+      "curated": false,
+      "characters": 502,
+      "sourceFile": "data/traces/compact/travel__random-b32.json",
+      "sourceSha256": "95046bf7ad94cf7582c83df9173a122a7ec580a45140459eb079286cf9012570",
+      "recordedReplayDurationMs": 15143.300000000008,
+      "costs": {
+        "word": {
+          "firstPassageAt": 852.0999999999999,
+          "completionAt": 15010.900000000009,
+          "meanExtraHold": 151.23505976095626,
+          "meanWordSafeLag": 151.23505976095626,
+          "maxQueued": 12,
+          "passages": 16,
+          "medianPassageChars": 14.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 502
+        },
+        "sentence": {
+          "firstPassageAt": 7441.500000000002,
+          "completionAt": 15010.900000000009,
+          "meanExtraHold": 2001.926095617525,
+          "meanWordSafeLag": 151.23505976095626,
+          "maxQueued": 238,
+          "passages": 3,
+          "medianPassageChars": 119,
+          "formingShare": 0.9349877503582443,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 502
+        },
+        "paragraph": {
+          "firstPassageAt": 15010.900000000009,
+          "completionAt": 15010.900000000009,
+          "meanExtraHold": 7113.71952191231,
+          "meanWordSafeLag": 151.23505976095626,
+          "maxQueued": 490,
+          "passages": 1,
+          "medianPassageChars": 502,
+          "formingShare": 0.9349877503582443,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 502
+        },
+        "answer": {
+          "firstPassageAt": 15010.900000000009,
+          "completionAt": 15010.900000000009,
+          "meanExtraHold": 7113.71952191231,
+          "meanWordSafeLag": 151.23505976095626,
+          "maxQueued": 490,
+          "passages": 1,
+          "medianPassageChars": 502,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 502
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 7569.400000000007,
+        "meanExtraHoldMs": 5111.793426294785
+      }
+    },
+    {
+      "id": "weather__lowconf-b128",
+      "curated": false,
+      "characters": 5,
+      "sourceFile": "data/traces/compact/weather__lowconf-b128.json",
+      "sourceSha256": "ffaca91a544acfdf25e4e0fb4531f6a5de529e821641179111c4a25f6a3ebf29",
+      "recordedReplayDurationMs": 15813,
+      "costs": {
+        "word": {
+          "firstPassageAt": 15813,
+          "completionAt": 15813,
+          "meanExtraHold": 98.48000000000029,
+          "meanWordSafeLag": 98.48000000000029,
+          "maxQueued": 4,
+          "passages": 1,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 5
+        },
+        "sentence": {
+          "firstPassageAt": 15813,
+          "completionAt": 15813,
+          "meanExtraHold": 98.48000000000029,
+          "meanWordSafeLag": 98.48000000000029,
+          "maxQueued": 4,
+          "passages": 1,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 5
+        },
+        "paragraph": {
+          "firstPassageAt": 15813,
+          "completionAt": 15813,
+          "meanExtraHold": 98.48000000000029,
+          "meanWordSafeLag": 98.48000000000029,
+          "maxQueued": 4,
+          "passages": 1,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 5
+        },
+        "answer": {
+          "firstPassageAt": 15813,
+          "completionAt": 15813,
+          "meanExtraHold": 98.48000000000029,
+          "meanWordSafeLag": 98.48000000000029,
+          "maxQueued": 4,
+          "passages": 1,
+          "medianPassageChars": 5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 5
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "weather__lowconf-b32",
+      "curated": false,
+      "characters": 518,
+      "sourceFile": "data/traces/compact/weather__lowconf-b32.json",
+      "sourceSha256": "262d8d792afd99c2f82627b8b99f0b948a9f29fc10e12151c6b30da851ee6189",
+      "recordedReplayDurationMs": 15775.000000000005,
+      "costs": {
+        "word": {
+          "firstPassageAt": 1208.4,
+          "completionAt": 15775.000000000005,
+          "meanExtraHold": 146.30984555984566,
+          "meanWordSafeLag": 146.30984555984566,
+          "maxQueued": 11,
+          "passages": 30,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 518
+        },
+        "sentence": {
+          "firstPassageAt": 2919.8999999999996,
+          "completionAt": 15775.000000000005,
+          "meanExtraHold": 830.1652509652514,
+          "meanWordSafeLag": 146.30984555984566,
+          "maxQueued": 75,
+          "passages": 7,
+          "medianPassageChars": 72,
+          "formingShare": 0.9233977812995247,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 518
+        },
+        "paragraph": {
+          "firstPassageAt": 15775.000000000005,
+          "completionAt": 15775.000000000005,
+          "meanExtraHold": 7383.850193050136,
+          "meanWordSafeLag": 146.30984555984566,
+          "maxQueued": 491,
+          "passages": 1,
+          "medianPassageChars": 518,
+          "formingShare": 0.9233977812995247,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 518
+        },
+        "answer": {
+          "firstPassageAt": 15775.000000000005,
+          "completionAt": 15775.000000000005,
+          "meanExtraHold": 7383.850193050136,
+          "meanWordSafeLag": 146.30984555984566,
+          "maxQueued": 491,
+          "passages": 1,
+          "medianPassageChars": 518,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 518
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 12855.100000000006,
+        "meanExtraHoldMs": 6553.684942084885
+      }
+    },
+    {
+      "id": "weather__random-b32",
+      "curated": true,
+      "characters": 567,
+      "sourceFile": "data/traces/compact/weather__random-b32.json",
+      "sourceSha256": "0b914bb859f67c44c5dec653bcb427d5cb12f17d87aff72123ba6b1059ea32cc",
+      "recordedReplayDurationMs": 15359.999999999998,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2947.1,
+          "completionAt": 15359.999999999998,
+          "meanExtraHold": 129.22980599647278,
+          "meanWordSafeLag": 129.22980599647278,
+          "maxQueued": 10,
+          "passages": 18,
+          "medianPassageChars": 11.5,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 567
+        },
+        "sentence": {
+          "firstPassageAt": 3908.2000000000003,
+          "completionAt": 15359.999999999998,
+          "meanExtraHold": 861.9432098765442,
+          "meanWordSafeLag": 129.22980599647278,
+          "maxQueued": 110,
+          "passages": 4,
+          "medianPassageChars": 129.5,
+          "formingShare": 0.8081315104166666,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 567
+        },
+        "paragraph": {
+          "firstPassageAt": 15359.999999999998,
+          "completionAt": 15359.999999999998,
+          "meanExtraHold": 6276.335449735473,
+          "meanWordSafeLag": 129.22980599647278,
+          "maxQueued": 520,
+          "passages": 1,
+          "medianPassageChars": 567,
+          "formingShare": 0.8081315104166666,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 567
+        },
+        "answer": {
+          "firstPassageAt": 15359.999999999998,
+          "completionAt": 15359.999999999998,
+          "meanExtraHold": 6276.335449735473,
+          "meanWordSafeLag": 129.22980599647278,
+          "maxQueued": 520,
+          "passages": 1,
+          "medianPassageChars": 567,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 567
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11451.799999999997,
+        "meanExtraHoldMs": 5414.392239858929
+      }
+    },
+    {
+      "id": "why-out-of-order__lowconf-b128",
+      "curated": false,
+      "characters": 16,
+      "sourceFile": "data/traces/compact/why-out-of-order__lowconf-b128.json",
+      "sourceSha256": "59cba31dca5c90bea8375fc8b5664ccf5a163d3028a22907a57d6d4d3b00aed7",
+      "recordedReplayDurationMs": 15964.5,
+      "costs": {
+        "word": {
+          "firstPassageAt": 345.8,
+          "completionAt": 15840.4,
+          "meanExtraHold": 6843.518750000001,
+          "meanWordSafeLag": 6843.518750000001,
+          "maxQueued": 9,
+          "passages": 2,
+          "medianPassageChars": 8,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 16
+        },
+        "sentence": {
+          "firstPassageAt": 15840.4,
+          "completionAt": 15840.4,
+          "meanExtraHold": 15559.231250000003,
+          "meanWordSafeLag": 6843.518750000001,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 16,
+          "formingShare": 0.9705659431864448,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 16
+        },
+        "paragraph": {
+          "firstPassageAt": 15840.4,
+          "completionAt": 15840.4,
+          "meanExtraHold": 15559.231250000003,
+          "meanWordSafeLag": 6843.518750000001,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 16,
+          "formingShare": 0.9705659431864448,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 16
+        },
+        "answer": {
+          "firstPassageAt": 15840.4,
+          "completionAt": 15840.4,
+          "meanExtraHold": 15559.231250000003,
+          "meanWordSafeLag": 6843.518750000001,
+          "maxQueued": 16,
+          "passages": 1,
+          "medianPassageChars": 16,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 16
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 0,
+        "meanExtraHoldMs": 0
+      }
+    },
+    {
+      "id": "why-out-of-order__lowconf-b32",
+      "curated": true,
+      "characters": 566,
+      "sourceFile": "data/traces/compact/why-out-of-order__lowconf-b32.json",
+      "sourceSha256": "6fcbb032ab289e9d6cb0aa54f1d893a7ab40d732c0d26755cbe72d17ebd94f82",
+      "recordedReplayDurationMs": 14982.800000000005,
+      "costs": {
+        "word": {
+          "firstPassageAt": 342.3,
+          "completionAt": 14982.800000000005,
+          "meanExtraHold": 120.7381625441697,
+          "meanWordSafeLag": 120.7381625441697,
+          "maxQueued": 10,
+          "passages": 48,
+          "medianPassageChars": 6,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 566
+        },
+        "sentence": {
+          "firstPassageAt": 3158.5999999999995,
+          "completionAt": 14982.800000000005,
+          "meanExtraHold": 1493.8616607773872,
+          "meanWordSafeLag": 120.7381625441697,
+          "maxQueued": 131,
+          "passages": 5,
+          "medianPassageChars": 119,
+          "formingShare": 0.9771538030274716,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 566
+        },
+        "paragraph": {
+          "firstPassageAt": 14982.800000000005,
+          "completionAt": 14982.800000000005,
+          "meanExtraHold": 8348.889575971672,
+          "meanWordSafeLag": 120.7381625441697,
+          "maxQueued": 524,
+          "passages": 1,
+          "medianPassageChars": 566,
+          "formingShare": 0.9771538030274716,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 566
+        },
+        "answer": {
+          "firstPassageAt": 14982.800000000005,
+          "completionAt": 14982.800000000005,
+          "meanExtraHold": 8348.889575971672,
+          "meanWordSafeLag": 120.7381625441697,
+          "maxQueued": 524,
+          "passages": 1,
+          "medianPassageChars": 566,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 566
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11824.200000000004,
+        "meanExtraHoldMs": 6855.027915194285
+      }
+    },
+    {
+      "id": "why-out-of-order__random-b32",
+      "curated": false,
+      "characters": 637,
+      "sourceFile": "data/traces/compact/why-out-of-order__random-b32.json",
+      "sourceSha256": "7d39002243b29beea64fc1b9e0c4b87089f3f4cf4bd8eb9334f7af8fc6481cb0",
+      "recordedReplayDurationMs": 15560.999999999995,
+      "costs": {
+        "word": {
+          "firstPassageAt": 2811.4000000000005,
+          "completionAt": 15303.999999999995,
+          "meanExtraHold": 102.80266875981161,
+          "meanWordSafeLag": 102.80266875981161,
+          "maxQueued": 7,
+          "passages": 15,
+          "medianPassageChars": 16,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 637
+        },
+        "sentence": {
+          "firstPassageAt": 3926.4000000000005,
+          "completionAt": 15303.999999999995,
+          "meanExtraHold": 1705.9108320251114,
+          "meanWordSafeLag": 102.80266875981161,
+          "maxQueued": 144,
+          "passages": 5,
+          "medianPassageChars": 135,
+          "formingShare": 0.8028147291305185,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 637
+        },
+        "paragraph": {
+          "firstPassageAt": 15303.999999999995,
+          "completionAt": 15303.999999999995,
+          "meanExtraHold": 6303.026059654722,
+          "meanWordSafeLag": 102.80266875981161,
+          "maxQueued": 575,
+          "passages": 1,
+          "medianPassageChars": 637,
+          "formingShare": 0.8028147291305185,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 637
+        },
+        "answer": {
+          "firstPassageAt": 15303.999999999995,
+          "completionAt": 15303.999999999995,
+          "meanExtraHold": 6303.026059654722,
+          "meanWordSafeLag": 102.80266875981161,
+          "maxQueued": 575,
+          "passages": 1,
+          "medianPassageChars": 637,
+          "formingShare": 0,
+          "exactFinal": true,
+          "precommitExposure": 0,
+          "characters": 637
+        }
+      },
+      "answerMinusSentence": {
+        "firstPassageMs": 11377.599999999995,
+        "meanExtraHoldMs": 4597.115227629611
+      }
+    }
+  ]
+}

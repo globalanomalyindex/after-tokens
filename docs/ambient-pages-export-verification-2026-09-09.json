@@ -1,0 +1,32 @@
+{
+  "verifiedAt": "2026-09-09T19:16:09.720Z",
+  "url": "http://127.0.0.1:3010/after-tokens/",
+  "browser": "148.0.7778.96",
+  "status": 200,
+  "title": "After Tokens: an ambient motion study for generated text",
+  "canonical": "https://globalanomalyindex.github.io/after-tokens/",
+  "assetCount": 20,
+  "assetPrefix": "/after-tokens/",
+  "positiveBarCount": 5,
+  "exactFinalAnswers": [
+    "sleep-tips__lowconf-b128-s32",
+    "sky-blue__lowconf-b128-s32"
+  ],
+  "videos": [
+    {
+      "name": "ambient-answer-mobile.webm",
+      "status": 200,
+      "bytes": 245520,
+      "contentType": "video/webm",
+      "sha256": "13173867ee61cc80f7227463476207b770f7308ea02c2f39499800a3d82f7ac0"
+    },
+    {
+      "name": "ambient-answer-long.webm",
+      "status": 200,
+      "bytes": 361285,
+      "contentType": "video/webm",
+      "sha256": "ab192753dbce9fec8d348ed4f445aa93e9eea7d32179db61f17a5da3aa724683"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "captures": [
+    {
+      "id": "sleep-tips__random-b128-s32",
+      "steps": 32,
+      "unique_committed_positions": 128,
+      "commits_per_step": 4,
+      "content_tokens": 110,
+      "multi_content_steps": 32,
+      "content_batch_histogram": {
+        "2": 4,
+        "3": 10,
+        "4": 18
+      },
+      "max_request_quartiles_in_content_batch": 3,
+      "draft_entries_checked": 915,
+      "spin_entries_checked": 599,
+      "exact_final_decode": true
+    }
+  ]
+}

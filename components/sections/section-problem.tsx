@@ -10,7 +10,7 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 const HABITS: { title: string; body: string }[] = [
   {
     title: 'the typewriter',
-    body: 'one token at a time, left to right, a cursor at the end. it draws the answer in an order the sampler did not use, hides the shape the model is committing, and puts a half-formed word under the reader whenever a token is a piece of one.',
+    body: 'one token at a time, left to right, a cursor at the end. this can give readers useful early text, but it can conceal out-of-order source activity and expose a half-word. it is a presentation policy with a cost, not a faithful diagram of every diffusion sampler.',
   },
   {
     title: 'the reveal that knows the answer',
@@ -22,11 +22,10 @@ export function SectionProblem() {
   const pct = (x: number) => `${Math.round(x * 100)}%`
   return (
     <Section id="problem" title="The wrong shape">
-      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">the typewriter is the wrong shape for this source</h2>
+      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">generation is not a typing performance</h2>
       <p className="standfirst max-w-3xl">
-        a diffusion model does not write. it holds every position of an answer open at once and{' '}
-        <DefinitionTerm term="commitment">commits</DefinitionTerm> them in the order it is sure of them, over a hundred or so steps. an interface inherits one of two habits from the
-        models before it, and both misrepresent what is happening.
+        a masked diffusion model predicts candidates at many open positions in a step. its sampler chooses which positions to{' '}
+        <DefinitionTerm term="commitment">commit</DefinitionTerm>, sometimes within sequential blocks. prediction, commitment and a complete answer are different events. neither a typing cursor nor a choreographed reveal automatically explains them.
       </p>
       <div className="mt-12 md:mt-16 grid gap-10 md:grid-cols-2">
         {HABITS.map((h, i) => (
@@ -42,7 +41,7 @@ export function SectionProblem() {
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what a sampler actually does</h3>
           <p className="mt-4 text-base leading-relaxed max-w-[48ch]" style={{ color: 'var(--ink-2)' }}>
             {TRACE_NUMBERS.trajectories} runs of a {TRACE_NUMBERS.params} masked diffusion model were recorded, token by token, with the step each
-            position committed. three shapes recur, and the surface is built around them.
+            position committed. every original run used 128 steps for 128 positions: exactly one commitment per step. the new four-position batches are separate experiments. these observations describe this capture setup, not every diffusion model.
           </p>
         </div>
         <dl className="grid gap-6 sm:grid-cols-3 rule pt-6">
@@ -51,15 +50,14 @@ export function SectionProblem() {
             <dd className="text-3xl font-bold tracking-tighter font-display">{pct(TRACE_NUMBERS.adjacentFrac.lowconfB32)}</dd>
             <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
               of consecutive commits land beside the previous one under the block sampler. inside a block the order is free; a
-              readable prefix therefore grows in bursts, a clause at a time, whenever the one hard position fills.
+              readable prefix can therefore grow in bursts when a missing earlier position becomes available. one new source token can unlock several already committed pieces.
             </dd>
           </Reveal>
           <Reveal delay={80}>
             <dt className="label mb-2">the end before the words</dt>
             <dd className="text-3xl font-bold tracking-tighter font-display">{pct(TRACE_NUMBERS.tailFirstFracNoBlock)}</dd>
             <dd className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-              of usable schedule-free runs committed their end-of-sequence tail before their last word. the answer&rsquo;s extent settles first;
-              its words land last, in a rush.
+              of usable schedule-free runs committed their eventual end-of-sequence tail before their last content token. this retrospective finding does not mean final formatting was known first, or that an isolated end token proves the whole answer is ready.
             </dd>
           </Reveal>
           <Reveal delay={160}>

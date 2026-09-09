@@ -2,8 +2,8 @@
 // answer, and draws only what the source has committed. The contract is in
 // docs/superpowers/specs/2026-09-07-settle-design.md, section 4.1.
 
-/** What lands on the page: each complete word, each complete sentence, or each complete paragraph. */
-export type Policy = 'word' | 'sentence' | 'paragraph'
+/** What lands on the page: a word, sentence, paragraph, or the complete answer at source finality. */
+export type Policy = 'word' | 'sentence' | 'paragraph' | 'answer'
 
 /** One irreversible commitment: a token at a position. `end` marks an end-of-sequence token. */
 export type Commit = { position: number; text: string; end?: boolean }

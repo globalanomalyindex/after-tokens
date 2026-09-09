@@ -2,83 +2,79 @@
 
 an independent product design and engineering case study on how an answer from a diffusion language model should reach a reader.
 
-- live (github pages): https://globalanomalyindex.github.io/after-tokens/
-
-# after tokens: a product design and engineering case study
+[live case study](https://globalanomalyindex.github.io/after-tokens/)
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
-> **the answer.** put progress into the words while protecting the reader’s place. Settle distinguishes the source’s guesses, committed text and released passages. Unresolved regions carry a small ambient breath; newly complete words and passages acknowledge their own arrival; finished text rests. Several regions can develop together when the source supplies them together. The renderer never looks ahead at the final answer.
+> **the current direction.** fluid ambient bars occupy the answer area while generation continues. they form one composition, independent of token count, word widths and final formatting. when the source establishes finality, the complete answer appears together at full reading contrast. the bars disappear immediately; a separate 260 ms surrounding cue fades while the text rests. this deliberately trades early reading for one arrival, and that extra wait is measured.
 
 | | |
 | --- | --- |
-| **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | a pure reducer and its reading contract, a causal replay adapter, a field derived from recorded source state, word and passage completion feedback, a five-token brand voice, three product frames and a phone concept, a playground, a cost instrument over sixty recorded trajectories, a causal audit, a corrected literature ledger, a study design |
-| **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing committed is drawn as a guess, nothing guessed is drawn as committed, and no guess reaches the page. no reader has been measured. |
+| **role** | product design, interaction design, research, prototyping and front-end engineering |
+| **built** | a causal replay adapter and pure release reducer, an ambient motion comparison, earlier-text alternatives, brand controls, product and phone frames, a policy cost instrument, source audits and research notes |
+| **status** | working research prototype. source fidelity and presentation costs are measured; reader comfort, comprehension, satisfaction and preference are untested. browser emulation is not physical iPhone validation. |
 | **stack** | next.js, typescript, tailwind, vitest, playwright, axe-core |
 
-## the wrong shape
+## the interaction
 
-masked diffusion can predict many positions together. the recorded samplers commit positions irreversibly, sometimes inside a sequential block schedule. prediction, commitment and semantic completeness are different events; revisable samplers need an explicit finality contract. the typewriter draws the answer in an order the sampler did not use and puts half-formed words under the reader. a reveal that choreographs the answer, which this case study shipped on september 6, needs the final words, their widths and a map of which matter, and a live source has none of those.
+the bars are ambient composition, not a preview of the answer's exact layout or an estimate of progress. no bar represents a future word. their movement can continue between real source events without claiming additional token commitments. the composition stays inside a bounded answer area and does not resize itself around candidate words.
 
-## the audit
+the default whole-answer policy releases after a committed end is reached by the contiguous prefix, a valid explicit finish, or an explicitly final snapshot. a predicted end, punctuation, stop, error or animation endpoint cannot complete the answer. the final text becomes readable immediately; the bars disappear immediately, and a separate 260 ms surrounding cue does not delay the text or animate letters in reading order. long answers can grow the container once; the measured narrow explanation added 99.375 px.
 
-an independent audit of that build by a second agent (codex, 7 september 2026, under the name margin) found that 700 of 3,880 corpus words (18 percent) were drawn in their final spelling before all their tokens had committed, that "length fixed" was announced from a retrospective statistic in 42 of 60 runs, and that a claim of "no phrase ever reads out of order" was contradicted by the report's own 5.6 percent. every finding is accepted, reproduced by `pnpm traces:settle`, and built against. the design record is [`docs/redesign.md`](docs/redesign.md).
+the motion comparison keeps source events, policy, answer timing and final handover identical across **static bars**, **coherent ambient bars** and **independent ambient bars**. that separates the ambient-motion question from answer availability. the independent periods also change velocity and short-run appearance, which a confirmatory study must match or model. comparing the whole answer with earlier-word access is a separate availability experiment, with real presentation hold reported.
 
-## the contract
+## why diffusion, and what the captures actually show
 
-`lib/settle/` is the engine. given the same events, the surface shows the same page, the same forming text, the same field and the same status, whatever comes later. ten rules, kept by a pure reducer:
+masked diffusion predicts candidates at many open positions together. the sampler chooses which positions become fixed, sometimes inside a sequential block schedule. prediction, commitment and semantic completeness are different events. a conventional typing presentation can expose useful text early, but need not reflect the sampler's order.
 
-1. nothing is drawn as the source's text that the source has not committed. the one thing an uncommitted position may draw is the source's own current guess for it, drawn as a guess, and no guess ever reaches the page.
-2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
-3. released text stays still while later source events arrive. completion feedback changes decoration, not its baseline, width or readable shape. provisional layout never uses an unseen final word or its width. an available word uses ink that clears the contrast floor on its actual background. dark stages use secondary ink; translucent product bubbles use primary ink and a dotted underline until release.
-4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
-5. out-of-order material appears only after the released page. open positions reserve space; the source’s current prediction is visibly provisional; committed pieces are fixed source text; whole words appear only after their pieces and boundaries commit. a repeated prior is suppressed. a guessed line break is not final structure. neither source activity nor draft probability is a correctness score.
-6. an exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
-7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
-8. complete, stopped, error, paused and revision available are distinct states, named in the margin.
-9. a brand changes appearance and motion envelopes, never availability.
-10. reduced motion and the motion-off control remove decorative movement without changing source availability, passage release or final output. pausing pauses the presentation; terminal states rest.
+the original corpus contains 60 trajectories from `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1`: twenty prompts, three sampler configurations, greedy decoding on an apple m3. **all 60 use 128 steps for 128 positions: one token commitment per step, 7,680 commitments in 7,680 steps.** they show parallel predictions and out-of-order commitments, not simultaneous multi-token commitment. a single new boundary can unlock several previously committed pieces for display.
 
-the original reading spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpowers/specs/2026-09-07-settle-design.md). the current motion rationale, implementation decisions and validation boundaries are in [`docs/motion-direction-2026-09-09.md`](docs/motion-direction-2026-09-09.md).
+four new experimental runs use 32 steps for 128 positions and commit four positions per step. their online candidate data and exact final decodes pass the capture validators. weather, sky-blue and sleep-tips under the low-confidence sampler have 4, 18 and 5 steps with multiple content-token commitments; the random sleep-tips run has 32. token batches are not automatically complete words or useful ideas. the retained outputs include repetition, “Avoid enough caffeine,” and numerical gibberish. they are evidence about decoding behavior, not production answer quality. [captures, provenance and validation](data/experiments/README.md).
 
-## the cost
+formatting sometimes precedes nearby text, but does not universally come first. the structure audit finds 32 of 36 original final list markers precede their first body word's last token, while only 45 of 138 newlines precede both neighboring words' last tokens. those labels are retrospective; an isolated `1.` could still become a decimal. an application-owned structure or enforced grammar can justify early containers, while a prompt asking for a list cannot guarantee them. [structure audit](data/experiments/structure-timing-2026-09-09.json).
 
-`pnpm traces:settle` measures every policy on every recording, on a uniform step clock and the raw forward-pass clock, and writes `lib/traces/settle.json`; `lib/traces/findings.ts` is the only source of numbers the copy may cite.
+## the release contract
 
-| measure | each word | each sentence | each paragraph |
-| --- | --- | --- | --- |
-| first passage on the page, median | 12 steps | 39 steps | 128 steps |
-| extra wait after text is in order, mean | 3.3 steps | 24.5 steps | 44.7 steps |
-| forming text visible, median share of the run | 0% | 90% | 90% |
-| exact final output | 60 of 60 | 60 of 60 | 60 of 60 |
-| characters drawn before commitment | 0 | 0 | 0 |
+`lib/settle/` owns text availability and finality. appearance cannot override it:
 
-a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop. this is the capture’s forward-pass clock, not end-to-end latency. production timing and commitment patterns depend on the model, sampler and hardware; faster replay is not a production benchmark. the stages replay at that recorded clock by default, with half of recorded and twice recorded as the other choices.
+1. future final text, word widths and formatting are unavailable to the early renderer. the ambient composition uses authored geometry.
+2. whole-answer release waits for the source's finality contract. earlier word, sentence and paragraph policies remain inspectable alternatives.
+3. complete words need committed pieces and boundaries. guesses never become released text merely because they look plausible.
+4. a brand changes appearance, not the source, release eligibility or exact final answer. readable text keeps its reading contrast.
+5. stopped and failed partial output is labeled separately. an animation must not present it as a successfully completed answer.
+6. a revisable source can send snapshots; only an explicitly final one reaches the page. later revisions preserve the prior version and require review and apply.
+7. reduced motion and motion-off preserve release timing. pause, replay, stop and terminal states have distinct behavior.
 
-## the drafts
+## the cost of one arrival
 
-at every step the model holds a provisional guess for every position it has not committed. `scripts/derive-drafts.py` writes those guesses into the compact traces and the statistics into `data/traces/derived/drafts.json`, and the source display policy admits one at or above a probability of 0.25, as a guess. the revised renderer additionally shows candidate letters only when the complete guess fits its fixed reservation. the statistics below describe eligibility before this fit check, not current screen visibility. over content positions of every recording with at least eight content tokens, where a pair is one open content position at one step:
+these figures come from the [whole-answer policy report](data/experiments/answer-policy-cost-2026-09-09.json). latency summaries use 57 nonempty original traces; three empty answers remain in the 60-output fidelity audit. the clock is the capture's synchronized model forward-pass time, not network or end-to-end product latency. release times are reducer eligibility, not measured browser paint.
 
-| measure | all | lowconf-b32 | random-b32 | lowconf-b128 |
-| --- | --- | --- | --- | --- |
-| a draft is eligible, share of open-position steps | 0.1699 | 0.1301 | 0.1915 | 0.3115 |
-| an eligible draft matches the token that later commits | 0.6657 | 0.6103 | 0.718 | 0.5756 |
-| steps a draft qualifies before commitment, median | 8 | 4 | 14 | 11 |
+| measure | each word | each sentence | each paragraph | whole answer |
+| --- | ---: | ---: | ---: | ---: |
+| median first passage eligible | 1.4 s | 4.6 s | 15.6 s | 15.8 s |
+| mean of per-trace character-mean hold after joining the committed prefix | 0.4 s | 3.0 s | 5.5 s | 6.3 s |
+| exact final output | 60/60 | 60/60 | 60/60 | 60/60 |
+| released characters before commitment | 0 | 0 | 0 | 0 |
 
-at least one draft passes the source display policy on 93 percent of steps (0.9272), and 61 percent of eligible drafts never change again before commitment (0.6145). on the raw probabilities, adjacent open positions show a next-step increase of 0.1096 (lowconf-b32), 0.175 (random-b32) and 0.1264 (lowconf-b128), against 0.0067, 0.0048 and 0.0022 for other open positions. this is an association in the recorded trajectory, not proof that a commitment causes its neighbors to settle. token probability is not answer truth, and none of these statistics says a draft helps a reader.
+across the 57 matched nonempty runs, the median additional wait for the first passage under whole-answer versus sentence release is **10.5 seconds**. this is the median of paired differences, not the subtraction of the two medians above. a paragraph boundary can precede source finality; paragraph and whole-answer policies are not interchangeable.
 
-## the voice
+the original step-based report remains in `lib/traces/settle.json`. the newer four-position experiments are separate from the original corpus, and use a different capture-clock definition; their timing must not be treated as a controlled speedup. a faster replay changes presentation speed, not model performance.
 
-a brand gets five tokens on the one surface, each inside a range that is an invariant: mark (tick, dot, dash, square), bloom (0 to 1), onset (0 to 240 ms), tempo (0.7 to 1.4), grain (0 to 1). five presets ship: after tokens, halcyon, felt, pulse, voltage.
+## research and design rationale
 
-## real trajectories
+common-fate studies motivate testing whether coordinated change makes the bars feel like one active area. live-caption research motivates protecting readable text. apple's fluid-interface demonstrations and fluent's motion guidance inform continuity, interruption and bounded movement. these are different forms of evidence; none proves this particular interface improves reading.
 
-`data/traces/` holds sixty recorded denoising trajectories from `dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1` (twenty prompts, three sampler configurations, greedy, on an apple m3), the model's per-step drafts, and a four-run llada-8b corroboration set. the research note is [`docs/research-note.md`](docs/research-note.md); section 9 holds the audit, the contract, the drafts, the cost and the literature ledger.
+the controlled skeleton study reviewed here used 14 participants and found no significant advantage over spinners in perceived speed, navigation ease or article-finding time. it does not establish equivalence either. progress-bar appearance has affected perceived duration in other experiments, but their effect sizes cannot be transferred to diffusion. the case study claims no dopamine mechanism, universal Zeigarnik benefit or guaranteed peak-end improvement.
 
-## evidence and limits
+[the field experiment](docs/field-experiment-2026-09-09.md) records the implemented prototype, primary sources, exact studied tasks and limits, motion construction, structural uncertainty and testable hypotheses. [the current ambient handoff](docs/ambient-handoff-2026-09-09.md) supplies architecture, exact parameters, code pointers, continuation instructions and acceptance gates. it also preserves adaptive text skeletons, continuous ink texture and interval geometry as explored alternatives. a current ChatGPT loading animation was not inspected; this is not described as its reconstruction.
 
-four claims about the repository, each tested: zero characters reach the page before their tokens commit, every final page equals the sampler's output, a draft changes no page text and no prefix and never survives its position's commitment, and the cost of each policy and the behavior of the drafts are reported per run with denominators. nothing is claimed about a reader. a two-experiment study is designed with the stimuli in the repository; nobody has run it. the written case study is [`docs/case-study.md`](docs/case-study.md).
+## earlier work and the audit
+
+the september 6 reveal used future answer geometry. the september 7 causal audit found 700 of 3,880 words drawn in their final spelling before all constituent tokens committed, an early length claim in 42 of 60 runs, and a phrase-order claim contradicted by its own report. these findings motivated the source contract and remain in the [design record](docs/redesign.md).
+
+the first september 9 stabilization kept token identity and removed committed-letter blur, but its single controlled mobile-width chromium observation did not improve the worst identical committed-glyph displacement: 280.6 px after versus 276.5 px before. that result belongs to the previous renderer, not the new ambient composition. [measurement and limitations](docs/motion-validation-2026-09-09.json).
+
+the [written case study](docs/case-study.md), [research note](docs/research-note.md), [earlier motion handoff](docs/motion-direction-2026-09-09.md) and [original release specification](docs/superpowers/specs/2026-09-07-settle-design.md) preserve the development record. the ambient handoff and field experiment describe the latest implementation; historical claims retain their original scope. lint, types, 268 tests across 40 files and 42 browser checks pass for this revision. eight rendering observations and both production builds are complete; no reader benefit or physical iPhone behavior has been measured.
 
 ## run
 
@@ -91,11 +87,11 @@ pnpm dev
 | --- | --- |
 | `pnpm dev` | development server |
 | `pnpm build` | production build |
-| `pnpm check` | lint, types, tests, build |
-| `pnpm test` | unit tests, including the reducer over all sixty recordings |
-| `pnpm test:e2e:chromium` | chromium accessibility, reduced motion, token identity, committed-text legibility, playback and final-output checks |
-| `pnpm test:e2e` | the browser suite across chromium, webkit and an emulated mobile-portrait profile; not a physical iPhone test |
-| `pnpm traces:settle` | regenerate the cost report and the causal audit |
+| `pnpm check` | lint, types, tests and build |
+| `pnpm test` | unit tests, including reducer and corpus behavior |
+| `pnpm test:e2e:chromium` | chromium accessibility, motion, identity, legibility, playback and final-output checks |
+| `pnpm test:e2e` | browser suite across chromium, webkit and an emulated mobile-portrait profile; not a physical iPhone test |
+| `pnpm traces:settle` | regenerate the main policy cost report and causal audit |
 | `pnpm traces:index` | regenerate the trace index after a capture |
 
 ## deploys
@@ -104,4 +100,4 @@ github pages builds main with `GITHUB_PAGES=true`, which switches to a static ex
 
 ## credits
 
-designed and built by globalanomalyindex (christopher robin fiore), with claude as design and engineering partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026 under the name margin; codex developed the motion revision and evidence refresh on 9 september. recorded trajectories and text are cc by 4.0; code is mit.
+designed and built by globalanomalyindex (christopher robin fiore), with claude as design and engineering partner. codex made the causal audit and first reading contract on 7 september 2026 under the name margin, then developed the motion revisions, source experiments and evidence refresh on 9 september. recorded trajectories and text are cc by 4.0; code is mit.

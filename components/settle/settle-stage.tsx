@@ -69,6 +69,7 @@ const PACES: { id: string; label: string; pace: Pace }[] = [
   { id: 'slow', label: '2× stress', pace: { scale: 2 } },
 ]
 const POLICIES: { id: Policy; label: string }[] = [
+  { id: 'answer', label: 'whole answer' },
   { id: 'word', label: 'each word' },
   { id: 'sentence', label: 'each sentence' },
   { id: 'paragraph', label: 'each paragraph' },
@@ -79,7 +80,7 @@ export function SettleStage({
   source = 'trace:heron-poem__lowconf-b32',
   sources = 'curated',
   controls = [],
-  policy: policyProp = 'sentence',
+  policy: policyProp = 'answer',
   forming: formingProp = 'carve',
   pace: paceProp = 'recorded',
   brand: brandProp = 'after-tokens',
@@ -144,7 +145,7 @@ export function SettleStage({
           {has('prompt') && <PromptPicker prompts={promptItems} activeId={promptId} onSelect={selectPrompt} layout="compact" />}
           {has('config') && <ToggleRail label="sampler" items={CONFIG_IDS.map((id) => ({ id, label: CONFIG_LABELS[id] }))} activeId={config} onSelect={selectConfig} />}
           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
-          {has('preview') && <ToggleRail label="after the page" items={[{ id: 'carve', label: 'the carved field' }, { id: 'flow', label: 'in order only' }, { id: 'held', label: 'held, as margin did' }]} activeId={forming} onSelect={(id) => setForming(id as FormingMode)} />}
+          {has('preview') && policy !== 'answer' && <ToggleRail label="earlier text" items={[{ id: 'carve', label: 'source intervals' }, { id: 'flow', label: 'in order only' }, { id: 'held', label: 'released only' }]} activeId={forming} onSelect={(id) => setForming(id as FormingMode)} />}
           {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
           {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'none', label: 'nothing' }, { id: 'prefix', label: 'the raw prefix' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
@@ -197,7 +198,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · unresolved positions breathe in fixed reservations; fitting source guesses are visibly provisional; committed words arrive together where the source supplies them, and passage release settles the ink' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · ambient bars indicate activity, not answer shape or percent complete; all text appears at source finality. Earlier reading is deliberately held.' : forming === 'carve' ? ' · earlier experiment: source intervals and provisional guesses; committed text can change the intermediate layout' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
         </p>
       )}
     </div>

@@ -25,14 +25,14 @@ export default function OG() {
         }}
       >
         <div style={{ fontSize: 18, color: '#6C685C', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 24 }}>
-          product design and engineering
+          motion, interaction, research
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', fontSize: 140, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
           <span>after</span>
           <span>tokens</span>
         </div>
         <div style={{ fontSize: 28, color: '#2A2820', marginTop: 24, maxWidth: 800 }}>
-          an arrival grammar for diffusion text: the same answer, in a shape the mind pays out for.
+          a little movement. then, a whole answer. a motion study for generated text.
         </div>
         <div style={{ fontSize: 18, color: '#6C685C', marginTop: 18 }}>
           christopher robin fiore

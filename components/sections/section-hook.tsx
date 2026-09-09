@@ -18,11 +18,12 @@ export function SectionHook() {
             <span className="hero-word" style={{ animationDelay: '120ms' }}>after</span>{' '}
             <span className="hero-word" style={{ animationDelay: '380ms' }}>tokens</span>
           </h1>
-          <p className="standfirst mt-8 max-w-[34ch]">wait for the water to clear.</p>
+          <p className="standfirst mt-8 max-w-[34ch]">a little movement. then, a whole thought.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
-            a concept case study on how an answer from a diffusion language model should reach a reader: only what
-            the model has committed, on a page that holds still, with unresolved positions reserved and fitting source drafts in view. the space is an estimate, not a lookup of the final answer. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
-            runs and an audit of the version before it. nothing here is measured on a reader.
+            a motion and interaction study for generated text. soft bars move together while the source works;
+            the complete answer arrives as readable text, all at once. the bars do not predict its words or shape.
+            a working prototype, grounded in {TRACE_NUMBERS.trajectories} original sampler recordings, four new batched runs,
+            and an explicit account of the extra wait. reader benefits remain to be tested.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>
             <div>

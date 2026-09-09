@@ -18,12 +18,12 @@ import { useReplay } from '@/components/settle/use-replay'
 
 const NOTES: { title: string; body: string }[] = [
   {
-    title: 'the shape first',
-    body: 'the reservations show which source positions remain open. their geometry is an estimate, not a preview of final line lengths or list structure. candidate changes stay inside them; committed content can establish real breaks. the bubble keeps a fixed width while the source works.',
+    title: 'an active area, without a predicted shape',
+    body: 'five soft bars drift inside a stable answer area. their lengths and positions are authored, independent of future words, token count and line breaks. the bubble keeps its width while the source works. a longer final answer may grow its height.',
   },
   {
-    title: 'a draft you can watch become the answer',
-    body: 'fitting source drafts hold still in provisional ink while a persistent decorative breath marks the unresolved interval. complete committed words become readable immediately, with one small local response. several positions can develop together when the source supplies them together; no left-to-right ripple is added.',
+    title: 'one readable arrival',
+    body: 'the ambient composition continues between source events. at authoritative finality, all text becomes readable together. a short response around the answer acknowledges completion while its letters hold still. this deliberately withholds words that could have been shown earlier; it is a presentation choice, not faster inference.',
   },
   {
     title: 'a tick under the thumb',
@@ -39,10 +39,11 @@ const NOTES: { title: string; body: string }[] = [
   },
 ]
 
-const TIPS = ['tip · ask for "shorter" and the answer comes back in one line', 'tip · you can stop an answer at any sentence and keep what settled', 'sponsored · a card in the brand’s voice would sit here, and leave with the answer']
+const TIPS = ['tip · ask for a shorter answer when you want the essentials', 'tip · compare the earlier-reading option to see the tradeoff', 'concept · a contextual tip can leave when the answer arrives']
 
 export function SectionConcept() {
   const [run, setRun] = useState(0)
+  const [motion, setMotion] = useState(true)
   const [trace, setTrace] = useState<TraceCompact | null>(null)
   useEffect(() => {
     let cancelled = false
@@ -51,7 +52,7 @@ export function SectionConcept() {
   }, [])
   const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLDivElement>(0.3)
-  const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
+  const clock = useReplay(replay, { policy: 'answer', autoplay: inView, runKey: run })
   const waiting = clock.state.status === 'receiving' || clock.state.status === 'waiting'
   const tip = TIPS[run % TIPS.length]!
   return (
@@ -78,6 +79,7 @@ export function SectionConcept() {
                     runId={clock.runId}
                     focus={clock.focus}
                     paused={clock.paused}
+                    motion={motion}
                     status={false}
                     haptics
                     label="assistant answer"
@@ -95,8 +97,10 @@ export function SectionConcept() {
               </div>
             </div>
           </BrandProvider>
-          <div className="order-first mb-3 flex items-baseline justify-between gap-4 w-full max-w-[340px]">
+          <div className="order-first mb-3 flex flex-wrap items-baseline justify-between gap-3 w-full max-w-[340px]">
             <span className="text-sm" style={{ color: 'var(--ink-2)' }}>a phone, after tokens voice · the slot below the answer</span>
+            <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={() => setMotion((value) => !value)} aria-pressed={!motion}>motion {motion ? 'on' : 'off'}</button>
+            <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished}>{clock.running ? 'pause' : 'resume'}</button>
             <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label="Replay the phone">
               <span aria-hidden="true" className="replay-glyph">↻</span>
               replay

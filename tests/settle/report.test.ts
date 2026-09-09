@@ -12,7 +12,9 @@ import { TRACE_IDS, TRACE_META, loadTrace } from '@/lib/traces/index'
 // written to lib/traces/settle.json, which lib/traces/findings.ts reads;
 // otherwise the run asserts the invariants the contract promises.
 
-const POLICIES: Policy[] = ['word', 'sentence', 'paragraph']
+// This historical report remains the original three-policy comparison.
+type HistoricalPolicy = Exclude<Policy, 'answer'>
+const POLICIES: HistoricalPolicy[] = ['word', 'sentence', 'paragraph']
 
 function median(xs: number[]): number | null {
   if (!xs.length) return null
@@ -24,9 +26,9 @@ const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.l
 const r2 = (x: number | null) => (x === null ? null : Number(x.toFixed(2)))
 const r3 = (x: number | null) => (x === null ? null : Number(x.toFixed(3)))
 
-type Row = { id: string; curated: boolean; characters: number } & Record<Policy, { uniform: PolicyCost; recorded: PolicyCost }>
+type Row = { id: string; curated: boolean; characters: number } & Record<HistoricalPolicy, { uniform: PolicyCost; recorded: PolicyCost }>
 
-function summarize(rows: Row[], policy: Policy, clock: 'uniform' | 'recorded') {
+function summarize(rows: Row[], policy: HistoricalPolicy, clock: 'uniform' | 'recorded') {
   const costs = rows.map((r) => r[policy][clock])
   const nonempty = costs.filter((c) => c.characters > 0)
   return {

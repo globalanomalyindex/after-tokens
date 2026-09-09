@@ -16,6 +16,7 @@ export function statusSegments(state: SettleState, paused = false, detail = true
     case 'waiting':
       return ['waiting for the source']
     case 'receiving': {
+      if (state.policy === 'answer') return ['forming the answer']
       if (!detail) return ['receiving']
       const settled = state.bound !== null ? `${state.receivedCount} of ${state.bound} settled` : `${state.receivedCount} settled`
       // the phase is read off the field only when the source sends commitments;

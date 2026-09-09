@@ -3,26 +3,26 @@ import { Reveal } from '@/components/motion/reveal'
 import { SettleStage } from '@/components/settle/settle-stage'
 import { DefinitionTerm } from '@/components/chrome/definition-term'
 
-// The reading contract: ten rules, three policies, and what finality means.
+// The reading contract separates ambient appearance, release policy and source finality.
 
 const RULES: string[] = [
-  'released text requires source commitments or an explicitly final snapshot. guesses remain visibly provisional. no hidden final answer, final widths, salience map or forecast of length is used.',
-  'a complete-word mark requires committed pieces and boundaries. committed fragments may appear before that boundary, but cannot be released as complete words.',
-  'released text keeps its baseline and readable shape while later events arrive. a local decorative response acknowledges a new release. candidate reservations stay fixed; committed content can still change provisional line layout, and large reflows remain a limitation.',
-  'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order material appears only after released text. a fixed reservation holds each open position; a fitting source guess is visibly provisional, and other unresolved positions carry nonlexical decoration. committed pieces are fixed source text and complete words need committed boundaries. guessed whitespace has no layout authority, and no guess reaches the released page.',
-  'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
+  'released text requires source commitments or an explicitly final snapshot. the renderer does not read a hidden final answer, its widths, or a future formatting map.',
+  'the whole-answer policy waits for source finality, then releases the exact answer together. a predicted period, guessed end token or animation endpoint cannot finish it.',
+  'ambient bars are one authored composition. their shape does not encode token count, word widths, line breaks, confidence or percentage complete.',
+  'earlier-word, sentence and paragraph policies remain available for comparison. complete words need committed pieces and boundaries; earlier access and whole-answer stillness carry different costs.',
+  'the ambient composition hides intermediate candidate text. the inspectable source alternatives distinguish guesses, committed pieces and released passages. a guess never becomes released text merely because it looks plausible.',
+  'a committed end token bounds the remaining positions; finality follows when the contiguous committed prefix reaches it, or a valid finish or final snapshot establishes the result. the motion has no vote.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
-  'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
-  'a brand changes what cells, marks and onsets look like and how they move. it never changes when text becomes available or is released.',
-  'reduced motion and motion off remove decorative and spatial animation without changing source availability, release boundaries or final text. paused and hidden surfaces pause their activity; terminal states rest.',
+  'source complete, stopped, error, presentation paused and revision available are distinct. stopped or failed partial output is labeled separately, never celebrated as a complete answer.',
+  'a brand can change material, color and motion. it cannot change source availability, finality or the exact answer, and readable text stays at its reading contrast.',
+  'reduced motion and motion off remove decoration without changing the release timestamp. pause and replay respond immediately; hidden surfaces pause, and terminal states rest.',
 ]
 
 const FINALITY: { dt: string; dd: string }[] = [
   { dt: 'when a source can revise everything', dd: 'a sampler that remasks committed tokens cannot promise a prefix. it sends snapshots instead, and nothing reaches the page until one is marked final. repeated identical drafts are not evidence of finality.' },
   { dt: 'when a later revision arrives', dd: 'the page a reader has already read stays. the replacement is reviewed and applied by the reader, and the previous version remains available. a change is never hidden inside motion.' },
   { dt: 'when generation ends another way', dd: 'source complete, source stopped and source error are different words in the margin. released text stays; unfinished text is held and said to be held. pausing this demonstration pauses a recording; it does not claim to stop a model.' },
-  { dt: 'when a boundary is only evidence', dd: 'a sentence boundary is punctuation followed by whitespace, held back inside code, lists and after common abbreviations. it says the sentence is complete. it says nothing about whether a later sentence will qualify it, or whether it is true.' },
+  { dt: 'when a boundary is only evidence', dd: 'the earlier-sentence policy uses punctuation and whitespace heuristics, with code and list exceptions. that boundary does not prove semantic completeness or truth. whole-answer release instead requires the source finality contract.' },
 ]
 
 export function SectionContract() {
@@ -30,8 +30,7 @@ export function SectionContract() {
     <Section id="contract" title="What the reader can count on">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what the reader can count on</h2>
       <p className="standfirst max-w-3xl">
-        given the same events, the surface shows the same page, the same forming text, the same field and the same
-        words in the margin, whatever comes later. ten rules make that true, and a pure reducer keeps them.
+        given the same source events, policy, visual seed and presentation clock, the surface shows the same state, whatever comes later. the bars can move while the answer is held; only the source decides when it is complete.
       </p>
       <ol className="mt-12 md:mt-16 grid gap-x-12 gap-y-6 md:grid-cols-2 list-none m-0 p-0 rule pt-8">
         {RULES.map((rule, i) => (
@@ -43,12 +42,9 @@ export function SectionContract() {
       </ol>
 
       <div className="mt-16 md:mt-24">
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">three policies, one prefix</h3>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">four policies, one source</h3>
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
-          the raw prefix on the left is what a naive renderer would draw: every committed token in order, half-words and all. the surface
-          on the right draws the same events under the contract. change the policy to move the boundary; change what follows the page to
-          see the carved field, the in-order text alone, or what the surface holds back when a product wants stillness above all. reading research motivates protecting the reader&rsquo;s place: the eye samples the next word before it lands there (<DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm>),
-          and studies of unstable text and rereading motivate preserving earlier passages. they do not validate this particular motion treatment.
+          the raw prefix shows in-order source pieces, including half-words. the comparison applies a release policy to those same events. the whole-answer option waits for finality; earlier policies expose useful text sooner. this is an availability comparison, separate from testing static, coherent and independent motion at identical answer timing. reading research, including <DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm> and studies of unstable text, motivates preserving readable text. it does not prove that withholding it is better.
         </p>
         <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison />
       </div>

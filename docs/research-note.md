@@ -2,6 +2,8 @@
 
 Christopher Robin Fiore. After Tokens project, 2026.
 
+**Latest implementation, 9 September 2026:** the default prototype now uses an authored ambient bar composition and waits for the whole answer. The original 60-trace methods and earlier renderer findings below remain a historical research record; they do not measure the new motion. See the [current experiment and research rationale](field-experiment-2026-09-09.md), [implementation handoff](ambient-handoff-2026-09-09.md), [four new batched source captures](../data/experiments/README.md) and [whole-answer availability cost](../data/experiments/answer-policy-cost-2026-09-09.json). The latest revision passes lint, types, 268 tests across 40 files and 42 browser checks across Chromium, WebKit and iPhone 14 emulation. Eight rendering observations and both production builds are complete; reader benefit and physical iPhone behavior are unvalidated.
+
 ## Abstract
 
 Masked diffusion language models generate text by iteratively unmasking positions in parallel. The order does not run left to right, and interfaces built for them are usually authored guesses about what that process looks like. This note reports sixty recorded denoising trajectories from a real masked diffusion model (0.6 billion parameters, instruction tuned, greedy decoding) across three sampler configurations, and measures how commit order relates to reading order, how far apart consecutive commits land, how often the model's provisional guess for a token changes before it commits, and how confident a commit actually is. The default sampler configuration, low-confidence remasking inside a fixed block schedule, turns out to be nearly sequential at the macro level. The block schedule is why; the confidence rule alone would not produce it. Removing the schedule collapses that order. These are measurements of one sampler on one model. They are offered as a stimulus for the separate, unresolved question of whether any particular reveal helps a reader.
@@ -284,3 +286,9 @@ Wu, C., et al. (2025). Fast-dLLM: Training-free Acceleration of Diffusion LLM by
 Zhang, Z., Tsiakas, K., and Schneegass, C. (2024). Explaining the Wait: How Justifying Chatbot Response Delays Impact User Trust. ACM CUI 2024.
 
 Withdrawn citation: the earlier note named Zhu, H., et al. (2026), “Just-in-Time Tokens: Adaptive Token Pacing for Cognitive-Friendly LLM Streaming.” The 9 September 2026 refresh did not verify an exact primary source. It is retained here only to record the correction and is not used as evidence.
+
+## Rendering observations for this revision
+
+Eight sequential Chromium observations at 390 and 1380 px viewport widths each produced one complete text update with no pre-final text. Across 9,667 matched first-character samples of final whitespace words, observed displacement after arrival was 0 px. The long explanation grew the occupied answer frame from 120 to 219.375 px at finality. This is a one-time 99.375 px expansion, not zero layout change. The largest measured primary bar rectangle-edge change was 0.5663 px between sampled frames; maximum observed frame gap was 18.8 ms in these runs. These observations describe this development machine and sampled stimuli, not physical iPhone performance or a reader preference.
+
+The [measurement report](ambient-motion-validation-2026-09-09.json) defines all metrics and records implementation/source hashes. The [artifact manifest](../data/experiments/ambient-motion-2026-09-09/manifest.json) links eight compressed raw logs and the two screen recordings. A source deadline and readable text first observed in the same frame is recorded as zero sampled-frame delay; it is not a claim of zero display latency.

@@ -54,13 +54,15 @@ export function createSettleState(policy: Policy = 'sentence', bound: number | n
   }
 }
 
-/** Committed, contiguous, word-complete text that has not yet completed a passage. */
+/** Committed, contiguous, word-complete text awaiting a passage, when the policy permits early reading. */
 export function formingText(state: SettleState): string {
+  if (state.policy === 'answer') return ''
   return state.prefix.slice(state.releasedLength, state.wordSafeLength)
 }
 
-/** Committed, contiguous text still waiting for a word boundary. Never drawn. */
+/** Text waiting for a word boundary, or the full unreleased prefix under answer policy. Never drawn. */
 export function heldText(state: SettleState): string {
+  if (state.policy === 'answer') return state.prefix.slice(state.releasedLength)
   return state.prefix.slice(state.wordSafeLength)
 }
 
@@ -70,12 +72,15 @@ export function pageText(state: SettleState): string {
 }
 
 function release(state: SettleState, final: boolean): SettleState {
+  // Answer policy deliberately exchanges early reading for a single complete
+  // arrival. Punctuation, stable guesses, and elapsed time are not finality.
+  if (state.policy === 'answer' && !final) return state
   const additions = []
   let released = state.releasedLength
   const safe = final ? state.prefix.length : state.wordSafeLength
   while (released < safe) {
     const pending = state.prefix.slice(released, safe)
-    const end = passageBoundary(pending, state.policy) || (final ? pending.length : 0)
+    const end = state.policy === 'answer' ? pending.length : passageBoundary(pending, state.policy) || (final ? pending.length : 0)
     if (!end) break
     additions.push({
       id: `v${state.version}-p${state.passages.length + additions.length}`,

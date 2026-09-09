@@ -16,8 +16,7 @@ export function SectionCost() {
     <Section id="cost" title="What waiting costs">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what waiting costs</h2>
       <p className="standfirst max-w-3xl">
-        holding text until it is complete makes its first words readable later. the cost is measured on every
-        recording, per policy, on the recording&rsquo;s own clock, and shown here rather than argued away.
+        the ambient composition waits for the whole answer. that removes intermediate word arrivals by giving up early reading. the earlier policies remain available, and their real availability costs are measured separately from how the motion feels.
       </p>
       <Reveal className="mt-12 md:mt-16">
         <CostTable scope="all60" />
@@ -26,32 +25,28 @@ export function SectionCost() {
         <Reveal className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each sentence</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the first sentence lands after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine. production latency depends on the model, sampler and hardware. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. and for
-            {' '}{formingPct} percent of the run that waiting text is in view, forming, so the page is still while the process is not hidden.
+            the earlier-sentence alternative releases its first passage after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine. production latency depends on the model, sampler and hardware. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. its forming-text channel is nonempty for a median {' '}{formingPct} percent of the recorded run. that reducer measure is not a viewport exposure or readability result.
           </p>
         </Reveal>
         <Reveal delay={80} className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each word</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the honest typewriter. the first word lands at {w.medianFirstPassageAt} steps and the only wait is the word rule itself, a mean of
+            the earlier-word alternative. the first word lands at {w.medianFirstPassageAt} steps and the only wait is the word rule itself, a mean of
             {' '}{w.meanWordSafeLag?.toFixed(1)} steps: the price of keeping incomplete words off the released page. release follows the word-safe prefix in bursts.
           </p>
         </Reveal>
         <Reveal delay={160} className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each paragraph</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            on this corpus a paragraph is the whole answer: the first passage lands at step {p.medianFirstPassageAt} of {TRACE_NUMBERS.steps}. it is an
-            explicit trade for a product that would rather show nothing than a sentence out of context, and it is priced as such.
+            the median first paragraph arrives at step {p.medianFirstPassageAt} of {TRACE_NUMBERS.steps}. a paragraph boundary can still precede source finality, so this policy is not equivalent to waiting for the whole answer.
           </p>
         </Reveal>
       </div>
       <div className="mt-12 md:mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] rule pt-8">
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what margin paid, and what settle does instead</h3>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">the cost of one arrival</h3>
         <div className="text-base leading-relaxed max-w-[60ch]" style={{ color: 'var(--ink-2)' }}>
           <p>
-            margin held the in-order text invisible until its sentence closed and paid the whole hold in blankness. settle releases the page on
-            the same boundary at the same moment, so the page&rsquo;s wait is identical, and draws the held text dim beneath it, so the wait is
-            not blank. the forming text is committed and in order, but its passage is not yet complete. people may read it anyway; its provisional placement still needs to be comfortable and clear.
+            whole-answer release becomes eligible at a median 15.8 seconds on the original recordings. across 57 nonempty matched runs, its first passage waits a median 10.5 seconds longer than sentence release. that is the median of paired differences, not a subtraction of the two medians. three empty outputs remain in the exact-output audit. these are reducer eligibility times, not measured browser paint or human reading times. {' '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/data/experiments/answer-policy-cost-2026-09-09.json">policy report and definitions</a>.
           </p>
           <p className="mt-4">
             the clock here is a 0.6B model at {TRACE_NUMBERS.msPerStepRecorded} ms a step on a laptop. it is the capture&rsquo;s

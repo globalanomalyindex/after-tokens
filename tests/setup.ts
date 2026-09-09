@@ -1,5 +1,10 @@
 import '@testing-library/jest-dom/vitest'
 
+// React selects a prefixed animation event when this browser constructor is
+// absent. jsdom has no animation clock, but our lifecycle tests dispatch the
+// standard animationend event explicitly, as real supported browsers do.
+if (!('AnimationEvent' in window)) Object.defineProperty(window, 'AnimationEvent', { value: Event, configurable: true })
+
 // jsdom does not implement matchMedia; mock with a default of "not reduced motion"
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

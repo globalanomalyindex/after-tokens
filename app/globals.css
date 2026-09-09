@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./ambient-composition.css";
 
 @theme {
   --color-bone: #EBE7DA;
@@ -791,6 +792,30 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    changes once; readable glyphs never blur, scale, or take a letter stagger. */
 .settle-passage { display: inline; }
 
+/* Whole-answer presentation has no hidden word geometry while generating.
+   A fixed minimum is an authored waiting area, never an answer-length guess. */
+.settle-answer-frame { display: grid; position: relative; isolation: isolate; }
+.settle-answer-frame[data-occupied="true"] { min-block-size: 8em; }
+.settle-answer-frame > .settle-page,
+.settle-answer-frame > .ambient-composition { grid-area: 1 / 1; align-self: start; }
+.settle-answer-frame > .settle-page { z-index: 1; }
+.settle-answer-text { color: inherit; opacity: 1; filter: none; transform: none; }
+.settle-answer-arrival {
+  position: absolute;
+  inset: -.4em -.25em;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: .55em;
+  box-shadow: 0 0 .7em .06em color-mix(in oklab, var(--accent, currentColor) 35%, transparent);
+  opacity: 0;
+  animation: settle-answer-arrive 260ms ease-out;
+}
+@keyframes settle-answer-arrive { from { opacity: .3; transform: scale(.99); } to { opacity: 0; transform: scale(1); } }
+.settle[data-policy="answer"] .settle-mark { display: none; }
+.settle[data-motion="off"] .settle-answer-arrival,
+.settle[data-visible="false"] .settle-answer-arrival { animation: none; }
+@media (prefers-reduced-motion: reduce) { .settle-answer-arrival { animation: none; } }
+
 .settle-field {
   position: relative;
   display: grid;
@@ -961,7 +986,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle[data-status="revision"] .settle-ambient,
 .settle[data-motion="off"] .settle-ambient { animation: none; opacity: 0; }
 .settle[data-motion="off"] .settle-ink { transition: none; }
-.settle[data-motion="off"] *,
+.settle[data-motion="off"] *:not(.ambient-composition__bar):not(.ambient-composition__ink),
 .settle[data-motion="off"] *::before,
 .settle[data-motion="off"] *::after { animation: none !important; transition: none !important; }
 .settle[data-active="false"] .settle-mark::before,

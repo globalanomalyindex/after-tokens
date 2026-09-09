@@ -3,6 +3,7 @@
 import { Section } from '@/components/section'
 import { SettleStage } from '@/components/settle/settle-stage'
 import { SETTLE } from '@/lib/traces/findings'
+import answerCost from '@/data/experiments/answer-policy-cost-2026-09-09.json'
 
 // The playground: every axis the surface has, freed to combine, with the
 // corpus cost of the chosen policy beside the stage.
@@ -12,9 +13,9 @@ export function SectionPlayground() {
     <Section id="playground" title="Try it">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">try it</h2>
       <p className="standfirst max-w-3xl">
-        every recording the hand audit kept, under any sampler, policy, voice and clock, with the carved field, the
-        in-order text alone, or nothing after the page, and the raw prefix beside it if you want it. the readout is
-        the chosen policy&rsquo;s cost over the whole corpus; the stage is one run. any change replays from the start.
+        compare the whole-answer arrival with earlier words, sentences or paragraphs. the earlier policies also offer
+        the previous source-interval treatment. the readout measures each policy over the original corpus; the stage
+        is one unedited recording. a presentation change restarts the same source timeline.
       </p>
       <div className="mt-12 md:mt-16">
         <SettleStage
@@ -22,6 +23,19 @@ export function SectionPlayground() {
           controls={['prompt', 'config', 'policy', 'preview', 'voice', 'pace', 'comparison']}
          
           readout={({ policy, forming }) => {
+            if (policy === 'answer') {
+              const cost = answerCost.all60.answer
+              return <div className="grid gap-4 rule pt-4">
+                <p className="label">whole answer · original {cost.traces} recordings</p>
+                <dl className="grid gap-3 readout">
+                  <div><dt>first complete answer, median</dt><dd>{(cost.medianFirstPassageAtMs! / 1000).toFixed(2)} s</dd></div>
+                  <div><dt>added first-passage wait vs sentence, paired median</dt><dd>{(answerCost.pairedAnswerMinusSentence.medianFirstPassageDelayMs! / 1000).toFixed(2)} s</dd></div>
+                  <div><dt>character hold, mean of trace means</dt><dd>{(cost.meanOfTraceMeanExtraHoldMs! / 1000).toFixed(2)} s</dd></div>
+                  <div><dt>exact final outputs</dt><dd>{cost.exactFinalOutputs} / {cost.traces}</dd></div>
+                </dl>
+                <p className="readout leading-relaxed" style={{ color: 'var(--muted)' }}>57 nonempty runs for timing. Recorded forward-pass clock, not API latency. The animation adds no completion timer; the whole-answer policy itself withholds earlier usable text.</p>
+              </div>
+            }
             const u = SETTLE.all60[policy].uniform
             const r = SETTLE.all60[policy].recorded
             const rows: [string, string][] = [

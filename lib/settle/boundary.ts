@@ -37,6 +37,7 @@ const ABBREVIATION = /(?:\b(?:mr|mrs|ms|dr|prof|sr|jr|st|vs|etc|fig|no|approx|de
  * complete unit, or 0 when none is complete.
  */
 export function passageBoundary(text: string, policy: Policy): number {
+  if (policy === 'answer') return 0
   if (policy === 'word') return text.length
   let fence: { marker: string; count: number } | null = null
   let inlineTicks = 0

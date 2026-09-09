@@ -13,11 +13,11 @@ import { MARK_SHAPES, SETTLE_RANGES, type MarkShape, type SettleVoice } from '@/
 // invariant. The sliders move a live stage; the numbers say what each keeps.
 
 const TOKENS: { key: keyof SettleVoice; range: string; changes: string; keeps: string }[] = [
-  { key: 'mark', range: 'tick, dot, dash, square', changes: 'the shape of the strip&rsquo;s cells and of the margin mark', keeps: 'every state legible at every size' },
-  { key: 'bloom', range: '0 to 1', changes: 'the strength of local word and passage afterglow', keeps: 'word feedback ends in 200 ms and passage feedback in 400 ms; earlier text does not replay it' },
-  { key: 'onset', range: '0 to 240 ms', changes: 'the transition from available ink to released ink', keeps: 'text is readable immediately; zero onset and reduced motion remove the completion treatment' },
+  { key: 'mark', range: 'tick, dot, dash, square', changes: 'the margin mark and the optional source-inspection strip', keeps: 'the same source state; no mark represents a future word' },
+  { key: 'bloom', range: '0 to 1', changes: 'completion decoration in the available surface treatments', keeps: 'readable text stays steady; a glow cannot certify answer correctness' },
+  { key: 'onset', range: '0 to 240 ms', changes: 'the ink treatment in the earlier-passage alternatives', keeps: 'the whole answer is readable at finality; onset never delays release' },
   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breath of the margin mark while receiving', keeps: 'rest at every terminal state' },
-  { key: 'grain', range: '0 to 1', changes: 'how far the available ink sits from the page&rsquo;s', keeps: 'the available ink at least 4.5:1 on both of the brand&rsquo;s grounds; a tint carries the state where a palette cannot dim' },
+  { key: 'grain', range: '0 to 1', changes: 'unresolved decoration and provisional ink in the earlier-text alternatives', keeps: 'committed text must clear contrast on its actual background; whole-answer text uses the reading ink' },
 ]
 
 const SLIDERS: { key: Exclude<keyof SettleVoice, 'mark'>; step: number; unit?: string }[] = [
@@ -41,9 +41,7 @@ export function SectionVoice() {
     <Section id="voice" title="A voice in the margin">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a voice in the margin</h2>
       <p className="standfirst max-w-3xl">
-        a brand does not get a new reveal. it gets five tokens on the one surface, each inside a range that is an
-        invariant, so a brand can color the arrival and cannot change when text becomes available, whether it moves,
-        or what the margin says. the margin mark takes the brand&rsquo;s accent; its breath is the tempo.
+        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change answer availability or truth. the ambient motion comparison holds its choreography constant so a palette change is not mistaken for a timing benefit.
       </p>
       <div className="mt-12 md:mt-16 overflow-x-auto" tabIndex={0} role="region" aria-label="Brand voice tokens, scroll horizontally">
         <table className="w-full text-left border-collapse">
@@ -76,7 +74,7 @@ export function SectionVoice() {
         <SettleStage
           key={brand}
           source="trace:golden-sunflower__lowconf-b32"
-         
+          policy="sentence"
           brand={brand}
           voice={voice}
           runKey={run}

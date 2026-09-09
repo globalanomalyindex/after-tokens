@@ -1,0 +1,80 @@
+/* A bounded, authored activity composition. These five forms do not map to
+   source positions, future words, final line count, or percentage complete. */
+.ambient-composition {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: 8em;
+  overflow: hidden;
+  contain: layout paint;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ambient-composition__bar {
+  position: absolute;
+  inset-inline-start: var(--ambient-left);
+  inset-block-start: var(--ambient-top);
+  inline-size: var(--ambient-width);
+  block-size: .82em;
+  transform-origin: center;
+  transform: translate3d(0, 0, 0) scale(1, 1);
+  opacity: .72;
+  animation: ambient-composition-flow var(--ambient-period, 5400ms) ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.ambient-composition__ink {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  background: currentColor;
+  opacity: .23;
+  transform-origin: center;
+  transform: translate3d(0, 0, 0) scaleX(1);
+  /* Static feathering avoids travelling shimmer, capsules and animated blur.
+     Only transform and opacity change on the compositor during motion. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 79%, transparent), linear-gradient(0deg, transparent, #000 32%, #000 68%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 79%, transparent), linear-gradient(0deg, transparent, #000 32%, #000 68%, transparent);
+  mask-composite: intersect;
+  animation: ambient-composition-drift var(--ambient-drift-period, 7300ms) ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.ambient-composition[data-condition="independent"] .ambient-composition__bar {
+  animation-duration: var(--ambient-independent-period);
+}
+
+.ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__bar,
+.ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__ink {
+  animation-play-state: running;
+}
+
+.ambient-composition[data-condition="static"] .ambient-composition__bar,
+.ambient-composition[data-condition="static"] .ambient-composition__ink {
+  animation: none;
+}
+
+/* Shared primary deformation plus a much smaller per-bar local drift.
+   No phase delays: all conditions have identical initial/rest geometry.
+   Independent changes deterministic periods, not displacement/amplitude
+   ranges; it is a phase-divergence comparator, not statistical randomization. */
+@keyframes ambient-composition-flow {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1); opacity: .72; }
+  25% { transform: translate3d(.45em, -.16em, 0) scale(.94, .9); opacity: .79; }
+  50% { transform: translate3d(-.12em, .18em, 0) scale(.84, 1.14); opacity: .74; }
+  75% { transform: translate3d(-.4em, -.1em, 0) scale(.96, .96); opacity: .67; }
+}
+
+@keyframes ambient-composition-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scaleX(1); }
+  25% { transform: translate3d(-.035em, .045em, 0) scaleX(.997); }
+  50% { transform: translate3d(.05em, -.025em, 0) scaleX(1.003); }
+  75% { transform: translate3d(-.025em, -.04em, 0) scaleX(.999); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-composition .ambient-composition__bar,
+  .ambient-composition .ambient-composition__ink { animation-play-state: paused !important; }
+}

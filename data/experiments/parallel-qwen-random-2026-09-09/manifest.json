@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "experimental": true,
+  "captured_at_utc": "2026-09-09T18:25:05.609243+00:00",
+  "model": "dllm-hub/Qwen3-0.6B-diffusion-mdlm-v0.1",
+  "model_revision": "c8d24a3f4adaeef46881b450e1bf7d1005203bd7",
+  "source_revision": "47d71a4383693fdeea6e39426524d365f94ac3e6",
+  "capture_script": "scripts/capture-parallel-experiment.py",
+  "capture_script_sha256": "dcada764579e0928d2d27b51b902e773b3496b66f8ca34f83fe9b1e441e8cbac",
+  "capture_source_snapshot": "capture-source.py",
+  "sampler": {
+    "id": "random-b128-s32",
+    "remasking": "random",
+    "block_size": 128,
+    "steps": 32,
+    "max_new_tokens": 128,
+    "temperature": 0.0,
+    "note": "Experimental real capture: 32 evaluations; four simultaneous token commitments per evaluation in one global 128-position field. Positions selected by seeded random scores."
+  },
+  "seed": 0,
+  "runtime": {
+    "python": "3.12.9",
+    "torch": "2.14.0",
+    "transformers": "4.57.0",
+    "platform": "macOS-26.4-arm64-arm-64bit",
+    "machine": "arm64",
+    "device": "mps",
+    "dtype": "torch.bfloat16",
+    "deterministic_algorithms": false,
+    "model_load_ms": 1860.371,
+    "warmup_forward_passes": 0
+  },
+  "clocks": {
+    "step_ms": "Synchronized model-forward duration only; retains first-step warmup. Existing replayTrace uses cumulative step_ms. This excludes selection, snapshots, tokenizer work, load and network; not end-to-end latency.",
+    "step_wall_ms": "Observed monotonic intervals between step snapshots becoming available, including forward, selection, device-to-host and online draft encoding; origin immediately before first forward. Excludes prompt/model loading and final file serialization. Use cumulative values for the experimental observed capture-loop replay."
+  },
+  "causality": "Each step commits four previously masked positions from one actual model evaluation. Deltas are created online after that commitment, using pre-commit argmax at still-open positions. No old commitments are regrouped. Answer/words/tail are retrospective audit labels and must never drive geometry or event availability.",
+  "limitations": [
+    "One fixed prompt from one small model and one sampler; no claims of representative answer quality or reader benefit.",
+    "Four token commitments do not imply four complete words, sentences, or independent list items.",
+    "Global low-confidence selection can commit EOS positions before useful content and produce very short answers.",
+    "Seed is fixed, but exact numerical reproducibility across MPS/PyTorch/hardware versions is not guaranteed.",
+    "The previous 60-trace corpus used one token per step; these recordings are a separate experiment and are excluded from its aggregate claims."
+  ],
+  "captures": [
+    {
+      "id": "sleep-tips__random-b128-s32",
+      "prompt_id": "sleep-tips",
+      "stats": {
+        "content_tokens": 110,
+        "words": 3,
+        "ms_total": 4139.721,
+        "ms_per_step_median": 117.065,
+        "capture_loop_ms": 4559.904,
+        "multi_token_steps": 32,
+        "multi_content_token_steps": 32,
+        "max_content_tokens_per_step": 4,
+        "tail_tokens": 18
+      },
+      "content_tokens_per_step": [
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4,
+        4,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        2,
+        4,
+        4,
+        2,
+        3,
+        3,
+        4,
+        2,
+        2
+      ],
+      "full": "full/sleep-tips__random-b128-s32.json.gz",
+      "full_sha256": "99b920dddeaa10b07122e5d405ada6a1f538a26d832482b2c3285428f0d33ccc",
+      "compact": "compact/sleep-tips__random-b128-s32.json",
+      "compact_sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "exact_piece_concat_matches_decoded_answer": true
+    }
+  ]
+}

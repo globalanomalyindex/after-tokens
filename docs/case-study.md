@@ -1,5 +1,7 @@
 # After Tokens: a causal reading surface for diffusion text
 
+> Historical case-study draft. The current implementation and research narrative are in [the ambient field study](field-experiment-2026-09-09.md) and [implementation handoff](ambient-handoff-2026-09-09.md). Earlier renderer descriptions below retain their original scope.
+
 **A product design and engineering case study**
 
 **Motion update, 9 September 2026:** the revised renderer now uses persistent source-token identity, fixed candidate reservations, local completion feedback and a persistent ambient treatment. [The implementation record](motion-direction-2026-09-09.md) explains what changed and what remains unvalidated. The reader study is still unrun; the revision does not claim zero reflow.

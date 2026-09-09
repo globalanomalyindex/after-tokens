@@ -2,9 +2,14 @@ import { expect, test, type Locator, type Page } from '@playwright/test'
 import weather from '../../data/traces/compact/weather__random-b32.json'
 import sky from '../../data/traces/compact/sky-blue__lowconf-b128.json'
 
-async function startHook(page: Page): Promise<Locator> {
+async function startEarlierWords(page: Page): Promise<Locator> {
   await page.goto('/')
-  const hook = page.locator('#hook')
+  const hook = page.locator('#playground')
+  await hook.scrollIntoViewIfNeeded()
+  await hook.getByRole('radiogroup', { name: 'sampler', exact: true }).getByRole('radio', { name: 'random · 4 blocks', exact: true }).click()
+  await hook.getByRole('radiogroup', { name: 'Prompt', exact: true }).getByRole('radio', { name: weather.prompt, exact: true }).click()
+  await hook.getByRole('radio', { name: 'each sentence', exact: true }).click()
+  await hook.getByRole('radio', { name: 'source intervals', exact: true }).click()
   const surface = hook.locator('.settle').first()
   await surface.scrollIntoViewIfNeeded()
   await expect(surface.locator('.settle-unit').first()).toBeAttached()
@@ -14,7 +19,7 @@ async function startHook(page: Page): Promise<Locator> {
 }
 
 test('real candidate changes preserve source-position nodes and committed ink stays readable', async ({ page }) => {
-  const surface = await startHook(page)
+  const surface = await startEarlierWords(page)
   const observations = await surface.evaluate(async (root) => {
     const known = new Map<string, { el: Element; candidate: string }>()
     let changes = 0
@@ -53,12 +58,12 @@ test('real candidate changes preserve source-position nodes and committed ink st
 })
 
 test('pause and offscreen states suspend ambient activity without resetting its phase', async ({ page }) => {
-  const surface = await startHook(page)
+  const surface = await startEarlierWords(page)
   const ambient = surface.locator('.settle-ambient').first()
   await expect(surface).toHaveAttribute('data-active', 'true')
   await expect(ambient).toBeAttached()
   const delay = await ambient.evaluate((el) => getComputedStyle(el).animationDelay)
-  await page.locator('#hook').getByRole('button', { name: 'pause the replay', exact: true }).click()
+  await page.locator('#playground').getByRole('button', { name: 'pause the replay', exact: true }).click()
   await expect(surface).toHaveAttribute('data-paused', 'true')
   await expect(surface).toHaveAttribute('data-active', 'false')
   await expect.poll(() => ambient.evaluate((el) => getComputedStyle(el).animationPlayState)).toBe('paused')
@@ -66,7 +71,7 @@ test('pause and offscreen states suspend ambient activity without resetting its 
   await page.waitForTimeout(150)
   expect(await surface.locator('.settle-page').textContent()).toBe(pausedText)
   expect(await ambient.evaluate((el) => getComputedStyle(el).animationDelay)).toBe(delay)
-  await page.locator('#hook').getByRole('button', { name: 'resume the replay', exact: true }).click()
+  await page.locator('#playground').getByRole('button', { name: 'resume the replay', exact: true }).click()
   await expect(surface).toHaveAttribute('data-active', 'true')
   await page.locator('#open').scrollIntoViewIfNeeded()
   await expect(surface).toHaveAttribute('data-active', 'false')
@@ -79,7 +84,7 @@ test('pause and offscreen states suspend ambient activity without resetting its 
 
 test('a finished real recording is exact, selectable and stationary', async ({ page }) => {
   test.setTimeout(60_000)
-  const surface = await startHook(page)
+  const surface = await startEarlierWords(page)
   await expect(surface).toHaveAttribute('data-status', 'complete', { timeout: 45_000 })
   await expect(surface).toHaveAttribute('data-active', 'false')
   expect(await surface.locator('.settle-page').textContent()).toBe(weather.answer)
@@ -107,10 +112,10 @@ test('a finished real recording is exact, selectable and stationary', async ({ p
 })
 
 test('motion off cancels decoration while the recorded source keeps advancing', async ({ page }) => {
-  const surface = await startHook(page)
-  await page.locator('#hook').getByRole('button', { name: 'motion on', exact: true }).click()
+  const surface = await startEarlierWords(page)
+  await page.locator('#playground').getByRole('button', { name: 'motion on', exact: true }).click()
   await expect(surface).toHaveAttribute('data-motion', 'off')
-  await page.locator('#hook').getByRole('button', { name: 'motion off', exact: true }).focus()
+  await page.locator('#playground').getByRole('button', { name: 'motion off', exact: true }).focus()
   await page.keyboard.press('Space')
   await expect(surface).toHaveAttribute('data-motion', 'on')
   await page.keyboard.press('Space')

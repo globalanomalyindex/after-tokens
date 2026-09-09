@@ -20,6 +20,7 @@ type FrameProps = { title: string; brand: BrandId; traceId: TraceId; children: (
 
 function Frame({ title, brand, traceId, children, delay = 0, tall = false, released }: FrameProps) {
   const [run, setRun] = useState(0)
+  const [motion, setMotion] = useState(true)
   const [trace, setTrace] = useState<TraceCompact | null>(null)
   useEffect(() => {
     let cancelled = false
@@ -28,13 +29,14 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
   }, [traceId])
   const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLElement>(0.3)
-  const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
+  const clock = useReplay(replay, { policy: 'answer', autoplay: inView, runKey: run })
   const answer = (
     <SettleAnswer
       state={clock.state}
       runId={clock.runId}
       focus={clock.focus}
       paused={clock.paused}
+      motion={motion}
       status={false}
       label="assistant answer"
       className="text-[14px] leading-snug"
@@ -46,12 +48,16 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
       <BrandProvider brand={brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
         <figure ref={ref as never} className="m-0 flex-1 flex flex-col">{children(answer, trace?.prompt ?? '', run)}</figure>
       </BrandProvider>
-      <figcaption className="order-first mb-3 flex items-baseline justify-between gap-4">
+      <figcaption className="order-first mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <span className="text-sm" style={{ color: 'var(--ink-2)' }}>{title}</span>
+        <span className="flex items-center gap-3 flex-wrap">
+        <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={() => setMotion((value) => !value)} aria-pressed={!motion}>motion {motion ? 'on' : 'off'}</button>
+        <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished}>{clock.running ? 'pause' : 'resume'}</button>
         <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label={`Replay ${title}`}>
           <span aria-hidden="true" className="replay-glyph">↻</span>
           replay
         </button>
+        </span>
       </figcaption>
     </Reveal>
   )
@@ -131,9 +137,9 @@ export function SectionPreviews() {
         </Frame>
       </div>
       <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-        three surfaces, three voices, one contract. the search answer comes from the block sampler and arrives a sentence at a time as each
-        block&rsquo;s hard position fills; the thread and the phone answers come from the schedule-free sampler, so their fields settle from the
-        right for most of the run and the sentence lands whole at the end.
+        three surfaces, three voices, one whole-answer policy. every bar composition is independent of source positions,
+        final words and line lengths. the answer appears at verified finality, with a brief decorative response and no text stagger.
+        the bubble keeps its width; a long final answer can still increase its height. the recorded source has not been accelerated for the phone.
       </p>
     </Section>
   )

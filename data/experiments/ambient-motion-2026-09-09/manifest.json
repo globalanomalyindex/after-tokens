@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "archivedAt": "2026-09-09T19:08:31.211Z",
+  "measuredAt": "2026-09-09T19:03:49.622Z",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "provenance": "Hashes added after recording while the measured implementation and source fixtures were frozen. The archive timestamp is separate from the unchanged measurement timestamp.",
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "2d568b23ded009c3f01138a7e52d336feba0dd514dae6bca8f5cfe9b11d0b7b3"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "afd72fb3d3564c4d822eb771d2a3220aa41f8badb5dc987f287445512a91a074"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "6ff7e50b40eb271f44908b50f1bd1815b0e7cd840f9506bfd3ae56afe4a67853"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "6845bf7bb31d4b7115e6d506fb0fa8cc8e95396695cb31876dc1255407da2f51"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "ac01ae7bc33d684371e066d36ca245588f6f8b9030b4f1af035c28928cc43907"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "997471ad542dc875790dd2e50cd4939d0fb52c8c4948bfcb5d3f2d812e3c5a99"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    }
+  ],
+  "sourceFixtures": [
+    {
+      "id": "sleep-tips__lowconf-b128-s32",
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "clock": "step_wall_ms"
+    },
+    {
+      "id": "sky-blue__lowconf-b128-s32",
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "clock": "step_wall_ms"
+    },
+    {
+      "id": "sleep-tips__random-b128-s32",
+      "file": "data/experiments/parallel-qwen-random-2026-09-09/compact/sleep-tips__random-b128-s32.json",
+      "sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "clock": "step_wall_ms"
+    }
+  ],
+  "recordings": [
+    {
+      "name": "390-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-static-raw.json.gz",
+      "sha256": "d2b3f1a33ef26fe62e59e4dff59b6254d1966f4765aee2bdfee0454104985bbd",
+      "bytes": 5261,
+      "uncompressedSha256": "8fdacd51a5d6bd716fd22d935956c18de1f39fa9eea316d06cafe09e8d9c1643",
+      "uncompressedBytes": 326476,
+      "samples": 306
+    },
+    {
+      "name": "390-coherent",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "coherent",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-coherent-raw.json.gz",
+      "sha256": "5b109ff6307cdccd06d40c55a9360802eb7252bb4f0ea193354a125653f3d988",
+      "bytes": 41596,
+      "uncompressedSha256": "e30268e8deb4690be272c105b3343e6135575cd4a345968fd59a80a799821606",
+      "uncompressedBytes": 402235,
+      "samples": 306
+    },
+    {
+      "name": "390-independent",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "independent",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-independent-raw.json.gz",
+      "sha256": "bad2c0d3f816f9ea5f7491a1b830eb5650fe005ee31730a7a901729c9c6a7863",
+      "bytes": 64333,
+      "uncompressedSha256": "2bc38534844e93b833a6e064f6be4343823f611ff857c7cb646149fedd71d9b6",
+      "uncompressedBytes": 403907,
+      "samples": 306
+    },
+    {
+      "name": "1380-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-static-raw.json.gz",
+      "sha256": "5dcc07ae319d8b9fd6164b621473bef9922a2c2c334ca50a52f7319842ab039e",
+      "bytes": 5184,
+      "uncompressedSha256": "811e8f52b1d7641f38bd09595420a0d4b320deb4b1469b1b35c625f5d8697a8b",
+      "uncompressedBytes": 324635,
+      "samples": 306
+    },
+    {
+      "name": "1380-coherent",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "coherent",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-coherent-raw.json.gz",
+      "sha256": "e745772ff15e69799ee6fca3a6ca5cb1caf556a27dd5bca99485232aaf3702af",
+      "bytes": 38184,
+      "uncompressedSha256": "0ce23eab005f33dd8cde61150d77a051da056b5eb94cf4b0f4e7825b46a04443",
+      "uncompressedBytes": 401741,
+      "samples": 305
+    },
+    {
+      "name": "1380-independent",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "independent",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-independent-raw.json.gz",
+      "sha256": "054146c2994066e2c040608fc313f325f42687600a34cf68d46b7ed6629dd4b2",
+      "bytes": 61413,
+      "uncompressedSha256": "f6e4502b889638be4606be6cc0a581b4129b24d6b41d3c475d91d76d487f9057",
+      "uncompressedBytes": 402543,
+      "samples": 305
+    },
+    {
+      "name": "390-coherent-sky",
+      "source": "sky-blue__lowconf-b128-s32",
+      "condition": "coherent",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-coherent-sky-raw.json.gz",
+      "sha256": "d1e6f87976b42c287d9691f7a56f90a3b7d87a00565669b5011e261d5295b92c",
+      "bytes": 44588,
+      "uncompressedSha256": "fec854ce4e2f761146a226cccce9061b872ee549f13792915b65770579628172",
+      "uncompressedBytes": 516515,
+      "samples": 310
+    },
+    {
+      "name": "390-coherent-random",
+      "source": "sleep-tips__random-b128-s32",
+      "condition": "coherent",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-coherent-random-raw.json.gz",
+      "sha256": "3bc4b89fb0cfb90ce90e9b6bb6543f1ed79d927095219379657df50e9b77dc7c",
+      "bytes": 46851,
+      "uncompressedSha256": "5c436a7269d456cfba56fb255617d896c558e382a4d4eb72782298069a958966",
+      "uncompressedBytes": 420557,
+      "samples": 337
+    }
+  ],
+  "videos": [
+    {
+      "name": "390-coherent",
+      "file": "public/study/ambient-answer-mobile.webm",
+      "url": "study/ambient-answer-mobile.webm",
+      "sha256": "13173867ee61cc80f7227463476207b770f7308ea02c2f39499800a3d82f7ac0",
+      "bytes": 245520,
+      "description": "Actual browser viewport recording of this case; page initialization and scrolling are retained. No generated/interpolated frames or edited model text."
+    },
+    {
+      "name": "390-coherent-sky",
+      "file": "public/study/ambient-answer-long.webm",
+      "url": "study/ambient-answer-long.webm",
+      "sha256": "ab192753dbce9fec8d348ed4f445aa93e9eea7d32179db61f17a5da3aa724683",
+      "bytes": 361285,
+      "description": "Actual browser viewport recording of this case; page initialization and scrolling are retained. No generated/interpolated frames or edited model text."
+    }
+  ]
+}

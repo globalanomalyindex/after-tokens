@@ -1,0 +1,3307 @@
+{
+  "originalCorpus": {
+    "traceCount": 60,
+    "steps": 7680,
+    "committedPositions": 7680,
+    "maxCommitmentsPerStep": 1,
+    "multiTokenSteps": 0,
+    "traces": [
+      {
+        "id": "brainstorm__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "brainstorm__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "brainstorm__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "capital__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "capital__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "capital__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "compiler-error__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "compiler-error__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "compiler-error__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "concise-rewrite__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "concise-rewrite__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "concise-rewrite__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "diffusion-explain__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "diffusion-explain__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "diffusion-explain__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "golden-sunflower__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "golden-sunflower__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "golden-sunflower__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "hash-function__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "hash-function__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "hash-function__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heist-plot__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heist-plot__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heist-plot__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heron-poem__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heron-poem__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "heron-poem__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "houseplants__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "houseplants__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "houseplants__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "lighthouse-haiku__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "lighthouse-haiku__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "lighthouse-haiku__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "out-of-office__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "out-of-office__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "out-of-office__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "research-summary__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "research-summary__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "research-summary__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "rust-or-go__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "rust-or-go__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "rust-or-go__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sky-blue__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sky-blue__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sky-blue__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sleep-tips__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sleep-tips__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "sleep-tips__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "solder-project__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "solder-project__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "solder-project__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "travel__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "travel__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "travel__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "weather__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "weather__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "weather__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "why-out-of-order__lowconf-b128",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "why-out-of-order__lowconf-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      },
+      {
+        "id": "why-out-of-order__random-b32",
+        "steps": 128,
+        "committedPositions": 128,
+        "maxCommitmentsPerStep": 1,
+        "multiTokenSteps": 0
+      }
+    ]
+  },
+  "definitions": {
+    "policy": "Sentence policy; these measure its causal readability/release opportunities, not the display timing of a whole-answer renderer that deliberately holds them.",
+    "clock": "Observed capture-loop intervals (step_wall_ms), explicitly supplied to replayTrace. Includes forward, selection and online draft capture; excludes model loading and file serialization. Not end-to-end network latency.",
+    "chunk": "Current carve word item with both boundaries causally established. A chunk can contain multiple whitespace runs; neither is a validated semantic unit. A missing boundary can unlock already committed pieces.",
+    "spread": "Integer source token positions, not measured screen geometry. Quartiles are of the known 128-position request bound, never inferred final answer length.",
+    "finalText": "The adapter and reducer run while getters on answer/words/tail/stats throw. Their terminal prefix is compared to the stored answer only after replay finishes."
+  },
+  "traces": [
+    {
+      "id": "sky-blue__lowconf-b128-s32",
+      "exactCausalReplayFinalText": true,
+      "retrospectiveReadsThrow": true,
+      "durationMs": 4105.776000000001,
+      "firstCompleteChunkAtMs": 260.803,
+      "firstReleasedPassageAtMs": 2626.394,
+      "firstCompleteAtMs": 4105.776,
+      "completeChunkBatchHistogram": {
+        "0": 10,
+        "1": 7,
+        "2": 2,
+        "3": 7,
+        "4": 2,
+        "5": 4
+      },
+      "whitespaceRunBatchHistogram": {
+        "0": 10,
+        "1": 7,
+        "2": 2,
+        "3": 7,
+        "4": 2,
+        "5": 4
+      },
+      "maxNewCompleteChunkStartSpan": 57,
+      "maxRequestQuartilesWithNewCompleteChunks": 2,
+      "samples": [
+        {
+          "atMs": 137.793,
+          "committedPositions": [
+            0,
+            3,
+            126,
+            127
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 3,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 260.803,
+          "committedPositions": [
+            1,
+            4,
+            124,
+            125
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 0,
+              "span": 1,
+              "text": "The",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 3,
+              "span": 1,
+              "text": " blue",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 2,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 3,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 7,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 384.517,
+          "committedPositions": [
+            5,
+            121,
+            122,
+            123
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 4,
+              "span": 1,
+              "text": " because",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 7,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 509.378,
+          "committedPositions": [
+            117,
+            118,
+            119,
+            120
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 7,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 633.244,
+          "committedPositions": [
+            2,
+            6,
+            115,
+            116
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 1,
+              "span": 1,
+              "text": " sky",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 2,
+              "span": 1,
+              "text": " appears",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 5,
+              "span": 1,
+              "text": " of",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 4,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 35,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 756.739,
+          "committedPositions": [
+            7,
+            112,
+            113,
+            114
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 6,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 39,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 881.468,
+          "committedPositions": [
+            8,
+            109,
+            110,
+            111
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 7,
+              "span": 1,
+              "text": " way",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1011.556,
+          "committedPositions": [
+            105,
+            106,
+            107,
+            108
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1152.452,
+          "committedPositions": [
+            101,
+            102,
+            103,
+            104
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1291.049,
+          "committedPositions": [
+            97,
+            98,
+            99,
+            100
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1435.846,
+          "committedPositions": [
+            93,
+            94,
+            95,
+            96
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1572.575,
+          "committedPositions": [
+            89,
+            90,
+            91,
+            92
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1713.384,
+          "committedPositions": [
+            85,
+            86,
+            87,
+            88
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1854.669,
+          "committedPositions": [
+            81,
+            82,
+            83,
+            84
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1993.933,
+          "committedPositions": [
+            77,
+            78,
+            79,
+            80
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 48,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2121.034,
+          "committedPositions": [
+            9,
+            74,
+            75,
+            76
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 8,
+              "span": 1,
+              "text": " sunlight",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 56,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2251.195,
+          "committedPositions": [
+            10,
+            71,
+            72,
+            73
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 9,
+              "span": 1,
+              "text": " travels",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 64,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2377.426,
+          "committedPositions": [
+            11,
+            12,
+            13,
+            70
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 10,
+              "span": 1,
+              "text": " through",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 11,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 2,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 1,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 80,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2503.503,
+          "committedPositions": [
+            14,
+            66,
+            68,
+            69
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 12,
+              "span": 2,
+              "text": " atmosphere.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 68,
+              "span": 1,
+              "text": " blue",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 69,
+              "span": 2,
+              "text": " blue.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 57,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 85,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2626.394,
+          "committedPositions": [
+            15,
+            16,
+            17,
+            67
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 14,
+              "span": 1,
+              "text": " When",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 15,
+              "span": 1,
+              "text": " sunlight",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 16,
+              "span": 1,
+              "text": " hits",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 66,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 67,
+              "span": 1,
+              "text": " sky",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 5,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 53,
+          "newlyReleasedPassages": 1,
+          "prefixLength": 107,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2748.529,
+          "committedPositions": [
+            18,
+            19,
+            20,
+            21
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 17,
+              "span": 1,
+              "text": " through",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 18,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 19,
+              "span": 2,
+              "text": " atmosphere,",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 2,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 126,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2872.456,
+          "committedPositions": [
+            22,
+            23,
+            64,
+            65
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 21,
+              "span": 1,
+              "text": " it",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 22,
+              "span": 1,
+              "text": " gets",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 65,
+              "span": 1,
+              "text": " making",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 44,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 141,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2995.662,
+          "committedPositions": [
+            24,
+            25,
+            62,
+            63
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 23,
+              "span": 1,
+              "text": " scattered",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 24,
+              "span": 1,
+              "text": " more",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 62,
+              "span": 1,
+              "text": " scattered",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 63,
+              "span": 2,
+              "text": " scattered,",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 4,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 40,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 150,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3117.563,
+          "committedPositions": [
+            26,
+            59,
+            60,
+            61
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 25,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 59,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 60,
+              "span": 1,
+              "text": " light",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 61,
+              "span": 1,
+              "text": " gets",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 4,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 36,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 161,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3240.424,
+          "committedPositions": [
+            27,
+            28,
+            56,
+            58
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 26,
+              "span": 1,
+              "text": " atmosphere",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 165,
+          "releasedLength": 81,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3363.578,
+          "committedPositions": [
+            29,
+            30,
+            55,
+            57
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 27,
+              "span": 2,
+              "text": " is.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 29,
+              "span": 1,
+              "text": " The",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 55,
+              "span": 1,
+              "text": " through",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 56,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 57,
+              "span": 2,
+              "text": " atmosphere,",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 5,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 30,
+          "newlyReleasedPassages": 1,
+          "prefixLength": 180,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3485.467,
+          "committedPositions": [
+            31,
+            50,
+            51,
+            53
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 30,
+              "span": 1,
+              "text": " atmosphere",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 183,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3610.07,
+          "committedPositions": [
+            32,
+            34,
+            52,
+            54
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 31,
+              "span": 1,
+              "text": " is",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 51,
+              "span": 1,
+              "text": " When",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 52,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 53,
+              "span": 1,
+              "text": " sunlight",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 54,
+              "span": 1,
+              "text": " hits",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 5,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 23,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 190,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3733.773,
+          "committedPositions": [
+            33,
+            35,
+            36,
+            38
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 32,
+              "span": 1,
+              "text": " mostly",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 33,
+              "span": 1,
+              "text": " made",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 34,
+              "span": 1,
+              "text": " of",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 2,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 205,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3857.743,
+          "committedPositions": [
+            37,
+            39,
+            41,
+            49
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 35,
+              "span": 2,
+              "text": " gases,",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 37,
+              "span": 2,
+              "text": " dust,",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 49,
+              "span": 2,
+              "text": " light.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 14,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 215,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3979.987,
+          "committedPositions": [
+            40,
+            42,
+            47,
+            48
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 39,
+              "span": 1,
+              "text": " and",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 40,
+              "span": 2,
+              "text": " water,",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 48,
+              "span": 1,
+              "text": " the",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 9,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 228,
+          "releasedLength": 166,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4105.776,
+          "committedPositions": [
+            43,
+            44,
+            45,
+            46
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 42,
+              "span": 1,
+              "text": " which",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 43,
+              "span": 1,
+              "text": " sc",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 44,
+              "span": 1,
+              "text": " and",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 45,
+              "span": 1,
+              "text": " and",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 46,
+              "span": 2,
+              "text": " scatters",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 5,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 4,
+          "newlyReleasedPassages": 2,
+          "prefixLength": 368,
+          "releasedLength": 368,
+          "status": "complete"
+        }
+      ]
+    },
+    {
+      "id": "sleep-tips__lowconf-b128-s32",
+      "exactCausalReplayFinalText": true,
+      "retrospectiveReadsThrow": true,
+      "durationMs": 4047.567,
+      "firstCompleteChunkAtMs": 3269.713,
+      "firstReleasedPassageAtMs": 4047.567,
+      "firstCompleteAtMs": 4047.567,
+      "completeChunkBatchHistogram": {
+        "0": 28,
+        "1": 1,
+        "2": 1,
+        "6": 1,
+        "7": 1
+      },
+      "whitespaceRunBatchHistogram": {
+        "0": 28,
+        "1": 1,
+        "2": 1,
+        "6": 1,
+        "7": 1
+      },
+      "maxNewCompleteChunkStartSpan": 15,
+      "maxRequestQuartilesWithNewCompleteChunks": 1,
+      "samples": [
+        {
+          "atMs": 136.701,
+          "committedPositions": [
+            124,
+            125,
+            126,
+            127
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 260.027,
+          "committedPositions": [
+            120,
+            121,
+            122,
+            123
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 386.272,
+          "committedPositions": [
+            116,
+            117,
+            118,
+            119
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 517.063,
+          "committedPositions": [
+            1,
+            113,
+            114,
+            115
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 649.447,
+          "committedPositions": [
+            0,
+            110,
+            111,
+            112
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 780.748,
+          "committedPositions": [
+            106,
+            107,
+            108,
+            109
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 903.879,
+          "committedPositions": [
+            102,
+            103,
+            104,
+            105
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1029.456,
+          "committedPositions": [
+            98,
+            99,
+            100,
+            101
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1160.388,
+          "committedPositions": [
+            94,
+            95,
+            96,
+            97
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1284.336,
+          "committedPositions": [
+            90,
+            91,
+            92,
+            93
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1409.223,
+          "committedPositions": [
+            86,
+            87,
+            88,
+            89
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1532.775,
+          "committedPositions": [
+            82,
+            83,
+            84,
+            85
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1655.222,
+          "committedPositions": [
+            78,
+            79,
+            80,
+            81
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1779.073,
+          "committedPositions": [
+            74,
+            75,
+            76,
+            77
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1902.382,
+          "committedPositions": [
+            70,
+            71,
+            72,
+            73
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2025.75,
+          "committedPositions": [
+            66,
+            67,
+            68,
+            69
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2147.447,
+          "committedPositions": [
+            3,
+            63,
+            64,
+            65
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2272.648,
+          "committedPositions": [
+            59,
+            60,
+            61,
+            62
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2401.47,
+          "committedPositions": [
+            55,
+            56,
+            57,
+            58
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2524,
+          "committedPositions": [
+            51,
+            52,
+            53,
+            54
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2646.836,
+          "committedPositions": [
+            47,
+            48,
+            49,
+            50
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2770.829,
+          "committedPositions": [
+            43,
+            44,
+            45,
+            46
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2895.522,
+          "committedPositions": [
+            39,
+            40,
+            41,
+            42
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3021.722,
+          "committedPositions": [
+            35,
+            36,
+            37,
+            38
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3145.573,
+          "committedPositions": [
+            31,
+            32,
+            33,
+            34
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 2,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3269.713,
+          "committedPositions": [
+            2,
+            28,
+            29,
+            30
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 0,
+              "span": 2,
+              "text": "1.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 2,
+              "span": 1,
+              "text": " Create",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 2,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 2,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3392.743,
+          "committedPositions": [
+            8,
+            25,
+            26,
+            27
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3515.483,
+          "committedPositions": [
+            5,
+            6,
+            7,
+            24
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 5,
+              "span": 2,
+              "text": " environment.\n",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3639.467,
+          "committedPositions": [
+            13,
+            21,
+            22,
+            23
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3766.219,
+          "committedPositions": [
+            10,
+            14,
+            15,
+            19
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3904.442,
+          "committedPositions": [
+            9,
+            11,
+            12,
+            20
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 7,
+              "span": 2,
+              "text": "2.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 9,
+              "span": 1,
+              "text": " Establish",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 10,
+              "span": 1,
+              "text": " a",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 11,
+              "span": 1,
+              "text": " consistent",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 12,
+              "span": 2,
+              "text": " schedule.\n",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 19,
+              "span": 1,
+              "text": " before",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 20,
+              "span": 2,
+              "text": " bed.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 7,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 13,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 11,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4047.567,
+          "committedPositions": [
+            4,
+            16,
+            17,
+            18
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 3,
+              "span": 1,
+              "text": " a",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 4,
+              "span": 1,
+              "text": " quiet",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 14,
+              "span": 2,
+              "text": "3.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 16,
+              "span": 1,
+              "text": " Avoid",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 17,
+              "span": 1,
+              "text": " enough",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 18,
+              "span": 1,
+              "text": " caffeine",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 6,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 15,
+          "newlyReleasedPassages": 1,
+          "prefixLength": 103,
+          "releasedLength": 103,
+          "status": "complete"
+        }
+      ]
+    },
+    {
+      "id": "weather__lowconf-b128-s32",
+      "exactCausalReplayFinalText": true,
+      "retrospectiveReadsThrow": true,
+      "durationMs": 5107.833999999999,
+      "firstCompleteChunkAtMs": 2639.134,
+      "firstReleasedPassageAtMs": 5107.834,
+      "firstCompleteAtMs": 5107.834,
+      "completeChunkBatchHistogram": {
+        "0": 27,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "6": 1
+      },
+      "whitespaceRunBatchHistogram": {
+        "0": 27,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "6": 1
+      },
+      "maxNewCompleteChunkStartSpan": 5,
+      "maxRequestQuartilesWithNewCompleteChunks": 1,
+      "samples": [
+        {
+          "atMs": 1271.471,
+          "committedPositions": [
+            124,
+            125,
+            126,
+            127
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1401.863,
+          "committedPositions": [
+            120,
+            121,
+            122,
+            123
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1523.65,
+          "committedPositions": [
+            116,
+            117,
+            118,
+            119
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1645.194,
+          "committedPositions": [
+            112,
+            113,
+            114,
+            115
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1771.134,
+          "committedPositions": [
+            108,
+            109,
+            110,
+            111
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1893.767,
+          "committedPositions": [
+            104,
+            105,
+            106,
+            107
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2014.983,
+          "committedPositions": [
+            100,
+            101,
+            102,
+            103
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2138.619,
+          "committedPositions": [
+            96,
+            97,
+            98,
+            99
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2262.041,
+          "committedPositions": [
+            92,
+            93,
+            94,
+            95
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2383.616,
+          "committedPositions": [
+            88,
+            89,
+            90,
+            91
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2509.195,
+          "committedPositions": [
+            1,
+            85,
+            86,
+            87
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2639.134,
+          "committedPositions": [
+            0,
+            2,
+            3,
+            4
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 0,
+              "span": 2,
+              "text": "I'm",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 2,
+              "span": 2,
+              "text": " sorry,",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 2,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 2,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 14,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2761.867,
+          "committedPositions": [
+            5,
+            82,
+            83,
+            84
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 4,
+              "span": 1,
+              "text": " but",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 16,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2883.308,
+          "committedPositions": [
+            8,
+            79,
+            80,
+            81
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 16,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3005.51,
+          "committedPositions": [
+            6,
+            7,
+            9,
+            78
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 5,
+              "span": 1,
+              "text": " I",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 6,
+              "span": 2,
+              "text": " don't",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 8,
+              "span": 1,
+              "text": " have",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 3,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 3,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 34,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3127.127,
+          "committedPositions": [
+            10,
+            75,
+            76,
+            77
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 9,
+              "span": 1,
+              "text": " access",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3248.506,
+          "committedPositions": [
+            71,
+            72,
+            73,
+            74
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3370.237,
+          "committedPositions": [
+            67,
+            68,
+            69,
+            70
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3491.975,
+          "committedPositions": [
+            63,
+            64,
+            65,
+            66
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3614.342,
+          "committedPositions": [
+            59,
+            60,
+            61,
+            62
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3741.586,
+          "committedPositions": [
+            55,
+            56,
+            57,
+            58
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3868.516,
+          "committedPositions": [
+            51,
+            52,
+            53,
+            54
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3990.442,
+          "committedPositions": [
+            47,
+            48,
+            49,
+            50
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4112.412,
+          "committedPositions": [
+            43,
+            44,
+            45,
+            46
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4235.573,
+          "committedPositions": [
+            39,
+            40,
+            41,
+            42
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4359.754,
+          "committedPositions": [
+            35,
+            36,
+            37,
+            38
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4485.188,
+          "committedPositions": [
+            31,
+            32,
+            33,
+            34
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4608.723,
+          "committedPositions": [
+            27,
+            28,
+            29,
+            30
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4733.132,
+          "committedPositions": [
+            23,
+            24,
+            25,
+            26
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4858.251,
+          "committedPositions": [
+            19,
+            20,
+            21,
+            22
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4983.718,
+          "committedPositions": [
+            14,
+            16,
+            17,
+            18
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 37,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 5107.834,
+          "committedPositions": [
+            11,
+            12,
+            13,
+            15
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 10,
+              "span": 1,
+              "text": " to",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 11,
+              "span": 1,
+              "text": " weather",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 12,
+              "span": 1,
+              "text": " information",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 13,
+              "span": 1,
+              "text": " about",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 14,
+              "span": 1,
+              "text": " metaphor",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 15,
+              "span": 2,
+              "text": " land.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 6,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 5,
+          "newlyReleasedPassages": 1,
+          "prefixLength": 78,
+          "releasedLength": 78,
+          "status": "complete"
+        }
+      ]
+    },
+    {
+      "id": "sleep-tips__random-b128-s32",
+      "exactCausalReplayFinalText": true,
+      "retrospectiveReadsThrow": true,
+      "durationMs": 4559.901,
+      "firstCompleteChunkAtMs": 4436.178,
+      "firstReleasedPassageAtMs": 4559.901,
+      "firstCompleteAtMs": 4559.901,
+      "completeChunkBatchHistogram": {
+        "0": 30,
+        "1": 1,
+        "2": 1
+      },
+      "whitespaceRunBatchHistogram": {
+        "0": 30,
+        "1": 1,
+        "2": 1
+      },
+      "maxNewCompleteChunkStartSpan": 68,
+      "maxRequestQuartilesWithNewCompleteChunks": 2,
+      "samples": [
+        {
+          "atMs": 685.302,
+          "committedPositions": [
+            51,
+            69,
+            100,
+            113
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 818.228,
+          "committedPositions": [
+            12,
+            14,
+            44,
+            93
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 941.386,
+          "committedPositions": [
+            76,
+            81,
+            89,
+            109
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1065.512,
+          "committedPositions": [
+            1,
+            22,
+            68,
+            87
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1189.89,
+          "committedPositions": [
+            18,
+            19,
+            37,
+            40
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1314.307,
+          "committedPositions": [
+            5,
+            25,
+            53,
+            74
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1442.513,
+          "committedPositions": [
+            8,
+            10,
+            38,
+            52
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1570.757,
+          "committedPositions": [
+            6,
+            34,
+            66,
+            120
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1697.812,
+          "committedPositions": [
+            17,
+            32,
+            39,
+            50
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1823.176,
+          "committedPositions": [
+            55,
+            79,
+            99,
+            115
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 1946.877,
+          "committedPositions": [
+            30,
+            71,
+            73,
+            111
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2071.264,
+          "committedPositions": [
+            31,
+            60,
+            64,
+            72
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2195.545,
+          "committedPositions": [
+            4,
+            7,
+            16,
+            58
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2320.789,
+          "committedPositions": [
+            3,
+            33,
+            103,
+            116
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2449.174,
+          "committedPositions": [
+            45,
+            56,
+            70,
+            123
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2571.159,
+          "committedPositions": [
+            27,
+            28,
+            57,
+            106
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2694.884,
+          "committedPositions": [
+            9,
+            65,
+            90,
+            124
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2817.669,
+          "committedPositions": [
+            62,
+            75,
+            83,
+            86
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 2940.535,
+          "committedPositions": [
+            41,
+            92,
+            96,
+            107
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3064.355,
+          "committedPositions": [
+            2,
+            13,
+            26,
+            61
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3188.012,
+          "committedPositions": [
+            21,
+            36,
+            59,
+            85
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3312.235,
+          "committedPositions": [
+            35,
+            67,
+            88,
+            125
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3437.967,
+          "committedPositions": [
+            43,
+            82,
+            84,
+            101
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3562.978,
+          "committedPositions": [
+            11,
+            102,
+            110,
+            122
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 0,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3687.27,
+          "committedPositions": [
+            0,
+            46,
+            48,
+            63
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 15,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3813.031,
+          "committedPositions": [
+            91,
+            94,
+            105,
+            108
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 15,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 3937.994,
+          "committedPositions": [
+            49,
+            54,
+            112,
+            121
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 15,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4062.768,
+          "committedPositions": [
+            23,
+            24,
+            77,
+            117
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 15,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4187.248,
+          "committedPositions": [
+            20,
+            47,
+            104,
+            127
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 15,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4311.52,
+          "committedPositions": [
+            15,
+            78,
+            80,
+            95
+          ],
+          "newCompleteChunks": [],
+          "newCompleteWhitespaceRuns": 0,
+          "requestQuartilesWithNewCompleteChunks": 0,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 29,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4436.178,
+          "committedPositions": [
+            42,
+            97,
+            114,
+            126
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 39,
+              "span": 28,
+              "text": "2.2.2,2.33,3.3,33.3.3,3.3.1.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 1,
+          "requestQuartilesWithNewCompleteChunks": 1,
+          "newCompleteChunkStartSpan": 0,
+          "newlyReleasedPassages": 0,
+          "prefixLength": 29,
+          "releasedLength": 0,
+          "status": "receiving"
+        },
+        {
+          "atMs": 4559.901,
+          "committedPositions": [
+            29,
+            98,
+            118,
+            119
+          ],
+          "newCompleteChunks": [
+            {
+              "position": 0,
+              "span": 38,
+              "text": "1.1.1,22.2.2.2.2.1,,22,22,22.2,2.2,22.",
+              "whitespaceRuns": 1
+            },
+            {
+              "position": 68,
+              "span": 42,
+              "text": "3.3.11,1.11.1.1,1,1,1,1,1,1,1,11,1,1,11,1.",
+              "whitespaceRuns": 1
+            }
+          ],
+          "newCompleteWhitespaceRuns": 2,
+          "requestQuartilesWithNewCompleteChunks": 2,
+          "newCompleteChunkStartSpan": 68,
+          "newlyReleasedPassages": 3,
+          "prefixLength": 112,
+          "releasedLength": 112,
+          "status": "complete"
+        }
+      ]
+    }
+  ]
+}

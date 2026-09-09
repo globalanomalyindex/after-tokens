@@ -12,30 +12,30 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'samplers that change their mind',
-    body: 'remasking samplers can send a committed token back to mask. for them the contract already has the snapshot path: nothing reaches the page until a snapshot is final, and a revision after that is an event the reader applies. a field for a reversible source is undesigned.',
+    body: 'remasking samplers can send a committed token back to mask. for them the contract already has the snapshot path: nothing reaches the page until a snapshot is final, and a revision after that is an event the reader applies. an ambient composition can cover the unresolved interval, but the production snapshot and revision protocol still needs integration.',
   },
   {
     title: 'markdown, code and math',
-    body: 'the boundary rule holds fenced code, inline code and lists until a blank line, which keeps a half-open fence off the page. a production renderer needs keyed blocks so a passage that is a list item does not reflow its neighbors, and rules for math, citations and right-to-left text.',
+    body: 'whole-answer release avoids progressively parsing guessed formatting. a production renderer still needs a safe Markdown pipeline, code, math, citations and right-to-left layout. earlier passage policies also need stable keyed blocks and explicit structural boundaries.',
   },
   {
     title: 'other scripts',
-    body: 'the word rule reads whitespace, so it is a rule for scripts that use it. sentence boundaries are an english punctuation heuristic. scripts without word spacing need a segmenter, and the field needs no change at all.',
+    body: 'the earlier-word rule uses whitespace and the sentence rule uses English punctuation heuristics. other scripts need appropriate segmentation. whole-answer release avoids those incremental boundaries, but typography, wrapping and accessibility still need language-specific validation.',
   },
   {
     title: 'structured answers',
-    body: 'an answer carries color, data and layout as well as words. the earlier version ran a weather card on the old contract; the new contract has no unit smaller than a passage for a non-text atom yet.',
+    body: 'an application can own three answer fields before generation; a prompt asking for three bullets cannot guarantee them. independently finished items need source-backed region finality. grammar-constrained diffusion is relevant prior work, not an integration already supplied by this prototype.',
   },
   {
     title: 'the study',
-    body: 'stimuli are shipped. the sentence policy with forming text is the candidate; the raw prefix is the baseline; margin&rsquo;s held variant is a condition. the strongest argument against the design, that waiting costs more than stillness gives back, stands until it runs.',
+    body: 'compare static bars, coherent ambient bars and independently moving bars at identical whole-answer timing. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
   },
 ]
 
 const REPRO: { label: string; cmd: string; note: string }[] = [
   { label: 'the cost report', cmd: 'pnpm traces:settle', note: 'regenerates lib/traces/settle.json: every policy, every recording, both clocks, and the causal audit' },
   { label: 'the checks', cmd: 'pnpm check', note: 'lint, types, the reducer and corpus tests, the build' },
-  { label: 'the browser checks', cmd: 'pnpm test:e2e:chromium', note: 'axe at wcag 2.1 aa, reduced motion, the eleven sections at desktop and phone width' },
+  { label: 'the browser checks', cmd: 'pnpm test:e2e:chromium', note: 'accessibility, reduced motion, identity, legibility, playback and final output; mobile emulation is not a physical iPhone test' },
 ]
 
 export function SectionOpen() {
@@ -43,8 +43,7 @@ export function SectionOpen() {
     <Section id="open" title="Open">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">open</h2>
       <p className="standfirst max-w-3xl">
-        a contract earns its keep by what it leaves room for. six directions, each a real extension of the same
-        rules, none of them needed to make the argument above, and a way to reproduce every number on this page.
+        the prototype establishes a source contract and an inspectable motion experiment. production integration, richer structures and reader benefit remain open. these are the next checks, and the commands that reproduce the existing evidence.
       </p>
       <dl className="mt-12 md:mt-16 grid gap-x-12 gap-y-8 md:grid-cols-2 rule pt-8">
         {OPEN.map((o, i) => (
@@ -79,7 +78,7 @@ export function SectionOpen() {
         <p className="text-base">
           product design and engineering by <span style={{ fontWeight: 600 }}>christopher robin fiore</span>, with claude as design and engineering
           partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026, under the name
-          margin, and are credited in the design record.
+          margin. codex developed the ambient motion study and source-evidence refresh on 9 september; both contributions are credited in the design record.
         </p>
         <p className="text-base mt-1" style={{ color: 'var(--ink-2)' }}>
           portfolio theme: looking to <NatureWord kind="nature">nature</NatureWord>{' '}for questions, then measuring the answers.

@@ -1,0 +1,63 @@
+# Ambient answer: independent code review
+
+Review date: 9 September 2026. Scope: the working tree based on `47d71a4383693fdeea6e39426524d365f94ac3e6`, before publication. This review covers the answer policy, experimental replay adapter, ambient composition, answer surface, and comparison controls. It is a code and browser-lifecycle review, not a finding that the motion improves readers' experience.
+
+The source-finality path is consistent with the proposed contract: the new policy deliberately holds readable text until actual completion, then releases the exact answer together. The ambient geometry is authored independently of source words and final layout. No new critical or high-severity correctness issue was found in these paths. The five medium findings below have been corrected in the reviewed implementation. Full-page browser and integration validation remain separate release gates.
+
+## Findings and dispositions
+
+| Severity / status | Before | After | Why |
+| --- | --- | --- | --- |
+| Medium — corrected in reviewed code | Opening the earlier-reading comparison reconstructed its reducer state on every replay-clock animation frame. | `AmbientStudy` first derives the number of events that have happened; the word-policy state is memoized by that count. | Source state and downstream word layout should change at source events, not on frames between events. The shared clock still updates the visible time readout. |
+| Medium — corrected in reviewed code | Three conditions stacked vertically on mobile started on a shared clock, but their individual visibility checks gave them different amounts of visible motion before the answer arrived. | Narrow screens show one selected condition. Selecting another explicitly restarts the same recording; copy calls this a sequential comparison. Desktop retains three conditions on one source clock. | Shared answer timing does not establish matched visual exposure. The new controls make the mobile tradeoff visible and let the viewer inspect each condition. |
+| Medium — corrected in reviewed code | Each comparison surface maintained its own identical live status announcement. The optional earlier-reading surface added another. | Every child receives `announce={false}` and the study owns one polite live status. | A single source transition should not generate three or four repeated screen-reader announcements. Each answer remains a separately named readable region. |
+| Medium — corrected; CSS behavior rechecked in Chromium | The general `.settle[data-motion="off"] * { animation: none !important; }` rule canceled the ambient animations despite the component's phase-preserving pause contract. | The cancellation selector excludes both ambient animation classes. Their own activity/motion attributes pause the existing CSS animation instances. | Reenabling motion now resumes the prior phase, avoiding a return to the initial shape. Legacy animation cancellation remains in place for the older renderer. |
+| Medium — corrected in reviewed code; integration regression required | The completion accent remained mounted after its 260 ms animation. Offscreen and motion-off rules changed its animation to `none`; returning on screen or enabling motion reinstated it. | A release record keyed by run, revision, and released length creates the accent once. Animation end removes its node; hidden, paused, or motion-off states clear it while consuming the release event. | A setting or visibility change cannot create another accent without a new answer release. Final text is not delayed for this optional response. |
+
+The final two findings were reproduced before the fixes in a minimal Chromium harness loading the actual `app/globals.css` and `app/ambient-composition.css`. After approximately 367 ms, switching the host to motion-off removed the existing ambient animation; switching on created a different animation with a new time near 34 ms. The completed accent had zero active animations before that toggle and one new animation afterward. After the CSS fix, the same ambient animation instance remained paused at 268.577 ms throughout a further 150 ms wait and resumed at 283.356 ms without restarting. The revised React accent lifecycle was inspected in source; its integration regression belongs to the final test run. This harness verifies CSS lifecycle, not full-page appearance, Safari behavior, or physical-device performance.
+
+## Source and text guarantees inspected
+
+- `lib/settle/reader.ts` holds `answer` policy passages while finality is false. Punctuation, word boundaries, high-confidence guesses, and elapsed time do not release text. `formingText` returns an empty string under this policy.
+- Completion still requires the original causal contract: a committed end token reached through the contiguous prefix, a valid `finish` event whose counts agree with the full received prefix, or an explicitly final snapshot. A guessed end token or an end token beyond a gap cannot finish the answer. Stop and error events do not fabricate completion.
+- A nonempty final answer becomes one passage. The answer surface joins only released passage text and renders it as one ordinary React text span. It does not use candidate text, retrospective final-answer fields, hidden final measurement, per-word timing, or future formatting to prepare the ambient geometry.
+- Whitespace is preserved with `white-space: pre-wrap`; `overflow-wrap: anywhere` allows narrow layouts; native text selection is enabled. Final readable glyphs have no blur, scaling, translation, or stagger. Actual final height can increase once when a long answer arrives; the authored 8 em waiting area is not a promise about answer length.
+- Final snapshots and explicitly applied revisions use the same whole-answer path. A revision is offered for review rather than silently overwriting the page. Empty final answers receive an explicit empty-answer label outside the exact answer text region.
+- Stop/error removes the activity composition. The optional unfinished-text disclosure shows only the committed contiguous prefix, labels it incomplete, and does not silently turn later fragments or gaps into a finished answer.
+
+Relevant implementation: `lib/settle/reader.ts`, `lib/settle/boundary.ts`, `components/settle/settle-answer.tsx`, `app/globals.css`. Regression coverage includes `tests/settle/answer-policy.test.ts` and `tests/settle/answer-surface.test.tsx`; current full integration test results belong to the separate validation run.
+
+## Recording and clock boundaries
+
+`replayExperiment` creates an object inheriting from the recorded trace and overrides only `step_ms` with `step_wall_ms`. It does not spread the trace or access its retrospective `answer`, `words`, tail, or statistics fields merely to replace the clock. The downstream replay adapter supplies only events whose times have happened to the reducer. The four bundled inputs are internal recorded fixtures; this adapter is not a runtime validator for arbitrary external payloads.
+
+The experimental clock measures intervals between capture snapshots becoming available. It includes the work in that capture loop and is explicitly labeled as observed capture-loop replay, not API latency. It is different from the earlier 60-trace forward-pass clock; their durations cannot be used as a model-speed comparison.
+
+The four current experimental recordings reach contiguous source finality on their last recorded evaluation (index 31): sleep at approximately 4047.6 ms, sky at 4105.8 ms, weather at 5107.8 ms, and random at 4559.9 ms. Consequently a measurement deadline based on each recording's duration agrees with finality for these four fixtures. Future measurements should derive completion from the reducer: a different recording can reach an in-order end token before its last evaluation.
+
+The study has one source clock and one answer state for its ambient conditions. Each answer independently freezes decorative animation when offscreen or the document is hidden. The source replay is started by a one-time intersection trigger and then continues after scrolling away; a hidden document can catch up to elapsed wall time when animation frames resume. This is acceptable replay behavior, but it is not matched exposure time across conditions or a participant-study timing controller.
+
+The 0.5× inspection control expands the source timeline while keeping the decorative rhythm independently authored. It does not replay a recorded model animation. Manual pause holds both the source presentation and visible decorative phase; changing a mobile condition deliberately starts a new run.
+
+## Motion, accessibility, and interpretation limits
+
+- Five broad forms use constant authored geometry. They do not correspond to five future lines, five word groups, confidence, or percentage complete. The component accepts no source-state or answer-text input.
+- Static, coherent, and independent conditions share their initial geometry. The independent condition changes deterministic per-bar periods while retaining the same keyframe displacement ranges. This creates phase divergence; it is not statistically independent random motion, matched velocity, or a randomized controlled experiment.
+- The component itself contains no animation-frame JavaScript, measurements, timers, or source-driven phase resets. Transform and opacity are its animated CSS properties; masking is static. This property choice does not by itself prove GPU compositing or low power use on every browser.
+- Decorative bars are `aria-hidden`, ignore pointer input, and are not selectable. The whole-answer region remains named and marks itself busy only while waiting/receiving. The study now has one shared status announcement. Actual screen-reader interaction and physical iPhone behavior still require the separate browser/device validation gates.
+- Outcome-specific explanatory notes are now gated until the source is complete. The source-choice labels still intentionally identify a short refusal and a failed answer: this is an annotated case-study demonstration. It must not be reused unchanged as blinded participant stimuli. Renderer no-lookahead is not a claim that the entire case-study page hides recorded outcomes.
+- A source-complete answer can still be wrong, repetitive, or a refusal. The random-remasking fixture demonstrates this distinction. The decorative finish response must mean source completion, not answer correctness.
+- Common-fate or closure research can motivate the visual-grouping hypothesis. This implementation and mechanical replay checks do not establish improved comprehension, perceived speed, pleasure, dopamine release, preferred motion tempo, or novelty priority. The answer policy also deliberately delays early reading; that cost needs to remain visible beside the proposal.
+
+## Remaining release checks
+
+1. Regress the corrected lifecycle behavior in the integrated answer surface: completion followed by motion off/on, completion while hidden followed by return, animation-end removal, and phase-preserving pause/resume.
+2. Run the integration tests and render the actual built page with loaded ambient CSS at desktop and narrow widths. Inspect active motion, motion-off, reduced motion, pause/resume, offscreen return, final arrival, stop/error, long text, and text selection.
+3. Run the updated motion-measurement runner. Its source now activates the requested condition through the mobile selector before scrolling to a surface; inactive mobile figures are hidden.
+4. Keep geometry/animation measurements separate from raster appearance and human outcomes. The current measurement script samples local transforms and text geometry; it does not establish motion coherence as perceived by a reader or physical iPhone performance.
+
+These checks can justify a presentation-ready prototype with explicit limits. A reader-benefit claim still requires the proposed controlled study.
+
+## Final integration disposition
+
+The release run completed all 42 browser checks across Chromium, WebKit and iPhone 14 emulation, including the corrected lifecycle behaviors. The final surface suite has seven tests, and the full unit suite has 268 tests across 40 files. Eight fresh-CSS rendering observations, normal production build, GitHub Pages export, and exported-subpath replay also passed. The [release verification](ambient-release-verification-2026-09-09.md) records scope; the [measurement report](ambient-motion-validation-2026-09-09.json) records sampled geometry. These completed checks supersede the pending integration gates at the review checkpoint above. Physical iPhone, actual screen-reader use and reader outcomes remain unvalidated.

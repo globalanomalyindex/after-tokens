@@ -1,11 +1,11 @@
 // The last thing on the page: where the work lives and how to cite it.
 const LINKS: { label: string; href: string; note: string }[] = [
   { label: 'source', href: 'https://github.com/globalanomalyindex/after-tokens', note: 'the engine, the metric suite, the tests' },
-  { label: 'case study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/case-study.md', note: 'the written version, for reading offline' },
+  { label: 'latest study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/field-experiment-2026-09-09.md', note: 'the motion direction, primary sources and testable claims' },
   { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, the causal audit, the literature ledger, limits' },
   { label: 'design record', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/redesign.md', note: 'the reasoning, in order, margin included' },
-  { label: 'the spec', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/superpowers/specs/2026-09-07-settle-design.md', note: 'the contract, the field, the voice, the acceptance criteria' },
-  { label: 'data', href: 'https://github.com/globalanomalyindex/after-tokens/tree/main/data/traces', note: 'sixty recorded trajectories, mit' },
+  { label: 'handoff', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/ambient-handoff-2026-09-09.md', note: 'implementation, decisions, motion parameters and acceptance gates' },
+  { label: 'experiments', href: 'https://github.com/globalanomalyindex/after-tokens/tree/main/data/experiments', note: 'new batched captures, original-corpus audits and rendering evidence' },
 ]
 
 export function SiteFooter() {
@@ -15,11 +15,11 @@ export function SiteFooter() {
         <div>
           <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--ink-2)' }}>
             after tokens is an independent product design and engineering case study on how an answer from a
-            diffusion language model should reach a reader. a causal reading contract, a field that shows the
-            process where it is real, five brand voices, sixty recorded trajectories, and a cost that is measured.
+            diffusion language model should reach a reader. ambient motion, a whole-answer arrival, brand voices,
+            sixty original recordings, four new batched captures, and a measured cost for waiting.
           </p>
           <p className="mt-5 readout max-w-md" style={{ color: 'var(--muted)' }}>
-            cite as: fiore, c. r. (2026). after tokens: a causal reading surface for diffusion text.
+            cite as: fiore, c. r. (2026). after tokens: an ambient motion study for generated text.
             github.com/globalanomalyindex/after-tokens
           </p>
         </div>
