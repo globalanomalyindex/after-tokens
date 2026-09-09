@@ -780,43 +780,59 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   user-select: text;
 }
 .settle-page::selection, .settle-page ::selection { background: color-mix(in oklab, currentColor 22%, transparent); }
-/* Ink settling. A released word keeps its shape and its place; only its
-   ink changes. It starts in the secondary ink it was available in, and the
-   page's ink fills its letterforms from the bottom up, in one movement
-   across the sentence, over the onset. The fill is a copy of the word laid
-   exactly over it and revealed by a clip; at the end the copy hides and the
-   word's own color snaps to the page's ink, so nothing is drawn twice. */
-.settle-passage { display: inline; }
-.settle-w {
-  color: var(--settle-ink-2);
-  animation: settle-ink var(--settle-onset) var(--ease-out-expo) both;
-  animation-delay: calc(min(var(--k, 0), 12) * 5ms);
+/* The set. A sentence closing is the one moment the page moves, and it
+   moves once: each released word presses down by a twentieth of an em and
+   comes to rest exactly where it was written, in a ripple across the
+   sentence (9 ms a word, at most twelve words deep), while the page's ink
+   fills its letterforms from the bottom up with a glint of the accent at
+   the rising edge, and a glow of the accent around the whole passage's
+   letterforms cools over 720 ms. The fill is a copy of the word laid exactly over it and
+   revealed by a clip; at the end the copy hides and the word's own color
+   snaps to the page's ink, so nothing is drawn twice. After the set the
+   word never moves, changes or reweights again. */
+.settle-passage {
+  display: inline;
+  animation: settle-set-glow 720ms var(--ease-out-strong) both;
 }
-/* the two inks stacked in one gradient behind the letterforms, twice the
-   word's height, slid upward over the onset so the page's ink rises through
-   the glyphs; at the end the gradient is dropped and the word is plain text
-   in the page's ink. Discrete properties hold their first value until the
-   last keyframe, which is what keeps the clip in place for the whole fill. */
+@keyframes settle-set-glow {
+  0%   { filter: drop-shadow(0 0 0.32em color-mix(in oklab, var(--accent, currentColor) 55%, transparent)); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
+.settle-w {
+  display: inline-block;
+  color: var(--settle-ink-2);
+  animation: settle-ink calc(var(--settle-onset) * 1.9) var(--ease-out-expo) both;
+  animation-delay: calc(min(var(--k, 0), 12) * 9ms);
+}
+/* the two inks stacked in one gradient behind the letterforms with the
+   glint between them, twice the word's height, slid upward over the set so
+   the page's ink rises through the glyphs; at the end the gradient is
+   dropped and the word is plain text in the page's ink. Discrete
+   properties hold their first value until the last keyframe, which is what
+   keeps the clip in place for the whole fill. */
 @keyframes settle-ink {
   0% {
+    transform: translateY(0.05em);
     color: transparent;
     -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 50%, var(--settle-ink-2) 50% 100%);
+    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 47%, color-mix(in oklab, var(--accent, currentColor) 60%, var(--settle-ink, currentColor)) 47% 53%, var(--settle-ink-2) 53% 100%);
     background-size: 100% 200%;
     background-position: 0 0;
     background-clip: text;
     -webkit-background-clip: text;
   }
   99.9% {
+    transform: none;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 50%, var(--settle-ink-2) 50% 100%);
+    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 47%, color-mix(in oklab, var(--accent, currentColor) 60%, var(--settle-ink, currentColor)) 47% 53%, var(--settle-ink-2) 53% 100%);
     background-size: 100% 200%;
     background-position: 0 100%;
     background-clip: text;
     -webkit-background-clip: text;
   }
   100% {
+    transform: none;
     color: var(--settle-ink, currentColor);
     -webkit-text-fill-color: var(--settle-ink, currentColor);
     background-image: none;
@@ -933,34 +949,74 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 
 /* The zone. Every position after the page, in order, as what the source has
    made of it. Every cell is an inline block on the same box: 1.25em tall on
-   the baseline, so a blank, a draft, a piece and a word all sit alike and
-   the cursor can find the middle of the lowercase letters in any of them.
+   the baseline, so a blank, a draft, a piece and a word all sit alike.
    Every change of width is a transition, set by the surface, so the line
-   slides and never jumps. A cell clips only sideways while it slides, so
-   descenders are never cut. */
+   slides and never jumps. A cell clips sideways at its box, so a sliding
+   width and a row rolling out never add to the line, and a little outside
+   it where the browser allows, so a glow at the edge of a word is not
+   cut; a clip path a little above and below the box lets a row rolling in
+   from below the line emerge from the cell without cutting descenders. */
 .settle-zone { display: inline; }
 .settle-g { white-space: nowrap; }
 .settle-cw, .settle-cz, .settle-slot, .settle-page-end {
+  position: relative;
   display: inline-block;
   height: 1.25em;
   line-height: 1.25em;
   white-space: nowrap;
   overflow-x: clip;
   overflow-y: visible;
+  overflow-clip-margin: 0.3em;
+  clip-path: inset(-0.14em -0.3em);
 }
 .settle-cw, .settle-cz { vertical-align: baseline; color: var(--settle-ink-2); }
 .settle-slot, .settle-page-end { vertical-align: -0.27em; }
 .settle-page-end { width: 0; }
-/* the written word: it builds in place. Each letter comes into focus from a
-   blur on its own beat, from the middle of the word outward (--i is the
-   letter's rank in that order), in two passes, rough then fine, so a word is
-   constructed rather than typed; the word as a whole rises slightly and
-   glows in the accent for a moment. The letters are in the secondary ink
-   at full opacity on an unchanged ground from the first frame, so a
-   written word clears the contrast floor at every moment; the softness is
-   the blur, which changes no color. Never a change of width from the build
-   itself; the width is the slide. */
-.settle-cw { animation: settle-snap 520ms var(--ease-out-expo) both; }
+/* The reel. Whatever a position shows is a row, and a change of text is a
+   new row: it rolls in from below the line, blurred, and comes to rest;
+   the row it replaces, the same element it always was, rolls on up and
+   out, blurred, and is let go. Rows are transitions, so a guess that
+   changes again mid-roll turns smoothly from where it is. A guess rolling
+   up out of the stream, the guesses the model drops rolling past, and the
+   committed word rolling in last are the model's own sequence at that
+   position, in its own order, at its own pace. */
+.settle-cz-text {
+  display: inline-block;
+  transition: transform 460ms var(--ease-out-expo), filter 460ms var(--ease-out-expo), opacity 460ms var(--ease-out-strong);
+  @starting-style { transform: translateY(0.9em); filter: blur(3px); }
+}
+.settle-cz-text[data-past] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(-0.95em);
+  filter: blur(2.5px);
+  opacity: 0;
+  transition-duration: 460ms, 460ms, 240ms;
+  animation: none;
+  pointer-events: none;
+}
+/* the written word: it rolls in and builds in place. The row rises out of
+   the cell, overshoots by a hair and settles, glowing in the accent for a
+   moment; each letter comes into focus from a blur on its own beat, from
+   the middle of the word outward (--i is the letter's rank in that order),
+   in two passes, rough then fine, so a word is constructed rather than
+   typed. The letters are in the secondary ink at full opacity on an
+   unchanged ground from the first frame, so a written word clears the
+   contrast floor at every moment; the softness is the blur, which changes
+   no color. Never a change of width from the build itself; the width is
+   the slide. */
+.settle-cw { transition: filter 460ms var(--ease-out-strong); }
+.settle-cw .settle-cz-text { animation: settle-snap 560ms var(--ease-out-expo) both; }
+/* a word whose text was already standing as the draft or the piece lands
+   where it is: the reel stops, with the same rise, overshoot and glow and
+   no roll; the cell's blur clears as the ghost becomes ink */
+.settle-cw .settle-cz-text[data-land] { animation: settle-land 520ms var(--ease-out-expo) both; }
+@keyframes settle-land {
+  0%   { transform: translateY(0.05em); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 60%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 50%, transparent); }
+  55%  { transform: translateY(-0.03em); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 35%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 25%, transparent); }
+  100% { transform: none; text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
+}
 .settle-l { animation: settle-letter 460ms var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 34ms); }
 @keyframes settle-letter {
   0%   { filter: blur(2.2px); }
@@ -969,36 +1025,27 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   100% { filter: blur(0); }
 }
 @keyframes settle-snap {
-  0%   { transform: translateY(0.06em); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 60%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 50%, transparent); }
-  55%  { transform: translateY(-0.02em); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 35%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 25%, transparent); }
-  100% { transform: none; text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
+  0%   { transform: translateY(0.85em); filter: blur(1.5px); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 60%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 50%, transparent); }
+  62%  { transform: translateY(-0.035em); filter: blur(0); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 35%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 25%, transparent); }
+  100% { transform: none; filter: blur(0); text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
 }
 /* the draft: the source's current guess, in a ghost of the secondary ink
    that sharpens with its probability (--sure runs from the floor to
    certainty, from a blur of 1.5px to sharp, so a draft comes into focus in
-   visible steps as the model's confidence rises across the steps). When the
-   source changes its mind the draft reconsiders: a short blur and dip on
-   its letters, once per change, because the letters are remounted whenever
-   their text changes. */
+   visible steps as the model's confidence rises across the steps). A
+   change of mind is a turn of the reel. */
 .settle-cz[data-state="draft"] {
   opacity: calc(0.3 + 0.5 * var(--sure, 0));
   filter: blur(calc((1 - var(--sure, 0)) * 1.5px));
   transition: opacity 460ms var(--ease-out-strong), filter 460ms var(--ease-out-strong);
 }
-/* a draft's letters reconsider when they change, then breathe: a slow rise
-   and fall of presence, out of step from one draft to the next (--k is the
-   position), so the unresolved part of the answer is never still and never
-   blinks. Beside a word that has just settled, the drafts lift for a beat:
-   the recorded neighbor lift, drawn. */
-.settle-cz[data-state="draft"] .settle-cz-text {
-  display: inline-block;
-  animation:
-    settle-rethink 380ms var(--ease-out-expo) both,
-    settle-draft-breath 4200ms var(--ease-in-out-strong) calc(380ms + var(--k, 0) * 530ms) infinite alternate;
-}
-@keyframes settle-rethink {
-  0%   { filter: blur(2.4px); opacity: 0.2; transform: translateY(0.06em); }
-  100% { filter: blur(0); opacity: 1; transform: none; }
+/* a draft's letters breathe once they have rolled in: a slow rise and fall
+   of presence, out of step from one draft to the next (--k is the
+   position's scrambled phase), so the unresolved part of the answer is
+   never still and never blinks. Beside a word that has just settled, the
+   drafts lift for a beat: the recorded neighbor lift, drawn. */
+.settle-cz[data-state="draft"] .settle-cz-text:not([data-past]) {
+  animation: settle-draft-breath 4200ms var(--ease-in-out-strong) calc(460ms + var(--k, 0) * 530ms) infinite alternate;
 }
 @keyframes settle-draft-breath {
   0%   { opacity: 1; }
@@ -1019,20 +1066,29 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    kept for the reducer; it draws no mark, because the answer's extent is
    told by the cut). Across the open positions runs the stream: a faint
    band of the accent's light at the height of the lowercase letters, where
-   words may be but are not decided yet, and along it a slow flock of
-   glowing dots, one per position on its own phase (--k), drifting the way
-   the text reads, so the undecided part of the answer is alive without
-   being noisy. The committed end is one mark; positions past it close to
-   nothing, and the stream shortens from the tail as the length is decided.
-   Slow linear motion is the least distracting kind (Bartram, Ware and
-   Calvert, 2003); the flock never blinks and never hurries. */
+   words may be but are not decided yet. Every cell carries the band; it is
+   lit on an open position, at just over half under a draft (the position
+   is still open), and it dissolves under a piece or a word as it arrives,
+   so the light never retreats from the words: the words land in it. Its
+   brightness rises and falls slowly on a phase per position, scrambled so
+   no wave runs along the line. Over the band hovers the flock: a glowing
+   dot on about every third open position, on its own phase, wandering a
+   small closed path inside its own position, never leaving it. The
+   committed end is one mark; positions past it close to nothing, and the
+   stream shortens from the tail as the length is decided. Slow motion in
+   place is the least distracting kind and traveling motion the most
+   (Bartram, Ware and Calvert, 2003); nothing here travels, blinks or
+   hurries. */
 .settle-slot {
-  position: relative;
   width: 2.3ch;
   margin: 0;
   transition: width var(--settle-onset) var(--ease-out-expo), margin var(--settle-onset) var(--ease-out-expo), opacity 300ms var(--ease-out-strong);
 }
-.settle-slot[data-state="open"]::before, .settle-slot[data-state="end-belief"]::before {
+/* the band's light is its color and its shimmer is its opacity, kept
+   apart so the light can transition while the shimmer keeps running: full
+   on an open position, just over half under a draft (the position is
+   still open), and dissolving over 620 ms under a piece or a word */
+.settle-slot::before, .settle-cz::before, .settle-cw::before {
   content: '';
   position: absolute;
   left: -0.16ch;
@@ -1040,16 +1096,21 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   top: 0.46em;
   height: 0.46em;
   border-radius: 0.23em;
-  background: color-mix(in oklab, var(--accent, currentColor) 30%, transparent);
+  background-color: transparent;
   opacity: calc(var(--settle-open-alpha) * 1.5);
+  pointer-events: none;
+  transition: background-color 620ms var(--ease-out-strong);
   animation: settle-stream 4400ms var(--ease-in-out-strong) infinite alternate;
   animation-delay: calc(var(--k, 0) * -430ms);
 }
+.settle-slot[data-state="open"]::before, .settle-slot[data-state="end-belief"]::before { background-color: color-mix(in oklab, var(--accent, currentColor) 30%, transparent); }
+.settle-cz[data-state="draft"]::before { background-color: color-mix(in oklab, var(--accent, currentColor) 17%, transparent); }
+.settle-slot[data-state="end"]::before, .settle-slot[data-state="beyond"]::before { display: none; }
 @keyframes settle-stream {
-  0%   { opacity: calc(var(--settle-open-alpha) * 1.0); }
-  100% { opacity: calc(var(--settle-open-alpha) * 2.0); }
+  0%   { opacity: calc(var(--settle-open-alpha) * 1.3); }
+  100% { opacity: calc(var(--settle-open-alpha) * 1.75); }
 }
-/* the flock: a glowing dot on about every third position, on its own phase, drifting the way the text reads */
+/* the flock: a glowing dot on about every third open position, on its own phase, hovering inside its position */
 .settle-slot[data-state="open"][data-dot]::after, .settle-slot[data-state="end-belief"][data-dot]::after {
   content: '';
   position: absolute;
@@ -1061,18 +1122,18 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   border-radius: 50%;
   background: var(--accent, currentColor);
   box-shadow: 0 0 0.3em color-mix(in oklab, var(--accent, currentColor) 75%, transparent);
-  opacity: 0;
-  animation: settle-flock 3000ms linear infinite;
-  animation-delay: calc(var(--k, 0) * -370ms);
+  opacity: 0.7;
+  animation: settle-flock 5200ms linear infinite;
+  animation-delay: calc(var(--k, 0) * -470ms);
 }
 @keyframes settle-flock {
-  0%   { transform: translate(0.1ch, 0.08em) scale(0.55); opacity: 0; }
-  18%  { opacity: 0.9; }
-  50%  { transform: translate(1.15ch, -0.07em) scale(1); }
-  82%  { opacity: 0.9; }
-  100% { transform: translate(2.2ch, 0.06em) scale(0.55); opacity: 0; }
+  0%   { transform: translate(0.75ch, 0.05em) scale(0.8); opacity: 0.55; }
+  25%  { transform: translate(1.35ch, -0.08em) scale(1); opacity: 0.9; }
+  50%  { transform: translate(1.6ch, 0.06em) scale(0.85); opacity: 0.6; }
+  75%  { transform: translate(0.95ch, -0.05em) scale(1); opacity: 0.85; }
+  100% { transform: translate(0.75ch, 0.05em) scale(0.8); opacity: 0.55; }
 }
-.settle[data-paused="true"] .settle-slot::before, .settle[data-paused="true"] .settle-slot::after { animation-play-state: paused; }
+.settle[data-paused="true"] .settle-slot::before, .settle[data-paused="true"] .settle-cz::before, .settle[data-paused="true"] .settle-slot::after { animation-play-state: paused; }
 /* a line break, committed or guessed, is the message's shape arriving before its words */
 .settle-nl { display: block; height: 0; }
 .settle-slot[data-state="end"] { width: 0.5ch; margin-left: 0.2ch; }
@@ -1090,8 +1151,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 
 /* In the legend only, a blank slot shows its extent and nothing moves. */
 .settle-legend .settle-slot[data-state="open"] { outline: 1px dashed color-mix(in oklab, currentColor 28%, transparent); outline-offset: -1px; margin: 0 0.15ch; }
-.settle-legend .settle-cz::after, .settle-legend .settle-cw { animation: none; }
-.settle-legend .settle-slot[data-state="open"]::before { animation: none; opacity: calc(var(--settle-open-alpha) * 1.8); }
+.settle-legend .settle-cz::after, .settle-legend .settle-cw, .settle-legend .settle-cz-text { animation: none; }
+.settle-legend .settle-slot[data-state="open"]::before, .settle-legend .settle-cz[data-state="draft"]::before { animation: none; opacity: calc(var(--settle-open-alpha) * 1.8); }
 .settle-legend .settle-slot[data-state="open"][data-dot]::after { animation: none; opacity: 0.85; transform: translate(1.15ch, -0.07em); }
 
 /* The concept phone's slot: a card that appears with the wait and leaves with the answer. */
@@ -1176,12 +1237,13 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .settle-w, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-slot, .settle-slot::before, .settle-slot::after { animation: none !important; transition: none !important; }
-  .settle-cw, .settle-l { opacity: 1; filter: none; transform: none; }
+  .settle-w, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-slot, .settle-slot::before, .settle-slot::after, .settle-cz::before, .settle-cw::before, .settle-passage { animation: none !important; transition: none !important; }
+  .settle-cw, .settle-l, .settle-cz-text:not([data-past]) { opacity: 1; filter: none; transform: none; }
   .settle-cz[data-state="draft"] { filter: none; }
-  .settle-slot[data-state="open"]::before { opacity: calc(var(--settle-open-alpha) * 1.6); }
+  .settle-slot::before, .settle-cz::before, .settle-cw::before { opacity: calc(var(--settle-open-alpha) * 1.6); }
   .settle-slot[data-state="open"][data-dot]::after, .settle-slot[data-state="end-belief"][data-dot]::after { display: none; }
-  .settle-w { color: var(--settle-ink, currentColor); -webkit-text-fill-color: var(--settle-ink, currentColor); background-image: none; }
+  .settle-passage { filter: none; }
+  .settle-w { color: var(--settle-ink, currentColor); -webkit-text-fill-color: var(--settle-ink, currentColor); background-image: none; transform: none; }
   .settle-forming { transition: none; }
   .settle-cell::before { animation: none !important; transition: none; }
   .settle-floor { animation: none !important; transition: none; }

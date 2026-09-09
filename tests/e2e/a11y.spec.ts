@@ -45,9 +45,12 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
     // margin carry everything the contract promises, and a reader who
     // cannot see a ghost loses nothing that is promised. Every committed
     // letter in the zone (a piece, a written word, at every frame of its
-    // snap) is held to the floor. The register legend's samples are
-    // decorative illustrations of those same registers.
+    // snap) is held to the floor. A row the reel has dropped is the ghost
+    // of a guess leaving its position, gone within half a second. The
+    // register legend's samples are decorative illustrations of those
+    // same registers.
     .exclude('.settle-zone .settle-cz[data-state="draft"]')
+    .exclude('.settle-zone .settle-cz-text[data-past]')
     .exclude('.settle-legend')
     .exclude('.settle-field')
     .exclude('.pointer-events-none[aria-hidden="true"]')

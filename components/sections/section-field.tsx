@@ -12,11 +12,11 @@ const pct = (x: number) => `${Math.round(x * 100)}%`
 // and the strip as the field's compact form.
 
 const REGISTERS: { label: string; body: string; sample: React.ReactNode }[] = [
-  { label: 'open', body: 'a position with no commitment and no confident guess: reserved space, about a token wide, standing where a word may be. across the open positions runs a faint stream of the brand\u2019s light with a slow flock of glowing dots drifting along it, so the undecided part of the answer is alive without being noisy. the stream shortens from the tail as the model decides the length', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 0 } as CSSProperties} /><span className="settle-slot" data-state="open" data-dot style={{ ['--k' as string]: 4 } as CSSProperties} /><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 8 } as CSSProperties} /></span> },
-  { label: 'draft', body: 'the source\u2019s current guess for an open position, above the floor: the model\u2019s own prediction, in a ghost of the secondary ink that sharpens with its probability. it can change or vanish, and it never reaches the page', sample: <span className="settle-zone settle-legend"><span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.15 } as CSSProperties}>sunlight</span> <span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.8 } as CSSProperties}>scatters</span></span> },
+  { label: 'open', body: 'a position with no commitment and no confident guess: reserved space, about a token wide, standing where a word may be. across the open positions runs a faint stream of the brand\u2019s light, and over it hovers a slow flock of glowing dots, each inside its own position, so the undecided part of the answer is alive without being noisy. a word lands into the light and the light dissolves under it; nothing travels. the stream shortens from the tail as the model decides the length', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 0 } as CSSProperties} /><span className="settle-slot" data-state="open" data-dot style={{ ['--k' as string]: 4 } as CSSProperties} /><span className="settle-slot" data-state="open" style={{ ['--k' as string]: 8 } as CSSProperties} /></span> },
+  { label: 'draft', body: 'the source\u2019s current guess for an open position, above the floor: the model\u2019s own prediction, in a ghost of the secondary ink that sharpens with its probability. every position is a reel: a guess rolls up out of the stream, and a guess the model drops rolls on up and out, blurred, as the next rolls in beneath it. it never reaches the page', sample: <span className="settle-zone settle-legend"><span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.15 } as CSSProperties}>sunlight</span> <span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.8 } as CSSProperties}>scatters</span></span> },
   { label: 'piece', body: 'a committed piece of a word that is not complete. its letters are facts, in the secondary ink at full weight; the snap is what marks the word closing', sample: <span className="settle-zone settle-legend"><span className="settle-g"><span className="settle-cz" data-state="piece">scat</span><span className="settle-cz" data-state="draft" style={{ ['--sure' as string]: 0.5 } as CSSProperties}>ters</span></span></span> },
-  { label: 'written', body: 'every piece and its boundaries are in. the word builds where it stands, each letter coming into focus on its own beat from the middle outward, in the secondary ink, waiting for its sentence', sample: <span className="settle-zone settle-legend"><span className="settle-cw">sunlight scatters</span></span> },
-  { label: 'settled', body: 'its sentence closed under the policy: the page\u2019s ink settled through the letterforms, and the word has not moved', sample: <span className="settle-passage"><span className="settle-w" data-t="The sky is blue." style={{ animation: 'none', color: 'var(--stage-text)' }}>The sky is blue.</span></span> },
+  { label: 'written', body: 'every piece and its boundaries are in. the word rolls in last and snaps where it will stand, or lands in place when its draft already had it right, each letter coming into focus on its own beat from the middle outward, in the secondary ink, waiting for its sentence', sample: <span className="settle-zone settle-legend"><span className="settle-cw">sunlight scatters</span></span> },
+  { label: 'settled', body: 'its sentence closed under the policy: the page set, the word pressing a twentieth of an em and coming to rest where it was written as the page\u2019s ink rose through its letterforms, and it will not move again', sample: <span className="settle-passage"><span className="settle-w" data-t="The sky is blue." style={{ animation: 'none', color: 'var(--stage-text)' }}>The sky is blue.</span></span> },
   { label: 'end', body: 'the lowest committed end token; the answer ends at or before it, so the positions past it close to nothing', sample: <span className="settle-zone settle-legend"><span className="settle-slot" data-state="end" /></span> },
 
 ]
@@ -27,17 +27,22 @@ export function SectionField() {
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what settles first</h2>
       <p className="standfirst max-w-3xl">
         the field is carved into the text. every position after the page is reserved space about a token wide, and
-        across the open positions runs a faint stream of light with a slow flock of glowing dots drifting along it:
+        across the open positions runs a faint stream of light with a slow flock of glowing dots hovering over it:
         where words may be but are not decided yet. the shape of the message arrives first: its length is carved down
         from the tail as the model commits its end, and a line break, committed or only guessed, is drawn as a break, so
-        a list or a paragraph shows its outline before its words. where the model already holds a confident guess,
-        that guess stands in the space as a draft: ghosted, breathing, sharpening as the model grows sure, and never a
-        word until it commits. when the sampler commits a piece of a word, the piece stands as a fact. when every piece
-        is in, the word builds where it stands, each letter coming into focus on its own beat from the middle of the
-        word outward, in a secondary ink, opening from the space it held so the line slides rather than jumps; the
+        a list or a paragraph shows its outline before its words. every position is a reel. where the model already
+        holds a confident guess, that guess rolls up out of the stream as a draft: ghosted, breathing, sharpening as
+        the model grows sure, and never a word until it commits; a guess the model drops rolls on up and out, blurred,
+        as the next rolls in beneath it, so the words the model tried and did not use pass through the space in the
+        model\u2019s own order. when the sampler commits a piece of a word, the piece stands as a fact. when every piece
+        is in, the word rolls in last and snaps where it will stand, or lands in place when its draft already had it
+        right, each letter coming into focus on its own beat from the middle of the word outward, in a secondary ink,
+        opening from the space it held so the line slides rather than jumps, and the light dissolves under it; the
         drafts beside it lift for a beat, because a commitment really does lift its neighbors, and words settling in
-        several places settle in several places at once. nothing guessed is drawn as committed, and nothing committed
-        as a guess.
+        several places settle in several places at once. when a sentence closes, the page sets: its words press a
+        twentieth of an em and come to rest where they were written, the page\u2019s ink rises through their letterforms
+        with a glint at its edge, and a glow around them cools. nothing guessed is drawn as committed, and nothing
+        committed as a guess.
       </p>
 
       <div className="mt-12 md:mt-16 grid gap-8 lg:grid-cols-2 items-start">

@@ -28,13 +28,13 @@ test.describe('reduced motion full audit', () => {
     const hook = page.locator('#hook .settle').first()
     await expect(hook).toHaveAttribute('data-status', 'complete', { timeout: 30_000 })
     await expect(hook.locator('.settle-passage').first()).toBeVisible()
-    // Under reduced motion no cell blooms, no mark breathes, no slot flickers
-    // and no word ramps.
+    // Under reduced motion no cell blooms, no mark breathes, no band
+    // shimmers, no row rolls, no passage sets and no word ramps.
     const animating = await page.evaluate(() => {
       const named = (name: string) => name !== 'none' && name !== ''
-      const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark, .settle-slot')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
+      const before = Array.from(document.querySelectorAll('.settle-cell, .settle-mark, .settle-slot, .settle-cz, .settle-cw')).filter((el) => named(getComputedStyle(el, '::before').animationName)).length
       const after = Array.from(document.querySelectorAll('.settle-slot')).filter((el) => named(getComputedStyle(el, '::after').animationName)).length
-      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-w, .settle-floor')).filter((el) => named(getComputedStyle(el).animationName)).length
+      const own = Array.from(document.querySelectorAll('.settle-slot, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-w, .settle-passage, .settle-floor')).filter((el) => named(getComputedStyle(el).animationName)).length
       return before + after + own
     })
     expect(animating).toBe(0)
