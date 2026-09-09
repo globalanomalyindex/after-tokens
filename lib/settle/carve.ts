@@ -1,4 +1,5 @@
 import { FIELD_HORIZON } from './field'
+import { guessKey } from './reader'
 import type { Commit, SettleState } from './types'
 
 // The carved zone: every position after the page, in order, as what the
@@ -90,34 +91,6 @@ function draftAt(state: SettleState, position: number, previous: CarveItem | und
   return { kind: 'draft', position, text: draft.text, p: draft.p, end: false }
 }
 
-/** A guess the source makes at this many open positions at once is its prior for an unknown position. */
-export const PRIOR_POSITIONS = 4
-
-/** A guess as the prior rule compares it: the piece without its spacing or its case. */
-const guessKey = (text: string) => text.trim().toLowerCase()
-
-/**
- * The guesses below the floor that are the source's prior: far from
- * commitment the argmax of a masked position is the corpus prior (or the
- * prompt's own word), the same guess at most open positions at once, and
- * it says nothing about the position it stands at. A guess made at
- * PRIOR_POSITIONS or more open positions at one step is the prior, and the
- * prior is drawn as blank space; a guess specific to its position spins.
- */
-export function priorGuesses(state: SettleState): Set<string> {
-  const counts = new Map<string, number>()
-  for (const key of Object.keys(state.spins)) {
-    const position = Number(key)
-    if (state.tokens[position]) continue
-    const guess = guessKey(state.spins[position]!.text)
-    if (!guess) continue
-    counts.set(guess, (counts.get(guess) ?? 0) + 1)
-  }
-  const prior = new Set<string>()
-  for (const [guess, count] of counts) if (count >= PRIOR_POSITIONS) prior.add(guess)
-  return prior
-}
-
 /**
  * The reel below the floor at an open position with no draft to show: the
  * source's argmax at any probability, drawn as a smear blurred past reading
@@ -125,9 +98,9 @@ export function priorGuesses(state: SettleState): Set<string> {
  * position. Only a piece with letters or digits is drawn (the end spelling,
  * a special token, a break, whitespace and bare punctuation draw nothing:
  * the shape of the message is carved from confident guesses only, and a
- * smear of punctuation would read as one), the prior is drawn as blank, and
- * a piece that continues a word waits for letters to attach to, as a draft
- * does.
+ * smear of punctuation would read as one), the prior (the reducer's, kept
+ * with hysteresis) is drawn as blank, and a piece that continues a word
+ * waits for letters to attach to, as a draft does.
  */
 function spinAt(state: SettleState, position: number, previous: CarveItem | undefined, prior: Set<string>): CarveItem | null {
   const spin = state.spins[position]
@@ -148,7 +121,7 @@ export function carve(state: SettleState): CarveItem[] {
   const extent = state.bound ?? Math.max(1, maxCommitted + 1 + FIELD_HORIZON)
   const cut = lowestEnd(state)
   const safe = wordSafeTokens(state)
-  const prior = priorGuesses(state)
+  const prior = new Set(state.prior)
   const items: CarveItem[] = []
   // the zone begins where the page ends: in-order words waiting for their
   // passage are its first items, marked forming. A passage boundary can

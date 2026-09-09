@@ -755,6 +755,10 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    what the source is doing, in words, beside a mark that breathes while it
    is active. The voice sets --settle-* on a wrapper (lib/settle/voice.ts). */
 .settle {
+  /* what one open position reserves. A content token renders 2.6 of these
+     units wide on average across the recordings, so reserving 4 leaves a
+     landing word room to arrive without pushing the line forward */
+  --settle-slot-w: 4ch;
   --settle-onset: 200ms;
   --settle-breath: 2400ms;
   --settle-bloom: 0.6;
@@ -778,6 +782,11 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   user-select: text;
+  /* a word in the zone is built from letter spans and on the page it is
+     one run of text; without kerning and ligatures the two measure the
+     same, so a sentence's release moves nothing */
+  font-kerning: none;
+  font-variant-ligatures: none;
 }
 .settle-page::selection, .settle-page ::selection { background: color-mix(in oklab, currentColor 22%, transparent); }
 /* The set. A sentence closing is the one moment the page moves, and it
@@ -1043,9 +1052,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   opacity: calc(0.3 + 0.5 * var(--sure, 0));
   filter: blur(calc((1 - var(--sure, 0)) * 1.5px));
   transition: opacity 460ms var(--ease-out-strong), filter 460ms var(--ease-out-strong);
-  animation: settle-float 6200ms ease-in-out calc(var(--k, 0) * -560ms) infinite alternate;
 }
-.settle[data-paused="true"] .settle-cz[data-state="draft"] { animation-play-state: paused; }
 /* a draft's letters breathe once they have rolled in: a slow rise and fall
    of presence, out of step from one draft to the next (--k is the
    position's scrambled phase), so the unresolved part of the answer is
@@ -1076,34 +1083,50 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
    is drawn as legible text. It clears the floor by coming into focus as a
    draft. */
 .settle-cz[data-state="spin"] {
+  width: var(--settle-slot-w);
+  /* its rows are out of the flow, so it sits on the line the way a blank does */
+  vertical-align: -0.27em;
   color: transparent;
   text-shadow: 0 0 0.28em var(--settle-ink-2);
   opacity: calc(0.15 + 0.3 * var(--p, 0));
   transition: opacity 320ms var(--ease-out-strong);
-  animation: settle-float 6200ms ease-in-out calc(var(--k, 0) * -560ms) infinite alternate;
 }
-/* a smear floats: a slow rise and fall the height of a hairline, out of
-   step from one position to the next, so the reel below the floor is never
-   still and never in step; it turns on a longer, softer roll than a word */
-@keyframes settle-float {
-  0%   { transform: translateY(0.03em); }
-  100% { transform: translateY(-0.03em); }
-}
+/* a smear keeps the slot's width whatever it says: its rows are centered
+   in the slot and cut at its sides, so the reel below the floor turns
+   without moving the line, and it turns on a longer, softer roll than a
+   word. The centering is the translate property, which composes with the
+   roll's transform. */
 .settle-cz[data-state="spin"] .settle-cz-text {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
   transition-duration: 620ms, 620ms, 620ms;
   transition-timing-function: var(--ease-out-strong), var(--ease-out-strong), var(--ease-out-strong);
   @starting-style { transform: translateY(0.55em); filter: blur(2px); }
 }
-.settle[data-paused="true"] .settle-cz[data-state="spin"] { animation-play-state: paused; }
-/* blank space: an open position reserves about a token's width, and so does
-   a position where the source only guesses the answer ends (the guess is
+
+/* blank space: an open position reserves a token's width (4ch: a content
+   token renders 2.6 of these units wide on average across the recordings,
+   so a word landing in its space arrives without pushing the line
+   forward), and so does a
+   position where the source only guesses the answer ends (the guess is
    kept for the reducer; it draws no mark, because the answer's extent is
    told by the cut). The committed end is one mark; positions past it close
    to nothing, and the zone shortens from the tail as the length is decided. */
 .settle-slot {
-  width: 2.3ch;
+  width: var(--settle-slot-w);
   margin: 0;
   transition: width 520ms var(--ease-out-strong), margin 520ms var(--ease-out-strong), opacity 300ms var(--ease-out-strong);
+}
+/* the refocus: a cell that changed lines comes back into focus where it
+   landed, a short blur in and no change of color, so a wrap change reads
+   as the word re-forming there instead of teleporting. Set by the surface
+   on the cell, for 320 ms. */
+.settle-zone [data-moved] { animation: settle-refocus 320ms var(--ease-out-strong) both; }
+@keyframes settle-refocus {
+  0%   { filter: blur(2.4px); }
+  100% { filter: blur(calc((1 - var(--sure, 1)) * 1.5px)); }
 }
 /* a line break, committed or guessed, is the message's shape arriving before its words */
 .settle-nl { display: block; height: 0; }

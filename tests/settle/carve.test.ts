@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import brainstormJson from '@/data/traces/compact/brainstorm__lowconf-b128.json'
 import { asTrace } from '@/lib/diffusion/traces'
-import { carve, priorGuesses, wordSafeTokens } from '@/lib/settle/carve'
+import { carve, wordSafeTokens } from '@/lib/settle/carve'
 import { createSettleState, pageText, reduceSettle } from '@/lib/settle/reader'
 import { replayTrace, settleAt, settleEnd } from '@/lib/settle/replay'
 import type { SettleEvent } from '@/lib/settle/types'
@@ -189,16 +189,33 @@ describe('the prior', () => {
       { position: 7, text: ' sky', p: 0.1 },
       { position: 8, text: ' sky', p: 0.1 },
     ] })
-    expect(priorGuesses(s)).toEqual(new Set(['the']))
+    expect(s.prior).toEqual(['the'])
     const items = carve(s)
     const at = (position: number) => items.find((item) => 'position' in item && item.position === position)
     for (const position of [1, 2, 4, 5]) expect(at(position)).toEqual({ kind: 'slot', position, state: 'open' })
     expect(at(3)?.kind).toBe('spin')
     expect(at(6)?.kind).toBe('spin')
-    // a committed position no longer counts toward the prior
-    s = reduceSettle(s, { type: 'commit', atMs: 300, tokens: [{ position: 1, text: ' the' }, { position: 2, text: ' the' }] })
-    expect(priorGuesses(s).size).toBe(0)
+    // a committed position no longer counts toward the prior, but the prior
+    // holds while two positions still make the guess, and lets go below that
+    s = reduceSettle(s, { type: 'commit', atMs: 300, tokens: [{ position: 1, text: ' the' }] })
+    expect(s.prior).toEqual(['the'])
+    expect(carve(s).find((item) => 'position' in item && item.position === 4)?.kind).toBe('slot')
+    s = reduceSettle(s, { type: 'commit', atMs: 400, tokens: [{ position: 2, text: ' the' }, { position: 5, text: 'the' }] })
+    expect(s.prior).toEqual([])
     expect(carve(s).find((item) => 'position' in item && item.position === 4)?.kind).toBe('spin')
+  })
+
+  it('does not blink: a guess that reaches four positions stays the prior while it keeps two', () => {
+    let s = createSettleState('sentence', 10)
+    const at = (n: number, text: string) => Array.from({ length: n }, (_, i) => ({ position: 1 + i, text, p: 0.05 }))
+    s = reduceSettle(s, { type: 'spin', atMs: 100, guesses: at(3, ' sea') })
+    expect(s.prior).toEqual([])
+    s = reduceSettle(s, { type: 'spin', atMs: 200, guesses: at(4, ' sea') })
+    expect(s.prior).toEqual(['sea'])
+    s = reduceSettle(s, { type: 'spin', atMs: 300, guesses: [{ position: 3, text: ' sky', p: 0.05 }, { position: 4, text: ' sky', p: 0.05 }] })
+    expect(s.prior).toEqual(['sea'])
+    s = reduceSettle(s, { type: 'spin', atMs: 400, guesses: [{ position: 2, text: ' sky', p: 0.05 }] })
+    expect(s.prior).toEqual([])
   })
 })
 

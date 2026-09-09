@@ -132,9 +132,43 @@ Authored here: the smear's blur and its weights, the roll's distances and timing
 
 Two things from looking at the live page: "the word 'the' appears in all the text as a faint background for words before they're resolved", and a wish that the words "feel like they're jumping around less and more organic and smooth and floaty with how they form and expand".
 
-The "the" was the reel doing exactly what it was told. Far from commitment the argmax of a masked position is the corpus prior, or a word out of the prompt, and it is the same guess at most open positions at once; drawn as a smear it was a faint field of one word. A guess made at that many positions says nothing about any of them, so the rule now is that a guess the model makes at four or more open positions at one step is its prior for an unknown position and is drawn as blank space (`PRIOR_POSITIONS` in `lib/settle/carve.ts`, compared without spacing or case; a committed position no longer counts). What is left below the floor is a sparse field of guesses specific to their positions, which is what the reel was for. In the sampled recordings the modal guess covered between a quarter and three quarters of the positions below the floor at the median step, and hiding it left about ten to thirty spinning positions at a time.
+The "the" was the reel doing exactly what it was told. Far from commitment the argmax of a masked position is the corpus prior, or a word out of the prompt, and it is the same guess at most open positions at once; drawn as a smear it was a faint field of one word. A guess made at that many positions says nothing about any of them, so the rule now is that a guess the model makes at four or more open positions at one step is its prior for an unknown position and is drawn as blank space (the threshold now lives in the reducer, as `PRIOR_ENTER` in `lib/settle/reader.ts`, compared without spacing or case; a committed position no longer counts). What is left below the floor is a sparse field of guesses specific to their positions, which is what the reel was for. In the sampled recordings the modal guess covered between a quarter and three quarters of the positions below the floor at the median step, and hiding it left about ten to thirty spinning positions at a time.
 
-The jumping had a cause in the code. The width slide restarted from the width a position last measured at rest, so a guess that changed while the slide was still running jumped back to where the slide had begun and slid again; with guesses changing every few steps at many positions, that was most of the jitter. The slide now turns from the width on screen. It also runs longer and softer: at least 520 ms, or the onset where that is longer, on the strong ease-out, varied by position from 0.9 to 1.1 times so the line breathes rather than moving in step. Smears and drafts float, a rise and fall of 0.03 em over 6.2 s on scrambled phases, and a smear's rows turn on a longer, softer roll than a word's (0.55 em, 620 ms). Reduced motion removes the float with the rest. Authored here: the prior's threshold, the drift and its variation, the float. Recorded: which guesses the model makes where, and when. Nothing here is measured on a reader.
+The jumping had a cause in the code. The width slide restarted from the width a position last measured at rest, so a guess that changed while the slide was still running jumped back to where the slide had begun and slid again; with guesses changing every few steps at many positions, that was most of the jitter. The slide now turns from the width on screen. It also runs longer and softer: at least 520 ms, or the onset where that is longer, on the strong ease-out, varied by position from 0.9 to 1.1 times so the line breathes rather than moving in step. A smear's rows turn on a longer, softer roll than a word's (0.55 em, 620 ms). Authored here: the prior's threshold, the drift and its variation. Recorded: which guesses the model makes where, and when. Nothing here is measured on a reader. Superseded the same day: this pass also gave smears and drafts a slow float, a rise and fall of 0.03 em over 6.2 s on scrambled phases, and 4l removes it and rewrites the widths it left behind.
+
+### 4l. Holding still (8 September)
+
+One line from the live page: "the formatting and lines still jitter around and jump forward too sharply. any way to make it feel more stable there?"
+
+The first move was to measure it rather than to guess at it. The surface now samples every cell on every animation frame and reports how far each legible cell moved, where a legible cell is a written word, a committed piece or a draft. Most frames were already still. What was left sat in the tail of the distribution: a whole-zone rewrap when a word landed wider than the space its positions had been holding, which pushed everything after it onto new lines in one frame. Everything below follows from that.
+
+The prior moved into the reducer and gained hysteresis. In 4k it was counted in the carve at a single threshold of four positions, so a count wavering across the line switched a whole field of smears on and off between steps. It is now computed after every spin and every commitment and kept in the state as `SettleState.prior`: a guess becomes the prior when it stands at four or more open positions (`PRIOR_ENTER` in `lib/settle/reader.ts`) and stays the prior while it stands at two or more (`PRIOR_STAY`), compared without its spacing or case, with a commitment removing its position from the count. The carve reads it from the state, and a test holds the hysteresis.
+
+An open position reserves more space. It held 2.3ch; it now holds 4ch. The reason is measured: across all 51 usable recordings a content token renders 2.6ch wide on average in the surface's own face, so at 2.3ch a landing word was usually wider than the space its positions held and pushed the line forward, and at 4ch it arrives into space close to what it had. A smear keeps that width whatever it says.
+
+A position gives back space more slowly than it takes it: a width that shrinks glides over 2.2 times the drift, so a guess that comes and goes within a few steps barely moves the line.
+
+A smear no longer changes the line's width at all. Its rows are out of the flow, centered in the position and clipped at its sides, and the cell sits on the line the way a blank does, so the reel below the floor turns without moving anything.
+
+A cell that changes lines comes back into focus where it landed. Inline flow moves a cell to another line in one frame, so the surface compares each position's top after every render and, where a cell has moved by ten pixels or more, plays a 320 ms blur in on it (`settle-refocus`, from 2.4 px to the cell's own blur, with no change of color, so a committed word holds its contrast at every frame). None of it under reduced motion.
+
+The float of 4k is gone. It moved the text, which is the opposite of stable. Nothing in the zone loops any more except a draft's breath, which is unchanged, and a smear's rows still turn on the longer, softer roll 4k gave them.
+
+The page's kerning and ligatures are off. A word in the zone is built from one span a letter and on the page it is one run of text; without kerning and ligatures the two measure the same, so a sentence moving to the page moves nothing. The largest movement of any legible cell at a passage release is 0.2 px.
+
+Two approaches were tried on the same measurement and rejected by it. Rounding every standalone guess up to a whole number of token widths widened the zone, and both the typical movement and the worst percentile got worse. Holding each uncommitted position at the widest space it had reached did the same, for the same reason.
+
+What it is worth, on the hook's recording, sampled every animation frame for nine seconds:
+
+| | before | after |
+| --- | --- | --- |
+| mean movement per legible cell per frame | 3.69 px | 2.38 px |
+| 99th percentile frame | 74.3 px | 47.8 px |
+| largest single frame | 103.2 px | 101.4 px |
+
+Typical movement and the worst percentile both fell by about a third. The largest single reflow is where it was: when a word lands early in the zone and the lines after it rewrap, that is still one large movement, and none of this solved it.
+
+Authored here: the prior's hysteresis, the reserve, the slower shrink, the smear taken out of the flow, and the refocus with its threshold. Recorded: the guesses, their order and their pace, and the commitments, as before. The numbers above are the surface measuring itself. Nothing here is measured on a reader.
 
 ### 5. The cost, measured
 

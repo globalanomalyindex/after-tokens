@@ -89,8 +89,9 @@ type Widths = Map<number, number>
  *  lands during a slide turns from where the slide is instead of jumping
  *  back to where it began) without a transition, then let go on a long,
  *  soft curve. */
-function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms: number, from?: () => number | null, after?: (natural: number) => void) {
+function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms: number, from?: () => number | null, after?: (width: number) => void, hold?: boolean) {
   const last = useRef<number | null>(null)
+  const high = useRef(0)
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
@@ -98,19 +99,32 @@ function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms
     el.style.width = ''
     el.style.transition = ''
     const natural = el.getBoundingClientRect().width
+    // an uncommitted position keeps the widest space it has held: a guess
+    // that comes and goes, or that shortens, leaves the line where it is,
+    // and the space it reserved is given back only when the word lands
+    if (!hold) high.current = 0
+    const target = hold ? Math.max(natural, high.current) : natural
+    high.current = hold ? target : 0
     const previous = showing ?? from?.() ?? null
-    last.current = natural
-    after?.(natural)
-    if (previous === null || ms <= 0 || Math.abs(previous - natural) < 0.5) return
+    last.current = target
+    after?.(target)
+    const rest = () => {
+      el.style.width = hold && target > natural + 0.5 ? `${target}px` : ''
+      el.style.transition = ''
+    }
+    if (previous === null || ms <= 0 || Math.abs(previous - target) < 0.5) {
+      rest()
+      return
+    }
+    // a position gives back space more slowly than it takes it, so a guess
+    // that comes and goes within a few steps barely moves the line
+    const duration = target < previous ? Math.round(ms * SHRINK) : ms
     el.style.transition = 'none'
     el.style.width = `${previous}px`
     void el.offsetWidth
-    el.style.transition = `width ${ms}ms var(--ease-out-strong)`
-    el.style.width = `${natural}px`
-    const timer = window.setTimeout(() => {
-      el.style.width = ''
-      el.style.transition = ''
-    }, ms + 40)
+    el.style.transition = `width ${duration}ms var(--ease-out-strong)`
+    el.style.width = `${target}px`
+    const timer = window.setTimeout(rest, duration + 40)
     return () => window.clearTimeout(timer)
     // the glide runs when the content changes, which the key names
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,6 +153,10 @@ const REEL_MS = 520
  *  position, so the line breathes rather than snapping in step. */
 const DRIFT_MS = 520
 const driftFor = (position: number, onset: number) => Math.round(Math.max(onset, DRIFT_MS) * (0.9 + 0.02 * phase(position)))
+/** A position shrinks this many times more slowly than it grows. */
+const SHRINK = 2.2
+/** How long a cell that changed lines takes to come back into focus where it landed, in ms. Matches the stylesheet. */
+const REFOCUS_MS = 320
 
 type Register = 'word' | 'piece' | 'draft' | 'spin' | 'open' | 'beyond' | 'end-belief'
 type Row = { text: string; seq: number; born: Register }
@@ -198,7 +216,8 @@ function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths
   const after = useCallback((natural: number) => {
     for (let p = position; p < position + span; p += 1) widths.set(p, p === position ? natural : 0)
   }, [position, span, widths])
-  useWidthGlide(ref, `${register}:${text}`, ms > 0 ? driftFor(position, ms) : 0, from, after)
+  // every register that is not committed text holds its widest space
+  useWidthGlide(ref, `${register}:${text}`, ms > 0 ? driftFor(position, ms) : 0, from, after, false)
   const { row, past } = useReel(text, register)
   // a word that was already standing as its own draft or piece lands in place; any other word rolls in
   const lands = register === 'word' && row.born !== 'word'
@@ -327,6 +346,7 @@ export function SettleAnswer({
     el.style.setProperty('--settle-ink', getComputedStyle(el).color)
   }, [brand, className, style])
 
+
   // a sentence closing: a device that can tick, ticks
   const passagesRef = useRef(state.passages.length)
   useEffect(() => {
@@ -352,6 +372,39 @@ export function SettleAnswer({
   }, [])
   useEffect(() => {
     const timers = liftTimers.current
+    return () => { timers.forEach((t) => window.clearTimeout(t)); timers.clear() }
+  }, [])
+
+  // a cell that changed lines: inline flow moves it there in one frame, so
+  // it comes back into focus where it landed (a short blur in, no change of
+  // color, so a committed word holds its contrast) instead of teleporting.
+  // Tops are compared per position after every render.
+  const tops = useRef(new Map<number, number>())
+  const refocusTimers = useRef(new Map<number, number>())
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const seen = new Set<number>()
+    const origin = root.getBoundingClientRect().top
+    for (const el of root.querySelectorAll<HTMLElement>('.settle-zone [data-pos]')) {
+      const position = Number(el.dataset.pos)
+      const top = el.getBoundingClientRect().top - origin
+      const before = tops.current.get(position)
+      tops.current.set(position, top)
+      seen.add(position)
+      if (reduced || before === undefined || Math.abs(before - top) < 10) continue
+      const previous = refocusTimers.current.get(position)
+      if (previous) window.clearTimeout(previous)
+      // restart the animation for a cell that moves again mid-refocus
+      delete el.dataset.moved
+      void el.offsetWidth
+      el.dataset.moved = ''
+      refocusTimers.current.set(position, window.setTimeout(() => { delete el.dataset.moved; refocusTimers.current.delete(position) }, REFOCUS_MS))
+    }
+    for (const position of tops.current.keys()) if (!seen.has(position)) tops.current.delete(position)
+  })
+  useEffect(() => {
+    const timers = refocusTimers.current
     return () => { timers.forEach((t) => window.clearTimeout(t)); timers.clear() }
   }, [])
 

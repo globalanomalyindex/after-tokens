@@ -52,6 +52,10 @@ export type SettleState = {
   /** the source's current provisional argmax at each open position, at any
    *  probability: what the reel spins through below the floor. Never text. */
   spins: Record<number, SpinState>
+  /** the guesses that are the source's prior for an unknown position: the
+   *  ones it makes at many open positions at once, as compared keys, kept
+   *  with hysteresis so the field does not blink as a count crosses the line */
+  prior: string[]
   /** the first position not yet in the prefix */
   nextPosition: number
   receivedCount: number
