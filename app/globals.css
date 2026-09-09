@@ -1100,6 +1100,10 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   opacity: calc(var(--settle-open-alpha) * 1.5);
   pointer-events: none;
   transition: background-color 620ms var(--ease-out-strong);
+}
+/* only a lit band shimmers; a band dissolving under a word holds its
+   resting opacity, so a page of written words runs no animation for them */
+.settle-slot[data-state="open"]::before, .settle-slot[data-state="end-belief"]::before, .settle-cz[data-state="draft"]::before {
   animation: settle-stream 4400ms var(--ease-in-out-strong) infinite alternate;
   animation-delay: calc(var(--k, 0) * -430ms);
 }

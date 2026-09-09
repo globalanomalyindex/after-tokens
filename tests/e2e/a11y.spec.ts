@@ -2,6 +2,9 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
 test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => {
+  // the test walks the whole page with its stages playing before it scans,
+  // which is more than the default budget on a slow runner
+  test.setTimeout(90_000)
   await page.goto('/')
 
   // Bring the stages up before scanning so axe covers the demo content and
