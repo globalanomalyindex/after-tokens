@@ -1,14 +1,19 @@
-/* Solid rounded skeleton material. These authored rows describe a waiting
-   area, not future words, line count, source confidence or percent complete. */
+/* Authored word-like shapes inside an approximate current-content envelope.
+   Individual cells and motion do not encode words or percent complete. */
 .ambient-composition {
   position: relative;
   display: block;
   inline-size: 100%;
-  block-size: 8em;
+  block-size: 100%;
   overflow: hidden;
   contain: layout paint;
   pointer-events: none;
   user-select: none;
+}
+
+.ambient-composition__field {
+  position: absolute;
+  inset: 0;
 }
 
 .ambient-composition__bar {
@@ -16,14 +21,44 @@
   inset-inline-start: var(--ambient-left);
   inset-block-start: var(--ambient-top);
   inline-size: var(--ambient-width);
-  block-size: .72em;
+  block-size: var(--ambient-bar-height, .9em);
   transform: none;
   opacity: .72;
   animation: skeleton-breathe var(--ambient-period, 4800ms) cubic-bezier(.45, 0, .55, 1) infinite;
   animation-play-state: paused;
 }
 
+/* All capped rows stay mounted so newly exposed cells inherit the original
+   glimmer clock. Only the app's causal numeric envelope reveals extra rows. */
+.ambient-composition__row-content {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 220ms cubic-bezier(.25, 1, .5, 1);
+}
+.ambient-composition__bar[data-shown="true"] > .ambient-composition__row-content {
+  opacity: 1;
+  visibility: visible;
+}
+.ambient-composition[data-active="false"] .ambient-composition__row-content,
+.ambient-composition[data-motion="off"] .ambient-composition__row-content {
+  transition: none;
+}
+.ambient-composition__presence {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: var(--pill-x0);
+  width: var(--pill-w0);
+  height: 100%;
+  opacity: 1;
+  transform-origin: center;
+}
+
 .ambient-composition__ink {
+  position: relative;
+  overflow: hidden;
   display: block;
   inline-size: 100%;
   block-size: 100%;
@@ -35,26 +70,32 @@
   box-shadow: none;
   -webkit-mask-image: none;
   mask-image: none;
-  clip-path: inset(0 0% 0 0% round 999px);
 }
 
-/* Clipping moves circular endcaps without scaling their curvature, changing
-   thickness, or laying out the answer again. Clip-path can require painting;
-   no compositor-only or physical-device performance guarantee is implied. */
-.ambient-composition[data-condition="reshape"] .ambient-composition__ink {
-  animation: skeleton-reshape var(--ambient-period, 4800ms) cubic-bezier(.45, 0, .55, 1) infinite;
+/* Each cluster reserves one row budget. Its persistent neighbors make room
+   for a new interior pill, then close the space again. The first and last
+   edges stay fixed; full lines and unchanged pills do not shuffle.
+   Width/left animate local layout and paint. This is not compositor-only. */
+.ambient-composition [data-moving] {
+  animation: skeleton-shuffle var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite,
+    skeleton-nudge var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite;
+  animation-play-state: paused;
+}
+.ambient-composition [data-new] {
+  animation: skeleton-shuffle var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite,
+    skeleton-emerge var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite;
   animation-play-state: paused;
 }
 
 .ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__bar,
-.ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__ink {
+.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] .ambient-composition__presence {
   animation-play-state: running;
 }
 
+/* Paused cluster animations give all three conditions the same initial
+   authored composition, including their negative phase offsets. */
 .ambient-composition[data-condition="static"] .ambient-composition__bar {
   animation: none;
-  /* Nominal midpoint of the moving conditions, not a matched average for
-     every short recording or an estimate of source progress. */
   opacity: .86;
 }
 
@@ -62,13 +103,50 @@
   0%, 100% { opacity: .72; }
   50% { opacity: 1; }
 }
-
-@keyframes skeleton-reshape {
-  0%, 100% { clip-path: inset(0 0% 0 0% round 999px); }
-  50% { clip-path: inset(0 8% 0 8% round 999px); }
+@keyframes skeleton-shuffle {
+  0%, 16%, 82%, 100% { left: var(--pill-x0); width: var(--pill-w0); }
+  36% { left: var(--pill-x-peak); width: var(--pill-w-peak); }
+  43%, 62% { left: var(--pill-x1); width: var(--pill-w1); }
+}
+@keyframes skeleton-nudge {
+  0%, 16%, 43%, 62%, 82%, 100% { transform: translateY(0); }
+  36% { transform: translateY(-.035em); }
+}
+@keyframes skeleton-emerge {
+  0%, 16%, 82%, 100% { opacity: 0; transform: translateY(.10em) scaleY(.82); }
+  36% { opacity: 1; transform: translateY(-.035em) scaleY(1.08); }
+  43%, 62% { opacity: 1; transform: translateY(0) scaleY(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-composition .ambient-composition__bar,
+  .ambient-composition .ambient-composition__presence,
   .ambient-composition .ambient-composition__ink { animation-play-state: paused !important; }
+}
+
+/* One brief glimmer per eight-second cycle. Every cell uses the same local
+   left-to-right sweep and clock, regardless of its row's shuffle phase.
+   The faint highlight is decorative activity, never source confidence. */
+.ambient-composition[data-condition="reshape"] .ambient-composition__ink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 15%, rgb(255 255 255 / .3) 50%, transparent 85%);
+  transform: translateX(-110%);
+  animation: skeleton-glimmer var(--glimmer-period, 8000ms) linear infinite;
+  animation-play-state: paused;
+}
+.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] .ambient-composition__ink::after {
+  animation-play-state: running;
+}
+@keyframes skeleton-glimmer {
+  0%, 16% { transform: translateX(-110%); }
+  26%, 100% { transform: translateX(110%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-composition .ambient-composition__ink::after { animation-play-state: paused !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-composition .ambient-composition__row-content { transition: none; }
 }

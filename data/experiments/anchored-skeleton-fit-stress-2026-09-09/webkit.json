@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-09-09T22:02:35.480Z",
+  "project": "webkit",
+  "browser": "webkit",
+  "browserVersion": "26.4",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "method": "Authored underallocation stress: restart the sky recording to a verified active five-line envelope, then force its final event. Delay is first sampled source-complete to first sampled full visibility; these are browser rendering observations, not measured model or request latency.",
+  "result": {
+    "material": "adaptive-cell-skeleton-v5",
+    "source": "sky-blue__lowconf-b128-s32",
+    "firstSampledSourceCompleteMs": 2637,
+    "firstSampledFullyVisibleMs": 2841,
+    "initialFrameHeightPx": 121.875,
+    "actualFinalPageHeightPx": 243.75,
+    "finalFrameHeightPx": 243.75,
+    "fittingFrames": 8,
+    "visibleFrames": 32,
+    "visualDelayMs": 204,
+    "maxShapeChange": 0.0419921875,
+    "maxRestMovement": 0,
+    "restSamples": 1080,
+    "sawArrival": true,
+    "observedInkDuration": 180,
+    "minimumY": -0.199634,
+    "maximumY": 0.780003,
+    "heightRange": 38.34375,
+    "selected": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+    "failures": []
+  }
+}

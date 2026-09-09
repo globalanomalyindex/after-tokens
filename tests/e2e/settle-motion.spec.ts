@@ -149,5 +149,7 @@ test('the embedded phone preserves its answer width and exact final text', async
   expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(1)
   await expect(surface).toHaveAttribute('data-status', 'complete', { timeout: 45_000 })
+  await expect(surface).toHaveAttribute('data-visual-ready', 'true')
+  await expect(surface.locator('.settle-answer-text')).toBeVisible()
   expect(await surface.locator('.settle-page').textContent()).toBe(sky.answer)
 })

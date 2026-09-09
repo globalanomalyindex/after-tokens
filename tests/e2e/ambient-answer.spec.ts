@@ -14,7 +14,7 @@ async function startStudy(page: Page): Promise<Locator> {
   return study
 }
 
-test('three ambient conditions share one source and reveal one exact answer at finality', async ({ page }) => {
+test('three appearances preserve one source result and reveal the whole answer after their fit', async ({ page }) => {
   const study = await startStudy(page)
   const observations = await study.evaluate(async (root) => {
     const surfaces = [...root.querySelectorAll<HTMLElement>('.settle[data-policy="answer"]')]
@@ -48,23 +48,24 @@ test('three ambient conditions share one source and reveal one exact answer at f
           if (states[index] !== 'complete') {
             if (texts[index]) failures.push('text appeared before source finality')
             const bars = [...surface.querySelectorAll<HTMLElement>('.ambient-composition__bar')]
-            if (bars.length !== 5) failures.push('loading composition lost its authored geometry')
+            if (bars.length !== 14) failures.push('loading composition lost its authored geometry')
             if (surface.getBoundingClientRect().width > 0) {
               const condition = surface.dataset.ambientCondition!
               visibleConditions.add(condition)
               if (bars.some((bar) => bar.getBoundingClientRect().width <= 0 || bar.getBoundingClientRect().height <= 0)) failures.push('loading bar is dimensionless')
               const frame = surface.querySelector('.settle-answer-frame')!.getBoundingClientRect()
-              if (frame.height < parseFloat(getComputedStyle(surface).fontSize) * 7.99) failures.push('loading frame lost its 8em allocation')
+              if (frame.height < parseFloat(getComputedStyle(surface.querySelector('.settle-page')!).lineHeight) * 5 - 1) failures.push('loading frame lost its five-line minimum')
               const appearance = bars.map((bar) => `${getComputedStyle(bar).opacity}:${getComputedStyle(bar.querySelector('.ambient-composition__ink')!).clipPath}`).join('|')
               if (!firstAppearance.has(condition)) firstAppearance.set(condition, appearance)
               else if (firstAppearance.get(condition) !== appearance) movedConditions.add(condition)
             }
           } else {
-            if (surface.querySelector('.ambient-composition')) failures.push('loading composition survived finality')
+            if (surface.dataset.visualReady === 'true' && surface.querySelector('.ambient-composition')) failures.push('loading composition survived visual readiness')
+            if (surface.dataset.answerPhase === 'fitting' && getComputedStyle(surface.querySelector('.settle-page')!).visibility !== 'hidden') failures.push('fitting answer was partially revealed')
             if (Number(root.getAttribute('data-elapsed-ms')) < Number(root.getAttribute('data-duration-ms'))) failures.push('answer appeared before observed source deadline')
           }
         })
-        if (states.every((status) => status === 'complete')) {
+        if (states.every((status) => status === 'complete') && surfaces.every((surface) => surface.dataset.visualReady === 'true')) {
           finalSamples += 1
           sawArrival ||= surfaces.some((surface) => surface.querySelector('.settle-answer-arrival'))
         } else waitingSamples += 1
@@ -83,6 +84,7 @@ test('three ambient conditions share one source and reveal one exact answer at f
   expect(observations.failures).toEqual([])
   expect(observations.movedConditions).not.toContain('static')
   for (const condition of observations.visibleConditions.filter((value) => value !== 'static')) expect(observations.movedConditions).toContain(condition)
+  await page.waitForTimeout(300)
   for (const condition of ['static', 'breathe', 'reshape']) {
     const answer = study.getByRole('region', { name: `answer · ${condition}`, exact: true, includeHidden: true })
     await expect(answer).toHaveAttribute('aria-busy', 'false')
@@ -169,23 +171,28 @@ test('ambient animation keeps its identity and phase through interruption; final
   const bar = surface.locator('.ambient-composition__bar').first()
   await expect.poll(() => bar.evaluate((el) => el.getAnimations().filter((animation) => animation.playState === 'running').length)).toBeGreaterThan(0)
   await bar.evaluate((el) => {
-    const animation = el.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'skeleton-breathe')!
-    ;(el as HTMLElement & { auditAnimation: Animation }).auditAnimation = animation
-    ;(el as HTMLElement & { auditShape: Animation }).auditShape = el.firstElementChild!.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'skeleton-reshape')!
+    const all = el.closest('.settle')!.getAnimations({ subtree: true })
+    const names = ['skeleton-breathe', 'skeleton-shuffle', 'skeleton-nudge', 'skeleton-emerge', 'skeleton-glimmer', 'division-open', 'division-cell', 'division-leave', 'division-field']
+    ;(el as HTMLElement & { auditAnimations: Animation[] }).auditAnimations = names.map((name) => all.find((animation) => animation instanceof CSSAnimation && animation.animationName === name)!)
   })
   await study.getByRole('button', { name: 'pause all', exact: true }).click()
   const state = () => bar.evaluate((el) => {
-    const animation = (el as HTMLElement & { auditAnimation: Animation }).auditAnimation
-    const shape = (el as HTMLElement & { auditShape: Animation }).auditShape
-    return { same: el.getAnimations().includes(animation), time: Number(animation.currentTime), playState: animation.playState, shapeSame: el.firstElementChild!.getAnimations().includes(shape), shapeTime: Number(shape.currentTime), shapeState: shape.playState }
+    const all = el.closest('.settle')!.getAnimations({ subtree: true })
+    return (el as HTMLElement & { auditAnimations: Animation[] }).auditAnimations.map((animation) => ({
+      same: all.includes(animation), time: Number(animation.currentTime), playState: animation.playState,
+    }))
   })
-  await expect.poll(async () => (await state()).playState).toBe('paused')
+  await expect.poll(async () => (await state()).every((item) => item.playState === 'paused')).toBe(true)
+  // CSS pause is pending until the browser resolves its animation task.
+  // Capture the held phase only after that task, not one frame before it.
+  await bar.evaluate(async (el) => {
+    await Promise.all((el as HTMLElement & { auditAnimations: Animation[] }).auditAnimations.map((animation) => animation.ready))
+  })
   const paused = await state()
+  expect(paused).toHaveLength(9)
+  expect(paused.every((item) => item.same)).toBe(true)
   await page.waitForTimeout(180)
   expect(await state()).toEqual(paused)
-  expect(paused.same).toBe(true)
-  expect(paused.shapeSame).toBe(true)
-  expect(paused.shapeState).toBe('paused')
   await study.getByRole('button', { name: 'motion on', exact: true }).click()
   await page.waitForTimeout(100)
   expect(await state()).toEqual(paused)
@@ -193,10 +200,7 @@ test('ambient animation keeps its identity and phase through interruption; final
   expect(await state()).toEqual(paused)
   await study.getByRole('button', { name: 'resume all', exact: true }).click()
   await surface.scrollIntoViewIfNeeded()
-  await expect.poll(async () => (await state()).time).toBeGreaterThan(paused.time)
-  expect((await state()).same).toBe(true)
-  expect((await state()).shapeSame).toBe(true)
-  expect((await state()).shapeTime).toBeGreaterThan(paused.shapeTime)
+  await expect.poll(async () => (await state()).every((item, index) => item.same && item.time > paused[index]!.time)).toBe(true)
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
   await page.waitForTimeout(400)
   await expect(study.locator('.settle-answer-arrival')).toHaveCount(0)
@@ -205,44 +209,98 @@ test('ambient animation keeps its identity and phase through interruption; final
   await expect(study.locator('.settle-answer-arrival')).toHaveCount(0)
 })
 
-test('whole-answer text stays selectable and still while its separate arrival decoration plays', async ({ page }) => {
+test('underestimated space fits before a whole opaque answer settles and becomes stationary', async ({ page, browserName, browser }, testInfo) => {
   const study = await startStudy(page)
-  const answer = study.getByRole('region', { name: 'answer · reshape', exact: true })
-  await study.getByRole('button', { name: 'to the end', exact: true }).click()
-  await answer.scrollIntoViewIfNeeded()
-  const result = await answer.evaluate(async (region) => {
-    const ink = region.querySelector('.settle-answer-text')!
-    const node = ink.firstChild!
-    const range = document.createRange()
-    range.setStart(node, 0)
-    range.setEnd(node, 1)
-    const first = range.getBoundingClientRect()
-    const origin = region.getBoundingClientRect()
-    let maxMove = 0
-    let samples = 0
-    const started = performance.now()
-    await new Promise<void>((resolve) => {
+  await study.getByRole('radiogroup', { name: 'recording', exact: true }).getByRole('radio', { name: 'an explanation', exact: true }).click()
+  await expect(study).toHaveAttribute('data-source-id', sky.id)
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.scrollIntoViewIfNeeded()
+  const result = await surface.evaluate(async (root) => {
+    const controls = [...root.closest('.ambient-study')!.querySelectorAll('button')]
+    const end = controls.find((button) => button.textContent === 'to the end')!
+    // Reset immediately before the stress trigger: slower browser setup can
+    // otherwise let the natural replay allocate enough space before this test.
+    controls.find((button) => button.textContent === 'replay all')!.click()
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+    const initialFrame = root.querySelector('.settle-answer-frame')!, initialPage = root.querySelector('.settle-page')!
+    const minimumHeight = parseFloat(getComputedStyle(initialPage).lineHeight) * 5
+    if (root.getAttribute('data-active') !== 'true' || Math.abs(initialFrame.getBoundingClientRect().height - minimumHeight) > 1) throw Error('underallocation stress requires an active fresh five-line envelope')
+    const compositionBefore = root.querySelector('.ambient-composition')
+    let sourceAt: number | null = null, visibleAt: number | null = null, fittingFrames = 0, visibleFrames = 0
+    let initialShape: { x: number; y: number }[] | null = null, rested: { x: number; y: number }[] | null = null
+    let maxShapeChange = 0, maxRestMovement = 0, restSamples = 0, sawArrival = false, observedInkDuration = 0
+    const failures = new Set<string>(), translations: number[] = [], heights: number[] = []
+    end.click()
+    await new Promise<void>((resolve, reject) => {
       const tick = () => {
-        const rect = range.getBoundingClientRect()
-        const parent = region.getBoundingClientRect()
-        maxMove = Math.max(maxMove, Math.hypot((rect.x - parent.x) - (first.x - origin.x), (rect.y - parent.y) - (first.y - origin.y)))
-        samples += 1
-        if (performance.now() - started < 450) requestAnimationFrame(tick)
-        else resolve()
+        try {
+          const now = performance.now(), frame = root.querySelector('.settle-answer-frame')!, region = root.querySelector('.settle-page')!, ink = region.querySelector('.settle-answer-text')
+          heights.push(frame.getBoundingClientRect().height)
+          if (root.getAttribute('data-status') === 'complete' && sourceAt === null) sourceAt = now
+          if (root.getAttribute('data-answer-phase') === 'fitting') {
+            fittingFrames += 1
+            if (getComputedStyle(region).visibility !== 'hidden' || !root.querySelector('.ambient-composition')) failures.add('fitting did not retain ornament and hide the entire answer')
+            if (root.querySelector('.ambient-composition') !== compositionBefore) failures.add('fitting restarted the decorative composition')
+          }
+          if (ink && getComputedStyle(ink).visibility === 'visible') {
+            if (visibleAt === null) visibleAt = now
+            visibleFrames += 1
+            const css = getComputedStyle(ink), matrix = new DOMMatrixReadOnly(css.transform)
+            if (css.opacity !== '1' || css.filter !== 'none' || matrix.a !== 1 || matrix.d !== 1 || matrix.b !== 0 || matrix.c !== 0 || matrix.e !== 0 || matrix.f < -.201 || matrix.f > 1.501) failures.add('answer left its opaque vertical-settle bounds')
+            if (getComputedStyle(frame).overflow !== 'visible') failures.add('readable answer was still clipped')
+            translations.push(matrix.f)
+            if (root.querySelector('.ambient-composition')) failures.add('ornament remained over the readable answer')
+            sawArrival ||= !!root.querySelector('.settle-answer-arrival')
+            const animation = ink.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'settle-answer-ink')
+            if (animation) observedInkDuration = Number(animation.effect!.getTiming().duration)
+            const node = ink.firstChild!
+            const origin = region.getBoundingClientRect()
+            const positions = [...node.textContent!.matchAll(/\S+/g)].map((match) => {
+              const range = document.createRange(); range.setStart(node, match.index); range.setEnd(node, match.index + 1)
+              const box = range.getBoundingClientRect(); return { x: box.x - origin.x, y: box.y - origin.y }
+            })
+            if (!initialShape) initialShape = positions
+            positions.forEach((position, index) => {
+              const initial = initialShape![index]!
+              maxShapeChange = Math.max(maxShapeChange, Math.abs((position.x - positions[0]!.x) - (initial.x - initialShape![0]!.x)), Math.abs((position.y - positions[0]!.y) - (initial.y - initialShape![0]!.y)))
+            })
+            if (now - visibleAt >= 220) {
+              if (!rested) rested = positions
+              positions.forEach((position, index) => { maxRestMovement = Math.max(maxRestMovement, Math.hypot(position.x - rested![index]!.x, position.y - rested![index]!.y)); restSamples += 1 })
+            }
+            if (now - visibleAt >= 500) { resolve(); return }
+          }
+          if (sourceAt !== null && now - sourceAt > 2000) { reject(Error('whole answer did not become ready')); return }
+          requestAnimationFrame(tick)
+        } catch (error) { reject(error) }
       }
       requestAnimationFrame(tick)
     })
-    range.selectNodeContents(region)
-    const selection = window.getSelection()!
-    selection.removeAllRanges()
-    selection.addRange(range)
-    const selected = selection.toString()
-    selection.removeAllRanges()
-    return { samples, maxMove, selected }
+    const region = root.querySelector('.settle-page')!, range = document.createRange(), selection = window.getSelection()!
+    // Select the text node itself; WebKit may append a block separator when
+    // selecting the surrounding block element's contents.
+    range.selectNodeContents(region.querySelector('.settle-answer-text')!.firstChild!); selection.removeAllRanges(); selection.addRange(range)
+    const selected = selection.toString(); selection.removeAllRanges()
+    return { material: compositionBefore!.getAttribute('data-material'), source: 'sky-blue__lowconf-b128-s32', firstSampledSourceCompleteMs: sourceAt, firstSampledFullyVisibleMs: visibleAt, initialFrameHeightPx: minimumHeight, actualFinalPageHeightPx: region.getBoundingClientRect().height, finalFrameHeightPx: root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height, fittingFrames, visibleFrames, visualDelayMs: visibleAt! - sourceAt!, maxShapeChange, maxRestMovement, restSamples, sawArrival, observedInkDuration, minimumY: Math.min(...translations), maximumY: Math.max(...translations), heightRange: Math.max(...heights) - Math.min(...heights), selected, failures: [...failures] }
   })
-  expect(result.samples).toBeGreaterThan(2)
-  expect(result.maxMove).toBe(0)
-  expect(result.selected).toBe(sleep.answer)
+  await testInfo.attach('forced-fit-result', { body: JSON.stringify({ recordedAt: new Date().toISOString(), project: testInfo.project.name, browser: browserName, browserVersion: browser.version(), viewport: page.viewportSize(), method: 'Authored underallocation stress: restart the sky recording to a verified active five-line envelope, then force its final event. Delay is first sampled source-complete to first sampled full visibility; these are browser rendering observations, not measured model or request latency.', result }, null, 2), contentType: 'application/json' })
+  expect(result.failures).toEqual([])
+  expect(result.fittingFrames).toBeGreaterThan(0)
+  expect(result.visualDelayMs).toBeGreaterThan(100)
+  expect(result.visualDelayMs).toBeLessThan(500)
+  expect(result.heightRange).toBeGreaterThan(20)
+  expect(result.visibleFrames).toBeGreaterThan(5)
+  expect(result.observedInkDuration).toBe(180)
+  expect(result.maximumY).toBeGreaterThan(.1)
+  expect(result.minimumY).toBeGreaterThanOrEqual(-.201)
+  expect(result.maximumY).toBeLessThanOrEqual(1.501)
+  // WebKit DOM Range coordinates quantize during a uniform text transform.
+  // Keep the same subpixel bound as the measurement harness; rest is separate.
+  expect(result.maxShapeChange).toBeLessThan(.05)
+  expect(result.restSamples).toBeGreaterThan(20)
+  expect(result.maxRestMovement).toBeLessThan(.01)
+  expect(result.sawArrival).toBe(true)
+  expect(result.selected).toBe(sky.answer)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
 })
 
@@ -259,39 +317,52 @@ test.describe('whole answer with reduced motion', () => {
   })
 })
 
-test('solid skeletons keep crisp circular ends and fixed thickness through a full motion cycle', async ({ page }) => {
+test('word bubbles make room inside anchored rows while full lines stay fixed', async ({ page }) => {
   const study = await startStudy(page)
   await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
   await study.getByRole('button', { name: 'replay all', exact: true }).click()
-  const active = await study.getAttribute('data-active-condition')
-  const surface = study.locator(`.settle[data-ambient-condition="${active}"]`)
-  const ink = surface.locator('.ambient-composition__ink').first()
-  await expect(ink).toBeVisible()
-  const material = await ink.evaluate((el) => {
-    const css = getComputedStyle(el)
-    return { mask: css.maskImage, image: css.backgroundImage, filter: css.filter, shadow: css.boxShadow, radius: css.borderTopLeftRadius }
-  })
-  expect(material).toMatchObject({ mask: 'none', image: 'none', filter: 'none', shadow: 'none' })
-  expect(parseFloat(material.radius)).toBeGreaterThan(0)
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.scrollIntoViewIfNeeded()
+  await expect(surface.locator('.ambient-composition')).toHaveAttribute('data-material', 'adaptive-cell-skeleton-v5')
   const observation = await surface.evaluate(async (el) => {
-    const inks = [...el.querySelectorAll<HTMLElement>('.ambient-composition__ink')]
+    const rows = [...el.querySelectorAll<HTMLElement>('.ambient-composition__bar')].slice(0, 5)
+    const origin = el.getBoundingClientRect()
+    const initial = rows.map((row) => { const box = row.getBoundingClientRect(); return { x: box.x - origin.x, y: box.y - origin.y, width: box.width, height: box.height } })
     const frame = el.querySelector('.settle-answer-frame')!
-    const heights = inks.map((item) => item.getBoundingClientRect().height)
-    const frameHeight = frame.getBoundingClientRect().height
-    const clips = new Set<string>()
-    const opacities = new Set<string>()
-    let heightChange = 0
-    let samples = 0
-    let glyphs = false
+    const minimumHeight = parseFloat(getComputedStyle(el.querySelector('.settle-page')!).lineHeight) * 5
+    const opacities = new Set<string>(), neighborShapes = new Set<string>()
+    const newborns = new Map<number, { opacity: number[]; width: number[]; scale: number[] }>()
+    const failures = new Set<string>()
+    let samples = 0, glyphs = false, maxAnchorDrift = 0, minGap = Infinity
     const started = performance.now()
     await new Promise<void>((resolve) => {
       const tick = () => {
-        inks.forEach((item, index) => {
-          heightChange = Math.max(heightChange, Math.abs(item.getBoundingClientRect().height - heights[index]!))
-          clips.add(getComputedStyle(item).clipPath)
-          opacities.add(getComputedStyle(item.parentElement!).opacity)
+        const origin = el.getBoundingClientRect()
+        rows.forEach((row, rowIndex) => {
+          const box = row.getBoundingClientRect(), base = initial[rowIndex]!
+          // Adaptive frame growth may adjust document scroll. Test the rows in
+          // their own surface coordinates, not against the browser viewport.
+          if (Math.abs(box.x - origin.x - base.x) > .05 || Math.abs(box.y - origin.y - base.y) > .05 || Math.abs(box.width - base.width) > .05 || Math.abs(box.height - base.height) > .05) failures.add('row envelope moved')
+          const pills = [...row.querySelectorAll<HTMLElement>('.ambient-composition__presence')]
+          const visible: DOMRect[] = []
+          pills.forEach((pill, index) => {
+            const ink = pill.firstElementChild!, css = getComputedStyle(ink), presence = getComputedStyle(pill), rect = ink.getBoundingClientRect()
+            if (css.filter !== 'none' || css.maskImage !== 'none' || css.backgroundImage !== 'none' || css.boxShadow !== 'none' || css.clipPath !== 'none') failures.add('solid material lost')
+            if (!pill.hasAttribute('data-new') && presence.opacity !== '1') failures.add('persistent neighbor disappeared')
+            if (row.dataset.kind === 'line' && (Math.abs(rect.x - box.x) > .05 || Math.abs(rect.y - box.y) > .05 || Math.abs(rect.width - box.width) > .05 || Math.abs(rect.height - box.height) > .05)) failures.add('full line moved')
+            if (index === 0) maxAnchorDrift = Math.max(maxAnchorDrift, Math.abs(rect.left - box.left))
+            if (index === pills.length - 1) maxAnchorDrift = Math.max(maxAnchorDrift, Math.abs(rect.right - box.right))
+            if (pill.hasAttribute('data-new')) {
+              if (!newborns.has(rowIndex)) newborns.set(rowIndex, { opacity: [], width: [], scale: [] })
+              const series = newborns.get(rowIndex)!
+              series.opacity.push(Number(presence.opacity)); series.width.push(rect.width); series.scale.push(rect.height / box.height)
+            } else if (pill.hasAttribute('data-moving')) neighborShapes.add(`${rowIndex}:${index}:${rect.x}:${rect.width}`)
+            if (Number(presence.opacity) > .01 && rect.width > .01) visible.push(rect)
+          })
+          for (let i = 1; i < visible.length; i++) minGap = Math.min(minGap, visible[i]!.left - visible[i - 1]!.right)
+          opacities.add(getComputedStyle(row).opacity)
         })
-        heightChange = Math.max(heightChange, Math.abs(frame.getBoundingClientRect().height - frameHeight))
+        if (frame.getBoundingClientRect().height < minimumHeight - 1) failures.add('loading frame lost its five-line minimum')
         glyphs ||= !!el.querySelector('.settle-answer-text')
         samples += 1
         if (performance.now() - started < 5200) requestAnimationFrame(tick)
@@ -299,11 +370,136 @@ test('solid skeletons keep crisp circular ends and fixed thickness through a ful
       }
       requestAnimationFrame(tick)
     })
-    return { samples, clips: clips.size, opacities: opacities.size, heightChange, glyphs }
+    return { samples, opacities: opacities.size, neighborShapes: neighborShapes.size, maxAnchorDrift, minGap, glyphs,
+      newborns: [...newborns.values()].map((series) => ({ minOpacity: Math.min(...series.opacity), maxOpacity: Math.max(...series.opacity), minWidth: Math.min(...series.width), maxWidth: Math.max(...series.width), minScale: Math.min(...series.scale), maxScale: Math.max(...series.scale) })), failures: [...failures] }
   })
+  expect(observation.failures).toEqual([])
   expect(observation.samples).toBeGreaterThan(30)
-  expect(observation.clips).toBeGreaterThan(2)
   expect(observation.opacities).toBeGreaterThan(2)
-  expect(observation.heightChange).toBe(0)
+  expect(observation.neighborShapes).toBeGreaterThan(50)
+  expect(observation.maxAnchorDrift).toBeLessThan(.05)
+  expect(observation.minGap).toBeGreaterThanOrEqual(-.05)
+  expect(observation.newborns).toHaveLength(3)
+  for (const newborn of observation.newborns) {
+    expect(newborn.minOpacity).toBe(0)
+    expect(newborn.maxOpacity).toBe(1)
+    expect(newborn.minWidth).toBe(0)
+    expect(newborn.maxWidth).toBeGreaterThan(15)
+    expect(newborn.minScale).toBeGreaterThan(.819)
+    expect(newborn.maxScale).toBeLessThan(1.081)
+    expect(newborn.maxScale).toBeGreaterThan(1.07)
+  }
   expect(observation.glyphs).toBe(false)
+})
+
+
+test('one capsule divides inside its frame and each cell shares the occasional glimmer', async ({ page }) => {
+  const study = await startStudy(page)
+  await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.scrollIntoViewIfNeeded()
+  const result = await surface.evaluate(async (el) => {
+    const replay = [...el.closest('.ambient-study')!.querySelectorAll('button')].find((button) => button.textContent === 'replay all')!
+    replay.click()
+    let sawJoined = false, sawSplit = false, sawField = false, sawGlimmer = false, samples = 0
+    const failures = new Set<string>(), glimmerPositions = new Set<string>()
+    const started = performance.now()
+    await new Promise<void>((resolve, reject) => {
+      const tick = () => {
+        try {
+        const composition = el.querySelector('.ambient-composition')!
+        const seed = el.querySelector<HTMLElement>('.skeleton-division')!
+        const field = el.querySelector<HTMLElement>('.ambient-composition__field')!
+        const seedStyle = getComputedStyle(seed), fieldStyle = getComputedStyle(field)
+        const bounds = composition.getBoundingClientRect()
+        const cells = [...seed.querySelectorAll('.skeleton-division__cell')].map((cell) => cell.getBoundingClientRect())
+        const intro = seed.getAnimations().find((animation) => animation instanceof CSSAnimation && animation.animationName === 'division-open')!
+        const time = Number(intro.currentTime)
+        if (time < 114) {
+          sawJoined = true
+          if (Number(fieldStyle.opacity) !== 0 || seedStyle.clipPath === 'none') failures.add('joined capsule was not isolated')
+        }
+        if (time > 250 && time < 750 && cells[1]!.top > cells[0]!.bottom) sawSplit = true
+        if (time >= 950) {
+          sawField = true
+          if (fieldStyle.opacity !== '1' || seedStyle.opacity !== '0' || seedStyle.visibility !== 'hidden') failures.add('division did not yield fully to the field')
+        }
+        cells.forEach((cell, index) => {
+          if (cell.left < bounds.left - .05 || cell.right > bounds.right + .05 || cell.top < bounds.top - .05 || cell.bottom > bounds.bottom + .05) failures.add('division left its reserved area')
+          if (index && cell.top < cells[index - 1]!.bottom - .05) failures.add('division cells crossed')
+        })
+        const inks = [...el.querySelectorAll('.ambient-composition__ink')]
+        const glimmers = composition.getAnimations({ subtree: true }).filter((animation) => animation instanceof CSSAnimation && animation.animationName === 'skeleton-glimmer')
+        const times = glimmers.map((animation) => Number(animation.currentTime))
+        if (glimmers.length !== 43 || glimmers.some((animation) => animation.effect?.getTiming().duration !== 8000)) failures.add('incorrect glimmer clock')
+        if (Math.max(...times) - Math.min(...times) > 1) failures.add('cell glimmers lost their shared phase')
+        if (times[0]! >= 1280 && times[0]! <= 2080) {
+          sawGlimmer = true
+          glimmerPositions.add(getComputedStyle(inks[0]!, '::after').transform)
+        }
+        if (el.querySelector('.settle-answer-text')) failures.add('text appeared during decorative opening')
+        samples += 1
+        if (performance.now() - started < 2250) requestAnimationFrame(tick)
+        else resolve()
+        } catch (error) { reject(error) }
+      }
+      requestAnimationFrame(tick)
+    })
+    return { sawJoined, sawSplit, sawField, sawGlimmer, samples, glimmerPositions: glimmerPositions.size, failures: [...failures] }
+  })
+  expect(result.failures).toEqual([])
+  expect(result.sawJoined).toBe(true)
+  expect(result.sawSplit).toBe(true)
+  expect(result.sawField).toBe(true)
+  expect(result.sawGlimmer).toBe(true)
+  expect(result.glimmerPositions).toBeGreaterThan(3)
+  expect(result.samples).toBeGreaterThan(30)
+  await study.getByRole('button', { name: 'replay all', exact: true }).click()
+  await study.getByRole('button', { name: 'to the end', exact: true }).click()
+  await expect(surface.locator('.ambient-composition')).toHaveCount(0)
+  expect(await surface.locator('.settle-page').textContent()).toBe(sleep.answer)
+})
+
+test('the waiting envelope grows from received ink while rows and glimmer clocks keep their identities', async ({ page }) => {
+  const study = await startStudy(page)
+  await study.getByRole('radiogroup', { name: 'recording', exact: true }).getByRole('radio', { name: 'an explanation', exact: true }).click()
+  await expect(study).toHaveAttribute('data-source-id', sky.id)
+  await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.scrollIntoViewIfNeeded()
+  const result = await surface.evaluate(async (root) => {
+    const rows = [...root.querySelectorAll('.ambient-composition__bar')]
+    const lineHeight = parseFloat(getComputedStyle(root.querySelector('.settle-page')!).lineHeight)
+    const heights: number[] = [], counts: number[] = [], failures = new Set<string>()
+    let previousHeight = 0, previousCount = 5
+    await new Promise<void>((resolve, reject) => {
+      const started = performance.now()
+      const tick = () => {
+        try {
+          if (root.getAttribute('data-status') === 'complete') { resolve(); return }
+          const current = [...root.querySelectorAll('.ambient-composition__bar')]
+          if (current.length !== 14 || current.some((row, index) => row !== rows[index])) failures.add('row nodes remounted while size changed')
+          const count = current.filter((row) => row.getAttribute('data-shown') === 'true').length
+          const height = root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height
+          if (count < previousCount || height < previousHeight - .05 || count < 5 || count > 14 || height < 5 * lineHeight - 1 || height > 14 * lineHeight + 1) failures.add('waiting envelope violated its monotonic typographic budget')
+          if (root.querySelector('.settle-answer-text')) failures.add('text appeared before source finality')
+          const glimmers = root.getAnimations({ subtree: true }).filter((animation) => animation instanceof CSSAnimation && animation.animationName === 'skeleton-glimmer')
+          const phases = glimmers.map((animation) => Number(animation.currentTime))
+          if (glimmers.length !== 43 || Math.max(...phases) - Math.min(...phases) > 1) failures.add('newly exposed rows lost their shared glimmer phase')
+          previousCount = count; previousHeight = height; counts.push(count); heights.push(height)
+          if (performance.now() - started > 11000) { reject(Error('long source did not complete')); return }
+          requestAnimationFrame(tick)
+        } catch (error) { reject(error) }
+      }
+      requestAnimationFrame(tick)
+    })
+    return { samples: heights.length, minRows: Math.min(...counts), maxRows: Math.max(...counts), heightGrowth: Math.max(...heights) - Math.min(...heights), failures: [...failures] }
+  })
+  expect(result.failures).toEqual([])
+  expect(result.samples).toBeGreaterThan(30)
+  expect(result.maxRows).toBeGreaterThan(5)
+  expect(result.maxRows).toBeLessThanOrEqual(14)
+  expect(result.heightGrowth).toBeGreaterThan(20)
+  await expect(surface).toHaveAttribute('data-visual-ready', 'true')
+  expect(await surface.locator('.settle-answer-text').textContent()).toBe(sky.answer)
 })

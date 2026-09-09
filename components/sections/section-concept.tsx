@@ -19,15 +19,15 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'an active area, without a predicted shape',
-    body: 'five solid rounded bars share a pulse and gently shorten, then return. their height and position stay fixed; their widths are authored independently of future words, token count and line breaks. the bubble keeps its width while the source works. a longer final answer may grow its height.',
+    body: 'a capsule divides into breathing rows and small pills. the waiting area gradually makes room using available source content and the container’s type metrics. the shapes do not map to actual words, and a revisable draft remains provisional. after source finality, a short size fit can prepare missing room before the complete answer arrives and settles.',
   },
   {
     title: 'one readable arrival',
-    body: 'the ambient composition continues between source events. at authoritative finality, all text becomes readable together. a thin outline around the answer acknowledges completion while its letters hold still. this deliberately withholds words that could have been shown earlier; it is a presentation choice, not faster inference.',
+    body: 'the ambient composition continues between source events. after authoritative finality, a growing frame has an authored 180 ms fit before the text appears; browser scheduling can add more delay. all words then share one small settling movement at full opacity, with a thin outline. this deliberately withholds words that could have been shown earlier; the delay is a presentation cost, not faster inference.',
   },
   {
     title: 'a tick under the thumb',
-    body: 'this web concept requests a short vibration when a passage releases, where the browser supports it. it does not implement a separate tap for every word. native iPhone haptics remain a separate design and engineering task; the browser concept makes no iPhone haptic claim.',
+    body: 'this web concept requests a short vibration when the whole answer becomes visible, where the browser supports it. earlier-passage modes retain their passage-release cue. it does not implement a separate tap for every word. native iPhone haptics remain a separate design and engineering task; the browser concept makes no iPhone haptic claim.',
   },
   {
     title: 'the slot',

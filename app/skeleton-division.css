@@ -1,0 +1,88 @@
+/* One opaque capsule divides into five authored row envelopes. It is a
+   decorative introduction, not a visualization of model stages or tokens. */
+.skeleton-division {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(5 * var(--ambient-line-height, 1.625em));
+  opacity: .2;
+  color: inherit;
+  pointer-events: none;
+  user-select: none;
+  clip-path: inset(var(--division-joined-inset, 2.6em) 8% var(--division-joined-inset, 2.6em) 4% round 1.4em);
+  animation: division-open 950ms cubic-bezier(.25, 1, .5, 1) both,
+    division-leave 950ms linear both;
+  animation-play-state: paused;
+}
+
+.skeleton-division__cell {
+  position: absolute;
+  display: block;
+  left: 4%;
+  top: var(--division-start-top);
+  width: 88%;
+  height: .56em;
+  background: currentColor;
+  border-radius: 0;
+  filter: none;
+  box-shadow: none;
+  transform: none;
+  animation: division-cell 950ms cubic-bezier(.25, 1, .5, 1) both;
+  animation-play-state: paused;
+}
+
+.ambient-composition__field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ambient-composition[data-condition="reshape"] > .ambient-composition__field {
+  opacity: 0;
+  animation: division-field 950ms linear both;
+  animation-play-state: paused;
+}
+
+.ambient-composition[data-active="true"][data-motion="on"] > .skeleton-division,
+.ambient-composition[data-active="true"][data-motion="on"] .skeleton-division__cell,
+.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] > .ambient-composition__field {
+  animation-play-state: running;
+}
+
+/* Hold the joined capsule for 114 ms. Its enclosing clip opens ahead of the
+   slabs, which separate together without crossing or leaving the 8 em frame. */
+@keyframes division-open {
+  0%, 12% { clip-path: inset(var(--division-joined-inset, 2.6em) 8% var(--division-joined-inset, 2.6em) 4% round 1.4em); }
+  62%, 100% { clip-path: inset(0 0 0 0 round 0); }
+}
+@keyframes division-cell {
+  0%, 12% {
+    left: 4%; top: var(--division-start-top);
+    width: 88%; height: .56em; border-radius: 0;
+  }
+  68% {
+    left: 0; top: var(--division-peak-top);
+    width: var(--division-peak-width); height: var(--division-peak-height, .90612em); border-radius: 999px;
+  }
+  78.9473684211%, 100% {
+    left: 0; top: var(--division-top);
+    width: var(--division-width); height: var(--division-height, .9em); border-radius: 999px;
+  }
+}
+/* The last 200 ms crossfade is independent of each row's breathing opacity.
+   Source finality may remove both layers before this decorative phase ends. */
+@keyframes division-leave {
+  0%, 78.9473684211% { opacity: .2; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@keyframes division-field {
+  0%, 78.9473684211% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-division,
+  .skeleton-division__cell,
+  .ambient-composition > .ambient-composition__field {
+    animation-play-state: paused !important;
+  }
+}

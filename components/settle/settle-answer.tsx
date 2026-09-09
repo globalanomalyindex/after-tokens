@@ -10,6 +10,7 @@ import { useFormationLayout } from './use-formation-layout'
 import { Field } from './field'
 import { Margin, statusWords } from './margin'
 import { AmbientComposition, type AmbientCondition } from './ambient-composition'
+import { useAnswerEnvelope } from './use-answer-envelope'
 
 export type FormingMode = 'carve' | 'flow' | 'held'
 type DisplayItem = CarveItem & { joined?: boolean }
@@ -67,6 +68,7 @@ type Props = {
   ambient?: AmbientCondition
   paused?: boolean
   onApplyRevision?: () => void
+  onVisualReady?: (ready: boolean) => void
   /** the accessible name of the answer region */
   label?: string
   /** what the page says while nothing has arrived */
@@ -77,7 +79,7 @@ type Props = {
 
 export function SettleAnswer({
   state, runId = 'default', voice: voiceProp, forming: formingProp, preview, field, status = true, announce = true,
-  haptics = false, motion = true, ambient = 'reshape', paused = false, onApplyRevision,
+  haptics = false, motion = true, ambient = 'reshape', paused = false, onApplyRevision, onVisualReady,
   label = 'answer', empty, className = '', style,
 }: Props) {
   const brand = useBrand()
@@ -87,6 +89,8 @@ export function SettleAnswer({
   const voiceVars = useMemo(() => voiceProp ? settleVoiceStyle(voice, { ink: brand.ink, surface: brand.surface, stageText: brand.stageText, stage: brand.stage, accent: brand.accent }) : undefined, [voice, voiceProp, brand])
   const mode: FormingMode = formingProp ?? (preview === false ? 'held' : 'carve')
   const wholeAnswer = state.policy === 'answer'
+  const receiving = state.status === 'waiting' || state.status === 'receiving'
+  const answerText = wholeAnswer ? state.passages.map((passage) => passage.text).join('') : ''
   const showField = !wholeAnswer && (field ?? mode !== 'carve')
   // Promotion changes styling, never the text's parent or whitespace. The
   // source reducer remains authoritative about exactly which characters release.
@@ -110,24 +114,19 @@ export function SettleAnswer({
     return (item.kind === 'word' || item.kind === 'piece') && offset !== undefined && offset < (mode === 'held' ? state.releasedLength : state.wordSafeLength)
   }), [items, mode, offsets, state.releasedLength, state.wordSafeLength, state.status])
   const rootRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
+  const pageRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(true)
   const [documentVisible, setDocumentVisible] = useState(true)
-  const active = enabled && !paused && inView && documentVisible && (state.status === 'waiting' || state.status === 'receiving')
+  const effectiveMotion = enabled && !paused && inView && documentVisible
+  const envelope = useAnswerEnvelope({ state, runId, frameRef, pageRef, effectiveMotion })
+  const active = effectiveMotion && (receiving || (wholeAnswer && envelope.phase !== 'ready'))
+  useEffect(() => { onVisualReady?.(!receiving && envelope.phase === 'ready') }, [onVisualReady, receiving, envelope.phase])
   const reviewId = useId()
   const [reviewing, setReviewing] = useState(false)
   const revisionKey = state.revisionText === null ? null : `${state.lastEventAtMs}:${state.revisionText}`
   useEffect(() => setReviewing(false), [revisionKey])
-  const announcement = statusWords(state, paused, false)
-  const [arrival, setArrival] = useState<string | null>(null)
-  const seenArrival = useRef({ runId, version: state.version, released: state.releasedLength })
-  useLayoutEffect(() => {
-    const previous = seenArrival.current
-    const changedRun = previous.runId !== runId || previous.version !== state.version
-    const released = wholeAnswer && state.releasedLength > 0 && (changedRun || state.releasedLength > previous.released)
-    seenArrival.current = { runId, version: state.version, released: state.releasedLength }
-    if (!enabled || paused || !inView || !documentVisible || changedRun) setArrival(null)
-    if (released && enabled && !paused && inView && documentVisible && state.status === 'complete') setArrival(`${runId}:${state.version}`)
-  }, [wholeAnswer, state.releasedLength, state.version, state.status, runId, enabled, paused, inView, documentVisible])
+  const announcement = wholeAnswer && envelope.phase === 'fitting' ? 'answer received · fitting the view' : statusWords(state, paused, false)
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? false))
@@ -147,17 +146,20 @@ export function SettleAnswer({
   useFormationLayout(rootRef, state, visible, !wholeAnswer && enabled && !paused && inView && documentVisible, voice, runId)
   const passagesRef = useRef(state.passages.length)
   useEffect(() => {
-    if (state.passages.length > passagesRef.current && haptics && enabled && !paused && inView && documentVisible && 'vibrate' in navigator) navigator.vibrate(12)
+    if (!wholeAnswer && state.passages.length > passagesRef.current && haptics && enabled && !paused && inView && documentVisible && 'vibrate' in navigator) navigator.vibrate(12)
     passagesRef.current = state.passages.length
-  }, [state.passages.length, haptics, enabled, paused, inView, documentVisible])
+  }, [state.passages.length, wholeAnswer, haptics, enabled, paused, inView, documentVisible])
+  const hapticArrival = useRef<string | null>(null)
+  useEffect(() => {
+    if (envelope.arrivalKey !== null && envelope.arrivalKey !== hapticArrival.current && haptics && effectiveMotion && 'vibrate' in navigator) navigator.vibrate(12)
+    hapticArrival.current = envelope.arrivalKey
+  }, [envelope.arrivalKey, haptics, effectiveMotion])
 
   const snapshot = state.source === 'snapshot' || (state.previousPassages !== null && !Object.keys(state.tokens).length)
-  const receiving = state.status === 'waiting' || state.status === 'receiving'
-  const answerText = wholeAnswer ? state.passages.map((passage) => passage.text).join('') : ''
   const failed = state.status === 'stopped' || state.status === 'error'
   const page = (
-    <div className="settle-page" role="region" aria-label={label} aria-busy={wholeAnswer ? receiving : undefined} tabIndex={state.previousPassages ? 0 : undefined}>
-      {wholeAnswer ? (answerText && <span className="settle-answer-text">{answerText}</span>)
+    <div ref={pageRef} className="settle-page" role="region" aria-label={label} aria-busy={wholeAnswer ? receiving || envelope.phase === 'fitting' : undefined} tabIndex={state.previousPassages ? 0 : undefined}>
+      {wholeAnswer ? (answerText && <span className="settle-answer-text" data-arriving={envelope.arrivalKey !== null || undefined}>{answerText}</span>)
         : snapshot ? state.passages.map((p) => <span key={p.id} className="settle-passage">{p.text}</span>)
           : visible.map((item) => <Cell key={`${runId}:v${state.version}:${item.position}`} item={item} released={state.releasedLength} offset={offsets.get(item.position)} limit={mode === 'carve' ? Infinity : Math.max(0, (mode === 'held' ? state.releasedLength : state.wordSafeLength) - (offsets.get(item.position) ?? 0))} />)}
       {!wholeAnswer && !state.prefix && !visible.length && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
@@ -165,14 +167,15 @@ export function SettleAnswer({
   )
   return (
     <div ref={rootRef} className={`settle ${className}`} data-status={state.status} data-policy={state.policy} data-ambient-condition={wholeAnswer ? ambient : undefined}
+      data-answer-phase={wholeAnswer ? envelope.phase : undefined} data-visual-ready={wholeAnswer ? !receiving && envelope.phase === 'ready' : undefined}
       data-paused={paused} data-active={active} data-motion={enabled ? 'on' : 'off'}
       data-visible={inView && documentVisible}
       data-preview={mode !== 'held'} data-forming={mode} data-mark={voice.mark} data-demo
       style={{ ...voiceVars, ...style }}>
-      {wholeAnswer ? <div className="settle-answer-frame" data-occupied={receiving || !!answerText}>
-        {receiving && <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={runId} tempo={voice.tempo} />}
+      {wholeAnswer ? <div ref={frameRef} className="settle-answer-frame" data-phase={envelope.phase} data-occupied={receiving || !!answerText}>
+        {(receiving || envelope.phase !== 'ready') && <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={runId} tempo={voice.tempo} rowCount={envelope.rowCount} lineHeightPx={envelope.lineHeightPx} barHeightPx={envelope.barHeightPx} />}
         {page}
-        {!!answerText && arrival !== null && <span key={arrival} className="settle-answer-arrival" aria-hidden="true" onAnimationEnd={() => setArrival((current) => current === arrival ? null : current)} />}
+        {!!answerText && envelope.arrivalKey !== null && <span key={envelope.arrivalKey} className="settle-answer-arrival" aria-hidden="true" onAnimationEnd={envelope.dismissArrival} />}
       </div> : page}
       {wholeAnswer && state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}
       {wholeAnswer && failed && state.prefix && <details className="settle-history mt-3">
@@ -181,7 +184,9 @@ export function SettleAnswer({
         <div className="settle-partial-text settle-revision-text mt-2">{state.prefix}</div>
       </details>}
       {showField && <Field state={state} mark={voice.mark} />}
-      {status && <Margin state={state} mark={voice.mark} paused={paused} />}
+      {status && (wholeAnswer && envelope.phase === 'fitting'
+        ? <div className="settle-margin readout"><span className="settle-status">answer received · fitting the view</span></div>
+        : <Margin state={state} mark={voice.mark} paused={paused} />)}
       {(state.status === 'stopped' || state.status === 'error') && state.error && (
         <p className="readout mt-2" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>{state.error}</p>
       )}

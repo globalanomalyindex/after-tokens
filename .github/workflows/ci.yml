@@ -29,6 +29,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: node --test scripts/test-anchored-skeleton-harness.mjs
 
       # Root build covers the canonical Vercel configuration and supplies the
       # production server used by Playwright.

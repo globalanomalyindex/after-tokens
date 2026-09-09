@@ -41,7 +41,7 @@ export function SectionVoice() {
     <Section id="voice" title="A voice in the margin">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a voice in the margin</h2>
       <p className="standfirst max-w-3xl">
-        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change answer availability or truth. the skeleton comparison holds its pulse and final handover constant so a palette change is not mistaken for a timing benefit.
+        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change source commitments, finality or truth. the skeleton comparison keeps source timing and final handover rules consistent; its added introduction, reshaping and glimmer are a combined treatment, not a palette or timing benefit.
       </p>
       <div className="mt-12 md:mt-16 overflow-x-auto" tabIndex={0} role="region" aria-label="Brand voice tokens, scroll horizontally">
         <table className="w-full text-left border-collapse">

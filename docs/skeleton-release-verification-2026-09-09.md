@@ -1,5 +1,7 @@
 # Solid skeleton release verification
 
+> **Historical material: `solid-rounded-skeleton-v1`, revision `a7606d9`.** These parameters and results are preserved for that revision. Continue with the [anchored motion research](anchored-skeleton-research-2026-09-09.md) and [current implementation handoff](anchored-skeleton-handoff-2026-09-09.md). The historical [JSON report](skeleton-motion-validation-2026-09-09.json) is unchanged.
+
 9 September 2026 · material `solid-rounded-skeleton-v1` · local verification record.
 
 This release changes the authored waiting material and the separate completion cue. It preserves the causal whole-answer reducer, source recordings, original case-study identity and earlier-reading comparison. The previous feathered material and its reports remain historical evidence at `05914c1`.

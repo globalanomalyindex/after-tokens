@@ -12,7 +12,7 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'samplers that change their mind',
-    body: 'remasking samplers can send a committed token back to mask. for them the contract already has the snapshot path: nothing reaches the page until a snapshot is final, and a revision after that is an event the reader applies. an ambient composition can cover the unresolved interval, but the production snapshot and revision protocol still needs integration.',
+    body: 'remasking samplers can send a token back to mask. the snapshot path keeps candidate words off the protected page while their current size can prepare space. only a final snapshot releases the answer; a later revision requires review and apply. the authored exercise tests this contract, but a production snapshot protocol still needs integration.',
   },
   {
     title: 'markdown, code and math',
@@ -28,7 +28,7 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'the study',
-    body: 'compare still, breathing and reshaping solid bars at identical whole-answer timing. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
+    body: 'compare still, breathing and the combined reshape treatment with shared source timing and final handover rules; measure actual visual arrival separately. measure whether the division introduction, pill formation, neighbor movement and glimmer feel fluid or distracting, and whether readers mistake the shapes for actual words, model stages or progress. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
   },
 ]
 

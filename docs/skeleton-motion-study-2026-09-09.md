@@ -1,5 +1,7 @@
 # After Tokens: still, breathe, reshape
 
+> **Historical material: `solid-rounded-skeleton-v1`, revision `a7606d9`.** These parameters and results are preserved for that revision. Continue with the [anchored motion research](anchored-skeleton-research-2026-09-09.md) and [current implementation handoff](anchored-skeleton-handoff-2026-09-09.md). The historical [JSON report](skeleton-motion-validation-2026-09-09.json) is unchanged.
+
 **9 September 2026 · solid rounded skeleton revision · fresh browser evidence recorded; reader outcomes unvalidated.**
 
 The current material is five crisp, uniformly filled muted-gray bars. Their widths are authored, their height and position remain fixed, and their rounded ends gently move inward and return. The default is **reshape**. It adds a small contour change to a familiar shared opacity pulse. At source finality, every bar disappears immediately and the complete answer becomes readable together. A separate thin outline lasts 260 ms; the letters are never blurred or staggered.

@@ -1,5 +1,5 @@
-// Settle: the causal reading surface. The renderer receives events, never an
-// answer, and draws only what the source has committed. The contract is in
+// Settle: the causal reading surface. The renderer receives events, never a
+// future answer, and draws only what the source has committed. The contract is in
 // docs/superpowers/specs/2026-09-07-settle-design.md, section 4.1.
 
 /** What lands on the page: a word, sentence, paragraph, or the complete answer at source finality. */
@@ -46,6 +46,9 @@ export type SettleState = {
   releasedLength: number
   /** every committed position, contiguous or not */
   tokens: Record<number, Commit>
+  /** Latest explicitly nonfinal whole snapshot. Never protected page content;
+   *  available to coarse sizing and a separately labeled draft inspector. */
+  snapshotCandidate: string | null
   /** the source's current guess at each open position it has one for;
    *  `shown` is whether it has cleared the floor (with hysteresis) */
   drafts: Record<number, DraftState>

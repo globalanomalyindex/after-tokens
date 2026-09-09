@@ -5,7 +5,7 @@ import { AmbientComposition, type AmbientCondition } from '@/components/settle/a
 afterEach(cleanup)
 
 describe('the authored ambient composition', () => {
-  it('preserves its animated nodes while activity or motion is paused and resumed', () => {
+  it('preserves animated nodes through pauses and responsive row exposure', () => {
     const { container, rerender } = render(<AmbientComposition active motion complete={false} runId="run" />)
     const composition = container.firstElementChild
     const bars = [...container.querySelectorAll('.ambient-composition__bar')]
@@ -14,7 +14,8 @@ describe('the authored ambient composition', () => {
     expect(composition).toHaveAttribute('data-active', 'false')
     rerender(<AmbientComposition active motion={false} complete={false} runId="run" />)
     expect(composition).toHaveAttribute('data-motion', 'off')
-    rerender(<AmbientComposition active motion complete={false} runId="run" />)
+    rerender(<AmbientComposition active motion complete={false} runId="run" rowCount={9} lineHeightPx={26} barHeightPx={14.4} />)
+    expect(container.querySelectorAll('.ambient-composition__bar[data-shown="true"]')).toHaveLength(9)
     expect([...container.querySelectorAll('.ambient-composition__bar')]).toEqual(bars)
     bars.forEach((bar, index) => expect(container.querySelectorAll('.ambient-composition__bar')[index]).toBe(bar))
   })
@@ -31,7 +32,8 @@ describe('the authored ambient composition', () => {
     const { container, rerender } = render(<AmbientComposition active motion complete={false} runId="run" />)
     const shape = () => [...container.querySelectorAll('.ambient-composition__bar')].map((bar) => bar.getAttribute('style'))
     const initial = shape()
-    expect(initial).toHaveLength(5)
+    expect(initial).toHaveLength(14)
+    expect(container.querySelectorAll('.ambient-composition__bar[data-shown="true"]')).toHaveLength(5)
     for (const condition of ['static', 'breathe', 'reshape'] satisfies AmbientCondition[]) {
       rerender(<AmbientComposition active motion complete={false} condition={condition} runId="run" />)
       expect(shape()).toEqual(initial)

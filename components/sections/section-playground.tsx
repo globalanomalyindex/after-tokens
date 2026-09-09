@@ -33,7 +33,7 @@ export function SectionPlayground() {
                   <div><dt>character hold, mean of trace means</dt><dd>{(cost.meanOfTraceMeanExtraHoldMs! / 1000).toFixed(2)} s</dd></div>
                   <div><dt>exact final outputs</dt><dd>{cost.exactFinalOutputs} / {cost.traces}</dd></div>
                 </dl>
-                <p className="readout leading-relaxed" style={{ color: 'var(--muted)' }}>57 nonempty runs for timing. Recorded forward-pass clock, not API latency. The animation adds no completion timer; the whole-answer policy itself withholds earlier usable text.</p>
+                <p className="readout leading-relaxed" style={{ color: 'var(--muted)' }}>57 nonempty runs for timing. Recorded forward-pass clock, not API latency. The whole-answer policy withholds earlier usable text. A separate final size fit has an authored 180 ms duration when more room is needed; that browser presentation cost is not included in these source-eligibility figures.</p>
               </div>
             }
             const u = SETTLE.all60[policy].uniform

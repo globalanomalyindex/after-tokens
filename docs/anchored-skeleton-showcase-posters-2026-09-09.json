@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-09T22:11:24.000Z",
+  "material": "adaptive-cell-skeleton-v5",
+  "implementationFingerprint": "2c2e1c5e250e59811899cdc35dab083572dd59d81984d9331604af367d49edea",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "method": "Unedited browser-decoded frame at a 5-second seek in each verified source video. PNG posters only; original videos and their timings remain unchanged.",
+  "captureScript": {
+    "file": "scripts/capture-anchored-skeleton-posters.mjs",
+    "sha256": "fb5230beee73f53af5fa67646710ea843e274a85d159420dbafb1e911d35374d"
+  },
+  "posters": [
+    {
+      "file": "public/study/anchored-skeleton-showcase-mobile.png",
+      "bytes": 207730,
+      "sha256": "6a057067a8c2c287063bea8afd743be27aaff872a5bb04a65d8fbfa2a9a139c3",
+      "source": "public/study/anchored-skeleton-showcase-mobile.webm",
+      "sourceSha256": "7a6853836bfb739047c4fe2fdeecb493db53b2077d50bdcc0f81347436e1091f",
+      "seekSeconds": 5,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "public/study/anchored-skeleton-showcase-long.png",
+      "bytes": 202190,
+      "sha256": "ab681d59d64b5d419935c70fd05ef7f0eb572ecf3916d9d96b7b61545b6bbec8",
+      "source": "public/study/anchored-skeleton-showcase-long.webm",
+      "sourceSha256": "6b312aa0f67f9a83f0aed47b23907a44e2a85a706f739a984594843f517c81e8",
+      "seekSeconds": 5,
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "config": {
+    "configFile": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/playwright.config.ts",
+    "rootDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-portrait",
+        "name": "mobile-portrait",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "ambient-answer.spec.ts",
+      "file": "ambient-answer.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "underestimated space fits before a whole opaque answer settles and becomes stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1947,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-09T22:02:24.887Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJyZWNvcmRlZEF0IjogIjIwMjYtMDktMDlUMjI6MDI6MjcuODk4WiIsCiAgInByb2plY3QiOiAiY2hyb21pdW0iLAogICJicm93c2VyIjogImNocm9taXVtIiwKICAiYnJvd3NlclZlcnNpb24iOiAiMTQ4LjAuNzc3OC45NiIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA3MjAKICB9LAogICJtZXRob2QiOiAiQXV0aG9yZWQgdW5kZXJhbGxvY2F0aW9uIHN0cmVzczogcmVzdGFydCB0aGUgc2t5IHJlY29yZGluZyB0byBhIHZlcmlmaWVkIGFjdGl2ZSBmaXZlLWxpbmUgZW52ZWxvcGUsIHRoZW4gZm9yY2UgaXRzIGZpbmFsIGV2ZW50LiBEZWxheSBpcyBmaXJzdCBzYW1wbGVkIHNvdXJjZS1jb21wbGV0ZSB0byBmaXJzdCBzYW1wbGVkIGZ1bGwgdmlzaWJpbGl0eTsgdGhlc2UgYXJlIGJyb3dzZXIgcmVuZGVyaW5nIG9ic2VydmF0aW9ucywgbm90IG1lYXN1cmVkIG1vZGVsIG9yIHJlcXVlc3QgbGF0ZW5jeS4iLAogICJyZXN1bHQiOiB7CiAgICAibWF0ZXJpYWwiOiAiYWRhcHRpdmUtY2VsbC1za2VsZXRvbi12NSIsCiAgICAic291cmNlIjogInNreS1ibHVlX19sb3djb25mLWIxMjgtczMyIiwKICAgICJmaXJzdFNhbXBsZWRTb3VyY2VDb21wbGV0ZU1zIjogOTQ1LjI5OTk5OTk1MjMxNjMsCiAgICAiZmlyc3RTYW1wbGVkRnVsbHlWaXNpYmxlTXMiOiAxMTQ1LjM5OTk5OTk3NjE1ODEsCiAgICAiaW5pdGlhbEZyYW1lSGVpZ2h0UHgiOiAxMjEuODc1LAogICAgImFjdHVhbEZpbmFsUGFnZUhlaWdodFB4IjogMjQzLjc1LAogICAgImZpbmFsRnJhbWVIZWlnaHRQeCI6IDI0My43NSwKICAgICJmaXR0aW5nRnJhbWVzIjogMTIsCiAgICAidmlzaWJsZUZyYW1lcyI6IDMyLAogICAgInZpc3VhbERlbGF5TXMiOiAyMDAuMTAwMDAwMDIzODQxODYsCiAgICAibWF4U2hhcGVDaGFuZ2UiOiAwLjAwMDAzMDUxNzU3ODEyNSwKICAgICJtYXhSZXN0TW92ZW1lbnQiOiAwLAogICAgInJlc3RTYW1wbGVzIjogMTA4MCwKICAgICJzYXdBcnJpdmFsIjogdHJ1ZSwKICAgICJvYnNlcnZlZElua0R1cmF0aW9uIjogMTgwLAogICAgIm1pbmltdW1ZIjogLTAuMTk5NzgzLAogICAgIm1heGltdW1ZIjogMS41LAogICAgImhlaWdodFJhbmdlIjogMTIxLjg3NSwKICAgICJzZWxlY3RlZCI6ICJUaGUgc2t5IGFwcGVhcnMgYmx1ZSBiZWNhdXNlIG9mIHRoZSB3YXkgc3VubGlnaHQgdHJhdmVscyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLiBXaGVuIHN1bmxpZ2h0IGhpdHMgdGhyb3VnaCB0aGUgYXRtb3NwaGVyZSwgaXQgZ2V0cyBzY2F0dGVyZWQgbW9yZSB0aGUgYXRtb3NwaGVyZSBpcy4gVGhlIGF0bW9zcGhlcmUgaXMgbW9zdGx5IG1hZGUgb2YgZ2FzZXMsIGR1c3QsIGFuZCB3YXRlciwgd2hpY2ggc2MgYW5kIGFuZCBzY2F0dGVycyB0aGUgbGlnaHQuIFdoZW4gdGhlIHN1bmxpZ2h0IGhpdHMgdGhyb3VnaCB0aGUgYXRtb3NwaGVyZSwgdGhlIGxpZ2h0IGdldHMgc2NhdHRlcmVkIHNjYXR0ZXJlZCwgbWFraW5nIHRoZSBza3kgYmx1ZSBibHVlLiIsCiAgICAiZmFpbHVyZXMiOiBbXQogIH0KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-a7f93fa3bfb24dcf8258",
+          "file": "ambient-answer.spec.ts",
+          "line": 212,
+          "column": 5
+        },
+        {
+          "title": "underestimated space fits before a whole opaque answer settles and becomes stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6230,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-09T22:02:28.329Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJyZWNvcmRlZEF0IjogIjIwMjYtMDktMDlUMjI6MDI6MzUuNDgwWiIsCiAgInByb2plY3QiOiAid2Via2l0IiwKICAiYnJvd3NlciI6ICJ3ZWJraXQiLAogICJicm93c2VyVmVyc2lvbiI6ICIyNi40IiwKICAidmlld3BvcnQiOiB7CiAgICAid2lkdGgiOiAxMjgwLAogICAgImhlaWdodCI6IDcyMAogIH0sCiAgIm1ldGhvZCI6ICJBdXRob3JlZCB1bmRlcmFsbG9jYXRpb24gc3RyZXNzOiByZXN0YXJ0IHRoZSBza3kgcmVjb3JkaW5nIHRvIGEgdmVyaWZpZWQgYWN0aXZlIGZpdmUtbGluZSBlbnZlbG9wZSwgdGhlbiBmb3JjZSBpdHMgZmluYWwgZXZlbnQuIERlbGF5IGlzIGZpcnN0IHNhbXBsZWQgc291cmNlLWNvbXBsZXRlIHRvIGZpcnN0IHNhbXBsZWQgZnVsbCB2aXNpYmlsaXR5OyB0aGVzZSBhcmUgYnJvd3NlciByZW5kZXJpbmcgb2JzZXJ2YXRpb25zLCBub3QgbWVhc3VyZWQgbW9kZWwgb3IgcmVxdWVzdCBsYXRlbmN5LiIsCiAgInJlc3VsdCI6IHsKICAgICJtYXRlcmlhbCI6ICJhZGFwdGl2ZS1jZWxsLXNrZWxldG9uLXY1IiwKICAgICJzb3VyY2UiOiAic2t5LWJsdWVfX2xvd2NvbmYtYjEyOC1zMzIiLAogICAgImZpcnN0U2FtcGxlZFNvdXJjZUNvbXBsZXRlTXMiOiAyNjM3LAogICAgImZpcnN0U2FtcGxlZEZ1bGx5VmlzaWJsZU1zIjogMjg0MSwKICAgICJpbml0aWFsRnJhbWVIZWlnaHRQeCI6IDEyMS44NzUsCiAgICAiYWN0dWFsRmluYWxQYWdlSGVpZ2h0UHgiOiAyNDMuNzUsCiAgICAiZmluYWxGcmFtZUhlaWdodFB4IjogMjQzLjc1LAogICAgImZpdHRpbmdGcmFtZXMiOiA4LAogICAgInZpc2libGVGcmFtZXMiOiAzMiwKICAgICJ2aXN1YWxEZWxheU1zIjogMjA0LAogICAgIm1heFNoYXBlQ2hhbmdlIjogMC4wNDE5OTIxODc1LAogICAgIm1heFJlc3RNb3ZlbWVudCI6IDAsCiAgICAicmVzdFNhbXBsZXMiOiAxMDgwLAogICAgInNhd0Fycml2YWwiOiB0cnVlLAogICAgIm9ic2VydmVkSW5rRHVyYXRpb24iOiAxODAsCiAgICAibWluaW11bVkiOiAtMC4xOTk2MzQsCiAgICAibWF4aW11bVkiOiAwLjc4MDAwMywKICAgICJoZWlnaHRSYW5nZSI6IDM4LjM0Mzc1LAogICAgInNlbGVjdGVkIjogIlRoZSBza3kgYXBwZWFycyBibHVlIGJlY2F1c2Ugb2YgdGhlIHdheSBzdW5saWdodCB0cmF2ZWxzIHRocm91Z2ggdGhlIGF0bW9zcGhlcmUuIFdoZW4gc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCBpdCBnZXRzIHNjYXR0ZXJlZCBtb3JlIHRoZSBhdG1vc3BoZXJlIGlzLiBUaGUgYXRtb3NwaGVyZSBpcyBtb3N0bHkgbWFkZSBvZiBnYXNlcywgZHVzdCwgYW5kIHdhdGVyLCB3aGljaCBzYyBhbmQgYW5kIHNjYXR0ZXJzIHRoZSBsaWdodC4gV2hlbiB0aGUgc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCB0aGUgbGlnaHQgZ2V0cyBzY2F0dGVyZWQgc2NhdHRlcmVkLCBtYWtpbmcgdGhlIHNreSBibHVlIGJsdWUuIiwKICAgICJmYWlsdXJlcyI6IFtdCiAgfQp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-d1c92b0f21a310f2adb3",
+          "file": "ambient-answer.spec.ts",
+          "line": 212,
+          "column": 5
+        },
+        {
+          "title": "underestimated space fits before a whole opaque answer settles and becomes stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3180,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-09T22:02:35.969Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJyZWNvcmRlZEF0IjogIjIwMjYtMDktMDlUMjI6MDI6MzkuODUwWiIsCiAgInByb2plY3QiOiAibW9iaWxlLXBvcnRyYWl0IiwKICAiYnJvd3NlciI6ICJ3ZWJraXQiLAogICJicm93c2VyVmVyc2lvbiI6ICIyNi40IiwKICAidmlld3BvcnQiOiB7CiAgICAid2lkdGgiOiAzOTAsCiAgICAiaGVpZ2h0IjogNjY0CiAgfSwKICAibWV0aG9kIjogIkF1dGhvcmVkIHVuZGVyYWxsb2NhdGlvbiBzdHJlc3M6IHJlc3RhcnQgdGhlIHNreSByZWNvcmRpbmcgdG8gYSB2ZXJpZmllZCBhY3RpdmUgZml2ZS1saW5lIGVudmVsb3BlLCB0aGVuIGZvcmNlIGl0cyBmaW5hbCBldmVudC4gRGVsYXkgaXMgZmlyc3Qgc2FtcGxlZCBzb3VyY2UtY29tcGxldGUgdG8gZmlyc3Qgc2FtcGxlZCBmdWxsIHZpc2liaWxpdHk7IHRoZXNlIGFyZSBicm93c2VyIHJlbmRlcmluZyBvYnNlcnZhdGlvbnMsIG5vdCBtZWFzdXJlZCBtb2RlbCBvciByZXF1ZXN0IGxhdGVuY3kuIiwKICAicmVzdWx0IjogewogICAgIm1hdGVyaWFsIjogImFkYXB0aXZlLWNlbGwtc2tlbGV0b24tdjUiLAogICAgInNvdXJjZSI6ICJza3ktYmx1ZV9fbG93Y29uZi1iMTI4LXMzMiIsCiAgICAiZmlyc3RTYW1wbGVkU291cmNlQ29tcGxldGVNcyI6IDE3MDIsCiAgICAiZmlyc3RTYW1wbGVkRnVsbHlWaXNpYmxlTXMiOiAxODk3LAogICAgImluaXRpYWxGcmFtZUhlaWdodFB4IjogMTIxLjg3NSwKICAgICJhY3R1YWxGaW5hbFBhZ2VIZWlnaHRQeCI6IDIxOS4zNzUsCiAgICAiZmluYWxGcmFtZUhlaWdodFB4IjogMjE5LjM3NSwKICAgICJmaXR0aW5nRnJhbWVzIjogOSwKICAgICJ2aXNpYmxlRnJhbWVzIjogMzIsCiAgICAidmlzdWFsRGVsYXlNcyI6IDE5NSwKICAgICJtYXhTaGFwZUNoYW5nZSI6IDAuMDE4NTU0Njg3NSwKICAgICJtYXhSZXN0TW92ZW1lbnQiOiAwLAogICAgInJlc3RTYW1wbGVzIjogMTA4MCwKICAgICJzYXdBcnJpdmFsIjogdHJ1ZSwKICAgICJvYnNlcnZlZElua0R1cmF0aW9uIjogMTgwLAogICAgIm1pbmltdW1ZIjogLTAuMTk5NTIsCiAgICAibWF4aW11bVkiOiAxLjUsCiAgICAiaGVpZ2h0UmFuZ2UiOiAzOS4yNSwKICAgICJzZWxlY3RlZCI6ICJUaGUgc2t5IGFwcGVhcnMgYmx1ZSBiZWNhdXNlIG9mIHRoZSB3YXkgc3VubGlnaHQgdHJhdmVscyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLiBXaGVuIHN1bmxpZ2h0IGhpdHMgdGhyb3VnaCB0aGUgYXRtb3NwaGVyZSwgaXQgZ2V0cyBzY2F0dGVyZWQgbW9yZSB0aGUgYXRtb3NwaGVyZSBpcy4gVGhlIGF0bW9zcGhlcmUgaXMgbW9zdGx5IG1hZGUgb2YgZ2FzZXMsIGR1c3QsIGFuZCB3YXRlciwgd2hpY2ggc2MgYW5kIGFuZCBzY2F0dGVycyB0aGUgbGlnaHQuIFdoZW4gdGhlIHN1bmxpZ2h0IGhpdHMgdGhyb3VnaCB0aGUgYXRtb3NwaGVyZSwgdGhlIGxpZ2h0IGdldHMgc2NhdHRlcmVkIHNjYXR0ZXJlZCwgbWFraW5nIHRoZSBza3kgYmx1ZSBibHVlLiIsCiAgICAiZmFpbHVyZXMiOiBbXQogIH0KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-1ea9a76de0e7a25fbb7a",
+          "file": "ambient-answer.spec.ts",
+          "line": 212,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-09T22:02:24.192Z",
+    "duration": 16073.226999999999,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
   title: 'After Tokens: a skeleton motion study for generated text',
   description:
-    'Solid skeleton bars, a whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
+    'A capsule that divides into breathing, reshaping skeleton cells, one whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
   authors: [
     {
       name: 'Christopher Robin Fiore',

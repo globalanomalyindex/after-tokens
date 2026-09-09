@@ -1,5 +1,7 @@
 # After Tokens: solid skeleton implementation handoff
 
+> **Historical material: `solid-rounded-skeleton-v1`, revision `a7606d9`.** These parameters and results are preserved for that revision. Continue with the [anchored motion research](anchored-skeleton-research-2026-09-09.md) and [current implementation handoff](anchored-skeleton-handoff-2026-09-09.md). The historical [JSON report](skeleton-motion-validation-2026-09-09.json) is unchanged.
+
 **9 September 2026 · material `solid-rounded-skeleton-v1` · fresh browser verification recorded; reader outcomes unvalidated.**
 
 Continue from the existing repository and preserve the original case-study design. The current material uses solid muted-gray pill bars, a familiar shared opacity pulse, and an optional small change in visible length. Its three conditions are **still**, **breathe** and **reshape**, with reshape as the default. The whole-answer source contract and measured availability costs remain unchanged.

@@ -49,7 +49,7 @@ export function priorAfter(spins: Record<number, SpinState>, tokens: Record<numb
 export function createSettleState(policy: Policy = 'sentence', bound: number | null = null): SettleState {
   return {
     policy, status: 'waiting', passages: [], prefixTokens: [], prefix: '', wordSafeLength: 0, releasedLength: 0,
-    tokens: {}, drafts: {}, spins: {}, prior: [], nextPosition: 0, receivedCount: 0, bound: Number.isSafeInteger(bound) && bound! > 0 ? bound : null,
+    tokens: {}, snapshotCandidate: null, drafts: {}, spins: {}, prior: [], nextPosition: 0, receivedCount: 0, bound: Number.isSafeInteger(bound) && bound! > 0 ? bound : null,
     endAt: null, lastEventAtMs: 0, revisionText: null, error: null, source: null, version: 0, previousPassages: null,
   }
 }
@@ -94,7 +94,7 @@ function release(state: SettleState, final: boolean): SettleState {
 }
 
 function failed(state: SettleState, message: string, atMs = state.lastEventAtMs): SettleState {
-  return { ...state, status: 'error', error: message, lastEventAtMs: atMs }
+  return { ...state, status: 'error', snapshotCandidate: null, error: message, lastEventAtMs: atMs }
 }
 
 export function reduceSettle(state: SettleState, event: SettleEvent): SettleState {
@@ -108,7 +108,7 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
 
   if (event.type === 'revision') {
     if (!canRevise) return failed(next, 'A revision requires an explicitly completed source.')
-    return { ...next, status: 'revision', revisionText: event.text }
+    return { ...next, status: 'revision', snapshotCandidate: null, revisionText: event.text }
   }
   if (event.type === 'apply-revision') {
     if (state.status !== 'revision' || state.revisionText === null) return state
@@ -117,16 +117,19 @@ export function reduceSettle(state: SettleState, event: SettleEvent): SettleStat
     // field remains to draw beneath it
     return release({
       ...next, status: 'complete', prefix: text, prefixTokens: [], wordSafeLength: text.length, releasedLength: 0,
-      tokens: {}, drafts: {}, spins: {}, prior: [], endAt: null,
+      tokens: {}, snapshotCandidate: null, drafts: {}, spins: {}, prior: [], endAt: null,
       passages: [], previousPassages: state.passages, version: state.version + 1, revisionText: null,
     }, true)
   }
-  if (event.type === 'stop') return { ...next, status: 'stopped' }
+  if (event.type === 'stop') return { ...next, status: 'stopped', snapshotCandidate: null }
   if (event.type === 'error') return failed(next, event.message)
   if (event.type === 'snapshot') {
     if (state.source === 'commit') return failed(next, 'Cannot change a commitment stream into a snapshot stream.')
-    if (!event.final) return { ...next, source: 'snapshot', status: 'receiving' }
-    return release({ ...next, source: 'snapshot', status: 'complete', prefix: event.text, prefixTokens: [], wordSafeLength: event.text.length, releasedLength: 0 }, true)
+    // This is the source's current revisable candidate, not a commitment or
+    // a format guarantee. The protected reading surface uses it only for
+    // coarse sizing; a separately labeled draft inspector may show it.
+    if (!event.final) return { ...next, source: 'snapshot', status: 'receiving', snapshotCandidate: event.text }
+    return release({ ...next, source: 'snapshot', status: 'complete', snapshotCandidate: null, prefix: event.text, prefixTokens: [], wordSafeLength: event.text.length, releasedLength: 0 }, true)
   }
   if (state.source === 'snapshot') return failed(next, 'A snapshot stream requires an explicitly final snapshot.')
   if (event.type === 'draft') {

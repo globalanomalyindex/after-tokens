@@ -39,6 +39,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: node --test scripts/test-anchored-skeleton-harness.mjs
 
       # Verify the canonical root build and its browser behavior before export.
       - run: pnpm build
