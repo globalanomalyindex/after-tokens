@@ -42,6 +42,21 @@ jobs:
 
       # Verify the canonical root build and its browser behavior before export.
       - run: pnpm build
+      # Playwright downloads its own Chromium. The runner's unused Chrome APT
+      # repository can fail global apt updates while its mirror is syncing.
+      # Keep dependency installation and all package integrity checks enabled.
+      - name: Disable unused Chrome package repository
+        shell: bash
+        run: |
+          for source in \
+            /etc/apt/sources.list.d/google-chrome.list \
+            /etc/apt/sources.list.d/google-chrome.sources
+          do
+            if [[ -f "$source" ]] &&
+               grep -Eq 'https?://dl\.google\.com/linux/chrome(-stable)?/deb/?' "$source"; then
+              sudo mv -- "$source" "${source}.disabled"
+            fi
+          done
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e:chromium
 
