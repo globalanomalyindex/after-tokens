@@ -1043,7 +1043,9 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   opacity: calc(0.3 + 0.5 * var(--sure, 0));
   filter: blur(calc((1 - var(--sure, 0)) * 1.5px));
   transition: opacity 460ms var(--ease-out-strong), filter 460ms var(--ease-out-strong);
+  animation: settle-float 6200ms ease-in-out calc(var(--k, 0) * -560ms) infinite alternate;
 }
+.settle[data-paused="true"] .settle-cz[data-state="draft"] { animation-play-state: paused; }
 /* a draft's letters breathe once they have rolled in: a slow rise and fall
    of presence, out of step from one draft to the next (--k is the
    position's scrambled phase), so the unresolved part of the answer is
@@ -1078,7 +1080,21 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   text-shadow: 0 0 0.28em var(--settle-ink-2);
   opacity: calc(0.15 + 0.3 * var(--p, 0));
   transition: opacity 320ms var(--ease-out-strong);
+  animation: settle-float 6200ms ease-in-out calc(var(--k, 0) * -560ms) infinite alternate;
 }
+/* a smear floats: a slow rise and fall the height of a hairline, out of
+   step from one position to the next, so the reel below the floor is never
+   still and never in step; it turns on a longer, softer roll than a word */
+@keyframes settle-float {
+  0%   { transform: translateY(0.03em); }
+  100% { transform: translateY(-0.03em); }
+}
+.settle-cz[data-state="spin"] .settle-cz-text {
+  transition-duration: 620ms, 620ms, 620ms;
+  transition-timing-function: var(--ease-out-strong), var(--ease-out-strong), var(--ease-out-strong);
+  @starting-style { transform: translateY(0.55em); filter: blur(2px); }
+}
+.settle[data-paused="true"] .settle-cz[data-state="spin"] { animation-play-state: paused; }
 /* blank space: an open position reserves about a token's width, and so does
    a position where the source only guesses the answer ends (the guess is
    kept for the reducer; it draws no mark, because the answer's extent is
@@ -1087,7 +1103,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-slot {
   width: 2.3ch;
   margin: 0;
-  transition: width var(--settle-onset) var(--ease-out-expo), margin var(--settle-onset) var(--ease-out-expo), opacity 300ms var(--ease-out-strong);
+  transition: width 520ms var(--ease-out-strong), margin 520ms var(--ease-out-strong), opacity 300ms var(--ease-out-strong);
 }
 /* a line break, committed or guessed, is the message's shape arriving before its words */
 .settle-nl { display: block; height: 0; }

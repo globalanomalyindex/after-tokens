@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import brainstormJson from '@/data/traces/compact/brainstorm__lowconf-b128.json'
 import { asTrace } from '@/lib/diffusion/traces'
-import { carve, wordSafeTokens } from '@/lib/settle/carve'
+import { carve, priorGuesses, wordSafeTokens } from '@/lib/settle/carve'
 import { createSettleState, pageText, reduceSettle } from '@/lib/settle/reader'
 import { replayTrace, settleAt, settleEnd } from '@/lib/settle/replay'
 import type { SettleEvent } from '@/lib/settle/types'
@@ -172,6 +172,33 @@ describe('the reel below the floor', () => {
     // a spin that continues a word attaches to letters before it
     s = reduceSettle(s, { type: 'spin', atMs: 300, guesses: [{ position: 1, text: 'ir', p: 0.1 }] })
     expect(carve(s).find((item) => 'position' in item && item.position === 1)).toEqual({ kind: 'spin', position: 1, text: 'ir', p: 0.1 })
+  })
+})
+
+describe('the prior', () => {
+  it('draws a guess made at four or more open positions at once as blank, whatever its spacing or case, and keeps a guess specific to its position', () => {
+    let s = createSettleState('sentence', 10)
+    s = reduceSettle(s, { type: 'commit', atMs: 100, tokens: [{ position: 0, text: 'Rain' }] })
+    s = reduceSettle(s, { type: 'spin', atMs: 200, guesses: [
+      { position: 1, text: ' the', p: 0.06 },
+      { position: 2, text: ' The', p: 0.05 },
+      { position: 3, text: ' falls', p: 0.12 },
+      { position: 4, text: ' the', p: 0.07 },
+      { position: 5, text: 'the', p: 0.04 },
+      { position: 6, text: ' sky', p: 0.1 },
+      { position: 7, text: ' sky', p: 0.1 },
+      { position: 8, text: ' sky', p: 0.1 },
+    ] })
+    expect(priorGuesses(s)).toEqual(new Set(['the']))
+    const items = carve(s)
+    const at = (position: number) => items.find((item) => 'position' in item && item.position === position)
+    for (const position of [1, 2, 4, 5]) expect(at(position)).toEqual({ kind: 'slot', position, state: 'open' })
+    expect(at(3)?.kind).toBe('spin')
+    expect(at(6)?.kind).toBe('spin')
+    // a committed position no longer counts toward the prior
+    s = reduceSettle(s, { type: 'commit', atMs: 300, tokens: [{ position: 1, text: ' the' }, { position: 2, text: ' the' }] })
+    expect(priorGuesses(s).size).toBe(0)
+    expect(carve(s).find((item) => 'position' in item && item.position === 4)?.kind).toBe('spin')
   })
 })
 

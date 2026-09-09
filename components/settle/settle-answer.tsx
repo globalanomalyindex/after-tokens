@@ -84,24 +84,28 @@ type Widths = Map<number, number>
 
 /** Slides an element's width from what it was to what it is whenever its
  *  content changes, so the line moves instead of jumping. The element is
- *  measured at its natural width, set back to its previous width without a
- *  transition, then let go. */
+ *  measured at its natural width, set back to the width it is showing at
+ *  this moment (mid-slide, that is the width on screen, so a change that
+ *  lands during a slide turns from where the slide is instead of jumping
+ *  back to where it began) without a transition, then let go on a long,
+ *  soft curve. */
 function useWidthGlide(ref: React.RefObject<HTMLElement | null>, key: string, ms: number, from?: () => number | null, after?: (natural: number) => void) {
   const last = useRef<number | null>(null)
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
+    const showing = last.current === null ? null : el.getBoundingClientRect().width
     el.style.width = ''
     el.style.transition = ''
     const natural = el.getBoundingClientRect().width
-    const previous = last.current ?? from?.() ?? null
+    const previous = showing ?? from?.() ?? null
     last.current = natural
     after?.(natural)
     if (previous === null || ms <= 0 || Math.abs(previous - natural) < 0.5) return
     el.style.transition = 'none'
     el.style.width = `${previous}px`
     void el.offsetWidth
-    el.style.transition = `width ${ms}ms var(--ease-out-expo)`
+    el.style.transition = `width ${ms}ms var(--ease-out-strong)`
     el.style.width = `${natural}px`
     const timer = window.setTimeout(() => {
       el.style.width = ''
@@ -130,6 +134,11 @@ const phase = (position: number) => (position * 7) % 11
 
 /** How long a dropped guess takes to roll out of its position, in ms. Matches the stylesheet. */
 const REEL_MS = 520
+/** The zone's drift: how long a position takes to slide to a new width, in
+ *  ms, at least. Longer than the voice's onset, and varied a little by
+ *  position, so the line breathes rather than snapping in step. */
+const DRIFT_MS = 520
+const driftFor = (position: number, onset: number) => Math.round(Math.max(onset, DRIFT_MS) * (0.9 + 0.02 * phase(position)))
 
 type Register = 'word' | 'piece' | 'draft' | 'spin' | 'open' | 'beyond' | 'end-belief'
 type Row = { text: string; seq: number; born: Register }
@@ -189,7 +198,7 @@ function Cell({ item, ms, widths }: { item: CellItem; ms: number; widths: Widths
   const after = useCallback((natural: number) => {
     for (let p = position; p < position + span; p += 1) widths.set(p, p === position ? natural : 0)
   }, [position, span, widths])
-  useWidthGlide(ref, `${register}:${text}`, ms, from, after)
+  useWidthGlide(ref, `${register}:${text}`, ms > 0 ? driftFor(position, ms) : 0, from, after)
   const { row, past } = useReel(text, register)
   // a word that was already standing as its own draft or piece lands in place; any other word rolls in
   const lands = register === 'word' && row.born !== 'word'
