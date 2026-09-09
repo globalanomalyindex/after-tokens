@@ -44,7 +44,7 @@ export function SectionContract() {
       <div className="mt-16 md:mt-24">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">four policies, one source</h3>
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
-          the raw prefix shows in-order source pieces, including half-words. the comparison applies a release policy to those same events. the whole-answer option waits for finality; earlier policies expose useful text sooner. this is an availability comparison, separate from testing static, coherent and independent motion at identical answer timing. reading research, including <DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm> and studies of unstable text, motivates preserving readable text. it does not prove that withholding it is better.
+          the raw prefix shows in-order source pieces, including half-words. the comparison applies a release policy to those same events. the whole-answer option waits for finality; earlier policies expose useful text sooner. this is an availability comparison, separate from testing still, breathe and reshape at identical answer timing. reading research, including <DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm> and studies of unstable text, motivates preserving readable text. it does not prove that withholding it is better.
         </p>
         <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison />
       </div>

@@ -32,7 +32,7 @@ export default function OG() {
           <span>tokens</span>
         </div>
         <div style={{ fontSize: 28, color: '#2A2820', marginTop: 24, maxWidth: 800 }}>
-          a little movement. then, a whole answer. a motion study for generated text.
+          still. breathe. reshape. a skeleton motion study for generated text.
         </div>
         <div style={{ fontSize: 18, color: '#6C685C', marginTop: 18 }}>
           christopher robin fiore

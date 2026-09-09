@@ -10,9 +10,9 @@ const iconBase = process.env.GITHUB_PAGES === 'true' ? '/after-tokens' : ''
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
-  title: 'After Tokens: an ambient motion study for generated text',
+  title: 'After Tokens: a skeleton motion study for generated text',
   description:
-    'Soft loading bars, a whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
+    'Solid skeleton bars, a whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
   authors: [
     {
       name: 'Christopher Robin Fiore',
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     shortcut: `${iconBase}/favicon.ico`,
   },
   openGraph: {
-    title: 'After Tokens: an ambient motion study for generated text',
+    title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'A continuous waiting composition, one readable answer arrival, and an honest account of its cost. Research, real diffusion captures and an interactive motion comparison.',
+      'Still, breathe, reshape: familiar loading bars, one readable answer arrival, and an honest account of waiting. Research, real diffusion captures and an interactive motion comparison.',
     url: 'https://globalanomalyindex.github.io/after-tokens/',
     siteName: 'After Tokens',
     locale: 'en_US',
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'After Tokens: an ambient motion study for generated text',
+    title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'A continuous waiting composition, one readable answer arrival, and an honest account of its cost. Research, real diffusion captures and an interactive motion comparison.',
+      'Still, breathe, reshape: familiar loading bars, one readable answer arrival, and an honest account of waiting. Research, real diffusion captures and an interactive motion comparison.',
   },
 }
 

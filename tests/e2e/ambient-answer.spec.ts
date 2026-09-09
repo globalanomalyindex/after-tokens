@@ -34,7 +34,7 @@ test('three ambient conditions share one source and reveal one exact answer at f
     let waitingSamples = 0
     let finalSamples = 0
     let sawArrival = false
-    const firstTransforms = new Map<string, string>()
+    const firstAppearance = new Map<string, string>()
     const movedConditions = new Set<string>()
     const visibleConditions = new Set<string>()
     const started = performance.now()
@@ -55,9 +55,9 @@ test('three ambient conditions share one source and reveal one exact answer at f
               if (bars.some((bar) => bar.getBoundingClientRect().width <= 0 || bar.getBoundingClientRect().height <= 0)) failures.push('loading bar is dimensionless')
               const frame = surface.querySelector('.settle-answer-frame')!.getBoundingClientRect()
               if (frame.height < parseFloat(getComputedStyle(surface).fontSize) * 7.99) failures.push('loading frame lost its 8em allocation')
-              const transform = bars.map((bar) => getComputedStyle(bar).transform).join('|')
-              if (!firstTransforms.has(condition)) firstTransforms.set(condition, transform)
-              else if (firstTransforms.get(condition) !== transform) movedConditions.add(condition)
+              const appearance = bars.map((bar) => `${getComputedStyle(bar).opacity}:${getComputedStyle(bar.querySelector('.ambient-composition__ink')!).clipPath}`).join('|')
+              if (!firstAppearance.has(condition)) firstAppearance.set(condition, appearance)
+              else if (firstAppearance.get(condition) !== appearance) movedConditions.add(condition)
             }
           } else {
             if (surface.querySelector('.ambient-composition')) failures.push('loading composition survived finality')
@@ -83,7 +83,7 @@ test('three ambient conditions share one source and reveal one exact answer at f
   expect(observations.failures).toEqual([])
   expect(observations.movedConditions).not.toContain('static')
   for (const condition of observations.visibleConditions.filter((value) => value !== 'static')) expect(observations.movedConditions).toContain(condition)
-  for (const condition of ['static', 'coherent', 'independent']) {
+  for (const condition of ['static', 'breathe', 'reshape']) {
     const answer = study.getByRole('region', { name: `answer · ${condition}`, exact: true, includeHidden: true })
     await expect(answer).toHaveAttribute('aria-busy', 'false')
     expect(await answer.textContent()).toBe(sleep.answer)
@@ -132,7 +132,7 @@ test('the narrow comparison switches one visible condition and restarts the shar
     return
   }
   await expect(selector).toBeVisible()
-  for (const [condition, label] of [['static', 'at rest'], ['independent', 'apart'], ['coherent', 'together']]) {
+  for (const [condition, label] of [['static', 'still'], ['breathe', 'breathe'], ['reshape', 'reshape']]) {
     await study.getByRole('button', { name: 'to the end', exact: true }).click()
     await selector.getByRole('radio', { name: label, exact: true }).click()
     const visible = study.locator('.settle:visible')
@@ -148,7 +148,7 @@ test('changing and restarting recordings cannot leak a previous answer', async (
   const study = await startStudy(page)
   const recordings = study.getByRole('radiogroup', { name: 'recording', exact: true })
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
-  expect(await study.getByRole('region', { name: 'answer · coherent', exact: true }).textContent()).toBe(sleep.answer)
+  expect(await study.getByRole('region', { name: 'answer · reshape', exact: true }).textContent()).toBe(sleep.answer)
   await recordings.getByRole('radio', { name: 'a failed answer', exact: true }).click()
   await recordings.getByRole('radio', { name: 'an explanation', exact: true }).click()
   await expect(study).toHaveAttribute('data-source-id', sky.id)
@@ -158,30 +158,34 @@ test('changing and restarting recordings cannot leak a previous answer', async (
   await study.getByRole('button', { name: 'replay all', exact: true }).click()
   for (const page of await study.locator('.settle-page').all()) expect(await page.textContent()).toBe('')
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
-  expect(await study.getByRole('region', { name: 'answer · coherent', exact: true }).textContent()).toBe(sky.answer)
+  expect(await study.getByRole('region', { name: 'answer · reshape', exact: true }).textContent()).toBe(sky.answer)
 })
 
 test('ambient animation keeps its identity and phase through interruption; final accents do not replay', async ({ page }) => {
   const study = await startStudy(page)
   await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
-  const surface = study.locator('.settle[data-ambient-condition="coherent"]')
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
   await surface.scrollIntoViewIfNeeded()
   const bar = surface.locator('.ambient-composition__bar').first()
   await expect.poll(() => bar.evaluate((el) => el.getAnimations().filter((animation) => animation.playState === 'running').length)).toBeGreaterThan(0)
   await bar.evaluate((el) => {
-    const animation = el.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'ambient-composition-flow')!
+    const animation = el.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'skeleton-breathe')!
     ;(el as HTMLElement & { auditAnimation: Animation }).auditAnimation = animation
+    ;(el as HTMLElement & { auditShape: Animation }).auditShape = el.firstElementChild!.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'skeleton-reshape')!
   })
   await study.getByRole('button', { name: 'pause all', exact: true }).click()
   const state = () => bar.evaluate((el) => {
     const animation = (el as HTMLElement & { auditAnimation: Animation }).auditAnimation
-    return { same: el.getAnimations().includes(animation), time: Number(animation.currentTime), playState: animation.playState }
+    const shape = (el as HTMLElement & { auditShape: Animation }).auditShape
+    return { same: el.getAnimations().includes(animation), time: Number(animation.currentTime), playState: animation.playState, shapeSame: el.firstElementChild!.getAnimations().includes(shape), shapeTime: Number(shape.currentTime), shapeState: shape.playState }
   })
   await expect.poll(async () => (await state()).playState).toBe('paused')
   const paused = await state()
   await page.waitForTimeout(180)
   expect(await state()).toEqual(paused)
   expect(paused.same).toBe(true)
+  expect(paused.shapeSame).toBe(true)
+  expect(paused.shapeState).toBe('paused')
   await study.getByRole('button', { name: 'motion on', exact: true }).click()
   await page.waitForTimeout(100)
   expect(await state()).toEqual(paused)
@@ -191,6 +195,8 @@ test('ambient animation keeps its identity and phase through interruption; final
   await surface.scrollIntoViewIfNeeded()
   await expect.poll(async () => (await state()).time).toBeGreaterThan(paused.time)
   expect((await state()).same).toBe(true)
+  expect((await state()).shapeSame).toBe(true)
+  expect((await state()).shapeTime).toBeGreaterThan(paused.shapeTime)
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
   await page.waitForTimeout(400)
   await expect(study.locator('.settle-answer-arrival')).toHaveCount(0)
@@ -201,7 +207,7 @@ test('ambient animation keeps its identity and phase through interruption; final
 
 test('whole-answer text stays selectable and still while its separate arrival decoration plays', async ({ page }) => {
   const study = await startStudy(page)
-  const answer = study.getByRole('region', { name: 'answer · coherent', exact: true })
+  const answer = study.getByRole('region', { name: 'answer · reshape', exact: true })
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
   await answer.scrollIntoViewIfNeeded()
   const result = await answer.evaluate(async (region) => {
@@ -251,4 +257,53 @@ test.describe('whole answer with reduced motion', () => {
     for (const answer of await study.locator('.settle-page').all()) expect(await answer.textContent()).toBe(sleep.answer)
     expect(await study.evaluate((root) => [...root.querySelectorAll('.settle')].flatMap((surface) => surface.getAnimations({ subtree: true })).filter((animation) => animation.playState === 'running').length)).toBe(0)
   })
+})
+
+test('solid skeletons keep crisp circular ends and fixed thickness through a full motion cycle', async ({ page }) => {
+  const study = await startStudy(page)
+  await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
+  await study.getByRole('button', { name: 'replay all', exact: true }).click()
+  const active = await study.getAttribute('data-active-condition')
+  const surface = study.locator(`.settle[data-ambient-condition="${active}"]`)
+  const ink = surface.locator('.ambient-composition__ink').first()
+  await expect(ink).toBeVisible()
+  const material = await ink.evaluate((el) => {
+    const css = getComputedStyle(el)
+    return { mask: css.maskImage, image: css.backgroundImage, filter: css.filter, shadow: css.boxShadow, radius: css.borderTopLeftRadius }
+  })
+  expect(material).toMatchObject({ mask: 'none', image: 'none', filter: 'none', shadow: 'none' })
+  expect(parseFloat(material.radius)).toBeGreaterThan(0)
+  const observation = await surface.evaluate(async (el) => {
+    const inks = [...el.querySelectorAll<HTMLElement>('.ambient-composition__ink')]
+    const frame = el.querySelector('.settle-answer-frame')!
+    const heights = inks.map((item) => item.getBoundingClientRect().height)
+    const frameHeight = frame.getBoundingClientRect().height
+    const clips = new Set<string>()
+    const opacities = new Set<string>()
+    let heightChange = 0
+    let samples = 0
+    let glyphs = false
+    const started = performance.now()
+    await new Promise<void>((resolve) => {
+      const tick = () => {
+        inks.forEach((item, index) => {
+          heightChange = Math.max(heightChange, Math.abs(item.getBoundingClientRect().height - heights[index]!))
+          clips.add(getComputedStyle(item).clipPath)
+          opacities.add(getComputedStyle(item.parentElement!).opacity)
+        })
+        heightChange = Math.max(heightChange, Math.abs(frame.getBoundingClientRect().height - frameHeight))
+        glyphs ||= !!el.querySelector('.settle-answer-text')
+        samples += 1
+        if (performance.now() - started < 5200) requestAnimationFrame(tick)
+        else resolve()
+      }
+      requestAnimationFrame(tick)
+    })
+    return { samples, clips: clips.size, opacities: opacities.size, heightChange, glyphs }
+  })
+  expect(observation.samples).toBeGreaterThan(30)
+  expect(observation.clips).toBeGreaterThan(2)
+  expect(observation.opacities).toBeGreaterThan(2)
+  expect(observation.heightChange).toBe(0)
+  expect(observation.glyphs).toBe(false)
 })

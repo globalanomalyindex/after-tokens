@@ -1,5 +1,7 @@
 # After Tokens: ambient answer implementation handoff
 
+**Historical scope:** the feathered ambient implementation and its verification below belong to revision `05914c1`. The latest solid-bar material is documented in the [skeleton motion study](skeleton-motion-study-2026-09-09.md) and [skeleton handoff](skeleton-handoff-2026-09-09.md). Their fresh validation is separate; this record is preserved rather than relabeled.
+
 **9 September 2026 · implemented working prototype · reader benefit unvalidated.**
 
 This is the current implementation guide for the ambient composition and whole-answer revision. Preserve the original case study's typography, palette, editorial structure and product frames. The task is to make the waiting area behave as a fluid composition, then let the answer arrive together, without pretending to know its words or final layout in advance.

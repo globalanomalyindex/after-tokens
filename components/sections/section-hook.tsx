@@ -20,7 +20,7 @@ export function SectionHook() {
           </h1>
           <p className="standfirst mt-8 max-w-[34ch]">a little movement. then, a whole thought.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
-            a motion and interaction study for generated text. soft bars move together while the source works;
+            a motion and interaction study for generated text. solid gray bars breathe and gently change length while the source works;
             the complete answer arrives as readable text, all at once. the bars do not predict its words or shape.
             a working prototype, grounded in {TRACE_NUMBERS.trajectories} original sampler recordings, four new batched runs,
             and an explicit account of the extra wait. reader benefits remain to be tested.

@@ -77,7 +77,7 @@ type Props = {
 
 export function SettleAnswer({
   state, runId = 'default', voice: voiceProp, forming: formingProp, preview, field, status = true, announce = true,
-  haptics = false, motion = true, ambient = 'coherent', paused = false, onApplyRevision,
+  haptics = false, motion = true, ambient = 'reshape', paused = false, onApplyRevision,
   label = 'answer', empty, className = '', style,
 }: Props) {
   const brand = useBrand()

@@ -138,7 +138,7 @@ export function SectionPreviews() {
       </div>
       <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
         three surfaces, three voices, one whole-answer policy. every bar composition is independent of source positions,
-        final words and line lengths. the answer appears at verified finality, with a brief decorative response and no text stagger.
+        final words and line lengths. the answer appears at verified finality, with a brief thin outline and no text stagger.
         the bubble keeps its width; a long final answer can still increase its height. the recorded source has not been accelerated for the phone.
       </p>
     </Section>

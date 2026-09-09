@@ -32,7 +32,7 @@ describe('the authored ambient composition', () => {
     const shape = () => [...container.querySelectorAll('.ambient-composition__bar')].map((bar) => bar.getAttribute('style'))
     const initial = shape()
     expect(initial).toHaveLength(5)
-    for (const condition of ['static', 'coherent', 'independent'] satisfies AmbientCondition[]) {
+    for (const condition of ['static', 'breathe', 'reshape'] satisfies AmbientCondition[]) {
       rerender(<AmbientComposition active motion complete={false} condition={condition} runId="run" />)
       expect(shape()).toEqual(initial)
       expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true')

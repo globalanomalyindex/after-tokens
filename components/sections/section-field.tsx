@@ -8,31 +8,33 @@ export function SectionField() {
     <Section id="field" title="A field, then an answer">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a field, then an answer</h2>
       <p className="standfirst max-w-3xl">
-        familiar loading bars, loosened from the final layout. five soft forms share an unhurried rhythm inside
-        the answer area. they drift and breathe without counting words or promising a line length. when the source
-        finishes, the entire answer is there to read. the motion belongs to the wait; the letters hold still.
+        five solid gray bars hold the answer area. compare them still, breathing, and gently changing length. their rounded ends stay crisp; their height and position stay fixed. the bars do not count words or predict line lengths. at source finality, the complete answer appears together and the letters hold still.
       </p>
       <div className="mt-12 md:mt-16"><AmbientStudy /></div>
       <p className="readout mt-6 leading-relaxed max-w-4xl" style={{ color: 'var(--muted)' }}>
-        rendering audit · eight Chromium observations, at 390 and 1380 px viewport widths. one complete text update per replay;
-        no pre-final text; 9,667 matched first-glyph samples with no movement after arrival. the longer explanation grows the
-        answer area by 99.4 px once at finality. these are engineering observations, not reader-study results or physical iPhone measurements.{' '}
-        <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/ambient-motion-validation-2026-09-09.json">measurement</a>{' · '}
-        <a className="underline underline-offset-4" href={`${assetBase}/study/ambient-answer-mobile.webm`}>mobile recording</a>{' · '}
-        <a className="underline underline-offset-4" href={`${assetBase}/study/ambient-answer-long.webm`}>long-answer recording</a>
+        eight chromium observations at half-speed source inspection each showed one exact answer arrival and no early text. 9,648 sampled positions of final words&rsquo; first characters stayed still after arrival. the narrow long answer still grew its frame once, by 99.4 px. the gallery default remains the observed clock; reader benefits and physical iphone behavior remain untested.{' '}
+        <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/skeleton-motion-validation-2026-09-09.json">measurement and scope</a>
+      </p>
+      <p className="readout mt-4 leading-relaxed max-w-4xl" style={{ color: 'var(--muted)' }}>
+        fresh verification · 268 unit/component tests across 40 files and 45 browser checks passed across chromium, webkit and iphone 14 emulation.{' '}
+        <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/skeleton-release-verification-2026-09-09.md">build and release checks</a>. actual browser recordings at half-speed inspection:{' '}
+        <a className="underline underline-offset-4" href={`${assetBase}/study/skeleton-answer-mobile.webm`}>list</a>{' · '}
+        <a className="underline underline-offset-4" href={`${assetBase}/study/skeleton-answer-long.webm`}>long answer</a>.{' '}
+        <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/skeleton-motion-study-2026-09-09.md">research and proposed reader study</a>
       </p>
       <div className="mt-12 md:mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] rule pt-8">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">borrow the familiarity.<br />reconsider the promise.</h3>
         <div className="text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-          <p>A website skeleton usually previews a structure that already exists. An unconstrained generated answer may not yet have a known length, list count or line break. Here, the bars describe an app-owned waiting area. Their geometry is authored independently of the text, and remains the same for a short refusal or a long explanation.</p>
-          <p className="mt-4">That is an adaptation of a familiar pattern, not a proven speed benefit. A controlled skeleton-versus-spinner study with 14 people found no significant difference in perceived speed or navigation. Fluent&rsquo;s guidance favors high-level structure for variable content. Neither establishes that these bars will improve diffusion reading. <a className="underline underline-offset-4" href="https://doi.org/10.1145/3232078.3232086">Mejtoft et al., 2018</a>; <a className="underline underline-offset-4" href="https://fluent2.microsoft.design/components/web/react/core/skeleton/usage">Fluent 2</a>.</p>
+          <p>A website skeleton usually previews a structure that already exists. Generated text may not yet have a known length, list count or line break. These five bars occupy an app-owned waiting area; their widths are authored independently of the answer. The same composition precedes a short refusal or a long explanation.</p>
+          <p className="mt-4">The reference is a familiar solid-row loader. Its original code uses a traveling shimmer; this experiment uses a uniform fill and a slower whole-field pulse. Pulsing and static skeletons already exist, so neither is claimed as an invention. <a className="underline underline-offset-4" href="https://www.cssscript.com/skeleton-loader-placeholder/">reference</a>; <a className="underline underline-offset-4" href="https://github.com/zalog/placeholder-loading">original implementation</a>; <a className="underline underline-offset-4" href="https://mui.com/material-ui/react-skeleton/">MUI skeleton variants</a>.</p>
         </div>
       </div>
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">coherence is the question</h3>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">what does changing the shape add?</h3>
         <div className="text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-          <p>Research on common fate shows that coordinated changes can group visual elements. It motivates the shared rhythm above; it does not prove that readers find it calmer. The three conditions use identical initial forms, text, source clock and final handover. The independent condition changes the bars&rsquo; periods, so their phases diverge. Motion ranges match; time-averaged area and luminance are not guaranteed to match over every short recording. <a className="underline underline-offset-4" href="https://arxiv.org/html/1908.00661">Chalbi et al., 2020</a>.</p>
-          <p className="mt-4">The construction follows motion practice: continuous position, gentle changes in direction, a persistent phase, immediate interruption and a static reduced-motion alternative. One shared 5.4-second cycle carries much smaller local movement. At completion, a 260-millisecond decorative response yields to text already at full contrast. These durations are design parameters to evaluate, not psychological constants. <a className="underline underline-offset-4" href="https://developer.apple.com/videos/play/wwdc2018/803/">Apple, Designing Fluid Interfaces</a>; <a className="underline underline-offset-4" href="https://fluent2.microsoft.design/motion">Fluent motion</a>.</p>
+          <p>Still holds the bars at a fixed opacity. Breathe adds a shared 4.8-second opacity cycle. Reshape uses that same pulse and brings each rounded end inward, then back out, while height and position remain fixed. The question is whether adding this contour movement makes waiting feel more fluid or more distracting. It changes visible area and total ink as well as shape, so this is not an isolated test of a psychological mechanism.</p>
+          <p className="mt-4">Common-fate research motivates related changes within a group, but both moving conditions already share a rhythm. A small controlled skeleton study found no significant perceived-speed or navigation advantage over spinners. Neither finding proves this treatment helps a reader. <a className="underline underline-offset-4" href="https://arxiv.org/html/1908.00661">Chalbi et al., 2020</a>; <a className="underline underline-offset-4" href="https://doi.org/10.1145/3232078.3232086">Mejtoft et al., 2018</a>.</p>
+          <p className="mt-4">All three conditions use the same source events, answer policy and final handover. At finality the bars disappear immediately, the text is fully readable, and one thin outline fades around it for 260 milliseconds. There is no blurred glow or letter animation. The brief response follows restrained motion practice; its duration is an authored parameter, not a psychological constant. <a className="underline underline-offset-4" href="https://carbondesignsystem.com/elements/motion/overview/">Carbon motion guidance</a>.</p>
         </div>
       </div>
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">

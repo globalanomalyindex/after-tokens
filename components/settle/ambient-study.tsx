@@ -11,9 +11,9 @@ import type { AmbientCondition } from './ambient-composition'
 import { statusWords } from './margin'
 
 const CONDITIONS: { id: AmbientCondition; title: string; description: string }[] = [
-  { id: 'static', title: '01 · at rest', description: 'The same composition, with motion removed.' },
-  { id: 'coherent', title: '02 · together', description: 'One shared rhythm, with a little local drift.' },
-  { id: 'independent', title: '03 · apart', description: 'The same movement ranges, at different periods.' },
+  { id: 'static', title: '01 · still', description: 'Rounded bars at a constant brightness.' },
+  { id: 'breathe', title: '02 · breathe', description: 'A shared breath. The shapes stay fixed.' },
+  { id: 'reshape', title: '03 · reshape', description: 'The same breath. Both ends gently move.' },
 ]
 
 export function AmbientStudy() {
@@ -23,7 +23,7 @@ export function AmbientStudy() {
   const [pace, setPace] = useState('recorded')
   const [motion, setMotion] = useState(true)
   const [earlier, setEarlier] = useState(false)
-  const [condition, setCondition] = useState<AmbientCondition>('coherent')
+  const [condition, setCondition] = useState<AmbientCondition>('reshape')
   const choice = EXPERIMENTS.find((item) => item.id === source) ?? EXPERIMENTS[0]
   useEffect(() => {
     let cancelled = false
@@ -63,12 +63,12 @@ export function AmbientStudy() {
       </div>
       <p className="text-base mb-5" style={{ color: 'var(--ink-2)' }}>{trace?.prompt ?? (loadError ? 'The recording could not be loaded. Choose another recording to retry.' : 'Loading the recorded source…')}</p>
       <div className="md:hidden mb-5">
-        <ToggleRail label="motion study" items={[{ id: 'static', label: 'at rest' }, { id: 'coherent', label: 'together' }, { id: 'independent', label: 'apart' }]} activeId={condition} onSelect={(id) => { setCondition(id as AmbientCondition); clock.restart() }} />
+        <ToggleRail label="motion study" items={[{ id: 'static', label: 'still' }, { id: 'breathe', label: 'breathe' }, { id: 'reshape', label: 'reshape' }]} activeId={condition} onSelect={(id) => { setCondition(id as AmbientCondition); clock.restart() }} />
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>one condition at a time on a narrow screen; choosing another replays the same source</p>
       </div>
-      <p className="hidden md:block readout mb-4" style={{ color: 'var(--muted)' }}>three conditions, one source clock and one answer-arrival time</p>
-      <div className="grid gap-5 md:grid-cols-3 items-start">
-        {CONDITIONS.map((item) => <figure key={item.id} className={`min-w-0 m-0 ${condition === item.id ? 'block' : 'hidden md:block'}`}>
+      <p className="hidden md:block readout mb-4" style={{ color: 'var(--muted)' }}>three conditions, one source clock and one answer-arrival time. use 0.5× inspection to watch a complete breath.</p>
+      <div className="grid gap-5 md:grid-cols-3 md:gap-y-0 items-start md:items-stretch">
+        {CONDITIONS.map((item) => <figure key={item.id} className={`min-w-0 m-0 md:grid md:grid-rows-subgrid md:row-span-2 ${condition === item.id ? 'block' : 'hidden md:block'}`}>
           <figcaption className="mb-3">
             <h3 className="text-base font-semibold">{item.title}</h3>
             <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--ink-2)' }}>{item.description}</p>

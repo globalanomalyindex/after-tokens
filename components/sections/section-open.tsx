@@ -28,7 +28,7 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'the study',
-    body: 'compare static bars, coherent ambient bars and independently moving bars at identical whole-answer timing. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
+    body: 'compare still, breathing and reshaping solid bars at identical whole-answer timing. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
   },
 ]
 
@@ -78,7 +78,7 @@ export function SectionOpen() {
         <p className="text-base">
           product design and engineering by <span style={{ fontWeight: 600 }}>christopher robin fiore</span>, with claude as design and engineering
           partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026, under the name
-          margin. codex developed the ambient motion study and source-evidence refresh on 9 september; both contributions are credited in the design record.
+          margin. codex developed the skeleton motion study and source-evidence refresh on 9 september; both contributions are credited in the design record.
         </p>
         <p className="text-base mt-1" style={{ color: 'var(--ink-2)' }}>
           portfolio theme: looking to <NatureWord kind="nature">nature</NatureWord>{' '}for questions, then measuring the answers.

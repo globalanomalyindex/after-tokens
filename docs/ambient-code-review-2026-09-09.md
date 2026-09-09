@@ -1,5 +1,7 @@
 # Ambient answer: independent code review
 
+> Historical review of the feathered revision later published at `05914c1`. The current solid material and fresh checks are documented in [the skeleton release verification](skeleton-release-verification-2026-09-09.md). Findings below retain their original scope.
+
 Review date: 9 September 2026. Scope: the working tree based on `47d71a4383693fdeea6e39426524d365f94ac3e6`, before publication. This review covers the answer policy, experimental replay adapter, ambient composition, answer surface, and comparison controls. It is a code and browser-lifecycle review, not a finding that the motion improves readers' experience.
 
 The source-finality path is consistent with the proposed contract: the new policy deliberately holds readable text until actual completion, then releases the exact answer together. The ambient geometry is authored independently of source words and final layout. No new critical or high-severity correctness issue was found in these paths. The five medium findings below have been corrected in the reviewed implementation. Full-page browser and integration validation remain separate release gates.

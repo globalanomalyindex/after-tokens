@@ -1,0 +1,521 @@
+{
+  "verifiedAt": "2026-09-09T20:13:10.569Z",
+  "url": "http://127.0.0.1:3010/after-tokens/",
+  "browser": "148.0.7778.96",
+  "status": 200,
+  "title": "After Tokens: a skeleton motion study for generated text",
+  "canonical": "https://globalanomalyindex.github.io/after-tokens/",
+  "material": "solid-rounded-skeleton-v1",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "assetCount": 20,
+  "assetPrefix": "/after-tokens/",
+  "assets": [
+    "/after-tokens/_next/static/chunks/0mup_me7970d~.css",
+    "/after-tokens/_next/static/chunks/0g8zvqs5y3olw.js",
+    "/after-tokens/_next/static/chunks/0zp96xi7z_xnc.js",
+    "/after-tokens/_next/static/chunks/turbopack-0sczqb1zq00mn.js",
+    "/after-tokens/_next/static/chunks/010s7bf9svisi.js",
+    "/after-tokens/_next/static/chunks/17uumaqzklrpj.js",
+    "/after-tokens/_next/static/chunks/13k-uw4w992~4.js",
+    "/after-tokens/_next/static/chunks/0tu25umnw8wn9.js",
+    "/after-tokens/_next/static/chunks/03~yq9q893hmn.js",
+    "/after-tokens/_next/static/chunks/0dua0gzp8c8_l.js",
+    "/after-tokens/_next/static/chunks/0aypxzo-8xf~e.js",
+    "/after-tokens/_next/static/chunks/0zuj3rzx4gneu.js",
+    "/after-tokens/_next/static/chunks/0k57fqr4whzj1.js",
+    "/after-tokens/_next/static/chunks/170xxjuat25fe.js",
+    "/after-tokens/_next/static/chunks/027~sk17mtywo.js",
+    "/after-tokens/_next/static/chunks/0l06u02fwuej8.js",
+    "/after-tokens/_next/static/chunks/0lsgtd6vv67z1.js",
+    "/after-tokens/_next/static/chunks/0xurs.kb35lhk.js",
+    "/after-tokens/_next/static/chunks/0iswal.3v1yuj.js",
+    "/after-tokens/_next/static/chunks/0npf4mu6x18r0.js"
+  ],
+  "observationMethod": "MutationObserver installed before replay plus requestAnimationFrame; counts are DOM observations, not a frame-rate benchmark.",
+  "layoutDefinition": "Loading bar boxes relative to their composition; final first-glyph positions in the stationary viewport. Final container expansion is reported separately.",
+  "sourceClock": "Observed capture-loop intervals; decorative timing is independent. Not live model inference or end-to-end request latency.",
+  "exactFinalAnswers": [
+    "sleep-tips__lowconf-b128-s32",
+    "sky-blue__lowconf-b128-s32"
+  ],
+  "observations": [
+    {
+      "fixture": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "fixtureSha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "sourceId": "sleep-tips__lowconf-b128-s32",
+      "condition": "reshape",
+      "material": "solid-rounded-skeleton-v1",
+      "durationMs": 4047.567,
+      "clock": "observed capture-loop replay",
+      "samples": 519,
+      "loadingSamples": 489,
+      "loading": {
+        "frame": {
+          "width": 302,
+          "height": 120,
+          "left": 44,
+          "top": 548.953125
+        },
+        "surface": {
+          "width": 302,
+          "height": 149.0625,
+          "left": 44,
+          "top": 548.953125
+        },
+        "fontSize": 15,
+        "bars": [
+          {
+            "box": {
+              "width": 265.75,
+              "height": 10.796875,
+              "left": 0,
+              "top": 8.25
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 193.265625,
+              "height": 10.796875,
+              "left": 0,
+              "top": 28.796875
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 277.828125,
+              "height": 10.796875,
+              "left": 0,
+              "top": 49.640625
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 217.4375,
+              "height": 10.796875,
+              "left": 0,
+              "top": 70.34375
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 241.59375,
+              "height": 10.796875,
+              "left": 0,
+              "top": 90.75
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          }
+        ]
+      },
+      "final": {
+        "text": "1. Create a quiet environment.\n2. Establish a consistent schedule.\n3. Avoid enough caffeine before bed.",
+        "elapsedMs": 4047.567,
+        "frame": {
+          "width": 302,
+          "height": 120,
+          "left": 44,
+          "top": 548.953125
+        },
+        "surface": {
+          "width": 302,
+          "height": 149.0625,
+          "left": 44,
+          "top": 548.953125
+        },
+        "sourceStatus": "complete"
+      },
+      "cueAtFirstAnswer": {
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderColor": "rgb(217, 227, 242)",
+        "boxShadow": "none",
+        "filter": "none",
+        "animationName": "settle-answer-arrive",
+        "cssDuration": "0.26s",
+        "durationMs": 260
+      },
+      "cueRemoved": true,
+      "textUpdates": 1,
+      "failures": [],
+      "maxBarHeightChangeCssPx": 0,
+      "maxInkBoxDisplacementCssPx": 0,
+      "maxFinalGlyphDisplacementCssPx": 0,
+      "matchedFinalGlyphSamples": 480,
+      "opacityValueCount": 241,
+      "clipValueCount": 242,
+      "finalFrameHeightDeltaCssPx": 0,
+      "finalSurfaceHeightDeltaCssPx": 0
+    },
+    {
+      "fixture": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "fixtureSha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "sourceId": "sky-blue__lowconf-b128-s32",
+      "condition": "reshape",
+      "material": "solid-rounded-skeleton-v1",
+      "durationMs": 4105.776000000001,
+      "clock": "observed capture-loop replay",
+      "samples": 525,
+      "loadingSamples": 495,
+      "loading": {
+        "frame": {
+          "width": 302,
+          "height": 120,
+          "left": 44,
+          "top": 524.953125
+        },
+        "surface": {
+          "width": 302,
+          "height": 149.0625,
+          "left": 44,
+          "top": 524.953125
+        },
+        "fontSize": 15,
+        "bars": [
+          {
+            "box": {
+              "width": 265.75,
+              "height": 10.796875,
+              "left": 0,
+              "top": 8.25
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 193.265625,
+              "height": 10.796875,
+              "left": 0,
+              "top": 28.796875
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 277.828125,
+              "height": 10.796875,
+              "left": 0,
+              "top": 49.640625
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 217.4375,
+              "height": 10.796875,
+              "left": 0,
+              "top": 70.34375
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          },
+          {
+            "box": {
+              "width": 241.59375,
+              "height": 10.796875,
+              "left": 0,
+              "top": 90.75
+            },
+            "barStyle": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "0px",
+              "opacity": "0.72",
+              "clipPath": "none"
+            },
+            "inkStyle": {
+              "backgroundColor": "rgb(235, 231, 218)",
+              "backgroundImage": "none",
+              "filter": "none",
+              "maskImage": "none",
+              "webkitMaskImage": "none",
+              "boxShadow": "none",
+              "transform": "none",
+              "borderRadius": "999px",
+              "opacity": "0.2",
+              "clipPath": "inset(0px 0% round 999px)"
+            }
+          }
+        ]
+      },
+      "final": {
+        "text": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+        "elapsedMs": 4105.776000000001,
+        "frame": {
+          "width": 302,
+          "height": 219.375,
+          "left": 44,
+          "top": 524.953125
+        },
+        "surface": {
+          "width": 302,
+          "height": 248.4375,
+          "left": 44,
+          "top": 524.953125
+        },
+        "sourceStatus": "complete"
+      },
+      "cueAtFirstAnswer": {
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderColor": "rgb(217, 227, 242)",
+        "boxShadow": "none",
+        "filter": "none",
+        "animationName": "settle-answer-arrive",
+        "cssDuration": "0.26s",
+        "durationMs": 260
+      },
+      "cueRemoved": true,
+      "textUpdates": 1,
+      "failures": [],
+      "maxBarHeightChangeCssPx": 0,
+      "maxInkBoxDisplacementCssPx": 0,
+      "maxFinalGlyphDisplacementCssPx": 0,
+      "matchedFinalGlyphSamples": 1800,
+      "opacityValueCount": 245,
+      "clipValueCount": 247,
+      "finalFrameHeightDeltaCssPx": 99.375,
+      "finalSurfaceHeightDeltaCssPx": 99.375
+    }
+  ],
+  "videos": [
+    {
+      "name": "skeleton-answer-mobile.webm",
+      "status": 200,
+      "bytes": 428752,
+      "contentType": "video/webm",
+      "sha256": "e53dd3030211e70645b38540bb38f730f2e988dac2f7368a08565474765d4f5d",
+      "expectedSha256": "e53dd3030211e70645b38540bb38f730f2e988dac2f7368a08565474765d4f5d"
+    },
+    {
+      "name": "skeleton-answer-long.webm",
+      "status": 200,
+      "bytes": 516201,
+      "contentType": "video/webm",
+      "sha256": "7cc491e81f5adaa3d0b67bcc0143d118899c71db75683c578b71a2bdc01ea45b",
+      "expectedSha256": "7cc491e81f5adaa3d0b67bcc0143d118899c71db75683c578b71a2bdc01ea45b"
+    }
+  ],
+  "errors": [],
+  "caveats": [
+    "Chromium at an emulated narrow viewport, not physical iPhone testing.",
+    "This publication smoke check verifies delivered artifacts and behavior, not reader preference or causal effects of motion."
+  ]
+}

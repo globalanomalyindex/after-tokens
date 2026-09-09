@@ -14,7 +14,7 @@ import { MARK_SHAPES, SETTLE_RANGES, type MarkShape, type SettleVoice } from '@/
 
 const TOKENS: { key: keyof SettleVoice; range: string; changes: string; keeps: string }[] = [
   { key: 'mark', range: 'tick, dot, dash, square', changes: 'the margin mark and the optional source-inspection strip', keeps: 'the same source state; no mark represents a future word' },
-  { key: 'bloom', range: '0 to 1', changes: 'completion decoration in the available surface treatments', keeps: 'readable text stays steady; a glow cannot certify answer correctness' },
+  { key: 'bloom', range: '0 to 1', changes: 'completion decoration in the available surface treatments', keeps: 'readable text stays steady; a completion cue cannot certify answer correctness' },
   { key: 'onset', range: '0 to 240 ms', changes: 'the ink treatment in the earlier-passage alternatives', keeps: 'the whole answer is readable at finality; onset never delays release' },
   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breath of the margin mark while receiving', keeps: 'rest at every terminal state' },
   { key: 'grain', range: '0 to 1', changes: 'unresolved decoration and provisional ink in the earlier-text alternatives', keeps: 'committed text must clear contrast on its actual background; whole-answer text uses the reading ink' },
@@ -41,7 +41,7 @@ export function SectionVoice() {
     <Section id="voice" title="A voice in the margin">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a voice in the margin</h2>
       <p className="standfirst max-w-3xl">
-        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change answer availability or truth. the ambient motion comparison holds its choreography constant so a palette change is not mistaken for a timing benefit.
+        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change answer availability or truth. the skeleton comparison holds its pulse and final handover constant so a palette change is not mistaken for a timing benefit.
       </p>
       <div className="mt-12 md:mt-16 overflow-x-auto" tabIndex={0} role="region" aria-label="Brand voice tokens, scroll horizontally">
         <table className="w-full text-left border-collapse">

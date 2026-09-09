@@ -19,11 +19,11 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'an active area, without a predicted shape',
-    body: 'five soft bars drift inside a stable answer area. their lengths and positions are authored, independent of future words, token count and line breaks. the bubble keeps its width while the source works. a longer final answer may grow its height.',
+    body: 'five solid rounded bars share a pulse and gently shorten, then return. their height and position stay fixed; their widths are authored independently of future words, token count and line breaks. the bubble keeps its width while the source works. a longer final answer may grow its height.',
   },
   {
     title: 'one readable arrival',
-    body: 'the ambient composition continues between source events. at authoritative finality, all text becomes readable together. a short response around the answer acknowledges completion while its letters hold still. this deliberately withholds words that could have been shown earlier; it is a presentation choice, not faster inference.',
+    body: 'the ambient composition continues between source events. at authoritative finality, all text becomes readable together. a thin outline around the answer acknowledges completion while its letters hold still. this deliberately withholds words that could have been shown earlier; it is a presentation choice, not faster inference.',
   },
   {
     title: 'a tick under the thumb',

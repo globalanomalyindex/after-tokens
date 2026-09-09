@@ -1,0 +1,1109 @@
+{
+  "schemaVersion": 1,
+  "material": "solid-rounded-skeleton-v1",
+  "playbackScale": 0.5,
+  "cyclePeriodMs": 4800,
+  "fingerprint": "2255dac2d773c1197a26c234dc624e6d7433a7fbee85206d3bd4084d5095276a",
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "e638b3b7370f3812b524658d3d25f1a25d228ca475c797b2a7cc4ff268bb0b65"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "4276b28399d181d7bddea92128fd09a3e5bb9263e0139045e314035464b40b29"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "ed8c13591d039ce774d21bb259fb8ccdb15d5767765ec36a069c3ea284f9512f"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "ae3c093381f0f3ef65a5df212a7a295835870a965659ca0a822134cbd0869fd3"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "16e1bd5e74667bbfbcb458924332950c82ce566f94653461fb9bd3e2d150401c"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "997471ad542dc875790dd2e50cd4939d0fb52c8c4948bfcb5d3f2d812e3c5a99"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "scripts/measure-skeleton-motion.mjs",
+      "sha256": "c6647bc5a2ce5525287cfad7899c3cfc1d9e79be2a1441297b77da898e9c1557"
+    },
+    {
+      "file": "scripts/archive-skeleton-motion.mjs",
+      "sha256": "6dbc81a14f147225f2e71c6144b36f55a3bf63cc43edcb7ca85ae82aa099d537"
+    }
+  ],
+  "sourceFixtures": [
+    {
+      "key": "sleep",
+      "id": "sleep-tips__lowconf-b128-s32",
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "clock": "step_wall_ms"
+    },
+    {
+      "key": "sky",
+      "id": "sky-blue__lowconf-b128-s32",
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "clock": "step_wall_ms"
+    },
+    {
+      "key": "random",
+      "id": "sleep-tips__random-b128-s32",
+      "file": "data/experiments/parallel-qwen-random-2026-09-09/compact/sleep-tips__random-b128-s32.json",
+      "sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "clock": "step_wall_ms"
+    }
+  ],
+  "measurementStartedAt": "2026-09-09T20:05:55.097Z",
+  "measuredAt": "2026-09-09T20:07:48.275Z",
+  "url": "http://localhost:3000",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "revision": "05914c1-plus-solid-skeleton-working-tree",
+  "calibrationSource": "sleep-tips__lowconf-b128-s32",
+  "sources": {
+    "sleep-tips__lowconf-b128-s32": {
+      "capturedDurationMs": 4047.567,
+      "capturedFinalityAtMs": 4047.567,
+      "effectiveDurationMs": 8095.134,
+      "effectiveFinalityAtMs": 8095.134,
+      "playbackScale": 0.5,
+      "finality": "contiguous committed EOS"
+    },
+    "sky-blue__lowconf-b128-s32": {
+      "capturedDurationMs": 4105.776000000001,
+      "capturedFinalityAtMs": 4105.776000000001,
+      "effectiveDurationMs": 8211.552000000001,
+      "effectiveFinalityAtMs": 8211.552000000001,
+      "playbackScale": 0.5,
+      "finality": "contiguous committed EOS"
+    },
+    "sleep-tips__random-b128-s32": {
+      "capturedDurationMs": 4559.901,
+      "capturedFinalityAtMs": 4559.901,
+      "effectiveDurationMs": 9119.802,
+      "effectiveFinalityAtMs": 9119.802,
+      "playbackScale": 0.5,
+      "finality": "contiguous committed EOS"
+    }
+  },
+  "metricDefinitions": {
+    "clocks": "Captured duration/finality use the original observed capture-loop intervals. Effective duration/finality divide them by 0.5 because the UI explicitly uses half-speed inspection. Neither is API latency; decorative cycles remain 4800ms.",
+    "visibleInkEdges": "Resolve the actual computed rounded inset (px or %) against each untransformed inner ink rectangle. Left/right/top/bottom are the rounded silhouette geometric extrema; these are not pixel-level antialiasing measurements. The guard rejects transforms, masks, gradients, filters and shadows.",
+    "opacity": "Computed parent opacity, distinct from the constant 0.20 inner ink opacity. Static is 0.86; breathe/reshape must exhibit the full bounded .72-to-1 cycle. Per-bar animation current-time spans must cover at least 4800ms.",
+    "frameGaps": "Observed rAF intervals on this development machine with measurement instrumentation. Diagnostic only; not a physical-device or rendering-cost benchmark.",
+    "glyphDisplacement": "Each final whitespace word first character is measured using a DOM Range relative to its first final frame and the answer surface. Exact full text and one nonempty DOM update are checked independently.",
+    "finalityDelay": "First sampled readable text frame minus the first frame where the UI clock reaches the independently derived causal finality time. Zero is same sampled frame, not zero compositor/input latency.",
+    "heightChange": "Loading height stability is checked independently from the first whole-answer height increase. A final answer can exceed the authored 8em waiting area.",
+    "comparison": "Six short-list calibration cases use three appearances at 390/1380 widths. Two additional narrow reshape sky/random recordings inspect long/failing text. Every case explicitly selects 0.5× inspection in a fresh page; sequential observations are not a randomized reader or performance study."
+  },
+  "caveats": [
+    "No physical iPhone measurements.",
+    "No reader preference, comprehension, trust, dopamine, latency-benefit, or novelty claims.",
+    "Whole-answer presentation withholds earlier readable text.",
+    "Half-speed playback is an explicitly labeled inspection aid, not recorded production latency.",
+    "Clip-path shape animation is not assumed to run exclusively on the compositor."
+  ],
+  "results": [
+    {
+      "name": "390-static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:05:55.380Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 549,
+      "loadingFrames": 487,
+      "finalFrames": 62,
+      "frameGapP95Ms": 18.299999999999272,
+      "frameGapMaximumMs": 18.799999999999272,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0,
+      "visibleInkEdgeDeltaMaximumPx": 0,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0,
+      "opacityDeltaP99": 0,
+      "opacityDeltaMaximum": 0,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 0,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        }
+      ],
+      "matchedFinalGlyphSamples": 976,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8117.699999952316,
+      "firstFinalAtMs": 8117.699999952316,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "390-breathe",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:06:07.253Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 548,
+      "loadingFrames": 487,
+      "finalFrames": 61,
+      "frameGapP95Ms": 16.900000000000546,
+      "frameGapMaximumMs": 18.700000000000728,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0,
+      "visibleInkEdgeDeltaMaximumPx": 0,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0,
+      "opacityDeltaP99": 0.003541999999999934,
+      "opacityDeltaMaximum": 0.0035880000000000356,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 0,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.984999891184,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.984999891184,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.984999891184,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.984999891184,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.984999891184,
+          "observedShapeTimeSpanMs": null
+        }
+      ],
+      "matchedFinalGlyphSamples": 960,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8125.200000095367,
+      "firstFinalAtMs": 8125.200000095367,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "390-reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:06:18.706Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 548,
+      "loadingFrames": 487,
+      "finalFrames": 61,
+      "frameGapP95Ms": 16.80000000000109,
+      "frameGapMaximumMs": 18.700000000000728,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0.2779392562500007,
+      "visibleInkEdgeDeltaMaximumPx": 0.28257898593750497,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0.28257898593750497,
+      "opacityDeltaP99": 0.003541999999999934,
+      "opacityDeltaMaximum": 0.0035600000000000076,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 2.7755575615628914e-17,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.978000020423,
+          "observedShapeTimeSpanMs": 8099.978000020423
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.84,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.978000020423,
+          "observedShapeTimeSpanMs": 8099.978000020423
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.978000020423,
+          "observedShapeTimeSpanMs": 8099.978000020423
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999999,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.978000020423,
+          "observedShapeTimeSpanMs": 8099.978000020423
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.978000020423,
+          "observedShapeTimeSpanMs": 8099.978000020423
+        }
+      ],
+      "matchedFinalGlyphSamples": 960,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8125.500000047683,
+      "firstFinalAtMs": 8125.500000047683,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "1380-static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:06:30.141Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 549,
+      "loadingFrames": 487,
+      "finalFrames": 62,
+      "frameGapP95Ms": 17.09999999999991,
+      "frameGapMaximumMs": 18.699999999999818,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0,
+      "visibleInkEdgeDeltaMaximumPx": 0,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0,
+      "opacityDeltaP99": 0,
+      "opacityDeltaMaximum": 0,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 0,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.86,
+          "opacityMaximum": 0.86,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": null,
+          "observedShapeTimeSpanMs": null
+        }
+      ],
+      "matchedFinalGlyphSamples": 976,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8128.400000095367,
+      "firstFinalAtMs": 8128.400000095367,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "1380-breathe",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:06:41.686Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 548,
+      "loadingFrames": 487,
+      "finalFrames": 61,
+      "frameGapP95Ms": 16.80000000000109,
+      "frameGapMaximumMs": 18.700000000000728,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0,
+      "visibleInkEdgeDeltaMaximumPx": 0,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0,
+      "opacityDeltaP99": 0.003542000000000045,
+      "opacityDeltaMaximum": 0.0035800000000000276,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 0,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.955999932252,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.955999932252,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.955999932252,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.955999932252,
+          "observedShapeTimeSpanMs": null
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 1,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8099.955999932252,
+          "observedShapeTimeSpanMs": null
+        }
+      ],
+      "matchedFinalGlyphSamples": 960,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8127.999999952317,
+      "firstFinalAtMs": 8127.999999952317,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "1380-reshape",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:06:53.251Z",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 549,
+      "loadingFrames": 487,
+      "finalFrames": 62,
+      "frameGapP95Ms": 18.599999999999454,
+      "frameGapMaximumMs": 18.799999999999272,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2430,
+      "ordinaryFrameEdgeSamples": 2430,
+      "visibleInkEdgeDeltaP99Px": 0.2764809249999871,
+      "visibleInkEdgeDeltaMaximumPx": 0.31134670000005826,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0.31134670000005826,
+      "opacityDeltaP99": 0.003605999999999998,
+      "opacityDeltaMaximum": 0.003966000000000025,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 2.7755575615628914e-17,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999997,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8100.072000060976,
+          "observedShapeTimeSpanMs": 8100.072000060976
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000004,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8100.072000060976,
+          "observedShapeTimeSpanMs": 8100.072000060976
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999999,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8100.072000060976,
+          "observedShapeTimeSpanMs": 8100.072000060976
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999996,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8100.072000060976,
+          "observedShapeTimeSpanMs": 8100.072000060976
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000002,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8100.072000060976,
+          "observedShapeTimeSpanMs": 8100.072000060976
+        }
+      ],
+      "matchedFinalGlyphSamples": 976,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8127.299999999999,
+      "firstFinalAtMs": 8127.299999999999,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "390-reshape-sky",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "source": "sky-blue__lowconf-b128-s32",
+      "measuredAt": "2026-09-09T20:07:21.526Z",
+      "clock": {
+        "capturedDurationMs": 4105.776000000001,
+        "capturedFinalityAtMs": 4105.776000000001,
+        "effectiveDurationMs": 8211.552000000001,
+        "effectiveFinalityAtMs": 8211.552000000001,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 556,
+      "loadingFrames": 494,
+      "finalFrames": 62,
+      "frameGapP95Ms": 17.600000000000364,
+      "frameGapMaximumMs": 17.899999999999636,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2465,
+      "ordinaryFrameEdgeSamples": 2465,
+      "visibleInkEdgeDeltaP99Px": 0.2796062250000091,
+      "visibleInkEdgeDeltaMaximumPx": 0.2976928359374966,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0.2976928359374966,
+      "opacityDeltaP99": 0.0036399999999999766,
+      "opacityDeltaMaximum": 0.003750999999999949,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 2.7755575615628914e-17,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8216.625999945774,
+          "observedShapeTimeSpanMs": 8216.625999945774
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.84,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8216.625999945774,
+          "observedShapeTimeSpanMs": 8216.625999945774
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8216.625999945774,
+          "observedShapeTimeSpanMs": 8216.625999945774
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999999,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8216.625999945774,
+          "observedShapeTimeSpanMs": 8216.625999945774
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 8216.625999945774,
+          "observedShapeTimeSpanMs": 8216.625999945774
+        }
+      ],
+      "matchedFinalGlyphSamples": 3660,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 219.375,
+      "finalMinusLastLoadingFrameHeightPx": 99.375,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 248.4375,
+      "finalMinusLastLoadingContainerHeightPx": 99.375,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 8235.000000095368,
+      "firstFinalAtMs": 8235.000000095368,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    },
+    {
+      "name": "390-reshape-random",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "source": "sleep-tips__random-b128-s32",
+      "measuredAt": "2026-09-09T20:07:35.009Z",
+      "clock": {
+        "capturedDurationMs": 4559.901,
+        "capturedFinalityAtMs": 4559.901,
+        "effectiveDurationMs": 9119.802,
+        "effectiveFinalityAtMs": 9119.802,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "frames": 609,
+      "loadingFrames": 548,
+      "finalFrames": 61,
+      "frameGapP95Ms": 17.600000000000364,
+      "frameGapMaximumMs": 17.700000000000728,
+      "frameGapsOver34Ms": 0,
+      "visibleInkEdgeSamples": 2735,
+      "ordinaryFrameEdgeSamples": 2735,
+      "visibleInkEdgeDeltaP99Px": 0.2794673109374912,
+      "visibleInkEdgeDeltaMaximumPx": 0.29797066406251815,
+      "visibleInkEdgeDeltaMaximumUnder34MsPx": 0.29797066406251815,
+      "opacityDeltaP99": 0.0036810000000000453,
+      "opacityDeltaMaximum": 0.003754000000000035,
+      "maximumHeightDriftPx": 0,
+      "withinFrameClipInsetRatioSpreadMaximum": 2.7755575615628914e-17,
+      "withinFrameOpacitySpreadMaximum": 0,
+      "perBar": [
+        {
+          "index": 0,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 9116.644999981112,
+          "observedShapeTimeSpanMs": 9116.644999981112
+        },
+        {
+          "index": 1,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.84,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 9116.644999981112,
+          "observedShapeTimeSpanMs": 9116.644999981112
+        },
+        {
+          "index": 2,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 9116.644999981112,
+          "observedShapeTimeSpanMs": 9116.644999981112
+        },
+        {
+          "index": 3,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8399999999999999,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 9116.644999981112,
+          "observedShapeTimeSpanMs": 9116.644999981112
+        },
+        {
+          "index": 4,
+          "opacityMinimum": 0.72,
+          "opacityMaximum": 1,
+          "visibleWidthRatioMinimum": 0.8400000000000001,
+          "visibleWidthRatioMaximum": 1,
+          "observedPulseTimeSpanMs": 9116.644999981112,
+          "observedShapeTimeSpanMs": 9116.644999981112
+        }
+      ],
+      "matchedFinalGlyphSamples": 180,
+      "finalGlyphMaximumDisplacementPx": 0,
+      "loadingFrameMinimumHeightPx": 120,
+      "loadingFrameMaximumHeightPx": 120,
+      "finalFrameHeightPx": 120,
+      "finalMinusLastLoadingFrameHeightPx": 0,
+      "loadingContainerMinimumHeightPx": 149.0625,
+      "loadingContainerMaximumHeightPx": 149.0625,
+      "finalContainerHeightPx": 149.0625,
+      "finalMinusLastLoadingContainerHeightPx": 0,
+      "nonemptyTextUpdates": 1,
+      "arrivalInsertions": 1,
+      "remainingArrivalNodes": 0,
+      "firstReadableAtMs": 9138.899999976158,
+      "firstFinalAtMs": 9138.899999976158,
+      "observedSourceDeadlineToReadableMs": 0,
+      "prefinalTextFrames": 0,
+      "blurredFadedOrTransformedFinalTextFrames": 0,
+      "horizontalOverflowPx": 0,
+      "exactFinalText": true,
+      "solidMaterialGuardsPassed": true
+    }
+  ],
+  "archivedAt": "2026-09-09T20:07:48.484Z",
+  "artifactManifest": {
+    "file": "data/experiments/skeleton-motion-2026-09-09/manifest.json",
+    "sha256": "e1c181f6c79c4c1fef5369f8fdc53dca2a8c0cac4f0e25861dcbfc0be1a0c3c1"
+  },
+  "rawRecordings": [
+    {
+      "name": "390-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measuredAt": "2026-09-09T20:05:55.380Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/390-static-raw.json.gz",
+      "sha256": "2c117eeace3c1958767e7f78275641b6e448223c8fb6104336df5b20acb5b66d",
+      "bytes": 27184,
+      "uncompressedSha256": "eb2abc0ffacd8c1c204eb8009a9610216e436aa31b79adeec1020e648285fe37",
+      "uncompressedBytes": 3042504,
+      "samples": 549
+    },
+    {
+      "name": "390-breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "breathe",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measuredAt": "2026-09-09T20:06:07.253Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/390-breathe-raw.json.gz",
+      "sha256": "28e0653e8547567dc7b9f97cb18f4a6f7a559f456f214883c2f36f6203f19dc6",
+      "bytes": 34215,
+      "uncompressedSha256": "1150ab45c5502fecfb13db3a1fbdd48341060833fa30f8758b5859bebc0ffa56",
+      "uncompressedBytes": 3083208,
+      "samples": 548
+    },
+    {
+      "name": "390-reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measuredAt": "2026-09-09T20:06:18.706Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/390-reshape-raw.json.gz",
+      "sha256": "325116126325cf9f9122e9d821e3f095a254dcc79b267110cc782857213bb77f",
+      "bytes": 127988,
+      "uncompressedSha256": "19e4649f7fb6d45efa0a08770a7e31cb38d1307a4527697aa17659fca75218e2",
+      "uncompressedBytes": 3272912,
+      "samples": 548
+    },
+    {
+      "name": "1380-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "measuredAt": "2026-09-09T20:06:30.141Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/1380-static-raw.json.gz",
+      "sha256": "23dc7525c2eb54d0d2d5ac201f5983d08c87ac53e695965246ad9dd8bd2da634",
+      "bytes": 26512,
+      "uncompressedSha256": "b661faa2c9dec748593707ccab2ddb608862d012ada7a3d60b693023ebc817c1",
+      "uncompressedBytes": 3051663,
+      "samples": 549
+    },
+    {
+      "name": "1380-breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "breathe",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "measuredAt": "2026-09-09T20:06:41.686Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/1380-breathe-raw.json.gz",
+      "sha256": "3d111be1e445d204b096cb4da938914ace18c600a82f75f18d9c6a8ba38041a8",
+      "bytes": 34879,
+      "uncompressedSha256": "3a9ac5839a4809db009b21e7f8eb897192ea623b5498d49d3f4eff8f746661a4",
+      "uncompressedBytes": 3107529,
+      "samples": 548
+    },
+    {
+      "name": "1380-reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "measuredAt": "2026-09-09T20:06:53.251Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/1380-reshape-raw.json.gz",
+      "sha256": "c319b3d36e5368ba9c466c233d348c01967e521483a4f113a6e18643fc6782fc",
+      "bytes": 131588,
+      "uncompressedSha256": "443bbc2066304c9761349153cbbbcc0d3571261dcd07642779cdf9ad410d0a3e",
+      "uncompressedBytes": 3288749,
+      "samples": 549
+    },
+    {
+      "name": "390-reshape-sky",
+      "source": "sky-blue__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measuredAt": "2026-09-09T20:07:21.526Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/390-reshape-sky-raw.json.gz",
+      "sha256": "64718230c1a25d4fad4a8994fda4f2a19b0712fa681484d0c7377cc182a97676",
+      "bytes": 131982,
+      "uncompressedSha256": "950fdeea8b3accab6ac87736cde556a258b6082d351a54866c2cc6072255b734",
+      "uncompressedBytes": 3426718,
+      "samples": 556
+    },
+    {
+      "name": "390-reshape-random",
+      "source": "sleep-tips__random-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "measuredAt": "2026-09-09T20:07:35.009Z",
+      "file": "data/experiments/skeleton-motion-2026-09-09/390-reshape-random-raw.json.gz",
+      "sha256": "f6fa3a4850bd1e8d644abefee6fca74707ea1142b99a2b345387aed82f739e1b",
+      "bytes": 144194,
+      "uncompressedSha256": "89c91516fc7e9aed3081b91dd5d639548c1c1c420609b60e15af04b1783e7b8d",
+      "uncompressedBytes": 3646940,
+      "samples": 609
+    }
+  ],
+  "videos": [
+    {
+      "name": "390-reshape",
+      "file": "public/study/skeleton-answer-mobile.webm",
+      "url": "study/skeleton-answer-mobile.webm",
+      "sha256": "e53dd3030211e70645b38540bb38f730f2e988dac2f7368a08565474765d4f5d",
+      "bytes": 428752,
+      "description": "Actual browser viewport recording at explicitly selected 0.5× source inspection speed. Loading, scrolling and source output are retained; no generated/interpolated frames or edited text."
+    },
+    {
+      "name": "390-reshape-sky",
+      "file": "public/study/skeleton-answer-long.webm",
+      "url": "study/skeleton-answer-long.webm",
+      "sha256": "7cc491e81f5adaa3d0b67bcc0143d118899c71db75683c578b71a2bdc01ea45b",
+      "bytes": 516201,
+      "description": "Actual browser viewport recording at explicitly selected 0.5× source inspection speed. Loading, scrolling and source output are retained; no generated/interpolated frames or edited text."
+    }
+  ]
+}

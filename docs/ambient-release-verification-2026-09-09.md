@@ -1,5 +1,7 @@
 # Ambient answer: release verification
 
+> Historical verification for the feathered material at `05914c1`. The current solid bars have their own [release verification](skeleton-release-verification-2026-09-09.md) and [measurement report](skeleton-motion-validation-2026-09-09.json). Results below retain their original scope.
+
 9 September 2026. This checkpoint covers the implemented ambient composition and whole-answer revision based on `47d71a4383693fdeea6e39426524d365f94ac3e6`. It records completed local checks. The commit-specific GitHub Actions deployment and the delivered live-verification report establish publication status; this document does not anticipate a successful deployment.
 
 ## Completed checks
