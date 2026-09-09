@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-09T20:13:10.569Z",
+  "verifiedAt": "2026-09-09T20:19:52.697Z",
   "url": "http://127.0.0.1:3010/after-tokens/",
   "browser": "148.0.7778.96",
   "status": 200,
@@ -13,7 +13,7 @@
   "assetCount": 20,
   "assetPrefix": "/after-tokens/",
   "assets": [
-    "/after-tokens/_next/static/chunks/0mup_me7970d~.css",
+    "/after-tokens/_next/static/chunks/05wmm.85dihcg.css",
     "/after-tokens/_next/static/chunks/0g8zvqs5y3olw.js",
     "/after-tokens/_next/static/chunks/0zp96xi7z_xnc.js",
     "/after-tokens/_next/static/chunks/turbopack-0sczqb1zq00mn.js",
@@ -263,7 +263,7 @@
       "maxInkBoxDisplacementCssPx": 0,
       "maxFinalGlyphDisplacementCssPx": 0,
       "matchedFinalGlyphSamples": 480,
-      "opacityValueCount": 241,
+      "opacityValueCount": 238,
       "clipValueCount": 242,
       "finalFrameHeightDeltaCssPx": 0,
       "finalSurfaceHeightDeltaCssPx": 0
@@ -489,8 +489,8 @@
       "maxInkBoxDisplacementCssPx": 0,
       "maxFinalGlyphDisplacementCssPx": 0,
       "matchedFinalGlyphSamples": 1800,
-      "opacityValueCount": 245,
-      "clipValueCount": 247,
+      "opacityValueCount": 240,
+      "clipValueCount": 246,
       "finalFrameHeightDeltaCssPx": 99.375,
       "finalSurfaceHeightDeltaCssPx": 99.375
     }

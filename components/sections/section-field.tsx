@@ -16,7 +16,7 @@ export function SectionField() {
         <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/skeleton-motion-validation-2026-09-09.json">measurement and scope</a>
       </p>
       <p className="readout mt-4 leading-relaxed max-w-4xl" style={{ color: 'var(--muted)' }}>
-        fresh verification · 268 unit/component tests across 40 files and 45 browser checks passed across chromium, webkit and iphone 14 emulation.{' '}
+        fresh verification · 327 unit/component cases across 40 files and 45 browser checks passed across chromium, webkit and iphone 14 emulation.{' '}
         <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/skeleton-release-verification-2026-09-09.md">build and release checks</a>. actual browser recordings at half-speed inspection:{' '}
         <a className="underline underline-offset-4" href={`${assetBase}/study/skeleton-answer-mobile.webm`}>list</a>{' · '}
         <a className="underline underline-offset-4" href={`${assetBase}/study/skeleton-answer-long.webm`}>long answer</a>.{' '}

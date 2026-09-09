@@ -95,7 +95,7 @@ All eight observations showed one exact completed-text arrival, no pre-final tex
 
 The maximum changing contour-edge displacement between sampled frames was 0.3113467 px. The harness resolves the visible rounded inset against the ink rectangle instead of treating its unchanged layout rectangle as evidence of no motion. These sequential observations are geometry diagnostics, not a reader study, a rendering-cost benchmark or physical iPhone validation. Clip-path animation is not assumed to run only on the compositor.
 
-Fresh verification passed 268 unit/component tests across 40 files and 45 browser checks across Chromium, WebKit and iPhone 14 emulation against a fresh normal production build. Normal and Pages production builds passed. Exported-page replay, solid-material, completion-outline and video-hash checks passed in the [release record](skeleton-release-verification-2026-09-09.md). The previous feathered report remains untouched and explicitly historical.
+Fresh verification passed 327 unit/component cases across 40 files and 45 browser checks across Chromium, WebKit and iPhone 14 emulation against a fresh normal production build. Normal and Pages production builds passed. Exported-page replay, solid-material, completion-outline and video-hash checks passed in the [release record](skeleton-release-verification-2026-09-09.md). The previous feathered report remains untouched and explicitly historical.
 
 | Gate | Required check |
 | --- | --- |

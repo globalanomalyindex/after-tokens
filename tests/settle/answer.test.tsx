@@ -74,15 +74,16 @@ describe('the gathering surface', () => {
     expect(container.querySelector('.settle-page')?.textContent).toBe('Ready. ')
   })
 
-  it('renders every recorded final answer exactly under all three policies', async () => {
+  // Each independent recording gets its own deadline and failure identity.
+  // Preserve all 60 × 3 DOM comparisons without one aggregate wall-clock limit.
+  it.each(TRACE_IDS)('renders %s exactly under all three policies', async (id) => {
     const { container, rerender } = render(<SettleAnswer state={createSettleState()} motion={false} />)
-    for (const id of TRACE_IDS) {
-      const trace = await loadTrace(id)
-      for (const policy of ['word', 'sentence', 'paragraph'] as const) {
-        const state = settleEnd(replayTrace(trace, 'recorded'), policy)
-        rerender(<SettleAnswer state={state} runId={`${id}:${policy}`} motion={false} />)
-        expect(container.querySelector('.settle-page')?.textContent, `${id}:${policy}`).toBe(trace.answer)
-      }
+    const trace = await loadTrace(id)
+    const replay = replayTrace(trace, 'recorded')
+    for (const policy of ['word', 'sentence', 'paragraph'] as const) {
+      const state = settleEnd(replay, policy)
+      rerender(<SettleAnswer state={state} runId={`${id}:${policy}`} motion={false} />)
+      expect(container.querySelector('.settle-page')?.textContent, `${id}:${policy}`).toBe(trace.answer)
     }
-  }, 20000)
+  })
 })

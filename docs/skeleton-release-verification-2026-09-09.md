@@ -69,3 +69,14 @@ The reproducible publication check is [scripts/verify-skeleton-pages.mjs](../scr
 Independent integrity checks verified all runtime/source fingerprints, the report manifest, eight compressed raw logs and two videos, including decompression hashes. The 12 historical report/raw/video artifacts checked by the measurement reviewer remain byte-for-byte unchanged. An actual new recording was decoded and visually inspected at three time positions.
 
 This document establishes completed local validation, not a prediction of successful publication. The commit-specific GitHub Actions result and the separate live-verification report in the delivery establish deployment status. Human reader benefits, physical-device behavior and priority of the proposed treatment remain open research questions.
+
+
+## CI corpus-test organization
+
+The [first publication attempt](https://github.com/globalanomalyindex/after-tokens/actions/runs/34399872929) stopped before deployment: the existing aggregate corpus DOM test exceeded its 20-second deadline at 20,017 ms on the runner. The other 267 tests passed, and no text-equality assertion failed. This was the same aggregate deadline that had proved sensitive to local contention.
+
+The test now declares one sequential named case per recording, each still checking all three legacy policies. All 180 exact-text comparisons remain. Each case uses the ordinary per-test deadline instead of 60 independent recordings sharing one 20-second deadline. A replay is built once per trace and each policy still starts with fresh reducer state. Cleanup remains per case; no concurrent shared-DOM execution was added. Existing browser source-switch tests retain explicit whole-answer transition coverage.
+
+The complete unit suite passed with **327 cases across 40 files** in 10.66 seconds. The total changed from 268 because one aggregate case became 60 named cases; this is clearer reporting, not increased corpus coverage. The motion implementation, source fixtures, eight observations and all measurement fingerprints remain unchanged. The earlier 268-case runs above retain their actual historical counts.
+
+After the test organization change, lint, TypeScript, normal production build and Pages production build passed again. The final exported page was replayed again with the current writing; both exact outputs, the solid material, the once-only outline and both video hashes passed. The linked export report records that fresh check.
