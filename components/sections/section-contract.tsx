@@ -6,16 +6,16 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 // The reading contract: ten rules, three policies, and what finality means.
 
 const RULES: string[] = [
-  'nothing is drawn that the source has not committed: no final text, no reserved widths, no map of which words matter, no forecast of length.',
-  'a word is drawn only when it is complete. a token whose successor is uncommitted is held, because it may be the first piece of a longer word.',
-  'text on the page never changes, moves or reflows, except once: when a sentence closes it sets, its words pressing a twentieth of an em and coming to rest where they were written as the page&rsquo;s ink rises through their letterforms; after the set their shapes and places never change. the carved zone after the page reflows as blank space, drafts and pieces become words, and every change of width is a slide.',
+  'released text requires source commitments or an explicitly final snapshot. guesses remain visibly provisional. no hidden final answer, final widths, salience map or forecast of length is used.',
+  'a complete-word mark requires committed pieces and boundaries. committed fragments may appear before that boundary, but cannot be released as complete words.',
+  'released text keeps its baseline and readable shape while later events arrive. a local decorative response acknowledges a new release. candidate reservations stay fixed; committed content can still change provisional line layout, and large reflows remain a limitation.',
   'the page grows by whole passages under a policy: each word, each sentence, or each paragraph. no timeout relabels a fragment as complete; finality releases the exact remainder.',
-  'out-of-order text appears only after the page, never inside it. an open position is reserved blank space, and every position is a reel: the source&rsquo;s own guess for it is a smear blurred past reading below a floor and a draft above it, never a word, and its prior, the guess it makes at four or more open positions at once and holds while it stands at two, is blank; and a guess the source drops rolls up and out as the next rolls in beneath it; a committed piece is drawn as a piece; a word rolls in last and stops the reel where it will stand, in the secondary ink, only after every piece of it has committed. nothing committed is drawn as a guess, nothing guessed is drawn as committed, and no guess reaches the page. nothing travels across the answer.',
+  'out-of-order material appears only after released text. a fixed reservation holds each open position; a fitting source guess is visibly provisional, and other unresolved positions carry nonlexical decoration. committed pieces are fixed source text and complete words need committed boundaries. guessed whitespace has no layout authority, and no guess reaches the released page.',
   'an exact length is claimed only when the prefix reaches a committed end token. before that, a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.',
   'revisable snapshots stay off the page until one is explicitly final. a later revision keeps the prior page and offers a review and apply action.',
   'source complete, source stopped, source error, presentation paused and revision available are distinct states, named in the margin.',
   'a brand changes what cells, marks and onsets look like and how they move. it never changes when text becomes available or is released.',
-  'reduced motion removes the breath, the bloom, the build, the reel&rsquo;s roll, and the set, and changes nothing else.',
+  'reduced motion and motion off remove decorative and spatial animation without changing source availability, release boundaries or final text. paused and hidden surfaces pause their activity; terminal states rest.',
 ]
 
 const FINALITY: { dt: string; dd: string }[] = [
@@ -47,9 +47,8 @@ export function SectionContract() {
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
           the raw prefix on the left is what a naive renderer would draw: every committed token in order, half-words and all. the surface
           on the right draws the same events under the contract. change the policy to move the boundary; change what follows the page to
-          see the carved field, the in-order text alone, or what the surface holds back when a product wants stillness above all. the page&rsquo;s stillness is the one rule the reading literature
-          argues for directly: the eye samples the next word before it lands there (<DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm>),
-          and text that changes there costs a reader time.
+          see the carved field, the in-order text alone, or what the surface holds back when a product wants stillness above all. reading research motivates protecting the reader&rsquo;s place: the eye samples the next word before it lands there (<DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm>),
+          and studies of unstable text and rereading motivate preserving earlier passages. they do not validate this particular motion treatment.
         </p>
         <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison />
       </div>

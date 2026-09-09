@@ -90,7 +90,7 @@ describe('the replay adapter', () => {
   it('labels every pace honestly', () => {
     expect(paceLabel('recorded')).toMatch(/recorded/)
     expect(paceLabel(40)).toMatch(/synthetic/)
-    expect(paceLabel({ scale: 10 })).toMatch(/1\/10/)
+    expect(paceLabel({ scale: 10 })).toBe('10× recorded playback speed')
     expect(replayTrace(heron, { scale: 10 }).durationMs).toBeCloseTo(replayTrace(heron, 'recorded').durationMs / 10, 6)
     expect(() => replayTrace(heron, 0)).toThrow(RangeError)
     expect(() => replayTrace(heron, { scale: 0 })).toThrow(RangeError)
@@ -134,4 +134,3 @@ describe('the spins', () => {
     for (const key of Object.keys(mid.spins)) expect(mid.tokens[Number(key)]).toBeUndefined()
   })
 })
-

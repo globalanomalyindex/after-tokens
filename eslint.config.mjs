@@ -16,5 +16,5 @@ export default defineConfig([
       'react-hooks/immutability': 'off',
     },
   },
-  globalIgnores(['.next/**', 'out/**', 'coverage/**', 'playwright-report/**', 'test-results/**']),
+  globalIgnores(['.next/**', '.claude/**', 'out/**', 'coverage/**', 'playwright-report/**', 'test-results/**']),
 ])

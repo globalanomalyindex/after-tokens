@@ -782,83 +782,15 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   user-select: text;
-  /* a word in the zone is built from letter spans and on the page it is
-     one run of text; without kerning and ligatures the two measure the
-     same, so a sentence's release moves nothing */
+  /* Keep shaping consistent across source-range spans. */
   font-kerning: none;
   font-variant-ligatures: none;
 }
 .settle-page::selection, .settle-page ::selection { background: color-mix(in oklab, currentColor 22%, transparent); }
-/* The set. A sentence closing is the one moment the page moves, and it
-   moves once: each released word presses down by a twentieth of an em and
-   comes to rest exactly where it was written, in a ripple across the
-   sentence (9 ms a word, at most twelve words deep), while the page's ink
-   fills its letterforms from the bottom up with a glint of the accent at
-   the rising edge, and a glow of the accent around the whole passage's
-   letterforms cools over 720 ms. The fill is a copy of the word laid exactly over it and
-   revealed by a clip; at the end the copy hides and the word's own color
-   snaps to the page's ink, so nothing is drawn twice. After the set the
-   word never moves, changes or reweights again. */
-.settle-passage {
-  display: inline;
-  animation: settle-set-glow 720ms var(--ease-out-strong) both;
-}
-@keyframes settle-set-glow {
-  0%   { filter: drop-shadow(0 0 0.32em color-mix(in oklab, var(--accent, currentColor) 55%, transparent)); }
-  100% { filter: drop-shadow(0 0 0 transparent); }
-}
-.settle-w {
-  display: inline-block;
-  color: var(--settle-ink-2);
-  animation: settle-ink calc(var(--settle-onset) * 1.9) var(--ease-out-expo) both;
-  animation-delay: calc(min(var(--k, 0), 12) * 9ms);
-}
-/* the two inks stacked in one gradient behind the letterforms with the
-   glint between them, twice the word's height, slid upward over the set so
-   the page's ink rises through the glyphs; at the end the gradient is
-   dropped and the word is plain text in the page's ink. Discrete
-   properties hold their first value until the last keyframe, which is what
-   keeps the clip in place for the whole fill. */
-@keyframes settle-ink {
-  0% {
-    transform: translateY(0.05em);
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 47%, color-mix(in oklab, var(--accent, currentColor) 60%, var(--settle-ink, currentColor)) 47% 53%, var(--settle-ink-2) 53% 100%);
-    background-size: 100% 200%;
-    background-position: 0 0;
-    background-clip: text;
-    -webkit-background-clip: text;
-  }
-  99.9% {
-    transform: none;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to top, var(--settle-ink, currentColor) 0 47%, color-mix(in oklab, var(--accent, currentColor) 60%, var(--settle-ink, currentColor)) 47% 53%, var(--settle-ink-2) 53% 100%);
-    background-size: 100% 200%;
-    background-position: 0 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-  }
-  100% {
-    transform: none;
-    color: var(--settle-ink, currentColor);
-    -webkit-text-fill-color: var(--settle-ink, currentColor);
-    background-image: none;
-  }
-}
-.settle-forming {
-  color: var(--settle-ink-2);
-  user-select: none;
-}
-.settle-empty {
-  color: color-mix(in oklab, currentColor 46%, transparent);
-  user-select: none;
-}
+/* Released text stays in the same flow as the forming words. Its ink
+   changes once; readable glyphs never blur, scale, or take a letter stagger. */
+.settle-passage { display: inline; }
 
-/* The field. n columns for the bound; a run of end cells is one floor whose
-   edges move as the run grows, so the line is always exactly as wide as the
-   request and the answer's extent reads as a floor settling in. */
 .settle-field {
   position: relative;
   display: grid;
@@ -948,204 +880,105 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle-field[data-status="complete"] .settle-floor { opacity: 0.26; }
 .settle-field[data-still] .settle-cell::before, .settle-field[data-still] .settle-floor { animation: none; transition: none; }
 
-/* An available word appears once, in the secondary ink, on a short opacity
-   ramp; a batch pours in from its first fresh word. It never moves, blurs
-   or reweights, and a word already drawn never animates again. */
-@keyframes settle-form {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* Gathering: candidate geometry is a reservation, not a guess at the
+   final answer. Only committed text changes native line layout. */
+.settle-unit { position: relative; }
+.settle-ink {
+  display: inline;
+  max-inline-size: 100%;
+  vertical-align: baseline;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--settle-ink-2);
+  transition: color var(--settle-onset) ease-out;
 }
-
-/* The zone. Every position after the page, in order, as what the source has
-   made of it. Every cell is an inline block on the same box: 1.25em tall on
-   the baseline, so a blank, a spin, a draft, a piece and a word all sit
-   alike.
-   Every change of width is a transition, set by the surface, so the line
-   slides and never jumps. A cell clips sideways at its box, so a sliding
-   width and a row rolling out never add to the line, and a little outside
-   it where the browser allows, so a glow at the edge of a word is not
-   cut; a clip path a little above and below the box lets a row rolling in
-   from below the line emerge from the cell without cutting descenders. */
-.settle-zone { display: inline; }
-.settle-g { white-space: nowrap; }
-.settle-cw, .settle-cz, .settle-slot, .settle-page-end {
+.settle-ink[data-spatial="true"] { display: inline-block; }
+.settle-ink[data-released="true"] { color: var(--settle-ink, currentColor); }
+/* A translucent product bubble is a third ground beyond the voice's two
+   base palettes. Keep committed glyphs in the stronger primary ink there;
+   an anchored dotted underline carries the unreleased state without dimming. */
+.frame .settle-ink { color: var(--settle-ink, currentColor); }
+.frame .settle-ink:not([data-released="true"]) {
+  text-decoration: underline dotted color-mix(in oklab, currentColor 55%, transparent);
+  text-underline-offset: .18em;
+  text-decoration-thickness: 1px;
+}
+.settle-candidate {
   position: relative;
   display: inline-block;
-  height: 1.25em;
-  line-height: 1.25em;
+  inline-size: 2.8ch;
+  block-size: 1em;
+  vertical-align: -0.12em;
   white-space: nowrap;
-  overflow-x: clip;
-  overflow-y: visible;
-  overflow-clip-margin: 0.3em;
-  clip-path: inset(-0.14em -0.3em);
-}
-.settle-cw, .settle-cz { vertical-align: baseline; color: var(--settle-ink-2); }
-.settle-slot, .settle-page-end { vertical-align: -0.27em; }
-.settle-page-end { width: 0; }
-/* The reel. Whatever a position shows is a row, and a change of text is a
-   new row: it rolls in from below the line, blurred, and comes to rest;
-   the row it replaces, the same element it always was, rolls on up and
-   out, blurred, and is let go. Rows are transitions, so a guess that
-   changes again mid-roll turns smoothly from where it is. A guess rolling
-   up out of the stream, the guesses the model drops rolling past, and the
-   committed word rolling in last are the model's own sequence at that
-   position, in its own order, at its own pace: below the floor the reel
-   spins as smears, at the floor a guess comes into focus, and the word
-   stops it. */
-.settle-cz-text {
-  display: inline-block;
-  transition: transform 460ms var(--ease-out-expo), filter 460ms var(--ease-out-expo), opacity 460ms var(--ease-out-strong);
-  @starting-style { transform: translateY(0.9em); filter: blur(3px); }
-}
-.settle-cz-text[data-past] {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translateY(-0.95em);
-  filter: blur(2.5px);
-  opacity: 0;
-  transition-duration: 460ms, 460ms, 240ms;
-  animation: none;
+  user-select: none;
   pointer-events: none;
 }
-/* the written word: it rolls in and builds in place. The row rises out of
-   the cell the way a reel stops: it overshoots, drops back past the line
-   and comes to rest, glowing in the accent for a moment; each letter comes into focus from a blur on its own beat, from
-   the middle of the word outward (--i is the letter's rank in that order),
-   in two passes, rough then fine, so a word is constructed rather than
-   typed. The letters are in the secondary ink at full opacity on an
-   unchanged ground from the first frame, so a written word clears the
-   contrast floor at every moment; the softness is the blur, which changes
-   no color. Never a change of width from the build itself; the width is
-   the slide. */
-.settle-cw { transition: filter 460ms var(--ease-out-strong); }
-.settle-cw .settle-cz-text { animation: settle-snap 640ms var(--ease-out-expo) both; }
-/* a word whose text was already standing as the draft or the piece lands
-   where it is: the reel stops, with the same rise, overshoot and glow and
-   no roll; the cell's blur clears as the ghost becomes ink */
-.settle-cw .settle-cz-text[data-land] { animation: settle-land 520ms var(--ease-out-expo) both; }
-@keyframes settle-land {
-  0%   { transform: translateY(0.06em); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 60%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 50%, transparent); }
-  50%  { transform: translateY(-0.05em); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 35%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 25%, transparent); }
-  76%  { transform: translateY(0.02em); text-shadow: 0 0 0.2em color-mix(in oklab, var(--accent, currentColor) 18%, transparent), 0 0 0.04em color-mix(in oklab, var(--accent, currentColor) 12%, transparent); }
-  100% { transform: none; text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
+.settle-draft {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  color: var(--settle-ink-2);
+  opacity: 0;
+  white-space: nowrap;
 }
-.settle-l { animation: settle-letter 460ms var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 34ms); }
-@keyframes settle-letter {
-  0%   { filter: blur(2.2px); }
-  45%  { filter: blur(1px); }
-  70%  { filter: blur(1px); }
-  100% { filter: blur(0); }
+.settle-draft::before { content: attr(data-text); }
+.settle-unit[data-state="draft"] .settle-draft[data-fits="true"] { opacity: .58; }
+/* This persistent, nonlexical layer breathes without changing typography.
+   Four phase groups prevent a left-to-right wave or independent flicker. */
+.settle-ambient {
+  position: absolute;
+  inset: 0.62em 0.3ch 0.1em;
+  border-radius: 50%;
+  background: currentColor;
+  filter: blur(2.5px);
+  opacity: .12;
+  pointer-events: none;
+  animation: settle-breathe 5600ms ease-in-out var(--formation-phase, 0ms) infinite;
 }
-@keyframes settle-snap {
-  0%   { transform: translateY(0.9em); filter: blur(1.5px); text-shadow: 0 0 0.5em color-mix(in oklab, var(--accent, currentColor) 60%, transparent), 0 0 0.12em color-mix(in oklab, var(--accent, currentColor) 50%, transparent); }
-  56%  { transform: translateY(-0.075em); filter: blur(0); text-shadow: 0 0 0.35em color-mix(in oklab, var(--accent, currentColor) 35%, transparent), 0 0 0.08em color-mix(in oklab, var(--accent, currentColor) 25%, transparent); }
-  78%  { transform: translateY(0.028em); filter: blur(0); text-shadow: 0 0 0.2em color-mix(in oklab, var(--accent, currentColor) 18%, transparent), 0 0 0.04em color-mix(in oklab, var(--accent, currentColor) 12%, transparent); }
-  100% { transform: none; filter: blur(0); text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
-}
-/* the draft: the source's current guess, in a ghost of the secondary ink
-   that sharpens with its probability (--sure runs from the floor to
-   certainty, from a blur of 1.5px to sharp, so a draft comes into focus in
-   visible steps as the model's confidence rises across the steps). A
-   change of mind is a turn of the reel. */
-.settle-cz[data-state="draft"] {
-  opacity: calc(0.3 + 0.5 * var(--sure, 0));
-  filter: blur(calc((1 - var(--sure, 0)) * 1.5px));
-  transition: opacity 460ms var(--ease-out-strong), filter 460ms var(--ease-out-strong);
-}
-/* a draft's letters breathe once they have rolled in: a slow rise and fall
-   of presence, out of step from one draft to the next (--k is the
-   position's scrambled phase), so the unresolved part of the answer is
-   never still and never blinks. Beside a word that has just settled, the
-   drafts lift for a beat: the recorded neighbor lift, drawn. */
-.settle-cz[data-state="draft"] .settle-cz-text:not([data-past]) {
-  animation: settle-draft-breath 4200ms var(--ease-in-out-strong) calc(460ms + var(--k, 0) * 530ms) infinite alternate;
-}
-@keyframes settle-draft-breath {
-  0%   { opacity: 1; }
-  100% { opacity: 0.78; }
-}
-.settle-cz[data-state="draft"][data-lift] { animation: settle-lift 640ms var(--ease-out-expo) both; }
-@keyframes settle-lift {
-  0%   { opacity: 1; filter: blur(0); transform: translateY(-0.03em); }
-  100% { opacity: calc(0.3 + 0.5 * var(--sure, 0)); filter: blur(calc((1 - var(--sure, 0)) * 1.5px)); transform: none; }
-}
-.settle[data-paused="true"] .settle-cz-text { animation-play-state: paused; }
-/* the piece: a committed part of a word that is not complete. Its letters
-   are facts, in the secondary ink at full weight, because committed letters
-   are letters people will read; the snap is what marks the word closing. */
-.settle-cz[data-state="piece"] { opacity: 1; }
-/* the spin: the reel below the floor. The source's guess at an open
-   position at any probability, drawn as a smear of the secondary ink
-   blurred past reading (the letters are transparent and only their blurred
-   shadow shows), weighted by its probability up to the floor, so wherever
-   the model is guessing the reel visibly turns and nothing below the floor
-   is drawn as legible text. It clears the floor by coming into focus as a
-   draft. */
-.settle-cz[data-state="spin"] {
-  width: var(--settle-slot-w);
-  /* its rows are out of the flow, so it sits on the line the way a blank does */
-  vertical-align: -0.27em;
+.settle-unit[data-state="draft"] .settle-ambient { inset-block: .25em .05em; background: none; }
+.settle-unit[data-state="draft"] .settle-ambient::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   color: transparent;
-  text-shadow: 0 0 0.28em var(--settle-ink-2);
-  opacity: calc(0.15 + 0.3 * var(--p, 0));
-  transition: opacity 320ms var(--ease-out-strong);
+  text-shadow: 0 0 .18em var(--settle-ink-2);
 }
-/* a smear keeps the slot's width whatever it says: its rows are centered
-   in the slot and cut at its sides, so the reel below the floor turns
-   without moving the line, and it turns on a longer, softer roll than a
-   word. The centering is the translate property, which composes with the
-   roll's transform. */
-.settle-cz[data-state="spin"] .settle-cz-text {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  translate: -50% 0;
-  transition-duration: 620ms, 620ms, 620ms;
-  transition-timing-function: var(--ease-out-strong), var(--ease-out-strong), var(--ease-out-strong);
-  @starting-style { transform: translateY(0.55em); filter: blur(2px); }
+.settle-unit[data-state="draft"] .settle-draft:not([data-fits="true"]) + .settle-ambient {
+  inset: .62em .3ch .1em;
+  background: currentColor;
 }
-
-/* blank space: an open position reserves a token's width (4ch: a content
-   token renders 2.6 of these units wide on average across the recordings,
-   so a word landing in its space arrives without pushing the line
-   forward), and so does a
-   position where the source only guesses the answer ends (the guess is
-   kept for the reducer; it draws no mark, because the answer's extent is
-   told by the cut). The committed end is one mark; positions past it close
-   to nothing, and the zone shortens from the tail as the length is decided. */
-.settle-slot {
-  width: var(--settle-slot-w);
-  margin: 0;
-  transition: width 520ms var(--ease-out-strong), margin 520ms var(--ease-out-strong), opacity 300ms var(--ease-out-strong);
+.settle-unit[data-state="draft"] .settle-draft:not([data-fits="true"]) + .settle-ambient::before { content: none; }
+@keyframes settle-breathe {
+  0%, 100% { opacity: .12; }
+  50% { opacity: .20; }
 }
-/* the refocus: a cell that changed lines comes back into focus where it
-   landed, a short blur in and no change of color, so a wrap change reads
-   as the word re-forming there instead of teleporting. Set by the surface
-   on the cell, for 320 ms. */
-.settle-zone [data-moved] { animation: settle-refocus 320ms var(--ease-out-strong) both; }
-@keyframes settle-refocus {
-  0%   { filter: blur(2.4px); }
-  100% { filter: blur(calc((1 - var(--sure, 1)) * 1.5px)); }
-}
-/* a line break, committed or guessed, is the message's shape arriving before its words */
-.settle-nl { display: block; height: 0; }
-.settle-slot[data-state="end"] { width: 0.5ch; margin-left: 0.2ch; }
-.settle-slot[data-state="end"]::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  width: 1px;
-  height: 0.78em;
-  background: var(--settle-ink-2);
-  opacity: 0.45;
-}
-.settle-slot[data-state="beyond"] { width: 0; margin: 0; }
-
-/* In the legend only, a blank slot shows its extent and nothing moves. */
-.settle-legend .settle-slot[data-state="open"] { outline: 1px dashed color-mix(in oklab, currentColor 28%, transparent); outline-offset: -1px; margin: 0 0.15ch; }
-.settle-legend .settle-cz::after, .settle-legend .settle-cw, .settle-legend .settle-cz-text { animation: none; }
+.settle[data-active="false"] .settle-ambient { animation-play-state: paused; }
+.settle[data-status="complete"] .settle-ambient,
+.settle[data-status="stopped"] .settle-ambient,
+.settle[data-status="error"] .settle-ambient,
+.settle[data-status="revision"] .settle-ambient,
+.settle[data-motion="off"] .settle-ambient { animation: none; opacity: 0; }
+.settle[data-motion="off"] .settle-ink { transition: none; }
+.settle[data-motion="off"] *,
+.settle[data-motion="off"] *::before,
+.settle[data-motion="off"] *::after { animation: none !important; transition: none !important; }
+.settle[data-active="false"] .settle-mark::before,
+.settle[data-active="false"] .settle-cell::before,
+.settle[data-active="false"] .settle-floor { animation-play-state: paused; }
+.settle[data-paused="true"] *,
+.settle[data-paused="true"] *::before,
+.settle[data-paused="true"] *::after,
+.settle[data-visible="false"] *,
+.settle[data-visible="false"] *::before,
+.settle[data-visible="false"] *::after { transition: none !important; animation-play-state: paused !important; }
+.settle-unit[data-state="end"] .settle-candidate { inline-size: .5ch; }
+.settle-unit[data-state="end"] .settle-ambient { animation: none; opacity: .25; }
+/* The legend remains a static key for the source states. */
+.settle-legend .settle-slot { display: inline-block; width: 2.8ch; height: 1em; outline: 1px dashed currentColor; opacity: .35; }
+.settle-legend .settle-cw, .settle-legend .settle-cz { color: var(--settle-ink-2); }
+.settle-legend .settle-cz[data-state="draft"] { opacity: .58; }
 
 /* The concept phone's slot: a card that appears with the wait and leaves with the answer. */
 .concept-slot {
@@ -1155,7 +988,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   border: 0.6px solid color-mix(in oklab, var(--ink) 12%, transparent);
   transition: opacity 400ms var(--ease-out-strong), transform 400ms var(--ease-out-expo);
 }
-.concept-slot[data-shown="false"] { opacity: 0; transform: translateY(6px); pointer-events: none; }
+.concept-slot[data-shown="false"] { visibility: hidden; opacity: 0; transform: translateY(6px); pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .concept-slot { transition: none; } }
 
 /* The margin. */
@@ -1229,6 +1062,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .exposure-word[data-kind="partial"] { color: color-mix(in oklab, currentColor 55%, transparent); letter-spacing: 0.08em; }
 
 @media (prefers-reduced-motion: reduce) {
+  .settle-ambient { animation: none !important; opacity: 0 !important; }
+  .settle-ink { transition: none !important; }
   .settle-w, .settle-cw, .settle-l, .settle-cz, .settle-cz-text, .settle-slot, .settle-slot::after, .settle-passage { animation: none !important; transition: none !important; }
   .settle-cw, .settle-l, .settle-cz-text:not([data-past]) { opacity: 1; filter: none; transform: none; }
   .settle-cz[data-state="draft"] { filter: none; }

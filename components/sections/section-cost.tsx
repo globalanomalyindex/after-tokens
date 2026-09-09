@@ -26,8 +26,7 @@ export function SectionCost() {
         <Reveal className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each sentence</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the first sentence lands after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine and
-            a fraction of that on a production model. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. and for
+            the first sentence lands after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine. production latency depends on the model, sampler and hardware. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. and for
             {' '}{formingPct} percent of the run that waiting text is in view, forming, so the page is still while the process is not hidden.
           </p>
         </Reveal>
@@ -35,7 +34,7 @@ export function SectionCost() {
           <h3 className="text-xl font-bold tracking-tight leading-tight">each word</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
             the honest typewriter. the first word lands at {w.medianFirstPassageAt} steps and the only wait is the word rule itself, a mean of
-            {' '}{w.meanWordSafeLag?.toFixed(1)} steps: the price of never drawing a piece of a word. the page moves as the prefix moves, in bursts.
+            {' '}{w.meanWordSafeLag?.toFixed(1)} steps: the price of keeping incomplete words off the released page. release follows the word-safe prefix in bursts.
           </p>
         </Reveal>
         <Reveal delay={160} className="rule pt-6">
@@ -52,13 +51,13 @@ export function SectionCost() {
           <p>
             margin held the in-order text invisible until its sentence closed and paid the whole hold in blankness. settle releases the page on
             the same boundary at the same moment, so the page&rsquo;s wait is identical, and draws the held text dim beneath it, so the wait is
-            not blank. the forming text is real, in order, and never changes once drawn; what it lacks is only the status of a place to read.
+            not blank. the forming text is committed and in order, but its passage is not yet complete. people may read it anyway; its provisional placement still needs to be comfortable and clear.
           </p>
           <p className="mt-4">
-            the clock here is a 0.6B model at {TRACE_NUMBERS.msPerStepRecorded} ms a step on a laptop. a production diffusion model runs its steps
-            an order of magnitude faster, which shrinks every second in the table without changing a single shape: the bursts, the holes and
-            the end settling first are properties of the sampler, and the surface renders the same events at any tempo. the stages on this page
-            play at the recorded clock unless a control says otherwise, and every stage names the clock it is on.
+            the clock here is a 0.6B model at {TRACE_NUMBERS.msPerStepRecorded} ms a step on a laptop. it is the capture&rsquo;s
+            forward-pass clock, not end-to-end response latency or a production benchmark. a faster replay preserves this recording&rsquo;s
+            events; another model or sampler may change both their timing and their pattern. the stages play at the recorded clock
+            unless a control says otherwise.
           </p>
         </div>
       </div>

@@ -13,7 +13,7 @@ export type Pace = 'recorded' | number | { scale: number }
 export function paceLabel(pace: Pace): string {
   if (pace === 'recorded') return 'recorded forward-pass clock'
   if (typeof pace === 'number') return `synthetic clock, ${pace} ms per step`
-  return `recorded clock at 1/${pace.scale}`
+  return `${pace.scale}× recorded playback speed`
 }
 
 /**

@@ -12,6 +12,8 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 // release timing is the contract's, whatever the decoration does.
 
 export type ReplayControls = {
+  /** Identity of this playback run, including explicit restarts. */
+  runId: string
   state: SettleState
   /** the position the latest event committed, where the cursor goes; null when the latest event was not a commit */
   focus: number | null
@@ -130,5 +132,5 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     setElapsedMs(elapsedRef.current)
   }, [durationMs])
 
-  return { state, focus, elapsedMs, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
+  return { runId: `${replay?.id ?? 'empty'}:${run}`, state, focus, elapsedMs, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
 }

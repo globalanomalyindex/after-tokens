@@ -19,15 +19,15 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'the shape first',
-    body: 'the reserved space is the message\u2019s shape: its length, carved down from the tail as the model commits its end; its paragraphs and its list, drawn as breaks the moment they are committed or confidently guessed. what is still undecided is a bank of reels, each spinning through the model\u2019s own guesses as smears until one comes into focus, so the bubble is never blank and never noisy. a reader sees how big the answer is and how it is built before a word of it is final.',
+    body: 'the reservations show which source positions remain open. their geometry is an estimate, not a preview of final line lengths or list structure. candidate changes stay inside them; committed content can establish real breaks. the bubble keeps a fixed width while the source works.',
   },
   {
     title: 'a draft you can watch become the answer',
-    body: 'the ghost words are the model\u2019s own current guesses, legible only above a floor and only as guesses, breathing while they wait, lifting beside a word that has just settled. every position is a reel: below the floor it spins through the model\u2019s guesses as smears, a guess the model drops rolls up and out as the next rolls in beneath it, and the word it commits rolls in last and stops the reel with a bounce. what the reader watches is the answer going from rough draft to polish to final, in the model\u2019s order, at several places at once, with nothing invented; the margin names the phase it is in.',
+    body: 'fitting source drafts hold still in provisional ink while a persistent decorative breath marks the unresolved interval. complete committed words become readable immediately, with one small local response. several positions can develop together when the source supplies them together; no left-to-right ripple is added.',
   },
   {
     title: 'a tick under the thumb',
-    body: 'a light tap when a word snaps in, a firmer one when a sentence sets, stillness at completion, nothing while the model is only deciding the length. on the web, android answers the vibration api and this frame uses it; ios needs core haptics in a native app. a concept until a native build carries it.',
+    body: 'this web concept requests a short vibration when a passage releases, where the browser supports it. it does not implement a separate tap for every word. native iPhone haptics remain a separate design and engineering task; the browser concept makes no iPhone haptic claim.',
   },
   {
     title: 'the slot',
@@ -35,7 +35,7 @@ const NOTES: { title: string; body: string }[] = [
   },
   {
     title: 'time on app, with a guardrail',
-    body: 'watching something unfold is why people stay. it is also the labor illusion: seeing work raises the value people put on a good result, and turns on a poor one. so the study measures whether a calmer, busier surface gets believed too easily, and time on app is a signal here, never the score.',
+    body: 'whether a visible process makes the wait feel better is a hypothesis. service-process research shows that perceived value can change with visible work, including negatively when results disappoint. the study measures comfort and mistaken trust; time on app is not a success criterion.',
   },
 ]
 
@@ -72,9 +72,10 @@ export function SectionConcept() {
                 <div className="self-end max-w-[88%] rounded-2xl rounded-br-md px-3.5 py-2.5 text-[14px] leading-snug" style={{ background: 'var(--surface-tint)', border: '0.6px solid color-mix(in oklab, var(--ink) 12%, transparent)' }}>
                   {trace?.prompt ?? 'Explain to a child why the sky is blue.'}
                 </div>
-                <div className="self-start max-w-[92%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-[14px] leading-snug" style={{ background: 'color-mix(in oklab, var(--ink) 4%, transparent)', border: '0.6px solid color-mix(in oklab, var(--ink) 12%, transparent)' }}>
+                <div className="self-start w-[92%] max-w-[92%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-[14px] leading-snug" style={{ background: 'color-mix(in oklab, var(--ink) 4%, transparent)', border: '0.6px solid color-mix(in oklab, var(--ink) 12%, transparent)' }}>
                   <SettleAnswer
                     state={clock.state}
+                    runId={clock.runId}
                     focus={clock.focus}
                     paused={clock.paused}
                     status={false}
@@ -94,7 +95,7 @@ export function SectionConcept() {
               </div>
             </div>
           </BrandProvider>
-          <div className="mt-3 flex items-baseline justify-between gap-4 w-full max-w-[340px]">
+          <div className="order-first mb-3 flex items-baseline justify-between gap-4 w-full max-w-[340px]">
             <span className="text-sm" style={{ color: 'var(--ink-2)' }}>a phone, after tokens voice · the slot below the answer</span>
             <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label="Replay the phone">
               <span aria-hidden="true" className="replay-glyph">↻</span>

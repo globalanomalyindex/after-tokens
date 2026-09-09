@@ -1,0 +1,93 @@
+{
+  "title": "After Tokens: controlled narrow-viewport geometry audit",
+  "date": "2026-09-09",
+  "status": "Engineering observation of one recorded trace; not reader validation or a physical iPhone benchmark.",
+  "environment": {
+    "browser": "Chromium",
+    "browserVersion": "148.0.7778.96",
+    "automation": "Playwright",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "surface": "#hook .settle",
+    "source": "weather__random-b32",
+    "sourceClock": "recorded forward-pass clock, 1x",
+    "observationMs": 18000,
+    "scrollOrResizeDuringSample": false
+  },
+  "conditions": {
+    "baseline": {
+      "revision": "55ff1759b6371f294352881858443445ad7c9fbb",
+      "measuredAt": "2026-09-09T17:32:15.934Z",
+      "summary": {
+        "frames": 1079,
+        "matchedPositions": 22645,
+        "p95Px": 1.796875,
+        "p99Px": 51.90625,
+        "maximumPx": 297.38708507455505,
+        "identicalCommittedGlyphSamples": 60433,
+        "identicalCommittedGlyphP99Px": 2.484375,
+        "identicalCommittedGlyphMaximumPx": 276.53115111875275,
+        "releasedGlyphSamples": 44962,
+        "releasedGlyphMaximumPx": 0.18679332733154297,
+        "lineChanges": 99,
+        "remounts": 47,
+        "framesWithBlurredOrFadedCommittedCells": 852,
+        "maximumReleasedMovementPx": 0.18679285049438477,
+        "releasedSamples": 44962,
+        "frameGapsOver34Ms": 0,
+        "finalStatus": "complete",
+        "horizontalOverflowPx": 0
+      }
+    },
+    "after": {
+      "revision": "working implementation on 2026-09-09 after release-animation cancellation; before final editorial and accessibility refinements",
+      "measuredAt": "2026-09-09T17:33:00.203Z",
+      "summary": {
+        "frames": 1072,
+        "matchedPositions": 83129,
+        "p95Px": 0.0771484375,
+        "p99Px": 5.281943371643623,
+        "maximumPx": 280.5645053287936,
+        "identicalCommittedGlyphSamples": 75931,
+        "identicalCommittedGlyphP99Px": 2,
+        "identicalCommittedGlyphMaximumPx": 280.5645053287936,
+        "releasedGlyphSamples": 58432,
+        "releasedGlyphMaximumPx": 0,
+        "lineChanges": 66,
+        "remounts": 0,
+        "framesWithBlurredOrFadedCommittedCells": 0,
+        "maximumReleasedMovementPx": 0,
+        "releasedSamples": 58432,
+        "frameGapsOver34Ms": 0,
+        "finalStatus": "complete",
+        "horizontalOverflowPx": 0
+      }
+    }
+  },
+  "metricDefinitions": {
+    "identicalCommittedGlyph": "First nonspace character DOM Range of committed ink, matched on source-position/character-offset key and identical current text between successive animation frames. Coordinates are relative to the answer root.",
+    "releasedGlyph": "The same matched glyph only when marked released in both samples. The old renderer uses its released passage spans.",
+    "positionBox": "First client rectangle of a source-position unit or its current text layer; includes drafts, register and text changes. These are diagnostic geometry metrics, not identical-word movement.",
+    "remounts": "A matched source position has a different DOM element in the next observed frame.",
+    "blurredOrFadedCommittedFrames": "At least one observed committed cell or ink layer has computed opacity below 0.99 or blur above 0.2 px in that frame.",
+    "frameGaps": "Observed requestAnimationFrame gaps above 34 ms. Machine-specific diagnostics; not a general performance claim."
+  },
+  "conclusions": [
+    "The new implementation produced zero observed source-position remounts and zero blurred/faded committed-text frames in this sample.",
+    "Released glyphs remained stationary across 58,432 matched samples after the release-animation cancellation fix.",
+    "The largest identical committed-glyph displacement was 280.5645053287936 px after versus 276.53115111875275 px before. The worst provisional wrap was not improved.",
+    "The p99 displacement was 2 px after versus 2.484375 px before; differing glyph/sample populations prevent treating that difference as a controlled reader or aggregate performance result.",
+    "Both sampled recordings completed with no horizontal page overflow. This does not establish results for every trace or a physical iPhone."
+  ],
+  "caveats": [
+    "Single run per condition, one trace, one browser and one viewport.",
+    "The two implementations use different word/token grouping, so glyph sample counts differ; inspect both counts alongside quantiles.",
+    "Zero released movement is supported by nonzero released samples; it is not an empty-selector result.",
+    "Earlier exploratory 12-second and four-surface runs are excluded from this comparison. The old embedded preview used 2x playback, so it is not a matched-clock comparator.",
+    "Large provisional cross-line changes remain. No claim that jitter is eliminated or that reading comfort, comprehension, dopamine or trust improved.",
+    "Raw per-frame logs are retained outside the repository; this file contains their exact summaries."
+  ],
+  "reproduce": "MOTION_CASE=narrow-hook MOTION_DURATION_MS=18000 node scripts/measure-settle-motion.mjs <local-url> <output.json>"
+}

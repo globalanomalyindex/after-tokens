@@ -26,12 +26,13 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
     loadTrace(traceId).then((t) => { if (!cancelled) setTrace(t) }).catch(() => {})
     return () => { cancelled = true }
   }, [traceId])
-  const replay = useMemo(() => (trace ? replayTrace(trace, { scale: 2 }) : null), [trace])
+  const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLElement>(0.3)
   const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
   const answer = (
     <SettleAnswer
       state={clock.state}
+      runId={clock.runId}
       focus={clock.focus}
       paused={clock.paused}
       status={false}
@@ -45,7 +46,7 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
       <BrandProvider brand={brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
         <figure ref={ref as never} className="m-0 flex-1 flex flex-col">{children(answer, trace?.prompt ?? '', run)}</figure>
       </BrandProvider>
-      <figcaption className="mt-3 flex items-baseline justify-between gap-4">
+      <figcaption className="order-first mb-3 flex items-baseline justify-between gap-4">
         <span className="text-sm" style={{ color: 'var(--ink-2)' }}>{title}</span>
         <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label={`Replay ${title}`}>
           <span aria-hidden="true" className="replay-glyph">↻</span>
@@ -59,7 +60,7 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
 const bubble = (side: 'you' | 'assistant', children: ReactNode, key?: string | number) => (
   <div
     key={key}
-    className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-[14px] leading-snug ${side === 'you' ? 'self-end rounded-br-md' : 'self-start rounded-bl-md'}`}
+    className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-[14px] leading-snug ${side === 'you' ? 'self-end rounded-br-md' : 'self-start w-[88%] rounded-bl-md'}`}
     style={{
       background: side === 'you' ? 'var(--surface-tint)' : 'color-mix(in oklab, var(--ink) 4%, transparent)',
       border: '0.6px solid color-mix(in oklab, var(--ink) 12%, transparent)',
@@ -76,7 +77,7 @@ export function SectionPreviews() {
       <p className="standfirst max-w-3xl">
         the surface in three products: a desktop assistant thread, a search answer, a phone. each frame runs the
         reducer over a real recording on its brand&rsquo;s own surface and voice, in the system type an assistant
-        actually uses. the answers are the model&rsquo;s, unedited, at half the recorded pace; the earlier
+        actually uses. the answers are the model&rsquo;s, unedited, at the recorded forward-pass pace; the earlier
         turns in the thread are authored context.
       </p>
       <div className="mt-12 md:mt-16 grid gap-6 md:grid-cols-3 items-stretch">

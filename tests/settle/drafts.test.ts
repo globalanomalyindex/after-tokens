@@ -68,7 +68,7 @@ describe('the drafts the site loads', () => {
     const sorted = [...polish].sort((a, b) => a - b)
     const median = sorted.length % 2 ? sorted[sorted.length >> 1]! : (sorted[(sorted.length >> 1) - 1]! + sorted[sorted.length >> 1]!) / 2
     expect(median).toBe(at.medianPolishSteps)
-  })
+  }, 20000) // Full-corpus audit; allow for concurrent browser verification.
 
   it('cites a commit lifting its neighbors far more than the rest', () => {
     for (const cfg of Object.values(derived.byConfig)) {

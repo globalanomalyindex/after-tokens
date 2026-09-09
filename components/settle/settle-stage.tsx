@@ -65,8 +65,8 @@ function useTrace(id: TraceId | null): TraceCompact | null {
 
 const PACES: { id: string; label: string; pace: Pace }[] = [
   { id: 'recorded', label: 'recorded', pace: 'recorded' },
-  { id: 'half', label: '1/2 of recorded', pace: { scale: 2 } },
-  { id: 'slow', label: 'twice recorded', pace: { scale: 0.5 } },
+  { id: 'half', label: '0.5× inspection', pace: { scale: 0.5 } },
+  { id: 'slow', label: '2× stress', pace: { scale: 2 } },
 ]
 const POLICIES: { id: Policy; label: string }[] = [
   { id: 'word', label: 'each word' },
@@ -129,6 +129,7 @@ export function SettleStage({
     setSourceId(`trace:${traceIdFor(keep ? promptId : first, next)}`)
   }, [promptId, sources])
 
+  const [motionEnabled, setMotionEnabled] = useState(true)
   const state = clock.state
   const paused = clock.paused
   const stageText = brands[brand].stageText
@@ -156,6 +157,15 @@ export function SettleStage({
             <span>{traceId ? CONFIG_LABELS[config] : 'synthetic clock'}</span>
           </div>
           {label && <p className={`settle-prompt mt-4 ${compact ? 'text-[13px]' : 'text-[14px]'} leading-snug`}>{label}</p>}
+          <div className="mt-4 flex items-center justify-between gap-4 flex-wrap readout" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>
+            <span className="min-w-0 truncate" title={provenance}>{traceId ? paceLabel(pace) : 'synthetic clock'} · <span className="settle-clock">{(clock.elapsedMs / 1000).toFixed(1)} s</span></span>
+            <span className="flex items-center gap-4 flex-wrap">
+              <button type="button" className="replay-btn cursor-pointer" aria-pressed={!motionEnabled} onClick={() => setMotionEnabled((value) => !value)}>motion {motionEnabled ? 'on' : 'off'}</button>
+              {!compact && <button type="button" className="replay-btn cursor-pointer" onClick={clock.seekToEnd} disabled={clock.finished} aria-label="seek the recording to its end">to the end</button>}
+              <button type="button" className="replay-btn cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished} aria-label={clock.running ? 'pause the replay' : 'resume the replay'}>{clock.running ? 'pause' : 'resume'}</button>
+              <button type="button" className="replay-btn cursor-pointer inline-flex items-center gap-1.5" onClick={clock.restart} aria-label="replay the recording"><span aria-hidden="true" className="replay-glyph">↻</span> replay</button>
+            </span>
+          </div>
           <div className={`settle-compare mt-5 ${compact ? '' : 'md:mt-6'}`} data-two={comparison && !compact}>
             {comparison && !compact && (
               <div className="min-w-0">
@@ -170,30 +180,24 @@ export function SettleStage({
               {comparison && !compact && <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>settle · the page takes each {policy}</p>}
               <SettleAnswer
                 state={state}
+                runId={clock.runId}
                 focus={clock.focus}
                 voice={voice}
                 forming={forming}
                 paused={paused}
+                motion={motionEnabled}
                 onApplyRevision={clock.applyRevision}
                 className={`${compact ? 'text-[14px]' : 'text-[15px] md:text-base'} leading-relaxed`}
                 style={{ minHeight: compact ? '7.5rem' : '9rem' }}
               />
             </div>
           </div>
-          <div className="mt-auto pt-5 flex items-center justify-between gap-4 flex-wrap readout" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>
-            <span className="min-w-0 truncate" title={provenance}>{traceId ? paceLabel(pace) : 'synthetic clock'} · <span className="settle-clock">{(clock.elapsedMs / 1000).toFixed(1)} s</span></span>
-            <span className="flex items-center gap-4">
-              {!compact && <button type="button" className="replay-btn cursor-pointer" onClick={clock.seekToEnd} disabled={clock.finished} aria-label="seek the recording to its end">to the end</button>}
-              <button type="button" className="replay-btn cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished} aria-label={clock.running ? 'pause the replay' : 'resume the replay'}>{clock.running ? 'pause' : 'resume'}</button>
-              <button type="button" className="replay-btn cursor-pointer inline-flex items-center gap-1.5" onClick={clock.restart} aria-label="replay the recording"><span aria-hidden="true" className="replay-glyph">↻</span> replay</button>
-            </span>
-          </div>
         </BrandProvider>
         {readout && <div className="min-w-0">{readout({ policy, forming, pace, brand })}</div>}
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · the smears and the ghost words are the model\u2019s own guesses, blurred past reading below a floor and never words; every position is a reel; a word rolls in once every piece of it is in; the page sets when its passage closes' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{forming === 'carve' ? ' · unresolved positions breathe in fixed reservations; fitting source guesses are visibly provisional; committed words arrive together where the source supplies them, and passage release settles the ink' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
         </p>
       )}
     </div>

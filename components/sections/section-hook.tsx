@@ -5,13 +5,9 @@ import { Reveal } from '@/components/motion/reveal'
 import { SettleStage } from '@/components/settle/settle-stage'
 import { TRACE_NUMBERS } from '@/lib/traces/findings'
 
-// The first screen: the title, the argument in one line, and beside it the
-// thing itself: a real recording, replayed through the reducer. The random
-// sampler commits in no particular order inside each block, so words build
-// here and there at once, the model's own guesses spin on their reels as
-// smears, come into focus as drafts, roll off when dropped, and the
-// sentences set onto the page as they close. Nothing in the stage was
-// authored.
+// A real trajectory drives the first screen through the causal reducer.
+// Local source updates may happen together; layout and motion are authored.
+// Neither text nor availability is choreographed from the eventual answer.
 
 export function SectionHook() {
   return (
@@ -25,8 +21,7 @@ export function SectionHook() {
           <p className="standfirst mt-8 max-w-[34ch]">wait for the water to clear.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
             a concept case study on how an answer from a diffusion language model should reach a reader: only what
-            the model has committed, on a page that holds still, with the shape of the message carved out before its
-            words and the model&rsquo;s own drafts in view, ghosted until they commit. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
+            the model has committed, on a page that holds still, with unresolved positions reserved and fitting source drafts in view. the space is an estimate, not a lookup of the final answer. an idea explored in a working prototype, grounded in {TRACE_NUMBERS.trajectories} recorded sampler
             runs and an audit of the version before it. nothing here is measured on a reader.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>

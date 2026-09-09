@@ -41,21 +41,9 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
-    // The field is aria-hidden by design: state, not text, and the status
-    // words carry its meaning. In the zone, a draft is the source's own
-    // guess, drawn as a ghost on purpose and exempted as incidental,
-    // provisional text: the answer never depends on it, the page and the
-    // margin carry everything the contract promises, and a reader who
-    // cannot see a ghost loses nothing that is promised. Every committed
-    // letter in the zone (a piece, a written word, at every frame of its
-    // snap) is held to the floor. A spin is the reel below the floor, a
-    // smear blurred past reading by design. A row the reel has dropped is the ghost
-    // of a guess leaving its position, gone within half a second. The
-    // register legend's samples are decorative illustrations of those
-    // same registers.
-    .exclude('.settle-zone .settle-cz[data-state="draft"]')
-    .exclude('.settle-zone .settle-cz[data-state="spin"]')
-    .exclude('.settle-zone .settle-cz-text[data-past]')
+    // The field and legend are decorative status illustrations. Current
+    // draft decoration is aria-hidden and generated from data attributes;
+    // every committed ink span remains in the contrast audit.
     .exclude('.settle-legend')
     .exclude('.settle-field')
     .exclude('.pointer-events-none[aria-hidden="true"]')

@@ -2,6 +2,16 @@
 
 Three passes made this piece. Each is recorded here with what it got right, what it got wrong, and what the next pass kept. The first two records are preserved in full below the third, because the argument of the case study is the sequence.
 
+## Motion revision: gather and settle (9 September 2026)
+
+This revision supersedes the reel and width-motion descriptions in passes 4i–4l below. The historical entries remain an account of what was tried, not the current implementation contract.
+
+The user’s phone feedback identified the remaining problem: words and lines still jumped, multiple effects made formation feel fast and blocky, and the unresolved interval needed activity without a left-to-right reveal. Inspecting the implementation found changing inline widths, candidate-dependent parent groups, guessed newlines, remounted passage nodes and a breathing delay that candidate updates often restarted. The three product previews also ran at twice recorded pace despite copy saying half pace.
+
+The revision keeps permanent source-token children through candidate changes, word completion and release. Candidates reserve 2.8ch independent of their spelling; only complete guesses that fit are legible. Guessed whitespace has no layout authority. Committed letters appear immediately, and one local afterglow acknowledges word or passage completion. The persistent decorative breath uses regional phases and ends at a terminal state. Small necessary moves are coordinated; large reflows still take the authoritative position immediately and remain a limitation to measure. The phone bubbles hold their width and the product previews use the recorded clock. Final browser QA moved replay controls above growing content, made the cost and voice tables keyboard-scrollable, and replaced the low-contrast secondary mix in translucent product bubbles with primary committed ink and an anchored dotted underline until release. Dark stages retain secondary ink.
+
+The reading contract, source events and recorded corpus remain the authority. Independent list-item finality, a production model endpoint, physical iPhone performance and reader outcomes are not established. The research and current code decisions are recorded in [the motion implementation handoff](motion-direction-2026-09-09.md). The case study and evidence ledger distinguish the implemented prototype from the still-unrun reader study. Earlier draft-display statistics now label eligibility before the added width-fit gate.
+
 ## Pass three: Settle (7 September 2026)
 
 ### 1. The question, restated

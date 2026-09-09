@@ -3,8 +3,8 @@ import { SETTLE, type PolicySummary, type SettlePolicyKey } from '@/lib/traces/f
 // The cost of each policy on every recording, from the generated report.
 // Steps are completed forward passes on the uniform clock; seconds are the
 // raw forward-pass clock of the capture machine (about 119 ms per step on
-// an M3 for a 0.6B model), which a production model would divide by ten or
-// more. Neither is end-to-end latency, and none of this is a reader outcome.
+// an M3 for a 0.6B model). This is not a production-speed comparison,
+// end-to-end latency, or a reader outcome.
 
 const POLICIES: SettlePolicyKey[] = ['word', 'sentence', 'paragraph']
 
@@ -33,7 +33,7 @@ export function CostTable({ scope = 'all60', className = '' }: { scope?: Scope; 
   const s = u('sentence')
   return (
     <figure className={`m-0 ${className}`}>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Release policy costs, scroll horizontally">
         <table className="w-full text-left border-collapse">
           <caption className="text-left readout pb-4" style={{ color: 'var(--muted)' }}>
             {scope === 'all60' ? `all ${s.traces} recordings, ${s.nonemptyTraces} with content` : `the ${s.traces} curated recordings`} · three policies · the reducer&rsquo;s cost, measured
@@ -58,8 +58,8 @@ export function CostTable({ scope = 'all60', className = '' }: { scope?: Scope; 
         </table>
       </div>
       <figcaption className="readout leading-relaxed mt-4 measure" style={{ color: 'var(--muted)' }}>
-        a step is one completed forward pass. seconds are the capture machine&rsquo;s raw forward-pass clock for a 0.6B model, which a production model
-        divides by ten or more; neither is end-to-end latency. characters are UTF-16 code units including whitespace. these are properties of the
+        a step is one completed forward pass. seconds are the capture machine&rsquo;s raw forward-pass clock for a 0.6B model,
+        not end-to-end latency or a production speed estimate. characters are UTF-16 code units including whitespace. these are properties of the
         reducer on this corpus, never reader outcomes.
       </figcaption>
     </figure>

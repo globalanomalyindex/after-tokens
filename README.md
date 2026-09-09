@@ -8,18 +8,18 @@ an independent product design and engineering case study on how an answer from a
 
 > **the question.** how do we make diffusion text rendering clean, simple, beautiful, and brand-able, so that the same answer feels better to read through presentation alone?
 
-> **the answer.** what the model has committed, drawn as committed, and what it is only guessing, drawn as a guess. an answer has two surfaces and a margin. the page holds released passages as ordinary, still, selectable text, and when a sentence closes the page sets: the words press and come to rest, the ink rises through them, and a glow cools. the field is carved into the text after it: an open position reserves blank space, an open position the model already has a confident guess for shows that guess as a draft that sharpens with its probability, a committed piece of a word stands as the piece it is, every position is a reel, so the model's guesses below the floor turn there as smears blurred past reading, the guesses it drops roll up and out as the next roll in beneath them, and a word rolls in last and stops the way a casino reel stops, with a bounce, building where it will stand, dim, the moment every piece of it is in, in the sampler's own order, each letter coming into focus on its own beat from the middle of the word outward, while the zone shortens from the tail as the model decides the length. a line break, committed or confidently guessed, is drawn as a break, so the message's shape arrives before its words. between them, the forming text: committed, in-order, word-complete text waiting for its passage to close. the margin says what the source is doing and what phase the answer is in, beside a mark that is the brand's.
+> **the answer.** put progress into the words while protecting the reader’s place. Settle distinguishes the source’s guesses, committed text and released passages. Unresolved regions carry a small ambient breath; newly complete words and passages acknowledge their own arrival; finished text rests. Several regions can develop together when the source supplies them together. The renderer never looks ahead at the final answer.
 
 | | |
 | --- | --- |
 | **role** | product design, interaction design, prototyping, front-end engineering |
-| **built** | a pure reducer and its ten-rule contract, a replay adapter that cannot read the answer, the carved field with the model's own drafts in it, the reel of the model's guesses at every open position, spinning below the floor as smears and stopping on the committed word, words that build in place letter by letter, a set when a sentence closes, a five-token brand voice with invariants, three live product frames, a playground, a cost instrument over sixty recorded trajectories, a causal audit of the version before, a corrected literature ledger, a study design |
+| **built** | a pure reducer and its reading contract, a causal replay adapter, a field derived from recorded source state, word and passage completion feedback, a five-token brand voice, three product frames and a phone concept, a playground, a cost instrument over sixty recorded trajectories, a causal audit, a corrected literature ledger, a study design |
 | **status** | working prototype. the cost of each release policy is measured on every recording; every output is exact; nothing committed is drawn as a guess, nothing guessed is drawn as committed, and no guess reaches the page. no reader has been measured. |
 | **stack** | next.js, typescript, tailwind, vitest, playwright, axe-core |
 
 ## the wrong shape
 
-a diffusion model holds every position of an answer open at once and commits them in the order it is sure of them. the typewriter draws the answer in an order the sampler did not use and puts half-formed words under the reader. a reveal that choreographs the answer, which this case study shipped on september 6, needs the final words, their widths and a map of which matter, and a live source has none of those.
+masked diffusion can predict many positions together. the recorded samplers commit positions irreversibly, sometimes inside a sequential block schedule. prediction, commitment and semantic completeness are different events; revisable samplers need an explicit finality contract. the typewriter draws the answer in an order the sampler did not use and puts half-formed words under the reader. a reveal that choreographs the answer, which this case study shipped on september 6, needs the final words, their widths and a map of which matter, and a live source has none of those.
 
 ## the audit
 
@@ -31,16 +31,16 @@ an independent audit of that build by a second agent (codex, 7 september 2026, u
 
 1. nothing is drawn as the source's text that the source has not committed. the one thing an uncommitted position may draw is the source's own current guess for it, drawn as a guess, and no guess ever reaches the page.
 2. a word is drawn only when it is complete: the next committed token begins with whitespace, the token ends with whitespace, or the next position is a committed end.
-3. text on the page never changes, moves or reflows, with one exception: when a sentence closes it sets, each released word pressing down by a twentieth of an em and coming to rest exactly where it was written, in a ripple across the sentence, while the page's ink fills its letterforms from the bottom up with a glint of the accent at the rising edge and a glow around the passage cools; after the set a word never moves, changes or reweights; the zone after the page reflows as blanks, drafts and pieces become words, each position's width sliding from what it last drew to what it draws now; an available word is drawn in a secondary ink that clears 4.5:1 on both of the brand's grounds.
+3. released text stays still while later source events arrive. completion feedback changes decoration, not its baseline, width or readable shape. provisional layout never uses an unseen final word or its width. an available word uses ink that clears the contrast floor on its actual background. dark stages use secondary ink; translucent product bubbles use primary ink and a dotted underline until release.
 4. the page grows by whole passages: each word, each sentence, or each paragraph. no timeout relabels a fragment; finality releases the exact remainder.
-5. out-of-order text appears only after the page, never inside it: an open position reserves a token's width of blank space, and every position is a reel, so the model's guess below the floor turns there as a smear blurred past reading, drawn only for a piece with letters, while a guess that stands at four or more open positions at once is its prior and is blank, and holds while it stands at two, and a guess the model drops rolls up and out as the next rolls in beneath it; a confident guess is drawn as a draft in a ghost that sharpens with its probability; a committed piece of a word is drawn as the piece it is; a line break, committed or confidently guessed, is drawn as a break; and a word is written where it will stand, in the secondary ink, only after every piece of it has committed, rolling in last and stopping the way a casino reel stops, with an overshoot and a bounce, building in place letter by letter from the middle of the word outward, or landing where it is with the same bounce when its own draft already had it right. nothing below the floor is drawn as legible text, nothing travels across the answer, and no build precedes a commitment.
+5. out-of-order material appears only after the released page. open positions reserve space; the source’s current prediction is visibly provisional; committed pieces are fixed source text; whole words appear only after their pieces and boundaries commit. a repeated prior is suppressed. a guessed line break is not final structure. neither source activity nor draft probability is a correctness score.
 6. an exact length is claimed only when the prefix reaches a committed end token; a committed end token anywhere bounds the answer to before it, and nothing past it is drawn.
 7. snapshots stay off the page until one is explicitly final; a revision keeps the prior page and offers a review and apply action.
 8. complete, stopped, error, paused and revision available are distinct states, named in the margin.
 9. a brand changes appearance and motion envelopes, never availability.
-10. reduced motion removes the breath, the bloom, the onset, the reel's roll, the bounce, the build, the drafts' lift and breath, and the set's press, glint and glow, and nothing else; rows stand where they are, a smear stands where it is at its weight, the page's ink arrives at once, and words are drawn sharp at once; what is drawn, and when, is identical.
+10. reduced motion and the motion-off control remove decorative movement without changing source availability, passage release or final output. pausing pauses the presentation; terminal states rest.
 
-the spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpowers/specs/2026-09-07-settle-design.md).
+the original reading spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpowers/specs/2026-09-07-settle-design.md). the current motion rationale, implementation decisions and validation boundaries are in [`docs/motion-direction-2026-09-09.md`](docs/motion-direction-2026-09-09.md).
 
 ## the cost
 
@@ -54,19 +54,19 @@ the spec is [`docs/superpowers/specs/2026-09-07-settle-design.md`](docs/superpow
 | exact final output | 60 of 60 | 60 of 60 | 60 of 60 |
 | characters drawn before commitment | 0 | 0 | 0 |
 
-a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop; a production model divides the seconds by an order of magnitude and changes none of the shapes. the stages replay at that recorded clock by default, with half of recorded and twice recorded as the other choices.
+a step is one completed forward pass of a 0.6b model at about 119 ms on a laptop. this is the capture’s forward-pass clock, not end-to-end latency. production timing and commitment patterns depend on the model, sampler and hardware; faster replay is not a production benchmark. the stages replay at that recorded clock by default, with half of recorded and twice recorded as the other choices.
 
 ## the drafts
 
-at every step the model holds a provisional guess for every position it has not committed. `scripts/derive-drafts.py` writes those guesses into the compact traces and the statistics into `data/traces/derived/drafts.json`, and the surface draws one only at or above a probability of 0.25, as a guess. over content positions of every recording with at least eight content tokens, where a pair is one open content position at one step:
+at every step the model holds a provisional guess for every position it has not committed. `scripts/derive-drafts.py` writes those guesses into the compact traces and the statistics into `data/traces/derived/drafts.json`, and the source display policy admits one at or above a probability of 0.25, as a guess. the revised renderer additionally shows candidate letters only when the complete guess fits its fixed reservation. the statistics below describe eligibility before this fit check, not current screen visibility. over content positions of every recording with at least eight content tokens, where a pair is one open content position at one step:
 
 | measure | all | lowconf-b32 | random-b32 | lowconf-b128 |
 | --- | --- | --- | --- | --- |
-| a draft is drawn, share of open-position steps | 0.1699 | 0.1301 | 0.1915 | 0.3115 |
-| a drawn draft is the token that later commits | 0.6657 | 0.6103 | 0.718 | 0.5756 |
-| steps a draft shows before its position commits, median | 8 | 4 | 14 | 11 |
+| a draft is eligible, share of open-position steps | 0.1699 | 0.1301 | 0.1915 | 0.3115 |
+| an eligible draft matches the token that later commits | 0.6657 | 0.6103 | 0.718 | 0.5756 |
+| steps a draft qualifies before commitment, median | 8 | 4 | 14 | 11 |
 
-at least one draft is on screen on 93 percent of steps (0.9272), and 61 percent of drafts never change again once drawn (0.6145). a draft breathes while it waits, and lifts for a beat beside a word that has just snapped in. on the raw probabilities, a commitment lifts the confidence of the positions beside it by 0.1096 (lowconf-b32), 0.175 (random-b32) and 0.1264 (lowconf-b128), against 0.0067, 0.0048 and 0.0022 for every other open position: one word settling makes its neighbors settle, by more than an order of magnitude. none of it says a draft helps a reader.
+at least one draft passes the source display policy on 93 percent of steps (0.9272), and 61 percent of eligible drafts never change again before commitment (0.6145). on the raw probabilities, adjacent open positions show a next-step increase of 0.1096 (lowconf-b32), 0.175 (random-b32) and 0.1264 (lowconf-b128), against 0.0067, 0.0048 and 0.0022 for other open positions. this is an association in the recorded trajectory, not proof that a commitment causes its neighbors to settle. token probability is not answer truth, and none of these statistics says a draft helps a reader.
 
 ## the voice
 
@@ -93,7 +93,8 @@ pnpm dev
 | `pnpm build` | production build |
 | `pnpm check` | lint, types, tests, build |
 | `pnpm test` | unit tests, including the reducer over all sixty recordings |
-| `pnpm test:e2e:chromium` | axe at wcag 2.1 aa and reduced motion, in chromium |
+| `pnpm test:e2e:chromium` | chromium accessibility, reduced motion, token identity, committed-text legibility, playback and final-output checks |
+| `pnpm test:e2e` | the browser suite across chromium, webkit and an emulated mobile-portrait profile; not a physical iPhone test |
 | `pnpm traces:settle` | regenerate the cost report and the causal audit |
 | `pnpm traces:index` | regenerate the trace index after a capture |
 
@@ -103,4 +104,4 @@ github pages builds main with `GITHUB_PAGES=true`, which switches to a static ex
 
 ## credits
 
-designed and built by globalanomalyindex (christopher robin fiore), with claude as design and engineering partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026 under the name margin. recorded trajectories and text are cc by 4.0; code is mit.
+designed and built by globalanomalyindex (christopher robin fiore), with claude as design and engineering partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026 under the name margin; codex developed the motion revision and evidence refresh on 9 september. recorded trajectories and text are cc by 4.0; code is mit.
