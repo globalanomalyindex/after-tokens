@@ -133,19 +133,25 @@ test('the intro keeps its off-black background and stays put until manual naviga
   await page.goto('/#comparison')
   const canvas = page.locator('[data-hero-canvas]')
   await expect(canvas).toHaveAttribute('data-presentation', 'fullscreen')
-  const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string }>>((resolve, reject) => {
-    const frames: Array<{ phase: string; color: string }> = []
+  const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number }>>((resolve, reject) => {
+    const frames: Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number }> = []
     const deadline = performance.now() + 18000
     function sample() {
       const phase = element.getAttribute('data-presentation') ?? ''
-      frames.push({ phase, color: getComputedStyle(element).backgroundColor })
+      const controls = element.querySelector<HTMLElement>('[data-hero-controls]')!
+      frames.push({ phase, color: getComputedStyle(element).backgroundColor, controlsOpacity: controls ? Number(getComputedStyle(controls).opacity) : -1, footerHeight: controls?.parentElement?.getBoundingClientRect().height ?? -1 })
       if (phase === 'embedded') { resolve(frames); return }
       if (performance.now() > deadline) { reject(new Error('The opening did not finish docking')); return }
       requestAnimationFrame(sample)
     }
     sample()
   }))
-  expect(samples.some(frame => frame.phase === 'docking')).toBe(true)
+  const docking = samples.filter(frame => frame.phase === 'docking')
+  expect(docking.length).toBeGreaterThan(0)
+  expect(docking.every(frame => frame.controlsOpacity === 0)).toBe(true)
+  expect(Math.abs(samples.at(-1)!.footerHeight - docking.at(-1)!.footerHeight)).toBeLessThan(1)
+  await expect(canvas.locator('[data-hero-controls]')).toHaveAttribute('inert', '')
+  await expect(canvas.getByRole('button', { name: /skip to case study/ })).toHaveCount(0)
   expect(new Set(samples.map(frame => frame.color))).toEqual(new Set(['rgb(24, 22, 21)']))
   await page.waitForTimeout(700)
   await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'opening')

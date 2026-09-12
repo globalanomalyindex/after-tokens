@@ -7,6 +7,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid transparent;
+  outline: none;
   background: var(--stage);
   color: var(--stage-text);
   border-radius: 1.5rem;
@@ -42,7 +44,8 @@
 .answer { font-size: var(--hero-answer-size, clamp(1.125rem, 1.9vw, 1.625rem)); line-height: 1.45; letter-spacing: -.018em; }
 .sceneFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; flex-shrink: 0; min-height: 2.75rem; padding-top: .75rem; font-family: var(--font-mono), monospace; font-size: 10px; }
 .provenance { opacity: .52; }
-.sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; }
+.sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; transition: opacity 160ms ease-out; }
+.sceneControls[data-visible='false'] { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 160ms ease-out, visibility 0s 160ms; }
 .sceneControls button { cursor: pointer; min-height: 44px; padding: .5rem 0; color: inherit; }
 .sceneControls button:first-child { opacity: .58; }
 .sceneControls button:disabled { opacity: .28; cursor: default; }
@@ -70,4 +73,4 @@
   .caption { align-items: flex-start; }
   .controls { gap: 1.25rem; }
 }
-@media (prefers-reduced-motion: reduce) { .reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .sceneControls, .sceneControls[data-visible="false"] { transition: none; }.reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }

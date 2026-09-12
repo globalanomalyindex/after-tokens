@@ -6,7 +6,7 @@ By Christopher Robin Fiore. GitHub: globalanomalyindex.
 
 I brought the motion to the front of the case study. The default view is a twelve-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
 
-The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available.
+The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. Intro controls fade out when the source finishes, before the docking beat; their hidden, inert space stays mounted so removing a button cannot resize the scene. The docking animation retains its final geometry until the embedded layout commits, then releases it before paint. Keyboard focus moves to the dialog surface while the controls are hidden, and Escape remains available.
 
 This is a web and motion design proposal, with product integration constraints. A polished transition does not establish a reading, trust, or perceived-speed benefit.
 
@@ -730,11 +730,11 @@ index 411fce0..b37e905 100644
 +.progress[data-complete='true'] { animation: progressExit 420ms cubic-bezier(.22, 1, .36, 1) 160ms both; animation-play-state: running !important; }
 +.progress[data-hidden='true'] { visibility: hidden; animation: none !important; }
 +@keyframes progressExit { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(3px) scale(.97); visibility: hidden; } }
- 
+
  .progress[data-motion="false"][data-complete="true"] { animation: none; opacity: 0; }
  @media (prefers-reduced-motion: reduce) { .progress[data-complete="true"] { animation: none; opacity: 0; } }
 diff --git a/components/settle/hero-intro.module.css b/components/settle/hero-intro.module.css
-index 4b72403..224415a 100644
+index 4b72403..f84ba99 100644
 --- a/components/settle/hero-intro.module.css
 +++ b/components/settle/hero-intro.module.css
 @@ -1,5 +1,5 @@
@@ -744,7 +744,16 @@ index 4b72403..224415a 100644
  .canvas {
    --hero-pad: clamp(1.25rem, 4vw, 3rem);
    position: absolute;
-@@ -24,7 +24,7 @@
+@@ -7,6 +7,8 @@
+   display: flex;
+   flex-direction: column;
+   overflow: hidden;
++  border: 1px solid transparent;
++  outline: none;
+   background: var(--stage);
+   color: var(--stage-text);
+   border-radius: 1.5rem;
+@@ -24,7 +26,7 @@
    padding: .95rem 1.35rem;
    border-radius: 1.5rem 1.5rem .4rem 1.5rem;
    background: color-mix(in oklab, var(--stage-text) 8%, var(--stage));
@@ -753,7 +762,7 @@ index 4b72403..224415a 100644
    line-height: 1.5; text-align: left;
  }
  .promptSpace, .promptInk { grid-area: 1 / 1; min-width: 0; overflow-wrap: break-word; }
-@@ -39,7 +39,7 @@
+@@ -39,10 +41,11 @@
    animation: open 320ms cubic-bezier(.23, 1, .32, 1) both;
  }
  .replyLabel { display: block; margin-bottom: 1rem; font-family: var(--font-mono), monospace; font-size: 10px; line-height: 1.2; letter-spacing: .06em; opacity: .58; }
@@ -761,8 +770,13 @@ index 4b72403..224415a 100644
 +.answer { font-size: var(--hero-answer-size, clamp(1.125rem, 1.9vw, 1.625rem)); line-height: 1.45; letter-spacing: -.018em; }
  .sceneFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; flex-shrink: 0; min-height: 2.75rem; padding-top: .75rem; font-family: var(--font-mono), monospace; font-size: 10px; }
  .provenance { opacity: .52; }
- .sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; }
-@@ -58,7 +58,7 @@
+-.sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; }
++.sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; transition: opacity 160ms ease-out; }
++.sceneControls[data-visible='false'] { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 160ms ease-out, visibility 0s 160ms; }
+ .sceneControls button { cursor: pointer; min-height: 44px; padding: .5rem 0; color: inherit; }
+ .sceneControls button:first-child { opacity: .58; }
+ .sceneControls button:disabled { opacity: .28; cursor: default; }
+@@ -58,7 +61,7 @@
  @keyframes caret { 50% { opacity: 0; } }
  @keyframes open { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
  @media (max-width: 640px) {
@@ -771,20 +785,26 @@ index 4b72403..224415a 100644
    .canvas { padding-top: max(1.2rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
    .conversation { padding-block: 1.5rem; }
    .prompt { padding: .85rem 1rem; max-width: 100%; }
+@@ -70,4 +73,4 @@
+   .caption { align-items: flex-start; }
+   .controls { gap: 1.25rem; }
+ }
+-@media (prefers-reduced-motion: reduce) { .reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
++@media (prefers-reduced-motion: reduce) { .sceneControls, .sceneControls[data-visible="false"] { transition: none; }.reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
 diff --git a/components/settle/hero-intro.tsx b/components/settle/hero-intro.tsx
-index b5d64a6..860d17a 100644
+index b5d64a6..d9f9045 100644
 --- a/components/settle/hero-intro.tsx
 +++ b/components/settle/hero-intro.tsx
 @@ -1,6 +1,6 @@
  'use client'
- 
+
 -import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 +import { createContext, useContext, useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
  import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
  import { createSettleState, reduceSettle } from '@/lib/settle/reader'
  import type { Replay } from '@/lib/settle/types'
 @@ -11,10 +11,10 @@ import { DemoProgress } from './demo-progress'
- 
+
  const QUESTION = 'What should diffusion text rendering look like?'
  const SENTENCES = [
 -  'It should feel like a thought taking shape.\n',
@@ -803,7 +823,7 @@ index b5d64a6..860d17a 100644
  const STATIC_ANSWER = INTRO.events.reduce(reduceSettle, createSettleState('sentence'))
  type Presentation = 'pending' | 'fullscreen' | 'docking' | 'embedded'
 +export const SkipOpeningContext = createContext(false)
- 
+
 -export function HeroIntro() {
 +export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped: boolean) => void } = {}) {
    const root = useRef<HTMLElement>(null)
@@ -815,7 +835,7 @@ index b5d64a6..860d17a 100644
    const dockAnimation = useRef<Animation | null>(null)
    const dockFallback = useRef<ReturnType<typeof setTimeout> | null>(null)
    const [presentation, setPresentation] = useState<Presentation>('pending')
-@@ -56,6 +58,7 @@ export function HeroIntro() {
+@@ -56,21 +58,30 @@ export function HeroIntro() {
    const [showStatic, setShowStatic] = useState(false)
    const [visualReady, setVisualReady] = useState(false)
    const reduced = usePrefersReducedMotion()
@@ -823,7 +843,32 @@ index b5d64a6..860d17a 100644
    const titleId = useId()
    const clock = useReplay(INTRO, { policy: 'sentence', autoplay: false })
    const { play, pause } = clock
-@@ -93,11 +96,17 @@ export function HeroIntro() {
+   const expanded = presentation === 'fullscreen' || presentation === 'docking'
+   const staticView = hydrated && (reduced || showStatic)
++  const introControlsVisible = presentation === 'fullscreen' && !clock.finished && !staticView
+   const paused = !hydrated || manualPause || (!expanded && !inView) || !documentVisible
+   const active = !paused && !staticView && !clock.finished && presentation !== 'pending'
+
+   const finishDock = useCallback(() => {
+     if (dockFallback.current !== null) clearTimeout(dockFallback.current)
+     dockFallback.current = null
+-    dockAnimation.current?.cancel()
+-    dockAnimation.current = null
++    // Keep the animation's final geometry until React commits embedded layout.
+     setPresentation('embedded')
+   }, [])
++  useLayoutEffect(() => {
++    if (presentation !== 'embedded') return
++    dockAnimation.current?.cancel()
++    dockAnimation.current = null
++  }, [presentation])
++  useLayoutEffect(() => {
++    if (!introControlsVisible && expanded && canvas.current?.contains(document.activeElement)) canvas.current.focus({ preventScroll: true })
++  }, [introControlsVisible, expanded])
+   const skip = useCallback(() => {
+     setShowStatic(true)
+     setManualPause(false)
+@@ -93,11 +104,17 @@ export function HeroIntro() {
      openingDecided.current = true
      // Every document load gets the opening, regardless of visit history,
      // hash links or restored scroll. Reduced motion keeps the static exchange.
@@ -841,18 +886,48 @@ index b5d64a6..860d17a 100644
 +    }
 +  }, [hydrated, presentation, onOpeningComplete, staticView])
    useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
- 
+
    useLayoutEffect(() => {
-@@ -218,7 +227,7 @@ export function HeroIntro() {
+@@ -163,13 +180,14 @@ export function HeroIntro() {
+       }
+       if (branch.parentElement === body) break
+     }
+-    const focusable = () => [...element.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')]
+-    const focusInside = () => (skipButton.current ?? focusable()[0])?.focus({ preventScroll: true })
++    const focusable = () => [...element.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')].filter(button => !button.closest('[inert]'))
++    const focusInside = () => (skipButton.current && !skipButton.current.closest('[inert]') ? skipButton.current : element).focus({ preventScroll: true })
+     focusInside()
+     const keydown = (event: KeyboardEvent) => {
+       if (event.key === 'Escape') { event.preventDefault(); skip(); return }
+       if (event.key !== 'Tab') return
+       const buttons = focusable(), first = buttons[0], last = buttons.at(-1)
++      if (!buttons.length) { event.preventDefault(); element.focus({ preventScroll: true }); return }
+       if (event.shiftKey && (document.activeElement === first || !element.contains(document.activeElement))) { event.preventDefault(); last?.focus() }
+       else if (!event.shiftKey && (document.activeElement === last || !element.contains(document.activeElement))) { event.preventDefault(); first?.focus() }
+     }
+@@ -198,7 +216,7 @@ export function HeroIntro() {
+
+   return <figure ref={root} tabIndex={-1} className={styles.root} data-hero-intro data-presentation={presentation} data-elapsed-ms={Math.round(clock.elapsedMs)} data-static={staticView} data-paused={paused || staticView}>
+     <div ref={slot} className={styles.slot}>
+-      <div ref={canvas} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
++      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
+         <span id={titleId} className="sr-only">After Tokens motion introduction</span>
+         <p className="sr-only" data-hero-transcript>Question: {QUESTION} Answer: {WELCOME}</p>
+         <div className={styles.topline} aria-hidden="true"><span>after tokens</span><span>a motion study</span></div>
+@@ -218,17 +236,17 @@ export function HeroIntro() {
            </div>
          </div>
          <div className={styles.sceneFooter}>
 -          <span className={styles.provenance}>authored introduction · prewritten words</span>
+-          {expanded && <div className={styles.sceneControls}>
 +          <span className={styles.provenance}>web &amp; motion design</span>
-           {expanded && <div className={styles.sceneControls}>
++          <div className={styles.sceneControls} data-hero-controls data-visible={introControlsVisible} aria-hidden={!introControlsVisible} inert={!introControlsVisible}>
              <button type="button" disabled={complete || presentation === 'docking'} onClick={() => setManualPause((value) => !value)}>{manualPause ? 'resume intro' : 'pause intro'}</button>
              <button ref={skipButton} type="button" onClick={skip}>skip to case study <span aria-hidden="true">↗</span></button>
-@@ -228,7 +237,7 @@ export function HeroIntro() {
+-          </div>}
++          </div>
+         </div>
+         <noscript><div className={styles.noScript}><p>{QUESTION}</p><p>{WELCOME}</p></div></noscript>
        </div>
      </div>
      <figcaption className={styles.caption} aria-hidden={expanded || undefined}>
@@ -867,7 +942,7 @@ index 7e3385f..b2f8a79 100644
 +++ b/components/settle/settle-stage.tsx
 @@ -76,7 +76,7 @@ const POLICIES: { id: Policy; label: string }[] = [
  const BRAND_IDS = Object.keys(brands) as BrandId[]
- 
+
  export function SettleStage({
 -  source = 'trace:heron-poem__lowconf-b32',
 +  source = 'trace:travel__lowconf-b32',

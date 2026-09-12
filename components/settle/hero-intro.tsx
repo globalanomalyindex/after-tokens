@@ -64,16 +64,24 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
   const { play, pause } = clock
   const expanded = presentation === 'fullscreen' || presentation === 'docking'
   const staticView = hydrated && (reduced || showStatic)
+  const introControlsVisible = presentation === 'fullscreen' && !clock.finished && !staticView
   const paused = !hydrated || manualPause || (!expanded && !inView) || !documentVisible
   const active = !paused && !staticView && !clock.finished && presentation !== 'pending'
 
   const finishDock = useCallback(() => {
     if (dockFallback.current !== null) clearTimeout(dockFallback.current)
     dockFallback.current = null
-    dockAnimation.current?.cancel()
-    dockAnimation.current = null
+    // Keep the animation's final geometry until React commits embedded layout.
     setPresentation('embedded')
   }, [])
+  useLayoutEffect(() => {
+    if (presentation !== 'embedded') return
+    dockAnimation.current?.cancel()
+    dockAnimation.current = null
+  }, [presentation])
+  useLayoutEffect(() => {
+    if (!introControlsVisible && expanded && canvas.current?.contains(document.activeElement)) canvas.current.focus({ preventScroll: true })
+  }, [introControlsVisible, expanded])
   const skip = useCallback(() => {
     setShowStatic(true)
     setManualPause(false)
@@ -172,13 +180,14 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
       }
       if (branch.parentElement === body) break
     }
-    const focusable = () => [...element.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')]
-    const focusInside = () => (skipButton.current ?? focusable()[0])?.focus({ preventScroll: true })
+    const focusable = () => [...element.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')].filter(button => !button.closest('[inert]'))
+    const focusInside = () => (skipButton.current && !skipButton.current.closest('[inert]') ? skipButton.current : element).focus({ preventScroll: true })
     focusInside()
     const keydown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { event.preventDefault(); skip(); return }
       if (event.key !== 'Tab') return
       const buttons = focusable(), first = buttons[0], last = buttons.at(-1)
+      if (!buttons.length) { event.preventDefault(); element.focus({ preventScroll: true }); return }
       if (event.shiftKey && (document.activeElement === first || !element.contains(document.activeElement))) { event.preventDefault(); last?.focus() }
       else if (!event.shiftKey && (document.activeElement === last || !element.contains(document.activeElement))) { event.preventDefault(); first?.focus() }
     }
@@ -207,7 +216,7 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
 
   return <figure ref={root} tabIndex={-1} className={styles.root} data-hero-intro data-presentation={presentation} data-elapsed-ms={Math.round(clock.elapsedMs)} data-static={staticView} data-paused={paused || staticView}>
     <div ref={slot} className={styles.slot}>
-      <div ref={canvas} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
+      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
         <span id={titleId} className="sr-only">After Tokens motion introduction</span>
         <p className="sr-only" data-hero-transcript>Question: {QUESTION} Answer: {WELCOME}</p>
         <div className={styles.topline} aria-hidden="true"><span>after tokens</span><span>a motion study</span></div>
@@ -228,10 +237,10 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
         </div>
         <div className={styles.sceneFooter}>
           <span className={styles.provenance}>web &amp; motion design</span>
-          {expanded && <div className={styles.sceneControls}>
+          <div className={styles.sceneControls} data-hero-controls data-visible={introControlsVisible} aria-hidden={!introControlsVisible} inert={!introControlsVisible}>
             <button type="button" disabled={complete || presentation === 'docking'} onClick={() => setManualPause((value) => !value)}>{manualPause ? 'resume intro' : 'pause intro'}</button>
             <button ref={skipButton} type="button" onClick={skip}>skip to case study <span aria-hidden="true">↗</span></button>
-          </div>}
+          </div>
         </div>
         <noscript><div className={styles.noScript}><p>{QUESTION}</p><p>{WELCOME}</p></div></noscript>
       </div>
