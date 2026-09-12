@@ -91,17 +91,26 @@ test('four distinct sentence batches use the shared handover before the same sta
   await expect(page.getByRole('dialog')).toHaveCount(0)
 })
 
-test('returning visits show the full exchange without relocking', async ({ page }) => {
+test('returning visits and repeated reloads replay the fullscreen animation', async ({ page }) => {
   await page.addInitScript((key) => sessionStorage.setItem(key, '1'), SEEN)
   await page.goto(SITE)
-  await expect(page.locator('[data-hero-intro]')).toHaveAttribute('data-presentation', 'embedded')
-  await expect(page.getByRole('dialog')).toHaveCount(0)
-  expect(await page.locator('[data-hero-intro] .settle-page').textContent()).toBe(SENTENCES.join(''))
+  for (let visit = 0; visit < 3; visit++) {
+    if (visit) await page.reload()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.locator('[data-hero-typed]')).not.toHaveText('')
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+  }
 })
 
-test('a fresh direct link bypasses the opening without an existing seen flag', async ({ page }) => {
+test('hash-linked and scrolled reloads still show the opening', async ({ page }) => {
   await page.goto(`${SITE}#field`)
-  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await page.locator('#field').evaluate(element => element.scrollIntoView({ behavior: 'instant' }))
+  await page.reload()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
   expect(await page.evaluate(() => document.body.style.position)).toBe('')
 })
 

@@ -8,7 +8,6 @@ import { SettleAnswer } from './settle-answer'
 import { useReplay } from './use-replay'
 import styles from './hero-intro.module.css'
 
-const SEEN_KEY = 'after-tokens:intro-seen:v1'
 const QUESTION = 'What should diffusion text rendering look like?'
 const SENTENCES = [
   'It should feel like a thought taking shape.\n',
@@ -91,9 +90,9 @@ export function HeroIntro() {
     // snapshot is intentionally true and must not mark a fresh visit skipped.
     if (!hydrated || openingDecided.current) return
     openingDecided.current = true
-    let seen = false
-    try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; sessionStorage.setItem(SEEN_KEY, '1') } catch { /* Private storage can be unavailable; the mounted scene still runs once. */ }
-    const bypass = reduced || seen || !!window.location.hash || window.scrollY > 80
+    // Every document load gets the opening, regardless of visit history,
+    // hash links or restored scroll. Reduced motion keeps the static exchange.
+    const bypass = reduced
     setShowStatic(bypass)
     setPresentation(bypass ? 'embedded' : 'fullscreen')
   }, [hydrated, reduced])

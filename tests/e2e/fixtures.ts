@@ -1,12 +1,19 @@
-import { test as base } from '@playwright/test'
+import { expect, test as base } from '@playwright/test'
 
 export { expect, type Locator, type Page } from '@playwright/test'
 
-// Policy and motion tests exercise the case study as a returning visitor.
-// Dedicated hero tests keep fresh storage to cover the fullscreen opening.
+// These tests exercise the case study after explicitly skipping its opening.
+// Dedicated hero tests cover the unmodified navigation and reload behavior.
 export const test = base.extend({
   page: async ({ page }, provide) => {
-    await page.addInitScript(() => sessionStorage.setItem('after-tokens:intro-seen:v1', '1'))
+    const navigate = page.goto.bind(page)
+    page.goto = async (...args: Parameters<typeof page.goto>) => {
+      const response = await navigate(...args)
+      await expect(page.locator('[data-hero-intro]')).toHaveAttribute('data-presentation', /^(fullscreen|embedded|docking)$/)
+      const skip = page.getByRole('button', { name: 'skip to case study' })
+      if (await skip.isVisible()) await skip.click()
+      return response
+    }
     await provide(page)
   },
 })

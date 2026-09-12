@@ -17,7 +17,7 @@ an independent web and motion design study of ambient skeleton loading and how g
 
 ## the interaction
 
-the opening presents an authored fullscreen conversation on the first ordinary visit in a session. its four prewritten answer sentences use the same sentence-release renderer as the live examples. after the last sentence settles, the same stage contracts into its place on the page and restores scrolling. skip or escape opens the complete exchange immediately; replay stays embedded, and reduced motion shows the static exchange. it introduces the motion language; it is not a model recording or a generation-speed demonstration.
+the opening presents an authored fullscreen conversation on every page load and reload, including returning visits. its four prewritten answer sentences use the same sentence-release renderer as the live examples. after the last sentence settles, the same stage contracts into its place on the page and restores scrolling. skip or escape opens the complete exchange immediately; replay stays embedded, and reduced motion shows the static exchange. it introduces the motion language; it is not a model recording or a generation-speed demonstration.
 
 the live gallery follows before the research. its default view pairs reshape and each-sentence release with the raw committed prefix on the same replay clock. the reply and its 8.5-second timing are explicitly authored; real model recordings remain separately available later in the case study. the raw prefix stays visible, including marked partial words. that makes the presentation change inspectable without opening an optional comparison. the prefix can become readable earlier; the composed view does not make the source faster.
 

@@ -20,11 +20,11 @@ afterEach(() => { cleanup(); observers.length = 0; vi.useRealTimers(); vi.unstub
 const advance = async (ms: number) => { await act(async () => { await vi.advanceTimersByTimeAsync(ms) }) }
 
 describe('the authored cinematic opening', () => {
-  it('starts fullscreen once, locks background scrolling, and permits an immediate case study', async () => {
+  it('starts fullscreen on each mount, locks background scrolling, and permits an immediate case study', async () => {
     const { container } = render(<SectionHook />)
     expect(screen.getByRole('dialog', { name: 'After Tokens motion introduction' })).toHaveAttribute('aria-modal', 'true')
     expect(document.body.style.position).toBe('fixed')
-    expect(sessionStorage.getItem(SEEN)).toBe('1')
+    expect(sessionStorage.getItem(SEEN)).toBeNull()
     expect(container.querySelector('[data-hero-transcript]')).toHaveTextContent(WELCOME)
     await advance(800)
     const typed = container.querySelector('[data-hero-typed]')?.textContent ?? ''
@@ -110,11 +110,18 @@ describe('the authored cinematic opening', () => {
     expect(elapsed()).toBe(hidden)
   })
 
-  it.each(['returning', 'deep-linked', 'reduced-motion'])('starts %s visits embedded, complete and unlocked', async (path) => {
+  it.each(['returning', 'deep-linked', 'reduced-motion'])('honors the opening preference on %s visits', async (path) => {
     if (path === 'returning') sessionStorage.setItem(SEEN, '1')
     if (path === 'deep-linked') history.replaceState(null, '', '/#field')
     if (path === 'reduced-motion') vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({ matches: true, media: query, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }))
     const { container } = render(<SectionHook />)
+    if (path !== 'reduced-motion') {
+      expect(screen.getByRole('dialog')).toBeVisible()
+      expect(document.body.style.position).toBe('fixed')
+      await advance(800)
+      expect(Number(container.querySelector('[data-hero-intro]')?.getAttribute('data-elapsed-ms'))).toBeGreaterThan(0)
+      return
+    }
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(document.body.style.position).toBe('')
     expect(container.querySelector('[data-hero-intro]')).toHaveAttribute('data-presentation', 'embedded')
