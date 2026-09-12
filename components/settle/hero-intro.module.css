@@ -78,11 +78,21 @@
 /* Reserve the scroll channel before docking so text never rewraps when
    the shorter embedded scene starts overflowing. */
 .scene { scrollbar-gutter: stable both-edges; }
-.canvas[data-navigable='true'] { padding-top: 88px; }
+.canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 88px; }
 .canvas[data-navigable='true'] .topline { visibility: hidden; }
 @media (max-width: 900px) {
-  .canvas[data-navigable='true'] { padding-top: 70px; }
+  .canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 70px; }
 }
 @media (max-width: 480px) {
-  .canvas[data-navigable='true'] { padding-top: 62px; }
+  .canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 62px; }
 }
+
+/* The embedded stage no longer needs to clear the page header. Its target
+   padding is also used by the docking animation, avoiding a final layout snap. */
+.canvas { --hero-rest-padding: 24px; }
+.canvas[data-navigable='true'] .conversation { width: min(56rem, calc(var(--hero-slot-width) - var(--hero-pad) * 2)); }
+@media (min-width: 901px) {
+  .canvas[data-navigable='true'] .answer { font-size: clamp(20px, min(2.35vw, 3vh), 34px); }
+  .canvas[data-navigable='true'] .answerSpace { min-height: 0; }
+}
+@media (max-width: 640px) { .canvas { --hero-rest-padding: max(1.2rem, env(safe-area-inset-top)); } }

@@ -178,3 +178,21 @@ test('intro keeps header navigation and skip available, with arrows appropriate 
   await expect(page).toHaveURL(/view=reading/)
   await expect(page.locator('[data-hero-canvas][role="dialog"]')).toHaveCount(0)
 })
+
+test('the settled desktop introduction fits its reading viewport', async ({ page, isMobile }) => {
+  test.skip(isMobile)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const size of [{ width: 1386, height: 698 }, { width: 1280, height: 720 }, { width: 1440, height: 900 }]) {
+    await page.setViewportSize(size)
+    await page.goto('/')
+    const canvas = page.locator('[data-hero-canvas]')
+    await expect(canvas).toHaveAttribute('data-presentation', 'embedded')
+    const fit = await canvas.evaluate(el => {
+      const reply = el.querySelector('.settle')!.parentElement!
+      const scene = reply.parentElement!.parentElement!.parentElement!
+      return { bottom: reply.getBoundingClientRect().bottom, limit: scene.getBoundingClientRect().bottom, overflow: scene.scrollHeight - scene.clientHeight }
+    })
+    expect(fit.bottom).toBeLessThanOrEqual(fit.limit + 1)
+    expect(fit.overflow).toBeLessThanOrEqual(1)
+  }
+})

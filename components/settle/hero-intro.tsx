@@ -135,8 +135,8 @@ export function HeroIntro({ onOpeningComplete, navigable = false }: { onOpeningC
     if (!to.width || !to.height) { finishDock(); return }
     setPresentation('docking')
     const animation = element.animate([
-      { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, borderRadius: '0px' },
-      { left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px`, borderRadius: '24px' },
+      { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, borderRadius: '0px', paddingTop: getComputedStyle(element).paddingTop },
+      { left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px`, borderRadius: '24px', paddingTop: 'var(--hero-rest-padding)' },
     ], { duration: 760, easing: 'cubic-bezier(.65, 0, .15, 1)', fill: 'both' })
     dockAnimation.current = animation
     animation.onfinish = finishDock

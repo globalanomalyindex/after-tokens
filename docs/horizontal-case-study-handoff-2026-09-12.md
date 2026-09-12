@@ -6,7 +6,7 @@ By Christopher Robin Fiore. GitHub: globalanomalyindex.
 
 I brought the motion to the front of the case study. The default view is a twelve-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
 
-The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. In presentation mode the intro is non-modal: the top navigation and chapter index remain usable, and Skip stays available through the final beat and docking. The article retains its standalone modal opening. Hidden controls keep their layout space after docking. The opening slide has no parent transform animation, and the scene reserves its scrollbar channel throughout the transition so shortening the canvas does not trigger a text-width change. Fullscreen and embedded padding match, and the final animation geometry stays in place until React commits the embedded layout. Desktop uses the side navigation; bottom arrow buttons appear only at mobile widths.
+The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. In presentation mode the intro is non-modal: the top navigation and chapter index remain usable, and Skip stays available through the final beat and docking. The article retains its standalone modal opening. Hidden controls keep their layout space after docking. The opening slide has no parent transform animation, and the scene reserves its scrollbar channel throughout the transition so shortening the canvas does not trigger a text-width change. The docking animation interpolates the header clearance into the smaller embedded padding, and its final geometry stays in place until React commits the embedded layout. The desktop answer column uses the available width and viewport-height-aware type sizing so the completed introduction fits without cutting off its final sentence. Desktop uses the side navigation; bottom arrow buttons appear only at mobile widths.
 
 This is a web and motion design proposal, with product integration constraints. A polished transition does not establish a reading, trust, or perceived-speed benefit.
 
@@ -738,7 +738,7 @@ index 411fce0..b37e905 100644
  .progress[data-motion="false"][data-complete="true"] { animation: none; opacity: 0; }
  @media (prefers-reduced-motion: reduce) { .progress[data-complete="true"] { animation: none; opacity: 0; } }
 diff --git a/components/settle/hero-intro.module.css b/components/settle/hero-intro.module.css
-index 4b72403..43d18c0 100644
+index 4b72403..1b76dab 100644
 --- a/components/settle/hero-intro.module.css
 +++ b/components/settle/hero-intro.module.css
 @@ -1,5 +1,5 @@
@@ -789,7 +789,7 @@ index 4b72403..43d18c0 100644
    .canvas { padding-top: max(1.2rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
    .conversation { padding-block: 1.5rem; }
    .prompt { padding: .85rem 1rem; max-width: 100%; }
-@@ -70,4 +73,16 @@
+@@ -70,4 +73,26 @@
    .caption { align-items: flex-start; }
    .controls { gap: 1.25rem; }
  }
@@ -799,16 +799,26 @@ index 4b72403..43d18c0 100644
 +/* Reserve the scroll channel before docking so text never rewraps when
 +   the shorter embedded scene starts overflowing. */
 +.scene { scrollbar-gutter: stable both-edges; }
-+.canvas[data-navigable='true'] { padding-top: 88px; }
++.canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 88px; }
 +.canvas[data-navigable='true'] .topline { visibility: hidden; }
 +@media (max-width: 900px) {
-+  .canvas[data-navigable='true'] { padding-top: 70px; }
++  .canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 70px; }
 +}
 +@media (max-width: 480px) {
-+  .canvas[data-navigable='true'] { padding-top: 62px; }
++  .canvas[data-navigable='true']:not([data-presentation='embedded']) { padding-top: 62px; }
 +}
++
++/* The embedded stage no longer needs to clear the page header. Its target
++   padding is also used by the docking animation, avoiding a final layout snap. */
++.canvas { --hero-rest-padding: 24px; }
++.canvas[data-navigable='true'] .conversation { width: min(56rem, calc(var(--hero-slot-width) - var(--hero-pad) * 2)); }
++@media (min-width: 901px) {
++  .canvas[data-navigable='true'] .answer { font-size: clamp(20px, min(2.35vw, 3vh), 34px); }
++  .canvas[data-navigable='true'] .answerSpace { min-height: 0; }
++}
++@media (max-width: 640px) { .canvas { --hero-rest-padding: max(1.2rem, env(safe-area-inset-top)); } }
 diff --git a/components/settle/hero-intro.tsx b/components/settle/hero-intro.tsx
-index b5d64a6..f735978 100644
+index b5d64a6..b379aa7 100644
 --- a/components/settle/hero-intro.tsx
 +++ b/components/settle/hero-intro.tsx
 @@ -1,6 +1,6 @@
@@ -904,6 +914,17 @@ index b5d64a6..f735978 100644
    useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
 
    useLayoutEffect(() => {
+@@ -118,8 +135,8 @@ export function HeroIntro() {
+     if (!to.width || !to.height) { finishDock(); return }
+     setPresentation('docking')
+     const animation = element.animate([
+-      { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, borderRadius: '0px' },
+-      { left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px`, borderRadius: '24px' },
++      { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, borderRadius: '0px', paddingTop: getComputedStyle(element).paddingTop },
++      { left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px`, borderRadius: '24px', paddingTop: 'var(--hero-rest-padding)' },
+     ], { duration: 760, easing: 'cubic-bezier(.65, 0, .15, 1)', fill: 'both' })
+     dockAnimation.current = animation
+     animation.onfinish = finishDock
 @@ -146,6 +163,11 @@ export function HeroIntro() {
      const element = canvas.current
      const focusTarget = root.current
