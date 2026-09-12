@@ -4,7 +4,7 @@ By Christopher Robin Fiore. GitHub: globalanomalyindex.
 
 ## Design decision
 
-I brought the motion to the front of the case study. The default view is a twelve-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
+I brought the motion to the front of the case study. The default view is a thirteen-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
 
 The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. In presentation mode the intro is non-modal: the top navigation and chapter index remain usable, and Skip stays available through the final beat and docking. The article retains its standalone modal opening. Hidden controls keep their layout space after docking. The opening slide has no parent transform animation, and the scene reserves its scrollbar channel throughout the transition so shortening the canvas does not trigger a text-width change. The docking animation interpolates the header clearance into the smaller embedded padding, and its final geometry stays in place until React commits the embedded layout. The desktop answer column uses the available width and viewport-height-aware type sizing so the completed introduction fits without cutting off its final sentence. Desktop uses the side navigation; bottom arrow buttons appear only at mobile widths.
 
@@ -33,6 +33,10 @@ Spectrum is an original multicolor wash informed by the blue, violet and warm-co
 The sequence is Spectrum → After Tokens → Felt → Pulse. A voice changes 2.4 seconds after replay completion, leaving time for the bounded handover and a reading beat. Changing voices restarts the same source, making the material differences comparable. A manual selection pauses the cycle; “resume cycle” restarts automatic selection. Playback pause and hidden documents suspend advancement. Reduced motion uses manual selection and a still wash. The presentation chapters themselves never advance automatically. After a watched introduction, the opening remains visible even if the URL initially named a later chapter. Explicit Skip and reduced-motion entry may honor a chapter link; wheel inertia from the intro is not treated as a fresh navigation gesture.
 
 The 12-second alternating wash uses small translation, rotation and scale on a contained background. It does not change the text layout or consume provisional word positions. This preserves the renderer’s source-only integration boundary: ambient movement can run without a token-confidence stream or advance knowledge of the final wording.
+
+## Original demo gallery
+
+I placed a vertically scrolling gallery immediately before the closing invitation. It reuses SectionShowcase, AmbientStudy, SectionPreviews, SectionVoice and SectionPlayground directly from the article, retaining their controls, sources, compact type and expanding answer geometry. The gallery owns its scrolling area; the presentation arrows remain available to leave it. These are shared components, not recreated presentation-sized variants.
 
 ## Navigation and material
 
@@ -96,6 +100,11 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 import { SETTLE } from '@/lib/traces/findings'
 import { PresentationDemo } from './presentation-demo'
 import styles from './presentation.module.css'
+import { SectionShowcase } from '@/components/sections/section-showcase'
+import { SectionPreviews } from '@/components/sections/section-previews'
+import { SectionVoice } from '@/components/sections/section-voice'
+import { SectionPlayground } from '@/components/sections/section-playground'
+import { AmbientStudy } from '@/components/settle/ambient-study'
 
 const CHAPTERS = [
   { id: 'opening', label: 'the opening', category: 'after tokens' },
@@ -109,6 +118,7 @@ const CHAPTERS = [
   { id: 'research', label: 'what research supports', category: 'the evidence' },
   { id: 'costs', label: 'what it costs', category: 'the tradeoff' },
   { id: 'limits', label: 'what is still open', category: 'the next study' },
+  { id: 'demos', label: 'the demo gallery', category: 'try it' },
   { id: 'colophon', label: 'after the last word', category: 'after tokens' },
 ] as const
 const SOURCE = 'https://github.com/globalanomalyindex/after-tokens'
@@ -306,9 +316,18 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <Title eyebrow="10 / what I still need to learn" description="A polished prototype is evidence that the interaction can work. It is not evidence that readers understand more, trust appropriately, or enjoy waiting.">a motion study.<br />not a promise.</Title>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
+  if (index === 11) return <div className={styles.demoGallery} data-slide-scroll data-demo-gallery tabIndex={0} aria-label="Scrollable original case study demos">
+    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="The original demos, at their original scale. Scroll down, change a setting, and watch the answer make room for itself.">a little closer.<br />a little more room.</Title></div>
+    <SectionShowcase />
+    <section className={styles.galleryIntro} aria-label="Skeleton motion study"><h2 className="text-4xl font-bold tracking-tight mb-8">a field, then an answer</h2><AmbientStudy /></section>
+    <SectionPreviews />
+    <SectionVoice />
+    <SectionPlayground />
+    <button type="button" className={styles.textLink} onClick={() => { window.location.hash = 'colophon' }}>after the last word →</button>
+  </div>
   return <div className={styles.colophon} data-slide-scroll>
     <div className={styles.colophonIntro}>
-      <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
+      <p className={styles.eyebrow}>12 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
       <div className={styles.endLinks}><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
     </div>
     <a className={styles.studyCta} href="?view=reading" aria-label="View the full case study" onClick={event => {
@@ -630,6 +649,17 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
 .indexMenu { z-index: 10030; }
 .footerNavigation button { display: none; }
 @media (max-width: 900px) { .footerNavigation button { display: inline-block; } }
+
+/* Reuse article demos without the presentation demo's enlarged typography
+   or fixed answer viewport. The gallery itself owns vertical scrolling. */
+.demoGallery { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; padding: 24px 0 48px; scrollbar-gutter: stable; }
+.galleryIntro { padding: 24px clamp(16px, 3vw, 48px) 64px; }
+.demoGallery :global(.section-shell) { padding-block: 56px; }
+.demoGallery :global(.section-column) { padding-inline: clamp(16px, 3vw, 48px); }
+.demoGallery > .textLink { margin: 32px; }
+.demoGallery > section { background: var(--surface); color: var(--ink); }
+.demoGallery > .galleryIntro:first-child { padding-bottom: 24px; }
+.demoGallery > .galleryIntro:first-child h2 { font-size: clamp(32px, 3.2vw, 48px); }
 ```
 
 ### components/presentation/reading-study.tsx

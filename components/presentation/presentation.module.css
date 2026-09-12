@@ -197,3 +197,14 @@
 .indexMenu { z-index: 10030; }
 .footerNavigation button { display: none; }
 @media (max-width: 900px) { .footerNavigation button { display: inline-block; } }
+
+/* Reuse article demos without the presentation demo's enlarged typography
+   or fixed answer viewport. The gallery itself owns vertical scrolling. */
+.demoGallery { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; padding: 24px 0 48px; scrollbar-gutter: stable; }
+.galleryIntro { padding: 24px clamp(16px, 3vw, 48px) 64px; }
+.demoGallery :global(.section-shell) { padding-block: 56px; }
+.demoGallery :global(.section-column) { padding-inline: clamp(16px, 3vw, 48px); }
+.demoGallery > .textLink { margin: 32px; }
+.demoGallery > section { background: var(--surface); color: var(--ink); }
+.demoGallery > .galleryIntro:first-child { padding-bottom: 24px; }
+.demoGallery > .galleryIntro:first-child h2 { font-size: clamp(32px, 3.2vw, 48px); }

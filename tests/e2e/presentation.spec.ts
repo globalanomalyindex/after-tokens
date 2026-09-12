@@ -61,7 +61,7 @@ test('the full study stays available and reduced motion supports every chapter',
   await expect(page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true })).toBeEnabled()
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 13; i++) {
     if (i) await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
     await expect(deck.locator('[aria-roledescription="slide"]')).toHaveCount(1)
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
@@ -195,4 +195,20 @@ test('the settled desktop introduction fits its reading viewport', async ({ page
     expect(fit.bottom).toBeLessThanOrEqual(fit.limit + 1)
     expect(fit.overflow).toBeLessThanOrEqual(1)
   }
+})
+
+test('original demo gallery precedes the closing slide and scrolls within the page', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/#demos')
+  const gallery = page.locator('[data-demo-gallery]')
+  await expect(gallery).toBeVisible()
+  await expect(gallery.locator('[data-showcase]')).toBeVisible()
+  await expect(gallery.locator('#previews')).toBeAttached()
+  await expect(gallery.locator('#voice')).toBeAttached()
+  await expect(gallery.locator('#playground')).toBeAttached()
+  expect(await gallery.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true)
+  await gallery.evaluate(el => { el.scrollTop = 400 })
+  await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'demos')
+  await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
+  await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'colophon')
 })

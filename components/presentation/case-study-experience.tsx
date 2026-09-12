@@ -7,6 +7,11 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 import { SETTLE } from '@/lib/traces/findings'
 import { PresentationDemo } from './presentation-demo'
 import styles from './presentation.module.css'
+import { SectionShowcase } from '@/components/sections/section-showcase'
+import { SectionPreviews } from '@/components/sections/section-previews'
+import { SectionVoice } from '@/components/sections/section-voice'
+import { SectionPlayground } from '@/components/sections/section-playground'
+import { AmbientStudy } from '@/components/settle/ambient-study'
 
 const CHAPTERS = [
   { id: 'opening', label: 'the opening', category: 'after tokens' },
@@ -20,6 +25,7 @@ const CHAPTERS = [
   { id: 'research', label: 'what research supports', category: 'the evidence' },
   { id: 'costs', label: 'what it costs', category: 'the tradeoff' },
   { id: 'limits', label: 'what is still open', category: 'the next study' },
+  { id: 'demos', label: 'the demo gallery', category: 'try it' },
   { id: 'colophon', label: 'after the last word', category: 'after tokens' },
 ] as const
 const SOURCE = 'https://github.com/globalanomalyindex/after-tokens'
@@ -217,9 +223,18 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <Title eyebrow="10 / what I still need to learn" description="A polished prototype is evidence that the interaction can work. It is not evidence that readers understand more, trust appropriately, or enjoy waiting.">a motion study.<br />not a promise.</Title>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
+  if (index === 11) return <div className={styles.demoGallery} data-slide-scroll data-demo-gallery tabIndex={0} aria-label="Scrollable original case study demos">
+    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="The original demos, at their original scale. Scroll down, change a setting, and watch the answer make room for itself.">a little closer.<br />a little more room.</Title></div>
+    <SectionShowcase />
+    <section className={styles.galleryIntro} aria-label="Skeleton motion study"><h2 className="text-4xl font-bold tracking-tight mb-8">a field, then an answer</h2><AmbientStudy /></section>
+    <SectionPreviews />
+    <SectionVoice />
+    <SectionPlayground />
+    <button type="button" className={styles.textLink} onClick={() => { window.location.hash = 'colophon' }}>after the last word →</button>
+  </div>
   return <div className={styles.colophon} data-slide-scroll>
     <div className={styles.colophonIntro}>
-      <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
+      <p className={styles.eyebrow}>12 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
       <div className={styles.endLinks}><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
     </div>
     <a className={styles.studyCta} href="?view=reading" aria-label="View the full case study" onClick={event => {
