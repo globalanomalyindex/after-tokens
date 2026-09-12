@@ -171,3 +171,21 @@
 @media (max-height: 740px) and (min-width: 901px) { .answer :global([data-demo-progress]) { right: 24px; bottom: 24px; } }
 @media (max-width: 900px) { .answer :global([data-demo-progress]) { right: 25px; bottom: 25px; } }
 @media (max-width: 480px) { .answer :global([data-demo-progress]) { right: 18px; bottom: 20px; } }
+
+/* A typographic invitation balances the closing statement. */
+.colophon { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); column-gap: clamp(44px, 7vw, 112px); align-items: center; }
+.colophonIntro, .colophonCredits { min-width: 0; }
+.colophon h2 { font-size: clamp(48px, 5.8vw, 92px); }
+.studyCta { grid-column: 2; grid-row: 1 / 3; display: flex; flex-direction: column; align-items: flex-start; gap: 30px; padding-block: 24px; color: var(--deck-ink); text-decoration: none; font-size: clamp(44px, 4.8vw, 76px); font-weight: 620; line-height: 1.02; letter-spacing: -.06em; }
+.studyArrow { width: clamp(64px, 7vw, 112px); height: auto; margin-bottom: 10px; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
+.colophonCredits { grid-column: 1; }
+@media (hover: hover) and (pointer: fine) { .studyCta:hover { color: #fff; }.studyCta:hover .studyArrow { transform: translate(4px, -4px); } }
+@media (max-width: 900px) {
+  .edge { display: none; }
+  .colophon { grid-template-columns: minmax(0, 1fr); row-gap: 34px; }
+  .colophon h2 { font-size: clamp(43px, 7vw, 64px); }
+  .studyCta { grid-column: 1; grid-row: auto; border-top: 1px solid #ffffff26; padding-top: 28px; flex-direction: row-reverse; justify-content: space-between; align-items: flex-start; gap: 20px; font-size: clamp(44px, 7vw, 64px); }
+  .studyArrow { width: 56px; flex-shrink: 0; margin-top: 4px; }
+  .colophonCredits .credit { margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .studyArrow { transition: none; }.studyCta:hover .studyArrow { transform: none; } }

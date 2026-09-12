@@ -30,7 +30,7 @@ Each comparison uses one replay clock. After Tokens stays left/first. Only its a
 
 Spectrum is an original multicolor wash informed by the blue, violet and warm-color gradient language associated with Gemini. It is not a Google identity or an affiliated product. Low-opacity radial color fields move behind solid, high-contrast answer text. Color never masks the words or encodes model certainty.
 
-The sequence is Spectrum → After Tokens → Felt → Pulse. A voice changes 2.4 seconds after replay completion, leaving time for the bounded handover and a reading beat. Changing voices restarts the same source, making the material differences comparable. A manual selection pauses the cycle; “resume cycle” restarts automatic selection. Playback pause and hidden documents suspend advancement. Reduced motion uses manual selection and a still wash. The presentation chapters themselves never advance automatically.
+The sequence is Spectrum → After Tokens → Felt → Pulse. A voice changes 2.4 seconds after replay completion, leaving time for the bounded handover and a reading beat. Changing voices restarts the same source, making the material differences comparable. A manual selection pauses the cycle; “resume cycle” restarts automatic selection. Playback pause and hidden documents suspend advancement. Reduced motion uses manual selection and a still wash. The presentation chapters themselves never advance automatically. After a watched introduction, the opening remains visible even if the URL initially named a later chapter. Explicit Skip and reduced-motion entry may honor a chapter link; wheel inertia from the intro is not treated as a fresh navigation gesture.
 
 The 12-second alternating wash uses small translation, rotation and scale on a contained background. It does not change the text layout or consume provisional word positions. This preserves the renderer’s source-only integration boundary: ambient movement can run without a token-confidence stream or advance knowledge of the final wording.
 
@@ -38,7 +38,7 @@ The 12-second alternating wash uses small translation, rotation and scale on a c
 
 Scroll gestures, swipes, arrow controls and an index navigate chapters. One wheel gesture advances one chapter; inertial events are latched. Nested reply/article scrolling takes precedence while there is content left to read. Native inputs retain their interaction. Mobile layouts stack comparison panels and allow chapter content to scroll inside the fullscreen frame.
 
-Glass is concentrated in navigation and subtle edges. Cursor sheen only changes a masked border highlight, using CSS variables; it does not reposition reading content. Touch and reduced-motion users receive a stable surface. Footer arrows offer complete 44-pixel targets alongside the cropped side previews.
+Glass is concentrated in navigation and subtle edges. Cursor sheen only changes a masked border highlight, using CSS variables; it does not reposition reading content. Touch and reduced-motion users receive a stable surface. Footer arrows offer complete 44-pixel targets. Cropped side previews are hidden at widths of 900 px and below. The closing slide balances its statement with a bold “view the full case study” link and an oversized diagonal arrow; it opens the full article, supports native modified clicks, and stacks above the credits on mobile.
 
 References informing these constraints:
 
@@ -156,9 +156,18 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
     setIndex(clamped); setMenu(false)
     history.pushState(null, '', `${location.pathname}#${CHAPTERS[clamped]!.id}`)
   }, [index])
-  const finishOpening = useCallback(() => {
+  const finishOpening = useCallback((skipped: boolean) => {
     setOpeningDone(true)
-    if (pending.current) { setIndex(pending.current); pending.current = 0 }
+    // A completed animation never navigates. Explicit Skip/reduced-motion
+    // entry may honor a requested chapter; a watched opening stays here.
+    if (skipped && pending.current) setIndex(pending.current)
+    else if (!skipped) history.replaceState(null, '', `${location.pathname}#opening`)
+    pending.current = 0
+    if (!skipped) {
+      wheelState.current.last = performance.now()
+      wheelState.current.consumed = true
+      wheelState.current.sum = 0
+    }
   }, [])
   useEffect(() => {
     const restore = () => {
@@ -174,7 +183,8 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
     if (readingMode) return
     const wheel = wheelState.current
     const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || menu || !openingDone || document.querySelector('[role="dialog"]')) return
+      if (!openingDone || document.querySelector('[role="dialog"]')) { wheel.last = performance.now(); wheel.consumed = true; wheel.sum = 0; return }
+      if (event.ctrlKey || menu) return
       if (event.target instanceof Element && event.target.closest('select, input, textarea, [role="listbox"]')) return
       const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1)
       const now = performance.now()
@@ -297,10 +307,20 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
   return <div className={styles.colophon} data-slide-scroll>
-    <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
-    <div className={styles.endLinks}><button type="button" onClick={() => read()}>read the full study ↗</button><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
-    <p className={styles.credit}>web design, motion design and implementation by<br /><strong>Christopher Robin Fiore</strong></p>
-    <p className={styles.citation}>cite as: Christopher Robin Fiore (2026). <i>After Tokens: a skeleton motion study for generated text.</i><br />GitHub: globalanomalyindex</p>
+    <div className={styles.colophonIntro}>
+      <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
+      <div className={styles.endLinks}><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
+    </div>
+    <a className={styles.studyCta} href="?view=reading" aria-label="View the full case study" onClick={event => {
+      if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); read() }
+    }}>
+      <svg className={styles.studyArrow} viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M9 39 39 9M9 9h30v30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      <span>view the<br />full case<br />study.</span>
+    </a>
+    <div className={styles.colophonCredits}>
+      <p className={styles.credit}>web design, motion design and implementation by<br /><strong>Christopher Robin Fiore</strong></p>
+      <p className={styles.citation}>cite as: Christopher Robin Fiore (2026). <i>After Tokens: a skeleton motion study for generated text.</i><br />GitHub: globalanomalyindex</p>
+    </div>
   </div>
 }
 
@@ -587,6 +607,24 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
 @media (max-width: 900px) { .answer :global([data-demo-progress]) { right: 25px; bottom: 25px; } }
 @media (max-width: 480px) { .answer :global([data-demo-progress]) { right: 18px; bottom: 20px; } }
 
+/* A typographic invitation balances the closing statement. */
+.colophon { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); column-gap: clamp(44px, 7vw, 112px); align-items: center; }
+.colophonIntro, .colophonCredits { min-width: 0; }
+.colophon h2 { font-size: clamp(48px, 5.8vw, 92px); }
+.studyCta { grid-column: 2; grid-row: 1 / 3; display: flex; flex-direction: column; align-items: flex-start; gap: 30px; padding-block: 24px; color: var(--deck-ink); text-decoration: none; font-size: clamp(44px, 4.8vw, 76px); font-weight: 620; line-height: 1.02; letter-spacing: -.06em; }
+.studyArrow { width: clamp(64px, 7vw, 112px); height: auto; margin-bottom: 10px; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
+.colophonCredits { grid-column: 1; }
+@media (hover: hover) and (pointer: fine) { .studyCta:hover { color: #fff; }.studyCta:hover .studyArrow { transform: translate(4px, -4px); } }
+@media (max-width: 900px) {
+  .edge { display: none; }
+  .colophon { grid-template-columns: minmax(0, 1fr); row-gap: 34px; }
+  .colophon h2 { font-size: clamp(43px, 7vw, 64px); }
+  .studyCta { grid-column: 1; grid-row: auto; border-top: 1px solid #ffffff26; padding-top: 28px; flex-direction: row-reverse; justify-content: space-between; align-items: flex-start; gap: 20px; font-size: clamp(44px, 7vw, 64px); }
+  .studyArrow { width: 56px; flex-shrink: 0; margin-top: 4px; }
+  .colophonCredits .credit { margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .studyArrow { transition: none; }.studyCta:hover .studyArrow { transform: none; } }
+
 ```
 
 ### components/presentation/reading-study.tsx
@@ -641,7 +679,7 @@ export function ReadingStudy() {
 
 ## Shared component integration patch
 
-Apply against prior main `143aa292ecd593666b955456e688401f04a14e68`, which already includes word-local transfer. The final focused overlay check passed in all three browser configurations, including actual computed backdrop blur and stationary placement while the answer scrolls.
+Apply against prior main `143aa292ecd593666b955456e688401f04a14e68`, which already includes word-local transfer.
 
 ```diff
 diff --git a/app/globals.css b/app/globals.css
@@ -734,7 +772,7 @@ index 4b72403..224415a 100644
    .conversation { padding-block: 1.5rem; }
    .prompt { padding: .85rem 1rem; max-width: 100%; }
 diff --git a/components/settle/hero-intro.tsx b/components/settle/hero-intro.tsx
-index b5d64a6..f4ed752 100644
+index b5d64a6..860d17a 100644
 --- a/components/settle/hero-intro.tsx
 +++ b/components/settle/hero-intro.tsx
 @@ -1,6 +1,6 @@
@@ -767,7 +805,7 @@ index b5d64a6..f4ed752 100644
 +export const SkipOpeningContext = createContext(false)
  
 -export function HeroIntro() {
-+export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: () => void } = {}) {
++export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped: boolean) => void } = {}) {
    const root = useRef<HTMLElement>(null)
    const slot = useRef<HTMLDivElement>(null)
    const canvas = useRef<HTMLDivElement>(null)
@@ -799,9 +837,9 @@ index b5d64a6..f4ed752 100644
 +  useEffect(() => {
 +    if (hydrated && presentation === 'embedded' && !openingReported.current) {
 +      openingReported.current = true
-+      onOpeningComplete?.()
++      onOpeningComplete?.(staticView)
 +    }
-+  }, [hydrated, presentation, onOpeningComplete])
++  }, [hydrated, presentation, onOpeningComplete, staticView])
    useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
  
    useLayoutEffect(() => {

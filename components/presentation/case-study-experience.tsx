@@ -66,9 +66,18 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
     setIndex(clamped); setMenu(false)
     history.pushState(null, '', `${location.pathname}#${CHAPTERS[clamped]!.id}`)
   }, [index])
-  const finishOpening = useCallback(() => {
+  const finishOpening = useCallback((skipped: boolean) => {
     setOpeningDone(true)
-    if (pending.current) { setIndex(pending.current); pending.current = 0 }
+    // A completed animation never navigates. Explicit Skip/reduced-motion
+    // entry may honor a requested chapter; a watched opening stays here.
+    if (skipped && pending.current) setIndex(pending.current)
+    else if (!skipped) history.replaceState(null, '', `${location.pathname}#opening`)
+    pending.current = 0
+    if (!skipped) {
+      wheelState.current.last = performance.now()
+      wheelState.current.consumed = true
+      wheelState.current.sum = 0
+    }
   }, [])
   useEffect(() => {
     const restore = () => {
@@ -84,7 +93,8 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
     if (readingMode) return
     const wheel = wheelState.current
     const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || menu || !openingDone || document.querySelector('[role="dialog"]')) return
+      if (!openingDone || document.querySelector('[role="dialog"]')) { wheel.last = performance.now(); wheel.consumed = true; wheel.sum = 0; return }
+      if (event.ctrlKey || menu) return
       if (event.target instanceof Element && event.target.closest('select, input, textarea, [role="listbox"]')) return
       const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1)
       const now = performance.now()
@@ -207,9 +217,19 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
   return <div className={styles.colophon} data-slide-scroll>
-    <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
-    <div className={styles.endLinks}><button type="button" onClick={() => read()}>read the full study ↗</button><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
-    <p className={styles.credit}>web design, motion design and implementation by<br /><strong>Christopher Robin Fiore</strong></p>
-    <p className={styles.citation}>cite as: Christopher Robin Fiore (2026). <i>After Tokens: a skeleton motion study for generated text.</i><br />GitHub: globalanomalyindex</p>
+    <div className={styles.colophonIntro}>
+      <p className={styles.eyebrow}>11 / after the last word</p><h2>make the wait<br />worth watching.<br /><span>then let me read.</span></h2>
+      <div className={styles.endLinks}><a href={SOURCE} target="_blank" rel="noreferrer">explore the source ↗</a><a href={`${SOURCE}/blob/main/docs/growing-skeleton-v8-handoff-2026-09-12.md`} target="_blank" rel="noreferrer">design &amp; engineering handoff ↗</a></div>
+    </div>
+    <a className={styles.studyCta} href="?view=reading" aria-label="View the full case study" onClick={event => {
+      if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); read() }
+    }}>
+      <svg className={styles.studyArrow} viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M9 39 39 9M9 9h30v30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      <span>view the<br />full case<br />study.</span>
+    </a>
+    <div className={styles.colophonCredits}>
+      <p className={styles.credit}>web design, motion design and implementation by<br /><strong>Christopher Robin Fiore</strong></p>
+      <p className={styles.citation}>cite as: Christopher Robin Fiore (2026). <i>After Tokens: a skeleton motion study for generated text.</i><br />GitHub: globalanomalyindex</p>
+    </div>
   </div>
 }

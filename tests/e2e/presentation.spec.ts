@@ -69,7 +69,12 @@ test('the full study stays available and reduced motion supports every chapter',
     expect(result.violations).toEqual([])
   }
   await expect(page.getByRole('button', { name: 'Go to next slide', exact: true })).toBeDisabled()
-  await page.getByRole('button', { name: 'read the full study', exact: false }).click()
+  if (page.viewportSize()!.width <= 900) {
+    await expect(page.getByRole('button', { name: 'Previous slide', exact: true })).toBeHidden()
+    await expect(page.getByRole('button', { name: 'Next slide', exact: true })).toBeHidden()
+    await expect(page.getByRole('button', { name: 'Go to previous slide', exact: true })).toBeVisible()
+  }
+  await page.getByRole('link', { name: 'View the full case study', exact: true }).click()
   await expect(page.locator('#evidence')).toBeAttached()
   await expect(page).toHaveURL(/view=reading/)
   await page.getByRole('button', { name: 'presentation', exact: false }).click()
@@ -105,7 +110,7 @@ test('reply progress stays anchored while long answer text scrolls', async ({ pa
   const reply = page.locator('[data-after-tokens-reply]')
   const pill = reply.locator('[data-demo-progress]')
   await expect(pill).toBeVisible()
-  expect(await pill.evaluate(el => getComputedStyle(el).backdropFilter || getComputedStyle(el).getPropertyValue('-webkit-backdrop-filter'))).toContain('blur(12px)')
+  await expect.poll(() => pill.evaluate(el => getComputedStyle(el).backdropFilter || getComputedStyle(el).getPropertyValue('-webkit-backdrop-filter'))).toContain('blur(12px)')
   const margin = pill
   await reply.locator('[data-slide-scroll]').evaluate(el => {
     const spacer = document.createElement('div'); spacer.style.height = '1500px'; el.append(spacer)
@@ -124,8 +129,8 @@ test('reply progress stays anchored while long answer text scrolls', async ({ pa
   expect(progress!.y + progress!.height).toBeLessThanOrEqual(scrollArea!.y + scrollArea!.height + 1)
 })
 
-test('the intro keeps one off-black background through its natural zoom-out', async ({ page }) => {
-  await page.goto('/')
+test('the intro keeps its off-black background and stays put until manual navigation', async ({ page }) => {
+  await page.goto('/#comparison')
   const canvas = page.locator('[data-hero-canvas]')
   await expect(canvas).toHaveAttribute('data-presentation', 'fullscreen')
   const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string }>>((resolve, reject) => {
@@ -142,4 +147,8 @@ test('the intro keeps one off-black background through its natural zoom-out', as
   }))
   expect(samples.some(frame => frame.phase === 'docking')).toBe(true)
   expect(new Set(samples.map(frame => frame.color))).toEqual(new Set(['rgb(24, 22, 21)']))
+  await page.waitForTimeout(700)
+  await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'opening')
+  await page.getByRole('button', { name: 'Go to next slide', exact: true }).click()
+  await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'comparison')
 })

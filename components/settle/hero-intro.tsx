@@ -40,7 +40,7 @@ const STATIC_ANSWER = INTRO.events.reduce(reduceSettle, createSettleState('sente
 type Presentation = 'pending' | 'fullscreen' | 'docking' | 'embedded'
 export const SkipOpeningContext = createContext(false)
 
-export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: () => void } = {}) {
+export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped: boolean) => void } = {}) {
   const root = useRef<HTMLElement>(null)
   const slot = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLDivElement>(null)
@@ -104,9 +104,9 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: () => voi
   useEffect(() => {
     if (hydrated && presentation === 'embedded' && !openingReported.current) {
       openingReported.current = true
-      onOpeningComplete?.()
+      onOpeningComplete?.(staticView)
     }
-  }, [hydrated, presentation, onOpeningComplete])
+  }, [hydrated, presentation, onOpeningComplete, staticView])
   useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
 
   useLayoutEffect(() => {
