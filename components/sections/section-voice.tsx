@@ -12,7 +12,7 @@ import { SETTLE_RANGES, type SettleVoice } from '@/lib/settle/voice'
 // Palette and tempo change the material; source eligibility stays fixed.
 
 const TOKENS = [
-  { key: 'palette', range: 'five brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
+  { key: 'palette', range: 'six brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breathing, independent reshaping and occasional glimmer', keeps: 'source eligibility and the 280 ms text handover' },
 ]
 const SLIDERS = [{ key: 'tempo', step: .05 }] as const

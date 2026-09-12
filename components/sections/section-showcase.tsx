@@ -11,6 +11,7 @@ import styles from './section-showcase.module.css'
 
 /** One source and one presentation clock feed both visible panels. */
 export function SectionShowcase() {
+  const [spectrum, setSpectrum] = useState(false)
   const [policy, setPolicy] = useState<Policy>('sentence')
   const [inView, setInView] = useState(false)
   const [documentVisible, setDocumentVisible] = useState(true)
@@ -61,14 +62,14 @@ export function SectionShowcase() {
               </label>
             ))}
           </fieldset>
-          <div className={styles.controls}>
+          <div className={styles.controls}><button type="button" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
             <button type="button" disabled={clock.finished} onClick={() => setUserPaused((value) => !value)} aria-label={userPaused ? 'resume live comparison' : 'pause live comparison'}>
               <span aria-hidden="true">{userPaused ? '▷' : 'Ⅱ'}</span>{userPaused ? 'resume' : 'pause'}
             </button>
             <button type="button" onClick={replay} aria-label="replay live comparison"><span aria-hidden="true">↻</span>replay</button>
           </div>
         </div>
-        <BrandProvider brand="after-tokens" className={`stage ${styles.stage}`} data-demo>
+        <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className={`stage ${styles.stage}`} data-demo>
           <div className={styles.prompt}><span aria-hidden="true">↳</span>{SHOWCASE_REPLAY.label}</div>
           <div className={styles.panels}>
             <div className={styles.panel}>

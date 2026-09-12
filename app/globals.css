@@ -1140,3 +1140,15 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   .settle-floor { animation: none !important; transition: none; }
   .settle-mark::before { animation: none !important; }
 }
+
+/* Spectrum is a shared answer material, available wherever a brand is selected.
+   The wash stays behind readable ink and never communicates model confidence. */
+[data-brand='spectrum'] .settle {
+  background-image: radial-gradient(ellipse at 10% 15%, #4285f024, transparent 55%), radial-gradient(ellipse at 90% 30%, #a775ff24, transparent 55%), radial-gradient(ellipse at 65% 90%, #ef779c1c, transparent 55%);
+  background-size: 150% 150%;
+  animation: spectrum-answer-wash 12s ease-in-out infinite alternate;
+  border-radius: 16px;
+}
+[data-brand='spectrum'] .settle[data-paused='true'], [data-brand='spectrum'] .settle[data-active='false'], [data-brand='spectrum'] .settle[data-motion='off'] { animation-play-state: paused; }
+@keyframes spectrum-answer-wash { from { background-position: 0% 20%; } to { background-position: 100% 80%; } }
+@media (prefers-reduced-motion: reduce) { [data-brand='spectrum'] .settle { animation: none; } }

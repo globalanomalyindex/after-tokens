@@ -36,7 +36,7 @@ The 12-second alternating wash uses small translation, rotation and scale on a c
 
 ## Original demo gallery
 
-I placed a vertically scrolling gallery immediately before the closing invitation. It reuses SectionShowcase, AmbientStudy, SectionPreviews, SectionVoice and SectionPlayground directly from the article, retaining their controls, sources, compact type and expanding answer geometry. The gallery owns its scrolling area; the presentation arrows remain available to leave it. These are shared components, not recreated presentation-sized variants.
+I arranged the gallery as a dark editorial sequence: the extended heist answer leads, followed by the travel comparison, technical explanation and smaller sunflower branding moment. Width and alignment vary down a single vertical reading path. These are the original source recordings in SettleStage, with compact answer type and content-driven growth; the article section layouts are not copied. Spectrum is now registered in the shared brand system and available in the stages, presentation examples, original showcase, motion study and product previews. Its low-opacity color stays behind readable ink, pauses with the answer and respects reduced motion.
 
 ## Navigation and material
 
@@ -98,13 +98,9 @@ import { BrandProvider } from '@/lib/brand/provider'
 import { HeroIntro, SkipOpeningContext } from '@/components/settle/hero-intro'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import { SETTLE } from '@/lib/traces/findings'
+import { SettleStage } from '@/components/settle/settle-stage'
 import { PresentationDemo } from './presentation-demo'
 import styles from './presentation.module.css'
-import { SectionShowcase } from '@/components/sections/section-showcase'
-import { SectionPreviews } from '@/components/sections/section-previews'
-import { SectionVoice } from '@/components/sections/section-voice'
-import { SectionPlayground } from '@/components/sections/section-playground'
-import { AmbientStudy } from '@/components/settle/ambient-study'
 
 const CHAPTERS = [
   { id: 'opening', label: 'the opening', category: 'after tokens' },
@@ -317,12 +313,16 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
   if (index === 11) return <div className={styles.demoGallery} data-slide-scroll data-demo-gallery tabIndex={0} aria-label="Scrollable original case study demos">
-    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="The original demos, at their original scale. Scroll down, change a setting, and watch the answer make room for itself.">a little closer.<br />a little more room.</Title></div>
-    <SectionShowcase />
-    <section className={styles.galleryIntro} aria-label="Skeleton motion study"><h2 className="text-4xl font-bold tracking-tight mb-8">a field, then an answer</h2><AmbientStudy /></section>
-    <SectionPreviews />
-    <SectionVoice />
-    <SectionPlayground />
+    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="Longer answers first. Smaller moments further down. The original recordings, with room to explore their arrival.">a little closer.<br />a little more room.</Title></div>
+    {[
+      { id: 'heist-plot__lowconf-b32', title: 'room for a whole story.', note: 'An extended answer from the original playground. Follow the sentences, or compare the entire arrival.', size: 'wide' },
+      { id: 'travel__lowconf-b32', title: 'two ways to get there.', note: 'The original travel recording. One source clock, with the raw prefix beside it.', size: 'offset' },
+      { id: 'hash-function__lowconf-b32', title: 'structure finds its place.', note: 'The technical example from the reading contract. Formatting and prose share the same release rules.', size: 'wide' },
+      { id: 'golden-sunflower__lowconf-b32', title: 'a little character.', note: 'The original brand experiment. Change the material while keeping the recording intact.', size: 'narrow' },
+    ].map((item, i) => <article key={item.id} className={styles.galleryEntry} data-width={item.size} data-gallery-source={item.id}>
+      <header><span className={styles.eyebrow}>0{i + 1} / in motion</span><h3>{item.title}</h3><p>{item.note}</p></header>
+      <SettleStage source={`trace:${item.id}`} policy="sentence" controls={['policy', 'voice', 'comparison']} comparison />
+    </article>)}
     <button type="button" className={styles.textLink} onClick={() => { window.location.hash = 'colophon' }}>after the last word →</button>
   </div>
   return <div className={styles.colophon} data-slide-scroll>
@@ -418,9 +418,9 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
         <button type="button" disabled={!source} onClick={restart} aria-label="Replay example">replay ↺</button>
       </div>
     </div>
-    {brands && <div className={styles.options} role="group" aria-label="Brand voice">
+    {<div className={styles.options} role="group" aria-label="Brand voice">
       {VOICES.map(id => <button key={id} type="button" aria-pressed={brand === id} onClick={() => { setCycling(false); setBrand(id) }}>{id === 'after-tokens' ? 'after tokens' : id}</button>)}
-      <button type="button" disabled={clock.reducedMotion} aria-label={cycling ? 'Pause brand cycle' : 'Resume brand cycle'} onClick={() => setCycling(value => !value)}>{clock.reducedMotion ? 'manual · reduced motion' : cycling ? 'pause cycle' : 'resume cycle'}</button>
+      {brands && <button type="button" disabled={clock.reducedMotion} aria-label={cycling ? 'Pause brand cycle' : 'Resume brand cycle'} onClick={() => setCycling(value => !value)}>{clock.reducedMotion ? 'manual · reduced motion' : cycling ? 'pause cycle' : 'resume cycle'}</button>}
     </div>}
     {conditions && <div className={styles.options} role="group" aria-label="Waiting motion">
       {(['static', 'breathe', 'reshape'] as const).map(id => <button key={id} type="button" aria-pressed={condition === id} onClick={() => setCondition(id)}>{id === 'static' ? 'still' : id}</button>)}
@@ -660,6 +660,25 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
 .demoGallery > section { background: var(--surface); color: var(--ink); }
 .demoGallery > .galleryIntro:first-child { padding-bottom: 24px; }
 .demoGallery > .galleryIntro:first-child h2 { font-size: clamp(32px, 3.2vw, 48px); }
+
+
+.galleryEntry { width: 100%; max-width: 1080px; margin: 40px 0 120px; padding: 32px clamp(16px, 3vw, 48px); border-top: 1px solid #ffffff20; --ink: #f5f2ee; --ink-2: #d0c9c2; --muted: #b6b0aa; }
+.galleryEntry[data-width='offset'] { max-width: 900px; margin-left: auto; }
+.galleryEntry[data-width='narrow'] { max-width: 760px; margin-left: 5%; }
+.galleryEntry header { max-width: 560px; margin-bottom: 32px; }
+.galleryEntry h3 { font-family: var(--font-ui); font-size: clamp(28px, 3.5vw, 48px); font-weight: 500; letter-spacing: -.06em; line-height: 1.08; margin: 16px 0; }
+.galleryEntry header p { font-size: 16px; line-height: 1.65; color: var(--deck-muted); }
+.galleryEntry :global(.stage) { background: #ffffff04; border: 1px solid #ffffff18; border-radius: 22px; }
+.galleryEntry :global(.settle) { font-family: var(--font-ui); }
+.galleryEntry :global(.readout), .galleryEntry :global(.label) { font-family: var(--font-ui); }
+@media (max-width: 900px) { .galleryEntry[data-width='narrow'] { margin-left: 0; }.galleryEntry { margin-bottom: 72px; } }
+
+.galleryEntry :global([role='radio']) { border: 1px solid #ffffff24; border-radius: 999px; background: #ffffff04; color: var(--deck-ink); font-family: var(--font-ui); }
+.galleryEntry :global([role='radio'][aria-checked='true']) { background: #e9e4dd; color: #181615; border-color: transparent; }
+.galleryEntry { --surface: #181615; --accent: #706860; }
+@media (max-width: 640px) {
+  .galleryEntry :global(div:has(> [role='radiogroup'])) { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+}
 ```
 
 ### components/presentation/reading-study.tsx
@@ -717,7 +736,7 @@ Apply against prior main `143aa292ecd593666b955456e688401f04a14e68`, which alrea
 
 ```diff
 diff --git a/app/globals.css b/app/globals.css
-index 7cfa9a0..18be319 100644
+index 7cfa9a0..31f9473 100644
 --- a/app/globals.css
 +++ b/app/globals.css
 @@ -1037,6 +1037,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
@@ -738,6 +757,132 @@ index 7cfa9a0..18be319 100644
  }
  .settle-mark {
    position: relative;
+@@ -1138,3 +1140,15 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
+   .settle-floor { animation: none !important; transition: none; }
+   .settle-mark::before { animation: none !important; }
+ }
++
++/* Spectrum is a shared answer material, available wherever a brand is selected.
++   The wash stays behind readable ink and never communicates model confidence. */
++[data-brand='spectrum'] .settle {
++  background-image: radial-gradient(ellipse at 10% 15%, #4285f024, transparent 55%), radial-gradient(ellipse at 90% 30%, #a775ff24, transparent 55%), radial-gradient(ellipse at 65% 90%, #ef779c1c, transparent 55%);
++  background-size: 150% 150%;
++  animation: spectrum-answer-wash 12s ease-in-out infinite alternate;
++  border-radius: 16px;
++}
++[data-brand='spectrum'] .settle[data-paused='true'], [data-brand='spectrum'] .settle[data-active='false'], [data-brand='spectrum'] .settle[data-motion='off'] { animation-play-state: paused; }
++@keyframes spectrum-answer-wash { from { background-position: 0% 20%; } to { background-position: 100% 80%; } }
++@media (prefers-reduced-motion: reduce) { [data-brand='spectrum'] .settle { animation: none; } }
+diff --git a/components/sections/section-previews.tsx b/components/sections/section-previews.tsx
+index 9c269a5..ea1d583 100644
+--- a/components/sections/section-previews.tsx
++++ b/components/sections/section-previews.tsx
+@@ -19,6 +19,7 @@ import { useReplay } from '@/components/settle/use-replay'
+ type FrameProps = { title: string; brand: BrandId; traceId: TraceId; children: (answer: ReactNode, prompt: string, run: number) => ReactNode; delay?: number; tall?: boolean; released: string }
+
+ function Frame({ title, brand, traceId, children, delay = 0, tall = false, released }: FrameProps) {
++  const [spectrum, setSpectrum] = useState(false)
+   const [run, setRun] = useState(0)
+   const [motion, setMotion] = useState(true)
+   const [trace, setTrace] = useState<TraceCompact | null>(null)
+@@ -45,12 +46,12 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
+   )
+   return (
+     <Reveal as="figure" className="m-0 flex flex-col" delay={delay}>
+-      <BrandProvider brand={brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
++      <BrandProvider brand={spectrum ? 'spectrum' : brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
+         <figure ref={ref as never} className="m-0 flex-1 flex flex-col">{children(answer, trace?.prompt ?? '', run)}</figure>
+       </BrandProvider>
+       <figcaption className="order-first mb-3 flex flex-wrap items-baseline justify-between gap-3">
+         <span className="text-sm" style={{ color: 'var(--ink-2)' }}>{title}</span>
+-        <span className="flex items-center gap-3 flex-wrap">
++        <span className="flex items-center gap-3 flex-wrap"><button type="button" className="replay-btn replay-btn-on-surface" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
+         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={() => setMotion((value) => !value)} aria-pressed={!motion}>motion {motion ? 'on' : 'off'}</button>
+         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished}>{clock.running ? 'pause' : 'resume'}</button>
+         <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label={`Replay ${title}`}>
+diff --git a/components/sections/section-showcase.tsx b/components/sections/section-showcase.tsx
+index ff827ac..4055c2c 100644
+--- a/components/sections/section-showcase.tsx
++++ b/components/sections/section-showcase.tsx
+@@ -11,6 +11,7 @@ import styles from './section-showcase.module.css'
+
+ /** One source and one presentation clock feed both visible panels. */
+ export function SectionShowcase() {
++  const [spectrum, setSpectrum] = useState(false)
+   const [policy, setPolicy] = useState<Policy>('sentence')
+   const [inView, setInView] = useState(false)
+   const [documentVisible, setDocumentVisible] = useState(true)
+@@ -61,14 +62,14 @@ export function SectionShowcase() {
+               </label>
+             ))}
+           </fieldset>
+-          <div className={styles.controls}>
++          <div className={styles.controls}><button type="button" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
+             <button type="button" disabled={clock.finished} onClick={() => setUserPaused((value) => !value)} aria-label={userPaused ? 'resume live comparison' : 'pause live comparison'}>
+               <span aria-hidden="true">{userPaused ? '▷' : 'Ⅱ'}</span>{userPaused ? 'resume' : 'pause'}
+             </button>
+             <button type="button" onClick={replay} aria-label="replay live comparison"><span aria-hidden="true">↻</span>replay</button>
+           </div>
+         </div>
+-        <BrandProvider brand="after-tokens" className={`stage ${styles.stage}`} data-demo>
++        <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className={`stage ${styles.stage}`} data-demo>
+           <div className={styles.prompt}><span aria-hidden="true">↳</span>{SHOWCASE_REPLAY.label}</div>
+           <div className={styles.panels}>
+             <div className={styles.panel}>
+diff --git a/components/sections/section-voice.tsx b/components/sections/section-voice.tsx
+index 433b9c4..1d417c5 100644
+--- a/components/sections/section-voice.tsx
++++ b/components/sections/section-voice.tsx
+@@ -12,7 +12,7 @@ import { SETTLE_RANGES, type SettleVoice } from '@/lib/settle/voice'
+ // Palette and tempo change the material; source eligibility stays fixed.
+
+ const TOKENS = [
+-  { key: 'palette', range: 'five brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
++  { key: 'palette', range: 'six brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
+   { key: 'tempo', range: '0.7 to 1.4', changes: 'the breathing, independent reshaping and occasional glimmer', keeps: 'source eligibility and the 280 ms text handover' },
+ ]
+ const SLIDERS = [{ key: 'tempo', step: .05 }] as const
+diff --git a/components/settle/ambient-study.tsx b/components/settle/ambient-study.tsx
+index 8fd21b3..416629f 100644
+--- a/components/settle/ambient-study.tsx
++++ b/components/settle/ambient-study.tsx
+@@ -1,6 +1,7 @@
+ 'use client'
+
+ import { useEffect, useMemo, useState } from 'react'
++import { BrandProvider } from '@/lib/brand/provider'
+ import { ToggleRail } from '@/components/coda/toggle-rail'
+ import { useInView } from '@/components/motion/reveal'
+ import { EXPERIMENTS, replayExperiment, type ExperimentalTrace } from '@/lib/settle/experimental-recordings'
+@@ -18,6 +19,7 @@ const CONDITIONS: { id: AmbientCondition; title: string; description: string }[]
+ ]
+
+ export function AmbientStudy() {
++  const [spectrum, setSpectrum] = useState(false)
+   const [source, setSource] = useState<string>('sleep')
+   const [trace, setTrace] = useState<ExperimentalTrace | null>(null)
+   const [loadError, setLoadError] = useState(false)
+@@ -53,7 +55,7 @@ export function AmbientStudy() {
+     : null, [earlier, replay, happened, comparisonPolicy])
+   return (
+     <div ref={ref} className="ambient-study" data-active-condition={condition} data-source-id={trace?.id ?? source} data-elapsed-ms={clock.elapsedMs} data-duration-ms={replay?.durationMs ?? 0}>
+-      <div className="grid gap-4 mb-6">
++      <div className="grid gap-4 mb-6"><ToggleRail label="voice" items={[{id: 'original', label: 'after tokens'}, {id: 'spectrum', label: 'spectrum'}]} activeId={spectrum ? 'spectrum' : 'original'} onSelect={value => setSpectrum(value === 'spectrum')} />
+         <ToggleRail label="recording" items={EXPERIMENTS.map(({ id, label }) => ({ id, label }))} activeId={source} onSelect={setSource} />
+         <ToggleRail label="clock" items={[{ id: 'recorded', label: 'observed clock' }, { id: 'half', label: '0.5× inspection' }]} activeId={pace} onSelect={setPace} />
+         <ToggleRail label="the page takes" items={[{ id: 'sentence', label: 'each sentence' }, { id: 'answer', label: 'whole answer' }, { id: 'word', label: 'each word' }, { id: 'paragraph', label: 'each paragraph' }]} activeId={policy} onSelect={(value) => setPolicy(value as Policy)} />
+@@ -78,9 +80,9 @@ export function AmbientStudy() {
+             <h3 className="text-base font-semibold">{item.title}</h3>
+             <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--ink-2)' }}>{item.description}</p>
+           </figcaption>
+-          <div className="stage p-5" data-demo>
++          <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className="stage p-5" data-demo>
+             <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} ambient={item.id} motion={motion} paused={clock.paused || !trace} announce={false} onVisualReady={condition === item.id ? setVisualReady : undefined} label={`answer · ${item.id}`} className="text-[15px] leading-relaxed" />
+-          </div>
++          </BrandProvider>
+         </figure>)}
+       </div>
+       <p className="readout leading-relaxed mt-5" style={{ color: 'var(--muted)' }}>Qwen diffusion 0.6B · 128 requested positions · 32 recorded evaluations · four commitments per evaluation, including end tokens. {clock.state.status === 'complete' ? choice.note : 'Unedited model output; this annotated demonstration includes quality failures.'}</p>
 diff --git a/components/settle/demo-progress.module.css b/components/settle/demo-progress.module.css
 index 411fce0..b37e905 100644
 --- a/components/settle/demo-progress.module.css
@@ -1025,7 +1170,7 @@ index b5d64a6..b379aa7 100644
          <button type="button" className="replay-btn replay-btn-on-surface" disabled={complete} onClick={() => setManualPause((value) => !value)}>{manualPause ? 'resume intro' : 'pause intro'}</button>
          <button type="button" className="replay-btn replay-btn-on-surface" onClick={replay}>replay intro</button>
 diff --git a/components/settle/settle-stage.tsx b/components/settle/settle-stage.tsx
-index 7e3385f..b2f8a79 100644
+index 7e3385f..4985aa6 100644
 --- a/components/settle/settle-stage.tsx
 +++ b/components/settle/settle-stage.tsx
 @@ -76,7 +76,7 @@ const POLICIES: { id: Policy; label: string }[] = [
@@ -1037,4 +1182,102 @@ index 7e3385f..b2f8a79 100644
    sources = 'curated',
    controls = [],
    policy: policyProp = 'sentence',
+@@ -138,12 +138,12 @@ export function SettleStage({
+
+   return (
+     <div className={className}>
+-      {controls.length > 0 && (
++      {(
+         <div className="grid gap-4 mb-6">
+           {has('prompt') && <PromptPicker prompts={promptItems} activeId={promptId} onSelect={selectPrompt} layout="compact" />}
+           {has('config') && <ToggleRail label="sampler" items={CONFIG_IDS.map((id) => ({ id, label: CONFIG_LABELS[id] }))} activeId={config} onSelect={selectConfig} />}
+           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
+-          {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
++          {<ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
+           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
+           {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'prefix', label: 'the raw prefix' }, { id: 'none', label: 'nothing' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
+         </div>
+diff --git a/components/settle/snapshot-study.tsx b/components/settle/snapshot-study.tsx
+index a4a68aa..815b6d0 100644
+--- a/components/settle/snapshot-study.tsx
++++ b/components/settle/snapshot-study.tsx
+@@ -1,5 +1,6 @@
+ 'use client'
+
++import { BrandProvider } from '@/lib/brand/provider'
+ import { useState } from 'react'
+ import { ToggleRail } from '@/components/coda/toggle-rail'
+ import { SNAPSHOT_STUDY } from '@/lib/settle/snapshot-study'
+@@ -8,6 +9,7 @@ import { SettleAnswer } from './settle-answer'
+
+ export function SnapshotStudy() {
+   const clock = useReplay(SNAPSHOT_STUDY, { policy: 'sentence', autoplay: false })
++  const [spectrum, setSpectrum] = useState(false)
+   const [motion, setMotion] = useState(true)
+   const [view, setView] = useState('protected')
+   const draft = clock.state.status === 'complete' ? clock.state.prefix : clock.state.snapshotCandidate ?? ''
+@@ -19,7 +21,7 @@ export function SnapshotStudy() {
+           <h3 className="text-2xl md:text-3xl font-bold tracking-tight">a draft can look finished.<br />and still change.</h3>
+           <p className="mt-4 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>Play the same revisable input through two views. The waiting field keeps its own rhythm as the draft changes. Even a complete-looking answer waits for the source&rsquo;s final signal; only then does the page fit and reveal the actual words.</p>
+         </div>
+-        <div className="flex flex-wrap gap-5 readout">
++        <div className="flex flex-wrap gap-5 readout"><button className="replay-btn replay-btn-on-surface" type="button" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
+           <button className="replay-btn replay-btn-on-surface cursor-pointer" type="button" onClick={clock.finished ? clock.restart : clock.running ? clock.pause : clock.play}>
+             {clock.finished ? 'replay example' : clock.running ? 'pause example' : clock.elapsedMs > 0 ? 'resume example' : 'play example'}
+           </button>
+@@ -30,9 +32,9 @@ export function SnapshotStudy() {
+       <div className="grid gap-6 md:grid-cols-2 items-start">
+         <figure className={`m-0 min-w-0 ${view === 'protected' ? 'block' : 'hidden md:block'}`}>
+           <figcaption className="mb-3"><h4 className="font-semibold">After Tokens</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>The same input. One complete answer to read.</p></figcaption>
+-          <div className="stage p-5">
++          <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className="stage p-5">
+             <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} motion={motion} paused={clock.paused} label="protected answer" className="text-[15px] leading-relaxed" />
+-          </div>
++          </BrandProvider>
+         </figure>
+         <figure className={`m-0 min-w-0 ${view === 'draft' ? 'block' : 'hidden md:block'}`}>
+           <figcaption className="mb-3"><h4 className="font-semibold">Evolving draft</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>For inspection. This wording can still change.</p></figcaption>
+diff --git a/lib/brand/brands.ts b/lib/brand/brands.ts
+index bdd008d..fd7201a 100644
+--- a/lib/brand/brands.ts
++++ b/lib/brand/brands.ts
+@@ -52,6 +52,26 @@ export const brands: Record<BrandId, BrandTokens> = {
+     voice: clampVoice({ tempo: 1, attack: 110, weight: 0.66, glow: 0.6, hush: 0.5, swing: 0.08 }),
+     settle: SETTLE_PRESETS['after-tokens'],
+   },
++  spectrum: {
++    id: 'spectrum',
++    name: 'Spectrum',
++    surface: '#EBE7DA',
++    surfaceTint: '#E2DCCB',
++    ink: '#15140F',
++    inkSecondary: '#2A2820',
++    muted: '#636058',
++    stage: '#181615',
++    stageText: '#EBE7DA',
++    // ice: the cool white a lock glows on the dark stage
++    accent: '#D9E3F2',
++    particleColor: '#D9E3F2',
++    fontDisplay: 'var(--font-display)',
++    fontBody: 'var(--font-body)',
++    fontMono: 'var(--font-mono)',
++    cornerRadius: 12,
++    voice: clampVoice({ tempo: 1, attack: 110, weight: 0.66, glow: 0.6, hush: 0.5, swing: 0.08 }),
++    settle: SETTLE_PRESETS['after-tokens'],
++  },
+   halcyon: {
+     id: 'halcyon',
+     name: 'Halcyon',
+diff --git a/lib/brand/types.ts b/lib/brand/types.ts
+index 16365c2..8faa8db 100644
+--- a/lib/brand/types.ts
++++ b/lib/brand/types.ts
+@@ -1,6 +1,6 @@
+ import type { SettleVoice } from '@/lib/settle/voice'
+
+-export type BrandId = 'after-tokens' | 'halcyon' | 'felt' | 'pulse' | 'voltage'
++export type BrandId = 'after-tokens' | 'halcyon' | 'felt' | 'pulse' | 'voltage' | 'spectrum'
+
+ // The voice: six tokens on the one grammar. Each has a range that keeps every
+ // property of the arrival profile inside its rule, so a brand can color the
 ```

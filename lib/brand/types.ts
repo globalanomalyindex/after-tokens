@@ -1,6 +1,6 @@
 import type { SettleVoice } from '@/lib/settle/voice'
 
-export type BrandId = 'after-tokens' | 'halcyon' | 'felt' | 'pulse' | 'voltage'
+export type BrandId = 'after-tokens' | 'halcyon' | 'felt' | 'pulse' | 'voltage' | 'spectrum'
 
 // The voice: six tokens on the one grammar. Each has a range that keeps every
 // property of the arrival profile inside its rule, so a brand can color the

@@ -138,12 +138,12 @@ export function SettleStage({
 
   return (
     <div className={className}>
-      {controls.length > 0 && (
+      {(
         <div className="grid gap-4 mb-6">
           {has('prompt') && <PromptPicker prompts={promptItems} activeId={promptId} onSelect={selectPrompt} layout="compact" />}
           {has('config') && <ToggleRail label="sampler" items={CONFIG_IDS.map((id) => ({ id, label: CONFIG_LABELS[id] }))} activeId={config} onSelect={selectConfig} />}
           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
-          {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
+          {<ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
           {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'prefix', label: 'the raw prefix' }, { id: 'none', label: 'nothing' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
         </div>

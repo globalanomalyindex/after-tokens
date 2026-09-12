@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { BrandProvider } from '@/lib/brand/provider'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { useInView } from '@/components/motion/reveal'
 import { EXPERIMENTS, replayExperiment, type ExperimentalTrace } from '@/lib/settle/experimental-recordings'
@@ -18,6 +19,7 @@ const CONDITIONS: { id: AmbientCondition; title: string; description: string }[]
 ]
 
 export function AmbientStudy() {
+  const [spectrum, setSpectrum] = useState(false)
   const [source, setSource] = useState<string>('sleep')
   const [trace, setTrace] = useState<ExperimentalTrace | null>(null)
   const [loadError, setLoadError] = useState(false)
@@ -53,7 +55,7 @@ export function AmbientStudy() {
     : null, [earlier, replay, happened, comparisonPolicy])
   return (
     <div ref={ref} className="ambient-study" data-active-condition={condition} data-source-id={trace?.id ?? source} data-elapsed-ms={clock.elapsedMs} data-duration-ms={replay?.durationMs ?? 0}>
-      <div className="grid gap-4 mb-6">
+      <div className="grid gap-4 mb-6"><ToggleRail label="voice" items={[{id: 'original', label: 'after tokens'}, {id: 'spectrum', label: 'spectrum'}]} activeId={spectrum ? 'spectrum' : 'original'} onSelect={value => setSpectrum(value === 'spectrum')} />
         <ToggleRail label="recording" items={EXPERIMENTS.map(({ id, label }) => ({ id, label }))} activeId={source} onSelect={setSource} />
         <ToggleRail label="clock" items={[{ id: 'recorded', label: 'observed clock' }, { id: 'half', label: '0.5× inspection' }]} activeId={pace} onSelect={setPace} />
         <ToggleRail label="the page takes" items={[{ id: 'sentence', label: 'each sentence' }, { id: 'answer', label: 'whole answer' }, { id: 'word', label: 'each word' }, { id: 'paragraph', label: 'each paragraph' }]} activeId={policy} onSelect={(value) => setPolicy(value as Policy)} />
@@ -78,9 +80,9 @@ export function AmbientStudy() {
             <h3 className="text-base font-semibold">{item.title}</h3>
             <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--ink-2)' }}>{item.description}</p>
           </figcaption>
-          <div className="stage p-5" data-demo>
+          <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className="stage p-5" data-demo>
             <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} ambient={item.id} motion={motion} paused={clock.paused || !trace} announce={false} onVisualReady={condition === item.id ? setVisualReady : undefined} label={`answer · ${item.id}`} className="text-[15px] leading-relaxed" />
-          </div>
+          </BrandProvider>
         </figure>)}
       </div>
       <p className="readout leading-relaxed mt-5" style={{ color: 'var(--muted)' }}>Qwen diffusion 0.6B · 128 requested positions · 32 recorded evaluations · four commitments per evaluation, including end tokens. {clock.state.status === 'complete' ? choice.note : 'Unedited model output; this annotated demonstration includes quality failures.'}</p>

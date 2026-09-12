@@ -1,5 +1,6 @@
 'use client'
 
+import { BrandProvider } from '@/lib/brand/provider'
 import { useState } from 'react'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { SNAPSHOT_STUDY } from '@/lib/settle/snapshot-study'
@@ -8,6 +9,7 @@ import { SettleAnswer } from './settle-answer'
 
 export function SnapshotStudy() {
   const clock = useReplay(SNAPSHOT_STUDY, { policy: 'sentence', autoplay: false })
+  const [spectrum, setSpectrum] = useState(false)
   const [motion, setMotion] = useState(true)
   const [view, setView] = useState('protected')
   const draft = clock.state.status === 'complete' ? clock.state.prefix : clock.state.snapshotCandidate ?? ''
@@ -19,7 +21,7 @@ export function SnapshotStudy() {
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight">a draft can look finished.<br />and still change.</h3>
           <p className="mt-4 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>Play the same revisable input through two views. The waiting field keeps its own rhythm as the draft changes. Even a complete-looking answer waits for the source&rsquo;s final signal; only then does the page fit and reveal the actual words.</p>
         </div>
-        <div className="flex flex-wrap gap-5 readout">
+        <div className="flex flex-wrap gap-5 readout"><button className="replay-btn replay-btn-on-surface" type="button" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
           <button className="replay-btn replay-btn-on-surface cursor-pointer" type="button" onClick={clock.finished ? clock.restart : clock.running ? clock.pause : clock.play}>
             {clock.finished ? 'replay example' : clock.running ? 'pause example' : clock.elapsedMs > 0 ? 'resume example' : 'play example'}
           </button>
@@ -30,9 +32,9 @@ export function SnapshotStudy() {
       <div className="grid gap-6 md:grid-cols-2 items-start">
         <figure className={`m-0 min-w-0 ${view === 'protected' ? 'block' : 'hidden md:block'}`}>
           <figcaption className="mb-3"><h4 className="font-semibold">After Tokens</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>The same input. One complete answer to read.</p></figcaption>
-          <div className="stage p-5">
+          <BrandProvider brand={spectrum ? 'spectrum' : 'after-tokens'} className="stage p-5">
             <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} motion={motion} paused={clock.paused} label="protected answer" className="text-[15px] leading-relaxed" />
-          </div>
+          </BrandProvider>
         </figure>
         <figure className={`m-0 min-w-0 ${view === 'draft' ? 'block' : 'hidden md:block'}`}>
           <figcaption className="mb-3"><h4 className="font-semibold">Evolving draft</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>For inspection. This wording can still change.</p></figcaption>

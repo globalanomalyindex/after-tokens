@@ -69,9 +69,9 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
         <button type="button" disabled={!source} onClick={restart} aria-label="Replay example">replay ↺</button>
       </div>
     </div>
-    {brands && <div className={styles.options} role="group" aria-label="Brand voice">
+    {<div className={styles.options} role="group" aria-label="Brand voice">
       {VOICES.map(id => <button key={id} type="button" aria-pressed={brand === id} onClick={() => { setCycling(false); setBrand(id) }}>{id === 'after-tokens' ? 'after tokens' : id}</button>)}
-      <button type="button" disabled={clock.reducedMotion} aria-label={cycling ? 'Pause brand cycle' : 'Resume brand cycle'} onClick={() => setCycling(value => !value)}>{clock.reducedMotion ? 'manual · reduced motion' : cycling ? 'pause cycle' : 'resume cycle'}</button>
+      {brands && <button type="button" disabled={clock.reducedMotion} aria-label={cycling ? 'Pause brand cycle' : 'Resume brand cycle'} onClick={() => setCycling(value => !value)}>{clock.reducedMotion ? 'manual · reduced motion' : cycling ? 'pause cycle' : 'resume cycle'}</button>}
     </div>}
     {conditions && <div className={styles.options} role="group" aria-label="Waiting motion">
       {(['static', 'breathe', 'reshape'] as const).map(id => <button key={id} type="button" aria-pressed={condition === id} onClick={() => setCondition(id)}>{id === 'static' ? 'still' : id}</button>)}

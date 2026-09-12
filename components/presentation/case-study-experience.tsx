@@ -5,13 +5,9 @@ import { BrandProvider } from '@/lib/brand/provider'
 import { HeroIntro, SkipOpeningContext } from '@/components/settle/hero-intro'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import { SETTLE } from '@/lib/traces/findings'
+import { SettleStage } from '@/components/settle/settle-stage'
 import { PresentationDemo } from './presentation-demo'
 import styles from './presentation.module.css'
-import { SectionShowcase } from '@/components/sections/section-showcase'
-import { SectionPreviews } from '@/components/sections/section-previews'
-import { SectionVoice } from '@/components/sections/section-voice'
-import { SectionPlayground } from '@/components/sections/section-playground'
-import { AmbientStudy } from '@/components/settle/ambient-study'
 
 const CHAPTERS = [
   { id: 'opening', label: 'the opening', category: 'after tokens' },
@@ -224,12 +220,16 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     <div className={styles.questions}><p><span>01</span>Does it feel calmer with the source timing held equal?</p><p><span>02</span>Do readers mistake ambient movement for model certainty?</p><p><span>03</span>Does the handover help, or simply delay useful text?</p><button type="button" className={styles.textLink} onClick={() => read('open')}>the proposed reader study ↗</button></div>
   </div>
   if (index === 11) return <div className={styles.demoGallery} data-slide-scroll data-demo-gallery tabIndex={0} aria-label="Scrollable original case study demos">
-    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="The original demos, at their original scale. Scroll down, change a setting, and watch the answer make room for itself.">a little closer.<br />a little more room.</Title></div>
-    <SectionShowcase />
-    <section className={styles.galleryIntro} aria-label="Skeleton motion study"><h2 className="text-4xl font-bold tracking-tight mb-8">a field, then an answer</h2><AmbientStudy /></section>
-    <SectionPreviews />
-    <SectionVoice />
-    <SectionPlayground />
+    <div className={styles.galleryIntro}><Title eyebrow="11 / explore the demos" description="Longer answers first. Smaller moments further down. The original recordings, with room to explore their arrival.">a little closer.<br />a little more room.</Title></div>
+    {[
+      { id: 'heist-plot__lowconf-b32', title: 'room for a whole story.', note: 'An extended answer from the original playground. Follow the sentences, or compare the entire arrival.', size: 'wide' },
+      { id: 'travel__lowconf-b32', title: 'two ways to get there.', note: 'The original travel recording. One source clock, with the raw prefix beside it.', size: 'offset' },
+      { id: 'hash-function__lowconf-b32', title: 'structure finds its place.', note: 'The technical example from the reading contract. Formatting and prose share the same release rules.', size: 'wide' },
+      { id: 'golden-sunflower__lowconf-b32', title: 'a little character.', note: 'The original brand experiment. Change the material while keeping the recording intact.', size: 'narrow' },
+    ].map((item, i) => <article key={item.id} className={styles.galleryEntry} data-width={item.size} data-gallery-source={item.id}>
+      <header><span className={styles.eyebrow}>0{i + 1} / in motion</span><h3>{item.title}</h3><p>{item.note}</p></header>
+      <SettleStage source={`trace:${item.id}`} policy="sentence" controls={['policy', 'voice', 'comparison']} comparison />
+    </article>)}
     <button type="button" className={styles.textLink} onClick={() => { window.location.hash = 'colophon' }}>after the last word →</button>
   </div>
   return <div className={styles.colophon} data-slide-scroll>

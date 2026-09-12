@@ -19,6 +19,7 @@ import { useReplay } from '@/components/settle/use-replay'
 type FrameProps = { title: string; brand: BrandId; traceId: TraceId; children: (answer: ReactNode, prompt: string, run: number) => ReactNode; delay?: number; tall?: boolean; released: string }
 
 function Frame({ title, brand, traceId, children, delay = 0, tall = false, released }: FrameProps) {
+  const [spectrum, setSpectrum] = useState(false)
   const [run, setRun] = useState(0)
   const [motion, setMotion] = useState(true)
   const [trace, setTrace] = useState<TraceCompact | null>(null)
@@ -45,12 +46,12 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
   )
   return (
     <Reveal as="figure" className="m-0 flex flex-col" delay={delay}>
-      <BrandProvider brand={brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
+      <BrandProvider brand={spectrum ? 'spectrum' : brand} className="frame flex-1 flex flex-col" data-demo style={{ minHeight: tall ? 560 : 440 }}>
         <figure ref={ref as never} className="m-0 flex-1 flex flex-col">{children(answer, trace?.prompt ?? '', run)}</figure>
       </BrandProvider>
       <figcaption className="order-first mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <span className="text-sm" style={{ color: 'var(--ink-2)' }}>{title}</span>
-        <span className="flex items-center gap-3 flex-wrap">
+        <span className="flex items-center gap-3 flex-wrap"><button type="button" className="replay-btn replay-btn-on-surface" aria-pressed={spectrum} onClick={() => setSpectrum(value => !value)}>spectrum</button>
         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={() => setMotion((value) => !value)} aria-pressed={!motion}>motion {motion ? 'on' : 'off'}</button>
         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" onClick={clock.running ? clock.pause : clock.play} disabled={clock.finished}>{clock.running ? 'pause' : 'resume'}</button>
         <button type="button" onClick={() => setRun((k) => k + 1)} className="replay-btn replay-btn-on-surface cursor-pointer inline-flex items-center gap-1.5 shrink-0" style={{ color: 'var(--muted)' }} aria-label={`Replay ${title}`}>
