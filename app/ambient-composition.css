@@ -1,5 +1,5 @@
-/* Authored word-like shapes inside an approximate current-content envelope.
-   Individual cells and motion do not encode words or percent complete. */
+/* Numeric current-content budgets guide an independently seeded field.
+   The pills are activity shapes, not words or confidence indicators. */
 .ambient-composition {
   position: relative;
   display: block;
@@ -10,26 +10,22 @@
   pointer-events: none;
   user-select: none;
 }
-
-.ambient-composition__field {
-  position: absolute;
-  inset: 0;
-}
-
+.ambient-composition__field { position: absolute; inset: 0; }
 .ambient-composition__bar {
   position: absolute;
-  inset-inline-start: var(--ambient-left);
+  inset-inline-start: 0;
   inset-block-start: var(--ambient-top);
   inline-size: var(--ambient-width);
   block-size: var(--ambient-bar-height, .9em);
   transform: none;
   opacity: .72;
-  animation: skeleton-breathe var(--ambient-period, 4800ms) cubic-bezier(.45, 0, .55, 1) infinite;
+  transition: inline-size var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1);
+  animation: skeleton-breathe var(--row-period, 4800ms) cubic-bezier(.45, 0, .55, 1) var(--row-delay, 0ms) infinite;
   animation-play-state: paused;
 }
 
-/* All capped rows stay mounted so newly exposed cells inherit the original
-   glimmer clock. Only the app's causal numeric envelope reveals extra rows. */
+/* All fourteen row/cell identities persist, including temporarily absent
+   cells, so the shared glimmer never restarts as occupancy changes. */
 .ambient-composition__row-content {
   position: absolute;
   inset: 0;
@@ -37,25 +33,20 @@
   visibility: hidden;
   transition: opacity 220ms cubic-bezier(.25, 1, .5, 1);
 }
-.ambient-composition__bar[data-shown="true"] > .ambient-composition__row-content {
-  opacity: 1;
-  visibility: visible;
-}
-.ambient-composition[data-active="false"] .ambient-composition__row-content,
-.ambient-composition[data-motion="off"] .ambient-composition__row-content {
-  transition: none;
-}
+.ambient-composition__bar[data-shown="true"] > .ambient-composition__row-content { opacity: 1; visibility: visible; }
 .ambient-composition__presence {
   position: absolute;
   display: block;
   top: 0;
-  left: var(--pill-x0);
-  width: var(--pill-w0);
   height: 100%;
-  opacity: 1;
+  transform: none;
   transform-origin: center;
+  transition: left var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
+    width var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
+    opacity var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
+    transform var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1);
 }
-
+.ambient-composition[data-condition="reshape"] .ambient-composition__presence { transform: translateY(var(--pill-float, 0em)); }
 .ambient-composition__ink {
   position: relative;
   overflow: hidden;
@@ -71,62 +62,24 @@
   -webkit-mask-image: none;
   mask-image: none;
 }
+.ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__bar { animation-play-state: running; }
+.ambient-composition[data-condition="static"] .ambient-composition__bar { animation: none; opacity: .86; }
+.ambient-composition[data-motion="off"] .ambient-composition__bar,
+.ambient-composition[data-motion="off"] .ambient-composition__presence,
+.ambient-composition[data-motion="off"] .ambient-composition__row-content { transition: none; }
+.ambient-composition[data-condition="static"] .ambient-composition__bar,
+.ambient-composition[data-condition="static"] .ambient-composition__presence { transition: none; }
 
-/* Each cluster reserves one row budget. Its persistent neighbors make room
-   for a new interior pill, then close the space again. The first and last
-   edges stay fixed; full lines and unchanged pills do not shuffle.
-   Width/left animate local layout and paint. This is not compositor-only. */
-.ambient-composition [data-moving] {
-  animation: skeleton-shuffle var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite,
-    skeleton-nudge var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite;
-  animation-play-state: paused;
-}
-.ambient-composition [data-new] {
-  animation: skeleton-shuffle var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite,
-    skeleton-emerge var(--ambient-period, 4800ms) cubic-bezier(.25, 1, .5, 1) var(--cluster-delay, 0ms) infinite;
-  animation-play-state: paused;
-}
-
-.ambient-composition[data-active="true"][data-motion="on"]:not([data-condition="static"]) .ambient-composition__bar,
-.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] .ambient-composition__presence {
-  animation-play-state: running;
-}
-
-/* Paused cluster animations give all three conditions the same initial
-   authored composition, including their negative phase offsets. */
-.ambient-composition[data-condition="static"] .ambient-composition__bar {
-  animation: none;
-  opacity: .86;
-}
-
+/* Each row has its own breathing rhythm. Geometry retargets every 200 ms
+   while active and eases for 500–700 ms at neutral tempo. Left/width touch
+   layout and paint; this is not a compositor-only or physical spring claim. */
 @keyframes skeleton-breathe {
   0%, 100% { opacity: .72; }
   50% { opacity: 1; }
 }
-@keyframes skeleton-shuffle {
-  0%, 16%, 82%, 100% { left: var(--pill-x0); width: var(--pill-w0); }
-  36% { left: var(--pill-x-peak); width: var(--pill-w-peak); }
-  43%, 62% { left: var(--pill-x1); width: var(--pill-w1); }
-}
-@keyframes skeleton-nudge {
-  0%, 16%, 43%, 62%, 82%, 100% { transform: translateY(0); }
-  36% { transform: translateY(-.035em); }
-}
-@keyframes skeleton-emerge {
-  0%, 16%, 82%, 100% { opacity: 0; transform: translateY(.10em) scaleY(.82); }
-  36% { opacity: 1; transform: translateY(-.035em) scaleY(1.08); }
-  43%, 62% { opacity: 1; transform: translateY(0) scaleY(1); }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .ambient-composition .ambient-composition__bar,
-  .ambient-composition .ambient-composition__presence,
-  .ambient-composition .ambient-composition__ink { animation-play-state: paused !important; }
-}
-
-/* One brief glimmer per eight-second cycle. Every cell uses the same local
-   left-to-right sweep and clock, regardless of its row's shuffle phase.
-   The faint highlight is decorative activity, never source confidence. */
+/* One coordinated event provides a quieter common rhythm above the local
+   variations. Each cell sweeps left-to-right on the same eight-second clock. */
 .ambient-composition[data-condition="reshape"] .ambient-composition__ink::after {
   content: "";
   position: absolute;
@@ -136,17 +89,18 @@
   animation: skeleton-glimmer var(--glimmer-period, 8000ms) linear infinite;
   animation-play-state: paused;
 }
-.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] .ambient-composition__ink::after {
-  animation-play-state: running;
-}
+.ambient-composition[data-active="true"][data-motion="on"][data-condition="reshape"] .ambient-composition__ink::after { animation-play-state: running; }
 @keyframes skeleton-glimmer {
   0%, 16% { transform: translateX(-110%); }
   26%, 100% { transform: translateX(110%); }
 }
 @media (prefers-reduced-motion: reduce) {
+  .ambient-composition .ambient-composition__bar,
+  .ambient-composition .ambient-composition__presence,
+  .ambient-composition .ambient-composition__ink,
   .ambient-composition .ambient-composition__ink::after { animation-play-state: paused !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
+  .ambient-composition .ambient-composition__bar,
+  .ambient-composition .ambient-composition__presence,
   .ambient-composition .ambient-composition__row-content { transition: none; }
+  .ambient-composition .ambient-composition__presence { transform: none; }
 }

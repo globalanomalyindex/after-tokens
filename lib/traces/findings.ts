@@ -407,7 +407,7 @@ export type SettleReport = {
 }
 export const SETTLE = settleReport as unknown as SettleReport
 
-/** The causal audit of the retrospective reveal at ab95e6a (Codex, 7 September 2026), reproduced by the report. */
+/** The causal audit of the retrospective reveal at ab95e6a (7 September 2026), reproduced by the report. */
 export const CAUSAL = {
   /** words whose tokens committed across more than one step: potential exposure of final text before commitment under the old first-token rule */
   multiStepWords: SETTLE.audit.all60.multiStepWords,

@@ -61,7 +61,7 @@ export function SectionAudit() {
             and cited nowhere else.
           </p>
           <p className="mt-4">
-            the audit and the first implementation of the reading contract were made by codex on 7 september 2026 under the name margin.
+            I used the audit to establish the first reading contract on 7 september 2026, under the name margin.
             this chapter keeps its contract and its rigor. the chapters after it are what the contract makes possible once the process is
             shown where it is real.
           </p>

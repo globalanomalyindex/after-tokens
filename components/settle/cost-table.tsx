@@ -21,14 +21,14 @@ export function CostTable({ scope = 'all60', className = '' }: { scope?: Scope; 
   const u = (p: SettlePolicyKey): PolicySummary => SETTLE[scope][p].uniform
   const r = (p: SettlePolicyKey): PolicySummary => SETTLE[scope][p].recorded
   const rows: { label: string; cell: (p: SettlePolicyKey) => string; note?: string }[] = [
-    { label: 'first passage on the page', cell: (p) => `${fmt(u(p).medianFirstPassageAt)} steps · ${secs(r(p).medianFirstPassageAt)}`, note: 'median over nonempty runs' },
+    { label: 'first passage eligible', cell: (p) => `${fmt(u(p).medianFirstPassageAt)} steps · ${secs(r(p).medianFirstPassageAt)}`, note: 'median over nonempty runs' },
     { label: 'extra wait after text is in order', cell: (p) => `${fmt(u(p).meanExtraHold, 1)} steps · ${secs(r(p).meanExtraHold)}`, note: 'mean of per-run character means' },
     { label: 'of which the word rule alone', cell: (p) => `${fmt(u(p).meanWordSafeLag, 1)} steps · ${secs(r(p).meanWordSafeLag)}` },
-    { label: 'forming text visible', cell: (p) => `${fmt((u(p).medianFormingShare ?? 0) * 100)}% of the run`, note: 'median share' },
+    { label: 'in-order text awaiting a passage boundary', cell: (p) => `${fmt((u(p).medianFormingShare ?? 0) * 100)}% of the run`, note: 'median share · held, not visible' },
     { label: 'passages per answer', cell: (p) => `${fmt(u(p).medianPassages)} · ${fmt(u(p).medianPassageChars)} characters each`, note: 'medians' },
     { label: 'most text held off the page at once', cell: (p) => `${fmt(u(p).medianMaxQueued)} · at most ${u(p).maxQueued}`, note: 'characters' },
     { label: 'exact final output', cell: (p) => `${u(p).exactFinalOutputs} of ${u(p).traces}` },
-    { label: 'characters drawn before commitment', cell: (p) => `${u(p).precommitExposure}` },
+    { label: 'characters released before commitment', cell: (p) => `${u(p).precommitExposure}` },
   ]
   const s = u('sentence')
   return (
@@ -60,7 +60,7 @@ export function CostTable({ scope = 'all60', className = '' }: { scope?: Scope; 
       <figcaption className="readout leading-relaxed mt-4 measure" style={{ color: 'var(--muted)' }}>
         a step is one completed forward pass. seconds are the capture machine&rsquo;s raw forward-pass clock for a 0.6B model,
         not end-to-end latency or a production speed estimate. characters are UTF-16 code units including whitespace. these are properties of the
-        reducer on this corpus, never reader outcomes.
+        reducer on this corpus, excluding the visual handover and any size fit; they are not reader outcomes.
       </figcaption>
     </figure>
   )

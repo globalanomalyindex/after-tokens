@@ -1,5 +1,7 @@
 # After Tokens: anchored skeleton implementation handoff
 
+> Historical v5 record (`adaptive-cell-skeleton-v5`, published at `06da788390549574949c7cdcd938c3669820f214`). Its parameters, reports and captures describe that material; they do not validate the later v6 bubble-to-word handover.
+
 **9 September 2026 · material `adaptive-cell-skeleton-v5` · reader benefits unvalidated.**
 
 Continue from the existing repository and preserve the original case-study design. The capsule still divides into breathing rows and small reshaping pills, with intermittent glimmer. Its waiting height follows a capped estimate from available source content and the container’s actual type metrics. Committed positions and revisable candidates stay distinct. At source finality, measure the real answer, fit any missing room, then let all words arrive together with one small settling motion. Source finality is unchanged; visual availability and initial text travel are separate presentation costs to measure.
@@ -181,7 +183,7 @@ Use the complete source files, not the excerpts alone. Source time and decorativ
 | [globals.css](../app/globals.css) | Readable-text rules, answer frame, thin outline and motion-off exceptions for the field, division, pill and glimmer animation layers |
 | [reader.ts](../lib/settle/reader.ts), [boundary.ts](../lib/settle/boundary.ts) | Unchanged source finality rules; latest nonfinal snapshot storage and lifecycle cleanup for provisional sizing |
 | [experimental-recordings.ts](../lib/settle/experimental-recordings.ts), [replay.ts](../lib/settle/replay.ts) | Causal fixture events and separate observed source clock |
-| [google-reference.tsx](../components/settle/google-reference.tsx), [frame audit](google-diffusion-reference-audit-2026-09-09.md) | Three original user-supplied frames, selection controls, observations and provenance limits |
+| [google-reference.tsx](../components/settle/google-reference.tsx), [frame audit](google-diffusion-reference-audit-2026-09-09.md) | Three original reference frames, selection controls, observations and provenance limits |
 | [snapshot-study.ts](../lib/settle/snapshot-study.ts), [snapshot-study.tsx](../components/settle/snapshot-study.tsx) | Separate authored revision exercise; provisional inspection beside a protected complete-answer view |
 | [section-field.tsx](../components/sections/section-field.tsx) | Current explanation, evidence scope and recordings |
 
@@ -245,7 +247,7 @@ Do not copy the historical `a7606d9` totals of 327 unit/component cases, 45 brow
 | Appearance | Crisp bodies without blur/feathering/shadow; division clip and faint gradient glimmer are intentional; document transient pill deformation |
 | Final text | No pre-final text; one exact full visual answer; measure nominal-fit versus actual delay, initial 1.5/−0.2/0 px travel, and post-settle stability |
 | Lifecycle | Fit interruption and new-run guards; pause/off/reduced/hidden bypass; no stale cue or repeated visual delay after resize |
-| Snapshot compatibility | Candidate cleanup on final/stop/error/revision/reset; correct-looking nonfinal input stays withheld; final-only five-row fallback; authored example clearly separated from supplied Google images |
+| Snapshot compatibility | Candidate cleanup on final/stop/error/revision/reset; correct-looking nonfinal input stays withheld; final-only five-row fallback; authored example clearly separated from archived Google images |
 | Layout | Separate pre-final frame growth, residual final correction, per-frame height change and glyph motion before/after settling |
 | Provenance | Fresh material-specific raw logs/videos; no reuse of v4 pass counts or old zero-motion metrics; no physical-device or reader-benefit inference |
 

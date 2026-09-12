@@ -790,43 +790,57 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   font-variant-ligatures: none;
 }
 .settle-page::selection, .settle-page ::selection { background: color-mix(in oklab, currentColor 22%, transparent); }
-/* Released text stays in the same flow as the forming words. Its ink
-   changes once; readable glyphs never blur, scale, or take a letter stagger. */
-.settle-passage { display: inline; }
-
-/* The waiting envelope estimates only currently committed ink. Exact final
-   height is measured after source finality; an underestimated frame fits for
-   an authored 180 ms before the complete answer becomes visible together. */
+/* One modern material for every release policy. Previous passages keep their
+   native inline layout; only the newly eligible batch takes the handover. */
+.settle-passage { display: inline; position: relative; opacity: 1; top: 0; }
+.settle-passage[data-pending="true"] { visibility: hidden; }
+.settle-passage[data-arriving="true"] {
+  animation: reading-ink-arrive 280ms cubic-bezier(.25, 1, .5, 1) both;
+}
+@keyframes reading-ink-arrive {
+  0% { opacity: 0; top: 1.5px; }
+  38% { opacity: .45; }
+  74% { opacity: 1; top: -.2px; }
+  100% { opacity: 1; top: 0; }
+}
 .settle-answer-frame { position: relative; isolation: isolate; block-size: 8em; overflow: hidden; }
-.settle-answer-frame[data-phase="ready"] { overflow: visible; }
-.settle-answer-frame > .settle-page,
-.settle-answer-frame > .ambient-composition { position: absolute; inset: 0 0 auto; width: 100%; }
-.settle-answer-frame > .ambient-composition { height: 100%; }
-.settle-answer-frame > .settle-page { z-index: 1; }
-.settle-answer-frame:not([data-phase="ready"]) > .settle-page { visibility: hidden; }
+.settle-answer-frame[data-phase="ready"],
+.settle-answer-frame[data-phase="revealing"] { overflow: visible; }
+.settle-answer-frame > .settle-page { position: absolute; inset: 0 0 auto; width: 100%; z-index: 2; }
 .settle-answer-text { display: block; color: inherit; opacity: 1; filter: none; transform: none; }
-.settle-answer-text[data-arriving="true"] { animation: settle-answer-ink 180ms cubic-bezier(.25, 1, .5, 1) both; }
-@keyframes settle-answer-ink {
-  0% { transform: translateY(1.5px); }
-  70% { transform: translateY(-.2px); }
-  100% { transform: translateY(0); }
+.settle-waiting-field {
+  position: absolute; inset-inline: 0; pointer-events: none;
+  transition: top 380ms cubic-bezier(.22, 1, .36, 1), height 380ms cubic-bezier(.22, 1, .36, 1);
 }
-.settle-answer-arrival {
-  position: absolute;
-  inset: -.4em -.25em;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: .55em;
-  border: 1px solid var(--accent, currentColor);
-  box-shadow: none;
-  opacity: 0;
-  animation: settle-answer-arrive 260ms cubic-bezier(.25, 1, .5, 1);
+.settle-answer-frame[data-receiving="false"][data-transfer-captured="true"] > .settle-waiting-field { visibility: hidden; }
+.settle-answer-frame[data-receiving="false"][data-transfer-captured="empty"] > .settle-waiting-field { animation: reading-field-leave 280ms ease-out both; }
+@keyframes reading-field-leave { to { opacity: 0; } }
+.bubble-transfer {
+  position: absolute; inset: 0; pointer-events: none; user-select: none; z-index: 1;
+  animation: reading-transfer-clock 280ms linear both;
 }
-@keyframes settle-answer-arrive { from { opacity: .3; transform: scale(.99); } to { opacity: 0; transform: scale(1); } }
-.settle[data-policy="answer"] .settle-mark { display: none; }
-.settle[data-motion="off"] .settle-answer-arrival,
-.settle[data-visible="false"] .settle-answer-arrival { animation: none; }
-@media (prefers-reduced-motion: reduce) { .settle-answer-arrival { animation: none; } }
+@keyframes reading-transfer-clock { from { opacity: 1; } to { opacity: 1; } }
+.bubble-transfer__cell {
+  position: absolute; display: block; background: currentColor; border-radius: 999px;
+  transform-origin: top left; opacity: var(--transfer-alpha);
+  animation: reading-bubble-transfer 280ms cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes reading-bubble-transfer {
+  0% { transform: translate(0, 0) scale(1, 1); opacity: var(--transfer-alpha); }
+  48% { opacity: calc(var(--transfer-alpha) * .65); }
+  100% { transform: translate(var(--transfer-x), var(--transfer-y)) scale(var(--transfer-scale-x), var(--transfer-scale-y)); opacity: 0; }
+}
+.settle[data-motion="off"] .settle-waiting-field,
+.settle[data-visible="false"] .settle-waiting-field,
+.settle[data-paused="true"] .settle-waiting-field { transition: none; }
+.settle[data-motion="off"] .settle-passage,
+.settle[data-visible="false"] .settle-passage,
+.settle[data-paused="true"] .settle-passage { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .settle-waiting-field { transition: none; }
+  .settle-passage { animation: none !important; }
+  .bubble-transfer { display: none; }
+}
 
 .settle-field {
   position: relative;

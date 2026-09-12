@@ -6,16 +6,16 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 // The reading contract separates ambient appearance, release policy and source finality.
 
 const RULES: string[] = [
-  'released text requires source commitments or an explicitly final snapshot. before source finality, the renderer cannot read future answer text, its widths or a future formatting map. after finality, it can measure the actual answer to fit the frame.',
-  'the whole-answer policy waits for source finality. a separate authored 180 ms size fit may then delay complete visual availability when more room is needed. a predicted period, guessed end token or animation endpoint cannot complete the source.',
-  'the small cells are authored shapes, not actual words. the waiting area estimates current committed content, or a current provisional snapshot if the source supplies one. a final-only source starts with five rows. none predicts final formatting, confidence or percent complete.',
-  'earlier-word, sentence and paragraph policies remain available for comparison. complete words need committed pieces and boundaries; earlier access and whole-answer stillness carry different costs.',
-  'the ambient composition hides intermediate candidate text. the inspectable source alternatives distinguish guesses, committed pieces and released passages. a guess never becomes released text merely because it looks plausible.',
-  'a committed end token bounds the remaining positions; finality follows when the contiguous committed prefix reaches it, or a valid finish or final snapshot establishes the result. the motion has no vote.',
-  'revisable snapshot words stay off the protected page until one is explicitly final; their current size may prepare space without becoming a commitment. a later revision keeps the prior page and offers a review and apply action.',
+  'released text requires source commitments or an explicitly final snapshot. the renderer cannot inspect future answer text, widths or formatting. once a batch meets its release policy, its actual text can supply the targets for the bubble handover.',
+  'the whole-answer policy waits for source finality. earlier word, sentence and paragraph policies release eligible passages sooner. all four use the same cell material; a guessed period or animation endpoint cannot complete the source.',
+  'the waiting field uses coarse measurements of current content. committed fragments can estimate total space; only a contiguous prefix can suggest row occupancy. a genuinely received snapshot can supply its current shape. these are estimates, not final formatting or percent complete.',
+  'newly released text crosses from the visible bubbles over 280 ms. ink begins transparent, reaches full opacity at 74 percent of that authored interval and rests at its endpoint. text already released does not replay the effect.',
+  'when newly released text needs more room, an authored 180 ms fit precedes the handover. otherwise it starts immediately as the frame adjusts. browser scheduling can extend either interval; source eligibility and visual availability are measured separately.',
+  'the protected page contains only released passages. provisional words may appear in the separately labeled draft inspector, and never become released text merely because they look plausible. waiting pills have no token identity.',
+  'a committed end token bounds remaining positions; source finality follows when the contiguous committed prefix reaches it, or a valid finish or final snapshot establishes the result. later revisions preserve the prior page and require review and apply.',
   'source complete, stopped, error, presentation paused and revision available are distinct. stopped or failed partial output is labeled separately, never celebrated as a complete answer.',
-  'a brand can change material, color and motion. it cannot change source commitments, finality or the exact answer. all words arrive at full reading contrast and share one brief settling motion before resting.',
-  'reduced motion, motion off, pause and hidden states bypass the final decorative fit delay and answer motion. source finality stays unchanged. measured visual availability can differ from the source timestamp and from the authored 180 ms fit duration.',
+  'palette and tempo change the waiting material. they cannot change source commitments, finality, the exact answer or the authored text-handover duration. settling indicates presentation state, not confidence or correctness.',
+  'reduced motion, motion off, pause and hidden states bypass decorative fitting and text arrival motion. eligible text becomes fully visible; source finality stays unchanged. the end of an animation never substitutes for the end of generation.',
 ]
 
 const FINALITY: { dt: string; dd: string }[] = [
@@ -30,7 +30,7 @@ export function SectionContract() {
     <Section id="contract" title="What the reader can count on">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what the reader can count on</h2>
       <p className="standfirst max-w-3xl">
-        given the same source events, policy, container metrics and presentation clock, the surface makes the same decisions, whatever comes later. only the source decides when its answer is complete. a separate size handoff controls when that final answer becomes fully visible.
+        given the same source events, policy, run seed, container metrics and presentation clock, the surface makes the same decisions, whatever comes later. only the source decides when its answer is complete. the release policy decides which passages are eligible, and a short material handover controls how new text becomes visible.
       </p>
       <ol className="mt-12 md:mt-16 grid gap-x-12 gap-y-6 md:grid-cols-2 list-none m-0 p-0 rule pt-8">
         {RULES.map((rule, i) => (
@@ -46,7 +46,7 @@ export function SectionContract() {
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
           the raw prefix shows in-order source pieces, including half-words. the comparison applies a release policy to those same events. the whole-answer option waits for finality; earlier policies expose useful text sooner. this is an availability comparison, separate from testing still, breathe and reshape with shared source timing and final handover rules. actual visual arrival is measured separately. reading research, including <DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm> and studies of unstable text, motivates preserving readable text. it does not prove that withholding it is better.
         </p>
-        <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy', 'preview']} comparison />
+        <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy']} comparison />
       </div>
 
       <div className="mt-16 md:mt-24 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] rule pt-8">

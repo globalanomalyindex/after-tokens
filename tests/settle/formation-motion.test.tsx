@@ -1,149 +1,163 @@
-import { cleanup, render } from '@testing-library/react'
+import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SettleAnswer } from '@/components/settle/settle-answer'
 import { createSettleState, reduceSettle } from '@/lib/settle/reader'
 
-type ObservedAnimation = {
-  element: Element
-  frames: Keyframe[]
-  options: KeyframeAnimationOptions
-  animation: { cancel: ReturnType<typeof vi.fn>; onfinish: (() => void) | null }
-}
-
-const originalAnimate = Object.getOwnPropertyDescriptor(Element.prototype, 'animate')
-let observed: ObservedAnimation[]
-
-beforeEach(() => {
-  observed = []
-  // jsdom has no compositor. Observe the public WAAPI boundary while rendering
-  // actual state transitions; geometry and painted behavior have separate QA.
-  Object.defineProperty(Element.prototype, 'animate', {
-    configurable: true,
-    value(this: Element, frames: Keyframe[], options: KeyframeAnimationOptions) {
-      const animation = { cancel: vi.fn(), onfinish: null }
-      observed.push({ element: this, frames, options, animation })
-      return animation as unknown as Animation
-    },
-  })
-})
-
-afterEach(() => {
-  cleanup()
-  vi.restoreAllMocks()
-  if (originalAnimate) Object.defineProperty(Element.prototype, 'animate', originalAnimate)
-  else Reflect.deleteProperty(Element.prototype, 'animate')
-})
+beforeEach(() => vi.useFakeTimers())
+afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks() })
 
 const sentence = () => reduceSettle(createSettleState('sentence', 4), {
   type: 'commit', atMs: 100, tokens: [{ position: 0, text: 'One. ' }],
 })
-const forText = (text: string) => observed.filter(({ element }) => element.textContent === text)
+function finish(container: HTMLElement) {
+  const transfer = container.querySelector('.bubble-transfer')
+  expect(transfer).not.toBeNull()
+  fireEvent.animationEnd(transfer!)
+}
 
-describe('formation motion lifecycle', () => {
-  it('acknowledges a released range once despite later guesses and unrelated renders', () => {
+describe('released-batch material handover lifecycle', () => {
+  it('hands over a released batch once despite later guesses and unrelated renders', () => {
     let state = sentence()
-    const { rerender } = render(<SettleAnswer state={state} runId="first" />)
-    const first = forText('One.')
-    expect(first).toHaveLength(1)
+    const { container, rerender } = render(<SettleAnswer state={state} runId="first" />)
+    const first = container.querySelector('[data-passage]')
+    expect(first).toHaveAttribute('data-arriving', 'true')
+    finish(container)
+    expect(first).not.toHaveAttribute('data-arriving')
     state = reduceSettle(state, { type: 'draft', atMs: 200, guesses: [{ position: 2, text: ' blue', p: .9 }] })
     rerender(<SettleAnswer state={state} runId="first" />)
     rerender(<SettleAnswer state={state} runId="first" label="updated answer label" />)
-    expect(forText('One.')).toHaveLength(1)
-    expect(first[0]!.animation.cancel).not.toHaveBeenCalled()
+    expect(container.querySelector('[data-passage]')).toBe(first)
+    expect(first).not.toHaveAttribute('data-arriving')
+    expect(first).not.toHaveAttribute('data-pending')
+    expect(container.querySelector('.bubble-transfer')).toBeNull()
   })
 
-  it('starts all words from one release batch without a reading-order delay', () => {
+  it('hands over simultaneous releases as one batch and keeps exact whitespace', () => {
     const state = reduceSettle(createSettleState('sentence', 4), {
-      type: 'commit', atMs: 100,
-      tokens: [{ position: 0, text: 'One. ' }, { position: 1, text: 'Two. ' }],
+      type: 'commit', atMs: 100, tokens: [{ position: 0, text: 'One. ' }, { position: 1, text: 'Two. ' }],
     })
     const { container } = render(<SettleAnswer state={state} />)
-    const responses = [...forText('One.'), ...forText('Two.')]
-    expect(responses).toHaveLength(2)
-    for (const response of responses) {
-      expect(response.options.delay ?? 0).toBe(0)
-      // The response cannot create a period of unreadable committed text.
-      expect(response.frames.every((frame) => frame.opacity === undefined && frame.filter === undefined)).toBe(true)
-    }
+    expect(container.querySelectorAll('[data-passage][data-arriving="true"]')).toHaveLength(2)
+    expect(container.querySelectorAll('.bubble-transfer')).toHaveLength(1)
     expect(container.querySelector('.settle-page')?.textContent).toBe('One. Two. ')
+    finish(container)
+    expect(container.querySelectorAll('[data-arriving], [data-pending]')).toHaveLength(0)
   })
 
-  it.each(['paused', 'motion off'] as const)('cancels active feedback under %s without queuing it on resume', (mode) => {
+  it('a newer release settles the interrupted batch and animates only its own new passage', () => {
     let state = sentence()
-    const { rerender } = render(<SettleAnswer state={state} />)
-    const first = forText('One.')[0]!
-    expect(first).toBeDefined()
-    rerender(<SettleAnswer state={state} paused={mode === 'paused'} motion={mode !== 'motion off'} />)
-    expect(first.animation.cancel).toHaveBeenCalledTimes(1)
-    state = reduceSettle(state, { type: 'draft', atMs: 200, guesses: [{ position: 2, text: ' blue', p: .9 }] })
-    rerender(<SettleAnswer state={state} paused={mode === 'paused'} motion={mode !== 'motion off'} />)
+    const { container, rerender } = render(<SettleAnswer state={state} />)
+    const first = container.querySelector('[data-passage]'), firstTransfer = container.querySelector('.bubble-transfer')
+    state = reduceSettle(state, { type: 'commit', atMs: 200, tokens: [{ position: 1, text: 'Two. ' }] })
     rerender(<SettleAnswer state={state} />)
-    expect(forText('One.')).toHaveLength(1)
+    const passages = container.querySelectorAll('[data-passage]')
+    expect(passages[0]).toBe(first)
+    expect(first).not.toHaveAttribute('data-arriving')
+    expect(first).not.toHaveAttribute('data-pending')
+    expect(passages[1]).toHaveAttribute('data-arriving', 'true')
+    expect(container.querySelector('.bubble-transfer')).not.toBe(firstTransfer)
+    fireEvent.animationEnd(first!, { animationName: 'reading-ink-arrive' })
+    expect(passages[1]).toHaveAttribute('data-arriving', 'true')
+    finish(container)
+    expect(container.querySelectorAll('[data-arriving], [data-pending]')).toHaveLength(0)
   })
 
-  it('starts a new response for an explicit new run at the same source timestamp', () => {
+  it.each(['paused', 'motion off'] as const)('reveals eligible text immediately under %s without replaying a handover on resume', (mode) => {
+    let state = sentence()
+    const { container, rerender } = render(<SettleAnswer state={state} />)
+    expect(container.querySelector('.bubble-transfer')).not.toBeNull()
+    rerender(<SettleAnswer state={state} paused={mode === 'paused'} motion={mode !== 'motion off'} />)
+    expect(container.querySelectorAll('.bubble-transfer, [data-arriving], [data-pending]')).toHaveLength(0)
+    state = reduceSettle(state, { type: 'commit', atMs: 200, tokens: [{ position: 1, text: 'Two. ' }] })
+    rerender(<SettleAnswer state={state} paused={mode === 'paused'} motion={mode !== 'motion off'} />)
+    expect(container.querySelector('.settle-page')?.textContent).toBe('One. Two. ')
+    expect(container.querySelectorAll('[data-pending], [data-arriving]')).toHaveLength(0)
+    rerender(<SettleAnswer state={state} />)
+    expect(container.querySelector('.bubble-transfer')).toBeNull()
+  })
+
+  it('starts a fresh handover for an explicit new run at the same source time', () => {
     const state = sentence()
-    const { rerender } = render(<SettleAnswer state={state} runId="first" />)
-    const first = forText('One.')[0]!
+    const { container, rerender } = render(<SettleAnswer state={state} runId="first" />)
+    const original = container.querySelector('[data-passage]')
+    finish(container)
     rerender(<SettleAnswer state={state} runId="second" />)
-    expect(first.animation.cancel).toHaveBeenCalledTimes(1)
-    expect(forText('One.')).toHaveLength(2)
+    expect(container.querySelector('[data-passage]')).not.toBe(original)
+    expect(container.querySelector('[data-passage]')).toHaveAttribute('data-arriving', 'true')
+    expect(container.querySelectorAll('.bubble-transfer')).toHaveLength(1)
   })
 
-  it('cancels its animation handles when the answer unmounts', () => {
+  it('a final source event with no new words fades only the remaining material', () => {
+    let state = sentence()
+    const { container, rerender } = render(<SettleAnswer state={state} />)
+    const passage = container.querySelector('[data-passage]')
+    finish(container)
+    state = reduceSettle(state, { type: 'finish', atMs: 200, tokenCount: 1 })
+    rerender(<SettleAnswer state={state} />)
+    expect(container.querySelector('[data-passage]')).toBe(passage)
+    expect(passage).not.toHaveAttribute('data-arriving')
+    expect(passage).not.toHaveAttribute('data-pending')
+    expect(container.querySelector('.settle')).toHaveAttribute('data-answer-phase', 'revealing')
+    finish(container)
+    expect(container.querySelector('.settle')).toHaveAttribute('data-visual-ready', 'true')
+    expect(container.querySelector('.ambient-composition')).toBeNull()
+  })
+
+  it('a source finish during an underallocated release preserves the original fit deadline and completion callback', () => {
+    const originalAnimate = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'animate')
+    const animations: { duration: number; onfinish: (() => void) | null; cancel: ReturnType<typeof vi.fn> }[] = []
+    let now = 0
+    vi.spyOn(performance, 'now').mockImplementation(() => now)
+    const bounds = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      const height = this.classList.contains('settle-page') ? (this.textContent ? 240 : 0) : 120
+      return new DOMRect(0, 0, 200, height)
+    })
+    Object.defineProperty(HTMLElement.prototype, 'animate', { configurable: true, value: (...args: unknown[]) => {
+      const animation = { duration: Number((args[1] as KeyframeAnimationOptions).duration), onfinish: null, cancel: vi.fn() }
+      animations.push(animation)
+      return animation
+    } })
+    try {
+      let state = createSettleState('sentence', 4)
+      const { container, rerender, unmount } = render(<SettleAnswer state={state} />)
+      state = reduceSettle(state, { type: 'commit', atMs: 100, tokens: [{ position: 0, text: 'One. ' }] })
+      rerender(<SettleAnswer state={state} />)
+      expect(container.querySelector('.settle')).toHaveAttribute('data-answer-phase', 'fitting')
+      const interrupted = animations.at(-1)!
+      expect(interrupted.duration).toBe(180)
+      now = 70
+      state = reduceSettle(state, { type: 'finish', atMs: 101, tokenCount: 1 })
+      rerender(<SettleAnswer state={state} />)
+      expect(interrupted.cancel).toHaveBeenCalled()
+      expect(animations.at(-1)).not.toBe(interrupted)
+      expect(animations.at(-1)!.duration).toBe(110)
+      act(() => animations.at(-1)!.onfinish?.())
+      expect(container.querySelector('.settle')).toHaveAttribute('data-answer-phase', 'revealing')
+      finish(container)
+      expect(container.querySelector('.settle')).toHaveAttribute('data-visual-ready', 'true')
+      expect(container.querySelector('.settle-page')?.textContent).toBe('One. ')
+      unmount()
+    } finally {
+      bounds.mockRestore()
+      if (originalAnimate) Object.defineProperty(HTMLElement.prototype, 'animate', originalAnimate)
+      else Reflect.deleteProperty(HTMLElement.prototype, 'animate')
+    }
+  })
+
+  it('clears the missing-animation-event fallback when unmounted', () => {
     const { unmount } = render(<SettleAnswer state={sentence()} />)
-    expect(observed.length).toBeGreaterThan(0)
+    expect(vi.getTimerCount()).toBeGreaterThan(0)
     unmount()
-    for (const { animation } of observed) expect(animation.cancel).toHaveBeenCalledTimes(1)
+    expect(vi.getTimerCount()).toBe(0)
   })
 
-  it('preserves each committed token and its ink through a multi-token word merge', () => {
-    let state = reduceSettle(createSettleState('sentence', 4), {
-      type: 'commit', atMs: 100,
-      tokens: [{ position: 0, text: 'inter' }, { position: 1, text: 'nation' }],
-    })
+  it.each(['stop', 'error'] as const)('a source %s ends an active handover without hiding released text', (type) => {
+    let state = sentence()
     const { container, rerender } = render(<SettleAnswer state={state} />)
-    const unit = container.querySelector('[data-pos="1"]')
-    const ink = unit?.querySelector('.settle-ink')
-    expect(unit).not.toBeNull()
-    expect(ink).not.toBeNull()
-    state = reduceSettle(state, { type: 'commit', atMs: 200, tokens: [{ position: 2, text: 'al ' }] })
+    state = reduceSettle(state, type === 'stop' ? { type, atMs: 200 } : { type, atMs: 200, message: 'Connection lost' })
     rerender(<SettleAnswer state={state} />)
-    expect(container.querySelector('[data-pos="1"]')).toBe(unit)
-    expect(unit?.querySelector('.settle-ink')).toBe(ink)
-    expect(container.querySelector('.settle-page')?.textContent).toBe('international ')
-    expect(forText('nation')).toHaveLength(1)
-  })
-
-  it.each([0, 8])('ends provisional spatial motion at release even with a %i px target change', (releaseShift) => {
-    let blueX = 24
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
-      const left = this.textContent === 'Blue' && this.hasAttribute('data-layout') ? blueX : 0
-      return {
-        x: left, y: 0, left, top: 0, right: left + 40, bottom: 20,
-        width: 40, height: 20, toJSON: () => ({}),
-      }
-    })
-    let state = reduceSettle(createSettleState('paragraph', 4), {
-      type: 'commit', atMs: 100, tokens: [{ position: 1, text: ' Blue ' }],
-    })
-    const { container, rerender } = render(<SettleAnswer state={state} />)
-    blueX = 48
-    state = reduceSettle(state, { type: 'commit', atMs: 200, tokens: [{ position: 0, text: 'The ' }] })
-    rerender(<SettleAnswer state={state} />)
-    const transforms = () => forText('Blue').filter(({ frames }) => frames.some((frame) => frame.transform !== undefined))
-    expect(transforms()).toHaveLength(1)
-    const glide = transforms()[0]!
-    expect(glide.animation.cancel).not.toHaveBeenCalled()
-    expect(state.releasedLength).toBe(0)
-
-    blueX += releaseShift
-    state = reduceSettle(state, { type: 'commit', atMs: 300, tokens: [{ position: 2, text: '\n\n' }] })
-    rerender(<SettleAnswer state={state} />)
-    expect(state.releasedLength).toBeGreaterThan(0)
-    expect(container.querySelector('[data-pos="1"] .settle-ink')).toHaveAttribute('data-released', 'true')
-    expect(glide.animation.cancel).toHaveBeenCalledTimes(1)
-    expect(transforms()).toHaveLength(1)
-    expect(container.querySelector('.settle-page')?.textContent).toBe('The  Blue \n\n')
+    expect(container.querySelector('.settle-page')?.textContent).toBe('One. ')
+    expect(container.querySelectorAll('.bubble-transfer, [data-arriving], [data-pending], .ambient-composition')).toHaveLength(0)
+    expect(container.querySelector('.settle')).toHaveAttribute('data-active', 'false')
   })
 })

@@ -26,7 +26,7 @@ At source finality, remove the bars immediately and render the exact complete an
 
 ## 2. Rationale and reference
 
-The supplied [CSS Script reference](https://www.cssscript.com/skeleton-loader-placeholder/) points to [zalog's placeholder-loading source](https://github.com/zalog/placeholder-loading). Inspection found solid rows plus a moving gradient with a 0.8-second default duration. This revision borrows the conventional solid geometry, not that traveling animation. Do not describe the reference as a trial showing better waiting or reading.
+The [CSS Script reference] I reviewed(https://www.cssscript.com/skeleton-loader-placeholder/) points to [zalog's placeholder-loading source](https://github.com/zalog/placeholder-loading). Inspection found solid rows plus a moving gradient with a 0.8-second default duration. This revision borrows the conventional solid geometry, not that traveling animation. Do not describe the reference as a trial showing better waiting or reading.
 
 [MUI already offers pulse, wave and static skeletons](https://mui.com/material-ui/react-skeleton/). Pulse is therefore prior art. The current question is whether gently shortening a solid bar adds something useful to that familiar pulse, with an honest source boundary and explicit cost for waiting for a whole answer.
 
@@ -59,7 +59,7 @@ const opacityRange = [0.72, 1, 0.72];
 const reshapeInsetPercent = [0, 8, 0]; // at each horizontal end
 ```
 
-The arrays above are parameter notes, not a replacement component. Continue from the actual source files and use the complete source patch supplied with the final handoff.
+The arrays above are parameter notes, not a replacement component. Continue from the actual source files and use the complete source patch accompanying the final handoff.
 
 ## 4. Keep source semantics separate
 

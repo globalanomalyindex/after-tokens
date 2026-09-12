@@ -12,7 +12,7 @@ import { statusWords } from './margin'
 
 const CONDITIONS: { id: AmbientCondition; title: string; description: string }[] = [
   { id: 'static', title: '01 · still', description: 'Rounded bars at a constant brightness.' },
-  { id: 'breathe', title: '02 · breathe', description: 'A shared breath. The shapes stay fixed.' },
+  { id: 'breathe', title: '02 · breathe', description: 'Soft local breaths. Row widths follow the available text.' },
   { id: 'reshape', title: '03 · reshape', description: 'One capsule divides. Small cells make room for new ones.' },
 ]
 
@@ -63,13 +63,12 @@ export function AmbientStudy() {
         </div>
       </div>
       <p className="text-base mb-5" style={{ color: 'var(--ink-2)' }}>{trace?.prompt ?? (loadError ? 'The recording could not be loaded. Choose another recording to retry.' : 'Loading the recorded source…')}</p>
-      <div className="md:hidden mb-5">
+      <div className="mb-5">
         <ToggleRail label="motion study" items={[{ id: 'static', label: 'still' }, { id: 'breathe', label: 'breathe' }, { id: 'reshape', label: 'reshape' }]} activeId={condition} onSelect={(id) => { setCondition(id as AmbientCondition); clock.restart() }} />
-        <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>one condition at a time on a narrow screen; choosing another replays the same source</p>
+        <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>reshape is the default. choose still or breathe to compare the same source and release policy</p>
       </div>
-      <p className="hidden md:block readout mb-4" style={{ color: 'var(--muted)' }}>three conditions, one source clock. each view fits its available space before the answer arrives. use 0.5× inspection to watch a complete breath.</p>
-      <div className="grid gap-5 md:grid-cols-3 md:gap-y-0 items-start md:items-stretch">
-        {CONDITIONS.map((item) => <figure key={item.id} className={`min-w-0 m-0 md:grid md:grid-rows-subgrid md:row-span-2 ${condition === item.id ? 'block' : 'hidden md:block'}`}>
+      <div className="grid gap-5 max-w-3xl items-start">
+        {CONDITIONS.filter((item) => item.id === condition).map((item) => <figure key={item.id} className="min-w-0 m-0">
           <figcaption className="mb-3">
             <h3 className="text-base font-semibold">{item.title}</h3>
             <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--ink-2)' }}>{item.description}</p>
@@ -84,10 +83,10 @@ export function AmbientStudy() {
         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" aria-expanded={earlier} aria-controls="ambient-earlier-comparison" onClick={() => setEarlier((value) => !value)}>{earlier ? 'hide earlier reading' : 'compare earlier reading'}</button>
         {earlyState && <div id="ambient-earlier-comparison" className="mt-5">
           <p className="text-sm leading-relaxed mb-4 max-w-2xl" style={{ color: 'var(--ink-2)' }}>A separate tradeoff: release complete words from the contiguous prefix on this same clock. This can make text available sooner, while later words still extend the layout. It does not isolate the effect of ambient motion.</p>
-          <div className="stage p-5"><SettleAnswer state={earlyState} runId={clock.runId} forming="held" field={false} motion={false} paused={clock.paused} announce={false} label="earlier words" className="text-[15px] leading-relaxed" /></div>
+          <div className="stage p-5"><SettleAnswer state={earlyState} runId={clock.runId} ambient="reshape" motion={motion} paused={clock.paused} announce={false} label="earlier words" className="text-[15px] leading-relaxed" /></div>
         </div>}
       </div>
-      <p className="settle-sr" role="status" aria-live="polite" aria-atomic="true">{clock.state.status === 'complete' && !visualReady ? 'answer received · fitting the view' : statusWords(clock.state, clock.paused, false)}</p>
+      <p className="settle-sr" role="status" aria-live="polite" aria-atomic="true">{clock.state.status === 'complete' && !visualReady ? 'answer received · settling into place' : statusWords(clock.state, clock.paused, false)}</p>
     </div>
   )
 }

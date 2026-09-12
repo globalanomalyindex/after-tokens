@@ -6,7 +6,8 @@
 |---|---|
 | Date | 2026-09-06 |
 | Status | Design locked, implementing |
-| Author | Christopher Robin Fiore (product designer / design engineer), with Claude as design and engineering partner |
+| Author | globalanomalyindex (product designer / design engineer) |
+| Tools | Claude assisted design and engineering |
 | Portfolio theme | Looking to nature for answers |
 | Supersedes | `2026-05-27-diffusion-text-animation-design.md` (four nature modes), `docs/redesign.md` sections 4 to 6 (the reward grammar) |
 

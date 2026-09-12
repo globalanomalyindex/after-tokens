@@ -9,7 +9,6 @@ import { brands } from '@/lib/brand/brands'
 import type { BrandId } from '@/lib/brand/types'
 import type { TraceCompact } from '@/lib/diffusion/traces'
 import { DEMO_REPLAYS } from '@/lib/settle/fixtures'
-import { formingText } from '@/lib/settle/reader'
 import { paceLabel, replayTrace, type Pace } from '@/lib/settle/replay'
 import type { Policy, Replay } from '@/lib/settle/types'
 import type { SettleVoice } from '@/lib/settle/voice'
@@ -81,7 +80,6 @@ export function SettleStage({
   sources = 'curated',
   controls = [],
   policy: policyProp = 'answer',
-  forming: formingProp = 'carve',
   pace: paceProp = 'recorded',
   brand: brandProp = 'after-tokens',
   voice,
@@ -94,7 +92,7 @@ export function SettleStage({
 }: Props) {
   const [sourceId, setSourceId] = useState(source)
   const [policy, setPolicy] = useState<Policy>(policyProp)
-  const [forming, setForming] = useState<FormingMode>(formingProp)
+  const forming: FormingMode = 'held'
   const [paceId, setPaceId] = useState<string>(() => PACES.find((p) => JSON.stringify(p.pace) === JSON.stringify(paceProp))?.id ?? 'recorded')
   const [brand, setBrand] = useState<BrandId>(brandProp)
   const [comparison, setComparison] = useState(comparisonProp)
@@ -145,7 +143,6 @@ export function SettleStage({
           {has('prompt') && <PromptPicker prompts={promptItems} activeId={promptId} onSelect={selectPrompt} layout="compact" />}
           {has('config') && <ToggleRail label="sampler" items={CONFIG_IDS.map((id) => ({ id, label: CONFIG_LABELS[id] }))} activeId={config} onSelect={selectConfig} />}
           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
-          {has('preview') && policy !== 'answer' && <ToggleRail label="earlier text" items={[{ id: 'carve', label: 'source intervals' }, { id: 'flow', label: 'in order only' }, { id: 'held', label: 'released only' }]} activeId={forming} onSelect={(id) => setForming(id as FormingMode)} />}
           {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
           {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'none', label: 'nothing' }, { id: 'prefix', label: 'the raw prefix' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
@@ -198,7 +195,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · ambient bars indicate activity, not answer shape or percent complete; all text appears at source finality. Earlier reading is deliberately held.' : forming === 'carve' ? ' · earlier experiment: source intervals and provisional guesses; committed text can change the intermediate layout' : formingText(state) && forming === 'flow' ? ' · the dim text is committed and in order; it brightens when its passage completes' : ''}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · the cells use coarse current-content geometry; the complete answer takes one material handover after source finality. Earlier reading is deliberately held.' : ' · the same reshaping cells hand over to each newly eligible batch; earlier readable text stays still. The chosen policy controls eligibility, not the material.'}
         </p>
       )}
     </div>

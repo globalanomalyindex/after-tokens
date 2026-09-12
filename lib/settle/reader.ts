@@ -43,7 +43,7 @@ export function priorAfter(spins: Record<number, SpinState>, tokens: Record<numb
 
 // The reducer is pure. Given the same events it yields the same page, the same
 // forming text, the same field, and the same status, whatever comes later. It
-// is Margin's reducer (Codex, 7 September 2026) with a token-level prefix, a
+// is Margin's reducer (7 September 2026) with a token-level prefix, a
 // word-completeness rule, a word policy, and the request bound.
 
 export function createSettleState(policy: Policy = 'sentence', bound: number | null = null): SettleState {

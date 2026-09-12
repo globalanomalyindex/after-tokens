@@ -1,0 +1,116 @@
+{
+  "startedAt": "2026-09-12T14:33:48.328Z",
+  "runtimeFingerprint": "b5314c31d450fbd56912f8b40e00bd75921a5ed15e756b416c3cd12be8352ffd",
+  "runtimeImplementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "1c9ff13b32ff7e2f3f706242139870601c18fcc1ed94fd8de45768e525727b34"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "fcfb7b1b49945c0f53eec3a825bd2d487d08d5d7cb81e2e05d0d5a152e6363cb"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "bd136986c672af0285c1d7a769bc16de1799ed90901a34a21ddab33685675532"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "9d884617ea15d9075aeac3f98ef3bdfc85150ad94d8f289668316c34d2aa8f4f"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "63c6e13f70072a99429f4a97b37c0c8914fab739ff39ff4817381091100b5381"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "4672010967c5332d7e3e78f74eec69e4517efeac6a9da3871e6e3ab37ffffb3c"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64226c90f7380e807292859e0926bcad5564ad367495e45352fa4891f1c25569"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "04f3fe810b0e898086060e50f63084b1e13daeb9f50768a26b08d08a9c330bc5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "c28fb504fdbb8f3603ed17c118feb2ca2c1472c2871b1187353a5565a0aa61c8"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    }
+  ],
+  "testFiles": [
+    {
+      "file": "tests/e2e/a11y.spec.ts",
+      "sha256": "c75c99486e6954d9507fdaafff03d754be850e96e92a17ef27e73bb121285ede"
+    },
+    {
+      "file": "tests/e2e/ambient-answer.spec.ts",
+      "sha256": "d7eab076d1f11df47ecd57be631d07b96fb9a6cda5b2ce784e027cee0d3e941e"
+    },
+    {
+      "file": "tests/e2e/reduced-motion-full.spec.ts",
+      "sha256": "553d6d868b99787ea23298ed08af196b9a5bde8358760dc88839ec65df78cf6e"
+    },
+    {
+      "file": "tests/e2e/settle-motion.spec.ts",
+      "sha256": "6462b266894cad9559832c826669210f89880d111fb4a5dbfbbc0e3383afb30e"
+    },
+    {
+      "file": "tests/e2e/snapshot-study.spec.ts",
+      "sha256": "2f94db0dda5e310987f7ae08c43f6dce6ca5dc0836e9edf60b7113b82ac4d243"
+    }
+  ]
+}

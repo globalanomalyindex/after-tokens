@@ -7,25 +7,15 @@ import { SettleStage } from '@/components/settle/settle-stage'
 import { ToggleRail } from '@/components/coda/toggle-rail'
 import { brands } from '@/lib/brand/brands'
 import type { BrandId } from '@/lib/brand/types'
-import { MARK_SHAPES, SETTLE_RANGES, type MarkShape, type SettleVoice } from '@/lib/settle/voice'
+import { SETTLE_RANGES, type SettleVoice } from '@/lib/settle/voice'
 
-// The voice: five tokens on the one surface, each inside a range that is an
-// invariant. The sliders move a live stage; the numbers say what each keeps.
+// Palette and tempo change the material; source eligibility stays fixed.
 
-const TOKENS: { key: keyof SettleVoice; range: string; changes: string; keeps: string }[] = [
-  { key: 'mark', range: 'tick, dot, dash, square', changes: 'the margin mark and the optional source-inspection strip', keeps: 'the same source state; no mark represents a future word' },
-  { key: 'bloom', range: '0 to 1', changes: 'completion decoration in the available surface treatments', keeps: 'readable text stays steady; a completion cue cannot certify answer correctness' },
-  { key: 'onset', range: '0 to 240 ms', changes: 'the ink treatment in the earlier-passage alternatives', keeps: 'the whole answer is readable at finality; onset never delays release' },
-  { key: 'tempo', range: '0.7 to 1.4', changes: 'the breath of the margin mark while receiving', keeps: 'rest at every terminal state' },
-  { key: 'grain', range: '0 to 1', changes: 'unresolved decoration and provisional ink in the earlier-text alternatives', keeps: 'committed text must clear contrast on its actual background; whole-answer text uses the reading ink' },
+const TOKENS = [
+  { key: 'palette', range: 'five brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
+  { key: 'tempo', range: '0.7 to 1.4', changes: 'the local breathing, reshaping and occasional glimmer', keeps: 'source eligibility and the 280 ms text handover' },
 ]
-
-const SLIDERS: { key: Exclude<keyof SettleVoice, 'mark'>; step: number; unit?: string }[] = [
-  { key: 'bloom', step: 0.05 },
-  { key: 'onset', step: 10, unit: 'ms' },
-  { key: 'tempo', step: 0.05 },
-  { key: 'grain', step: 0.05 },
-]
+const SLIDERS = [{ key: 'tempo', step: .05 }] as const
 
 export function SectionVoice() {
   const [brand, setBrand] = useState<BrandId>('after-tokens')
@@ -36,12 +26,12 @@ export function SectionVoice() {
   const replay = () => setRun((k) => k + 1)
   const base = brands[brand].settle
   const voice: SettleVoice = { ...base, ...override }
-  const set = (key: keyof SettleVoice, value: number | MarkShape) => setOverride((o) => ({ ...o, [key]: value }))
+  const set = (key: keyof SettleVoice, value: number) => setOverride((o) => ({ ...o, [key]: value }))
   return (
-    <Section id="voice" title="A voice in the margin">
-      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a voice in the margin</h2>
+    <Section id="voice" title="A voice in the material">
+      <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a voice in the material</h2>
       <p className="standfirst max-w-3xl">
-        a brand can give the waiting material and its completion response a character while the source contract stays fixed. these five existing voice controls cover the margin and the earlier-text treatments. their ranges cannot change source commitments, finality or truth. the skeleton comparison keeps source timing and final handover rules consistent; its added introduction, reshaping and glimmer are a combined treatment, not a palette or timing benefit.
+        a palette gives the page and its cells a character; tempo changes how the waiting material moves. the same bubble-to-word handover carries each brand into readable text. these two controls keep source eligibility, finality and the exact answer fixed. the motion is a design choice, not evidence of greater confidence or better reasoning.
       </p>
       <div className="mt-12 md:mt-16 overflow-x-auto" tabIndex={0} role="region" aria-label="Brand voice tokens, scroll horizontally">
         <table className="w-full text-left border-collapse">
@@ -69,12 +59,11 @@ export function SectionVoice() {
       <div className="mt-12 md:mt-16">
         <div className="grid gap-4 mb-6">
           <ToggleRail label="brand" items={(Object.keys(brands) as BrandId[]).map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => { setBrand(id as BrandId); setOverride({}) }} />
-          <ToggleRail label="mark" items={MARK_SHAPES.map((m) => ({ id: m, label: m }))} activeId={voice.mark} onSelect={(id) => { set('mark', id as MarkShape); replay() }} />
         </div>
         <SettleStage
           key={brand}
           source="trace:golden-sunflower__lowconf-b32"
-          policy="sentence"
+          policy="answer"
           brand={brand}
           voice={voice}
           runKey={run}
@@ -87,14 +76,14 @@ export function SectionVoice() {
                   <div key={s.key}>
                     <div className="flex justify-between items-baseline mb-1">
                       <label htmlFor={id} className="label">{s.key}</label>
-                      <span className="readout" style={{ color: 'var(--ink)' }}>{s.key === 'onset' ? Math.round(voice.onset) : voice[s.key].toFixed(2)}{s.unit ? ` ${s.unit}` : ''}</span>
+                      <span className="readout" style={{ color: 'var(--ink)' }}>{voice[s.key].toFixed(2)}</span>
                     </div>
                     <input id={id} type="range" className="voice-range" min={lo} max={hi} step={s.step} value={voice[s.key]} onChange={(e) => set(s.key, Number(e.target.value))} onPointerUp={replay} onKeyUp={(e) => { if (/^Arrow|Home|End|Page/.test(e.key)) replay() }} />
                     <div className="flex justify-between readout" style={{ color: 'var(--muted)' }}><span>{lo}</span><span>{hi}</span></div>
                   </div>
                 )
               })}
-              <p className="readout leading-relaxed" style={{ color: 'var(--muted)' }}>the sliders stop at the ranges. release timing is the reducer&rsquo;s and does not move.</p>
+              <p className="readout leading-relaxed" style={{ color: 'var(--muted)' }}>tempo changes the waiting motion. source eligibility and the 280 ms text handover stay fixed.</p>
             </div>
           )}
         />
@@ -107,7 +96,7 @@ export function SectionVoice() {
             <Reveal key={id} delay={i * 50}>
               <p className="text-base font-semibold">{b.name.toLowerCase()}</p>
               <p className="readout mt-1 leading-relaxed" style={{ color: 'var(--muted)' }}>
-                {b.settle.mark} · bloom {b.settle.bloom} · onset {b.settle.onset} ms · tempo {b.settle.tempo} · grain {b.settle.grain}
+                tempo {b.settle.tempo} · shared reading rules
               </p>
             </Reveal>
           )

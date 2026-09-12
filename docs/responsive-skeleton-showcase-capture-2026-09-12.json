@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-12T14:44:32.262Z",
+  "material": "responsive-cell-skeleton-v6",
+  "implementationFingerprint": "437552820794c6e42ca6716e224fa352fff693c2f9f4348f7be9378cce4241f1",
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "1c9ff13b32ff7e2f3f706242139870601c18fcc1ed94fd8de45768e525727b34"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "fcfb7b1b49945c0f53eec3a825bd2d487d08d5d7cb81e2e05d0d5a152e6363cb"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "bd136986c672af0285c1d7a769bc16de1799ed90901a34a21ddab33685675532"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "9d884617ea15d9075aeac3f98ef3bdfc85150ad94d8f289668316c34d2aa8f4f"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "63c6e13f70072a99429f4a97b37c0c8914fab739ff39ff4817381091100b5381"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "4672010967c5332d7e3e78f74eec69e4517efeac6a9da3871e6e3ab37ffffb3c"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64226c90f7380e807292859e0926bcad5564ad367495e45352fa4891f1c25569"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "04f3fe810b0e898086060e50f63084b1e13daeb9f50768a26b08d08a9c330bc5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "c28fb504fdbb8f3603ed17c118feb2ca2c1472c2871b1187353a5565a0aa61c8"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "scripts/measure-responsive-skeleton-motion.mjs",
+      "sha256": "1c8b875347c20ed302af32c0bb5b9e43ff246a1761f90f4310f26de0bf3617d2"
+    },
+    {
+      "file": "scripts/archive-responsive-skeleton-motion.mjs",
+      "sha256": "73c700fc3fd4e38070d43596b1c61f70327d684191a89af772eb8fabbcb48b4e"
+    },
+    {
+      "file": "scripts/measure-anchored-skeleton-motion.mjs",
+      "sha256": "378c9bc8b94cac12033fa91959b3f91eb04d1cffad178f2da46193f28415efb9"
+    }
+  ],
+  "measuredReport": "docs/responsive-skeleton-motion-validation-2026-09-12.json",
+  "captureScript": {
+    "file": "scripts/capture-responsive-skeleton-showcase.mjs",
+    "sha256": "14d4e91710d2d9cec23e90f742256a5ff36d12b3634136c4ff687569a2b2fbbe"
+  },
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "url": "http://localhost:3000",
+  "recordings": [
+    {
+      "name": "mobile",
+      "recordedAt": "2026-09-12T14:44:05.738Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "sourceFile": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sourceSha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "clock": {
+        "capturedDurationMs": 4047.567,
+        "capturedFinalityAtMs": 4047.567,
+        "effectiveDurationMs": 8095.134,
+        "effectiveFinalityAtMs": 8095.134,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "file": "public/study/responsive-skeleton-showcase-mobile.webm",
+      "url": "study/responsive-skeleton-showcase-mobile.webm",
+      "sha256": "4a3946f41fcebc2c0d543ad95276e433d9cd24604c87cda6cac2f6d0d8f73a74",
+      "bytes": 608106,
+      "artifact": "output/playwright/responsive-skeleton-showcase-2026-09-12/mobile.webm",
+      "exactFinalText": true
+    },
+    {
+      "name": "long",
+      "recordedAt": "2026-09-12T14:44:16.536Z",
+      "source": "sky-blue__lowconf-b128-s32",
+      "sourceFile": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sourceSha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "clock": {
+        "capturedDurationMs": 4105.776000000001,
+        "capturedFinalityAtMs": 4105.776000000001,
+        "effectiveDurationMs": 8211.552000000001,
+        "effectiveFinalityAtMs": 8211.552000000001,
+        "playbackScale": 0.5,
+        "finality": "contiguous committed EOS"
+      },
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "reshape",
+      "file": "public/study/responsive-skeleton-showcase-long.webm",
+      "url": "study/responsive-skeleton-showcase-long.webm",
+      "sha256": "1f6cfd89f7f7d07a7ed76207baff627a30ac54d099a14dd6651af3811feee531",
+      "bytes": 1038537,
+      "artifact": "output/playwright/responsive-skeleton-showcase-2026-09-12/long.webm",
+      "exactFinalText": true
+    }
+  ],
+  "posters": [
+    {
+      "name": "mobile",
+      "file": "public/study/responsive-skeleton-showcase-mobile.png",
+      "sha256": "27301b0ffedc613f6dadfde2720ef568ad6fad08e16afc4c85b1e638c94dbccc",
+      "bytes": 56832,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "method": "Separate browser viewport screenshot approximately1300ms after replay; source clock0.5×, decorative clock unchanged. Not a frame extracted from the passive video."
+    },
+    {
+      "name": "long",
+      "file": "public/study/responsive-skeleton-showcase-long.png",
+      "sha256": "e1c60cf89755670e15f798e1ae81bc4e27c02e04e0eaaf0fea4c3c31a613d2fb",
+      "bytes": 109366,
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "reshape",
+      "method": "Separate browser viewport screenshot approximately1300ms after replay; source clock0.5×, decorative clock unchanged. Not a frame extracted from the passive video."
+    }
+  ],
+  "method": "Separate passive Playwright browser videos. Fonts and controls are prepared first; a full replay then runs without frame sampling, MutationObserver, geometry reads, or animation polling. Exact final text is checked after the replay. The untrimmed browser videos retain initial page loading, setup and scrolling. No generated or interpolated frames and no edited answer text.",
+  "sourceClock": "Explicitly selected 0.5× inspection of original observed capture-loop intervals. Decorative timing remains unchanged. These are source replays, not live inference or end-to-end request latency.",
+  "relationshipToMeasurement": "Same frozen implementation, source bytes and Chromium version as the separate eight-case geometry report. These videos are presentation captures, not the instrumented observations; their different file paths and hashes preserve that distinction.",
+  "caveats": [
+    "Emulated narrow browser viewport, not a physical iPhone.",
+    "No device-FPS, performance, reader-benefit, preference or latency-improvement claim."
+  ]
+}

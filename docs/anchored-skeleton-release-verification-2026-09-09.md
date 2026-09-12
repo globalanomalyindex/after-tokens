@@ -1,5 +1,7 @@
 # Adaptive cell skeleton release verification
 
+> Historical v5 record (`adaptive-cell-skeleton-v5`, published at `06da788390549574949c7cdcd938c3669820f214`). Its parameters, reports and captures describe that material; they do not validate the later v6 bubble-to-word handover.
+
 9 September 2026 · material `adaptive-cell-skeleton-v5` · local engineering, measurement and publication gates passed.
 
 This revision adds a causal size estimate, gradual waiting-area growth, an exact final-height handoff and one whole-answer settling movement. The capsule introduction, breathing cells, interior pill formation, neighbor redistribution and intermittent glimmer remain. Sizing distinguishes current committed positions from a current revisable snapshot; only numeric estimates enter the composition. Source recordings, whole-answer finality rules, exact answer text and the original case-study design are preserved.
@@ -45,7 +47,7 @@ The final static export, including both video posters, was served at `http://127
 - Exact downloaded bytes and SHA-256 matches for all four videos: two diagnostic recordings and two passive presentation captures.
 - Both visible showcase elements reaching `readyState: 4` with `mediaError: null`; their complete untrimmed media durations are 11.2 and 11.0 seconds.
 - Exact downloaded hashes for both video posters, matched to their separate provenance manifest.
-- Exact hashes for the three supplied Google-reference images.
+- Exact hashes for the three archived Google-reference images.
 - The authored snapshot exercise preserving a complete-looking nonfinal candidate off the protected page, reserving 11 provisional rows, and displaying the exact final answer after explicit finality.
 - An empty verification `errors` list.
 
@@ -108,7 +110,7 @@ The earlier `solid-rounded-skeleton-v1` results belong to revision `a7606d9` and
 
 The estimate uses current committed fragments, or a current candidate when the source actually supplies revisable snapshots, plus available type/container metrics. Its packing factor, newline allowance, slack and row limits are authored heuristics, not a lower bound or accurate forecast. Candidate content can be noisy or shrink and is not promoted to committed text. Individual pills remain independent of actual words. The division metaphor does not depict decoder stages; glimmer does not estimate confidence or completion.
 
-The [Google reference audit](google-diffusion-reference-audit-2026-09-09.md) covers 45 supplied JPEGs and three original images displayed in the site inspector. Those images provide qualitative reference evidence, not source events or timing. The separate authored 4.2-second snapshot exercise tests the integration contract; its draft inspector deliberately displays provisional text beside the protected view. Neither constitutes a connected Gemini adapter, a Google benchmark or a reader study.
+The [Google reference audit](google-diffusion-reference-audit-2026-09-09.md) covers 45 archived JPEGs and three original images displayed in the site inspector. Those images provide qualitative reference evidence, not source events or timing. The separate authored 4.2-second snapshot exercise tests the integration contract; its draft inspector deliberately displays provisional text beside the protected view. Neither constitutes a connected Gemini adapter, a Google benchmark or a reader study.
 
 After genuine source finality, actual final text is permitted in a hidden measurement page. During a necessary fit, the status says **answer received · fitting the view**. Cells then represent presentation preparation rather than continuing model work. Reduced motion and other inactive-motion states bypass that fit and the answer translation without changing source eligibility.
 

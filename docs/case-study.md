@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| Role | Product design, interaction design, prototyping, front-end engineering (solo, with Claude as design and engineering partner; the causal audit and the first implementation of the reading contract by Codex, 7 September 2026) |
+| Role | Web design, motion design, interaction research, prototyping and front-end engineering by globalanomalyindex; Claude and Codex assisted the design, implementation and causal audit |
 | Timeline | May to September 2026 |
 | Status | A concept exploration in a working prototype; the cost measured on sixty recorded runs; untested on readers; a two-experiment study designed |
 | Live | https://globalanomalyindex.github.io/after-tokens/ · source: https://github.com/globalanomalyindex/after-tokens |
@@ -73,7 +73,7 @@ A review on 7 September 2026 checked each mechanism the first version had cited,
 | motion in the periphery (Bartram, Ware and Calvert, 2003) | motion beside a primary task is detected far better than a color change; traveling and zooming icons were rated most distracting, slow linear motion and slow blink least; distraction was self-reported, on notification icons beside a task rather than on text | a guardrail: ambient treatment stays local to unresolved decoration; readable glyphs keep their shape and finished text rests |
 | animated transitions (Heer and Robertson, 2007) | animated transitions beat abrupt changes for tracking objects and judging change; simple staging helped a little and was preferred, heavy staging hurt; measured on charts rather than on text | reduce layout changes first, coordinate necessary movement, and avoid stacking independent effects on one event; chart results do not establish a text benefit |
 
-Our literature search did not identify a study testing this specific diffusion presentation. Adjacent work supplies hypotheses and constraints, not a demonstration that Settle improves reading. The motion refresh and primary-source links are in the research note, section 9.8.
+My literature search did not identify a study testing this specific diffusion presentation. Adjacent work supplies hypotheses and constraints, not a demonstration that Settle improves reading. The motion refresh and primary-source links are in the research note, section 9.8.
 
 ## The insight
 

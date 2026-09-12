@@ -12,14 +12,14 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
   title: 'After Tokens: a skeleton motion study for generated text',
   description:
-    'A capsule that divides into breathing, reshaping skeleton cells, one whole-answer arrival, and the measured cost of waiting. A motion and interaction study grounded in diffusion recordings, verified source boundaries and testable reader hypotheses.',
+    'A web and motion design study of adaptive skeleton loading, the transition into text and a readable final state. Working browser experiments, real diffusion recordings and an explicit account of presentation costs.',
   authors: [
     {
-      name: 'Christopher Robin Fiore',
+      name: 'globalanomalyindex',
       url: 'https://github.com/globalanomalyindex',
     },
   ],
-  creator: 'Christopher Robin Fiore',
+  creator: 'globalanomalyindex',
   alternates: {
     canonical: 'https://globalanomalyindex.github.io/after-tokens/',
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'Still, breathe, reshape: familiar loading bars, one readable answer arrival, and an honest account of waiting. Research, real diffusion captures and an interactive motion comparison.',
+      'Adaptive loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
     url: 'https://globalanomalyindex.github.io/after-tokens/',
     siteName: 'After Tokens',
     locale: 'en_US',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'Still, breathe, reshape: familiar loading bars, one readable answer arrival, and an honest account of waiting. Research, real diffusion captures and an interactive motion comparison.',
+      'Adaptive loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
   },
 }
 

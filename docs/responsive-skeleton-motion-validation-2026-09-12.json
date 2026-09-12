@@ -1,0 +1,540 @@
+{
+  "schemaVersion": 1,
+  "material": "responsive-cell-skeleton-v6",
+  "fingerprint": "437552820794c6e42ca6716e224fa352fff693c2f9f4348f7be9378cce4241f1",
+  "playbackScale": 0.5,
+  "handoverDurationMs": 280,
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "1c9ff13b32ff7e2f3f706242139870601c18fcc1ed94fd8de45768e525727b34"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "fcfb7b1b49945c0f53eec3a825bd2d487d08d5d7cb81e2e05d0d5a152e6363cb"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "bd136986c672af0285c1d7a769bc16de1799ed90901a34a21ddab33685675532"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "9d884617ea15d9075aeac3f98ef3bdfc85150ad94d8f289668316c34d2aa8f4f"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "63c6e13f70072a99429f4a97b37c0c8914fab739ff39ff4817381091100b5381"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "4672010967c5332d7e3e78f74eec69e4517efeac6a9da3871e6e3ab37ffffb3c"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64226c90f7380e807292859e0926bcad5564ad367495e45352fa4891f1c25569"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "04f3fe810b0e898086060e50f63084b1e13daeb9f50768a26b08d08a9c330bc5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "c28fb504fdbb8f3603ed17c118feb2ca2c1472c2871b1187353a5565a0aa61c8"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "scripts/measure-responsive-skeleton-motion.mjs",
+      "sha256": "1c8b875347c20ed302af32c0bb5b9e43ff246a1761f90f4310f26de0bf3617d2"
+    },
+    {
+      "file": "scripts/archive-responsive-skeleton-motion.mjs",
+      "sha256": "73c700fc3fd4e38070d43596b1c61f70327d684191a89af772eb8fabbcb48b4e"
+    },
+    {
+      "file": "scripts/measure-anchored-skeleton-motion.mjs",
+      "sha256": "378c9bc8b94cac12033fa91959b3f91eb04d1cffad178f2da46193f28415efb9"
+    }
+  ],
+  "measurementStartedAt": "2026-09-12T14:42:22.161Z",
+  "measuredAt": "2026-09-12T14:43:50.073Z",
+  "url": "http://localhost:3000",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "sourceFixtures": [
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "id": "sleep-tips__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "id": "sky-blue__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-random-2026-09-09/compact/sleep-tips__random-b128-s32.json",
+      "sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "id": "sleep-tips__random-b128-s32"
+    }
+  ],
+  "results": [
+    {
+      "name": "390-static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "static",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:42:32.720Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 529,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9225.2,
+      "firstSampledDomMs": 9225.2,
+      "firstSampledInkMs": 9275.2,
+      "firstSampledFullOpacityMs": 9458.5,
+      "firstSampledRestMs": 9558.6,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 50,
+      "sourceToFullOpacityMs": 233.29999999999927,
+      "sourceToRestMs": 333.39999999999964,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 19,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 216.93893672140578,
+      "maximumCellMotionPx": 177.953125,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 5.375,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.799999999999727,
+      "maximumFrameGapMs": 33.29999999999927,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-breathe",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "breathe",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:42:43.718Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9231.4,
+      "firstSampledDomMs": 9231.4,
+      "firstSampledInkMs": 9248.1,
+      "firstSampledFullOpacityMs": 9431.5,
+      "firstSampledRestMs": 9531.4,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.700000000000728,
+      "sourceToFullOpacityMs": 200.10000000000036,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 216.93893672140578,
+      "maximumCellMotionPx": 177.953125,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 5.375,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.600000000000364,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:42:54.968Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9293,
+      "firstSampledDomMs": 9293,
+      "firstSampledInkMs": 9309.7,
+      "firstSampledFullOpacityMs": 9492.9,
+      "firstSampledRestMs": 9593,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.700000000000728,
+      "sourceToFullOpacityMs": 199.89999999999964,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 200.54923495463078,
+      "maximumCellMotionPx": 177.953125,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.0625,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.699999999999818,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "static",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:43:05.634Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9085.3,
+      "firstSampledDomMs": 9085.3,
+      "firstSampledInkMs": 9101,
+      "firstSampledFullOpacityMs": 9285.3,
+      "firstSampledRestMs": 9385.3,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 15.700000000000728,
+      "sourceToFullOpacityMs": 200,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 522.9693885714671,
+      "maximumCellMotionPx": 428.96875,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 12.9375,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 17.699999999999818,
+      "maximumFrameGapMs": 17.700000000000728,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-breathe",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "breathe",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:43:16.184Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9076.2,
+      "firstSampledDomMs": 9076.2,
+      "firstSampledInkMs": 9092.9,
+      "firstSampledFullOpacityMs": 9276.3,
+      "firstSampledRestMs": 9376.2,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.69999999999891,
+      "sourceToFullOpacityMs": 200.09999999999854,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 522.9693885714671,
+      "maximumCellMotionPx": 428.96875,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 12.9375,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.700000000000273,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-reshape",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "reshape",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:43:26.717Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 527,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9088.9,
+      "firstSampledDomMs": 9088.9,
+      "firstSampledInkMs": 9105.5,
+      "firstSampledFullOpacityMs": 9288.8,
+      "firstSampledRestMs": 9388.8,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.600000000000364,
+      "sourceToFullOpacityMs": 199.89999999999964,
+      "sourceToRestMs": 299.89999999999964,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 15,
+      "maximumTransferTravelPx": 480.3053291431042,
+      "maximumCellMotionPx": 428.96875,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 22,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.125,
+      "maximumGlimmerPhaseSpreadMs": 0.006999933534643787,
+      "frameGapP95Ms": 17.300000000000182,
+      "maximumFrameGapMs": 17.700000000000728,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape-sky",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:43:37.417Z",
+      "source": "sky-blue__lowconf-b128-s32",
+      "frames": 536,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9218.9,
+      "firstSampledDomMs": 9218.9,
+      "firstSampledInkMs": 9252.3,
+      "firstSampledFullOpacityMs": 9435.6,
+      "firstSampledRestMs": 9535.6,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 33.399999999999636,
+      "sourceToFullOpacityMs": 216.70000000000073,
+      "sourceToRestMs": 316.7000000000007,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 19,
+      "maximumTransferCells": 24,
+      "maximumTransferTravelPx": 260.1891989901802,
+      "maximumCellMotionPx": 279.9375,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 10,
+      "waitingFrameGrowthPx": 121.875,
+      "finalFrameHeightPx": 219.375,
+      "finalPageHeightPx": 219.375,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.046875,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 17.40000000000009,
+      "maximumFrameGapMs": 17.700000000000273,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape-random",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "responsive-cell-skeleton-v6",
+      "measuredAt": "2026-09-12T14:43:49.284Z",
+      "source": "sleep-tips__random-b128-s32",
+      "frames": 590,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 10106.9,
+      "firstSampledDomMs": 10106.9,
+      "firstSampledInkMs": 10140.2,
+      "firstSampledFullOpacityMs": 10323.5,
+      "firstSampledRestMs": 10423.5,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 33.30000000000109,
+      "sourceToFullOpacityMs": 216.60000000000036,
+      "sourceToRestMs": 316.60000000000036,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 19,
+      "maximumTransferCells": 14,
+      "maximumTransferTravelPx": 195.48950640048585,
+      "maximumCellMotionPx": 157.921875,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.046875,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 17.59999999999991,
+      "maximumFrameGapMs": 17.700000000000728,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    }
+  ],
+  "method": "Eight sequential browser observations: six sleep-list condition×viewport cases plus narrow sky and random cases. An observer records whole-answer DOM changes; one rAF sampler records geometry, computed styles and one animation subtree list per frame. Raw samples remain separate from passive showcase videos.",
+  "clocks": "Source capture-loop intervals are explicitly replayed at0.5× inspection. Local activity, intro and handover retain their authored timings. Source-complete, DOM insertion, first positive ink opacity, full ink opacity, and fully settled/unoccluded readiness are first sampled browser events; neither source clock nor rendering delays are API latency.",
+  "caveats": [
+    "No physical device FPS or reader-benefit evidence.",
+    "Instrumented rAF gaps are diagnostic only, not rendering-cost comparisons.",
+    "Source policies, opacity handover and size fitting have distinct timing costs.",
+    "Capsule division, seeded activity, breathing, glimmer, occupancy response and handover are a bundled treatment.",
+    "Opacity1 can precede the end of the280ms movement/transfer; readiness is measured separately.",
+    "Numeric occupancy is a causal approximate budget, not future word layout or percent complete."
+  ],
+  "archive": {
+    "file": "data/experiments/responsive-skeleton-motion-2026-09-12/manifest.json",
+    "sha256": "8509ebd000bd1cb60f1ce4d1efe3b061e47ef6b331fd6986df2550c89579d34d",
+    "records": 8
+  }
+}

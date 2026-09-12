@@ -9,12 +9,12 @@ async function startStudy(page: Page): Promise<Locator> {
   await page.evaluate(() => document.fonts.ready)
   await expect(study).toHaveAttribute('data-source-id', sleep.id)
   await study.getByRole('button', { name: 'replay all', exact: true }).click()
-  await expect(study.locator('.settle[data-policy="answer"]')).toHaveCount(3)
+  await expect(study.locator('.settle[data-policy="answer"]')).toHaveCount(1)
   await expect(study.locator('[role="status"][aria-live="polite"]')).toHaveCount(1)
   return study
 }
 
-test('three appearances preserve one source result and reveal the whole answer after their fit', async ({ page }) => {
+test('the reshape default preserves source finality and hands over one exact answer', async ({ page }) => {
   const study = await startStudy(page)
   const observations = await study.evaluate(async (root) => {
     const surfaces = [...root.querySelectorAll<HTMLElement>('.settle[data-policy="answer"]')]
@@ -61,13 +61,14 @@ test('three appearances preserve one source result and reveal the whole answer a
             }
           } else {
             if (surface.dataset.visualReady === 'true' && surface.querySelector('.ambient-composition')) failures.push('loading composition survived visual readiness')
-            if (surface.dataset.answerPhase === 'fitting' && getComputedStyle(surface.querySelector('.settle-page')!).visibility !== 'hidden') failures.push('fitting answer was partially revealed')
+            if (surface.dataset.answerPhase === 'fitting' && [...surface.querySelectorAll('[data-passage]')].some((passage) => getComputedStyle(passage).visibility !== 'hidden')) failures.push('fitting answer was partially revealed')
             if (Number(root.getAttribute('data-elapsed-ms')) < Number(root.getAttribute('data-duration-ms'))) failures.push('answer appeared before observed source deadline')
           }
         })
+        sawArrival ||= surfaces.some((surface) => !!surface.querySelector('.bubble-transfer'))
         if (states.every((status) => status === 'complete') && surfaces.every((surface) => surface.dataset.visualReady === 'true')) {
           finalSamples += 1
-          sawArrival ||= surfaces.some((surface) => surface.querySelector('.settle-answer-arrival'))
+          sawArrival ||= surfaces.some((surface) => surface.querySelector('.bubble-transfer'))
         } else waitingSamples += 1
         if (finalSamples >= 3 || performance.now() - started > 10_000) resolve()
         else requestAnimationFrame(sample)
@@ -80,12 +81,12 @@ test('three appearances preserve one source result and reveal the whole answer a
   expect(observations.waitingSamples).toBeGreaterThan(0)
   expect(observations.finalSamples).toBeGreaterThan(0)
   expect(observations.sawArrival).toBe(true)
-  expect(observations.textUpdates).toEqual([1, 1, 1])
+  expect(observations.textUpdates).toEqual([1])
   expect(observations.failures).toEqual([])
   expect(observations.movedConditions).not.toContain('static')
   for (const condition of observations.visibleConditions.filter((value) => value !== 'static')) expect(observations.movedConditions).toContain(condition)
   await page.waitForTimeout(300)
-  for (const condition of ['static', 'breathe', 'reshape']) {
+  for (const condition of ['reshape']) {
     const answer = study.getByRole('region', { name: `answer · ${condition}`, exact: true, includeHidden: true })
     await expect(answer).toHaveAttribute('aria-busy', 'false')
     expect(await answer.textContent()).toBe(sleep.answer)
@@ -96,7 +97,7 @@ test('three appearances preserve one source result and reveal the whole answer a
       opacity: getComputedStyle(ink).opacity,
       transform: getComputedStyle(ink).transform,
     }))
-    expect(shape).toEqual({ children: 0, textNodes: 1, filter: 'none', opacity: '1', transform: 'none' })
+    expect(shape).toEqual({ children: 1, textNodes: 0, filter: 'none', opacity: '1', transform: 'none' })
   }
 })
 
@@ -125,14 +126,9 @@ test('shared controls pause motion and source time, and offscreen activity rests
   expect(await study.evaluate((root) => [...root.querySelectorAll('.settle')].flatMap((surface) => surface.getAnimations({ subtree: true })).filter((animation) => animation.playState === 'running').length)).toBe(0)
 })
 
-test('the narrow comparison switches one visible condition and restarts the shared recording', async ({ page }) => {
+test('the comparison switches one visible condition and restarts the shared recording at every width', async ({ page }) => {
   const study = await startStudy(page)
   const selector = study.getByRole('radiogroup', { name: 'motion study', exact: true, includeHidden: true })
-  if (page.viewportSize()!.width >= 768) {
-    await expect(selector).toBeHidden()
-    await expect(study.locator('.settle:visible')).toHaveCount(3)
-    return
-  }
   await expect(selector).toBeVisible()
   for (const [condition, label] of [['static', 'still'], ['breathe', 'breathe'], ['reshape', 'reshape']]) {
     await study.getByRole('button', { name: 'to the end', exact: true }).click()
@@ -172,7 +168,7 @@ test('ambient animation keeps its identity and phase through interruption; final
   await expect.poll(() => bar.evaluate((el) => el.getAnimations().filter((animation) => animation.playState === 'running').length)).toBeGreaterThan(0)
   await bar.evaluate((el) => {
     const all = el.closest('.settle')!.getAnimations({ subtree: true })
-    const names = ['skeleton-breathe', 'skeleton-shuffle', 'skeleton-nudge', 'skeleton-emerge', 'skeleton-glimmer', 'division-open', 'division-cell', 'division-leave', 'division-field']
+    const names = ['skeleton-breathe', 'skeleton-glimmer', 'division-open', 'division-cell', 'division-leave', 'division-field']
     ;(el as HTMLElement & { auditAnimations: Animation[] }).auditAnimations = names.map((name) => all.find((animation) => animation instanceof CSSAnimation && animation.animationName === name)!)
   })
   await study.getByRole('button', { name: 'pause all', exact: true }).click()
@@ -189,7 +185,7 @@ test('ambient animation keeps its identity and phase through interruption; final
     await Promise.all((el as HTMLElement & { auditAnimations: Animation[] }).auditAnimations.map((animation) => animation.ready))
   })
   const paused = await state()
-  expect(paused).toHaveLength(9)
+  expect(paused).toHaveLength(6)
   expect(paused.every((item) => item.same)).toBe(true)
   await page.waitForTimeout(180)
   expect(await state()).toEqual(paused)
@@ -203,105 +199,93 @@ test('ambient animation keeps its identity and phase through interruption; final
   await expect.poll(async () => (await state()).every((item, index) => item.same && item.time > paused[index]!.time)).toBe(true)
   await study.getByRole('button', { name: 'to the end', exact: true }).click()
   await page.waitForTimeout(400)
-  await expect(study.locator('.settle-answer-arrival')).toHaveCount(0)
+  await expect(study.locator('.bubble-transfer')).toHaveCount(0)
   await study.getByRole('button', { name: 'motion on', exact: true }).click()
   await study.getByRole('button', { name: 'motion off', exact: true }).click()
-  await expect(study.locator('.settle-answer-arrival')).toHaveCount(0)
+  await expect(study.locator('.bubble-transfer')).toHaveCount(0)
 })
 
-test('underestimated space fits before a whole opaque answer settles and becomes stationary', async ({ page, browserName, browser }, testInfo) => {
+test('authored narrow underallocation fits before a bounded bubble-to-word handover', async ({ page }, testInfo) => {
   const study = await startStudy(page)
   await study.getByRole('radiogroup', { name: 'recording', exact: true }).getByRole('radio', { name: 'an explanation', exact: true }).click()
-  await expect(study).toHaveAttribute('data-source-id', sky.id)
   const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  // Fixed narrow width is an explicit stress fixture at every browser viewport.
+  await surface.evaluate((root) => { (root as HTMLElement).style.width = '240px' })
   await surface.scrollIntoViewIfNeeded()
   const result = await surface.evaluate(async (root) => {
     const controls = [...root.closest('.ambient-study')!.querySelectorAll('button')]
-    const end = controls.find((button) => button.textContent === 'to the end')!
-    // Reset immediately before the stress trigger: slower browser setup can
-    // otherwise let the natural replay allocate enough space before this test.
     controls.find((button) => button.textContent === 'replay all')!.click()
     await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
-    const initialFrame = root.querySelector('.settle-answer-frame')!, initialPage = root.querySelector('.settle-page')!
-    const minimumHeight = parseFloat(getComputedStyle(initialPage).lineHeight) * 5
-    if (root.getAttribute('data-active') !== 'true' || Math.abs(initialFrame.getBoundingClientRect().height - minimumHeight) > 1) throw Error('underallocation stress requires an active fresh five-line envelope')
-    const compositionBefore = root.querySelector('.ambient-composition')
-    let sourceAt: number | null = null, visibleAt: number | null = null, fittingFrames = 0, visibleFrames = 0
-    let initialShape: { x: number; y: number }[] | null = null, rested: { x: number; y: number }[] | null = null
-    let maxShapeChange = 0, maxRestMovement = 0, restSamples = 0, sawArrival = false, observedInkDuration = 0
-    const failures = new Set<string>(), translations: number[] = [], heights: number[] = []
-    end.click()
+    const frame = root.querySelector('.settle-answer-frame')!, composition = root.querySelector('.ambient-composition')
+    // Isolate the fit/transfer branch from the separate early-intro fallback:
+    // advance only the authored intro, leaving source time and five rows fresh.
+    for (const animation of root.getAnimations({ subtree: true })) if (animation instanceof CSSAnimation && animation.animationName.startsWith('division-')) animation.currentTime = 950
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+    const initialHeight = frame.getBoundingClientRect().height
+    let sourceAt: number | null = null, opaqueAt: number | null = null, restAt: number | null = null
+    let fittingFrames = 0, blendFrames = 0, transferFrames = 0, minOpacity = 1, maxOpacity = 0, maxTop = 0, minTop = 0, duration = 0
+    let firstRest: number[][] | null = null, restSamples = 0, restMovement = 0
+    const failures = new Set<string>()
+    controls.find((button) => button.textContent === 'to the end')!.click()
     await new Promise<void>((resolve, reject) => {
+      const started = performance.now()
       const tick = () => {
         try {
-          const now = performance.now(), frame = root.querySelector('.settle-answer-frame')!, region = root.querySelector('.settle-page')!, ink = region.querySelector('.settle-answer-text')
-          heights.push(frame.getBoundingClientRect().height)
+          const now = performance.now(), passage = root.querySelector<HTMLElement>('[data-passage]'), region = root.querySelector('.settle-page')!
           if (root.getAttribute('data-status') === 'complete' && sourceAt === null) sourceAt = now
           if (root.getAttribute('data-answer-phase') === 'fitting') {
-            fittingFrames += 1
-            if (getComputedStyle(region).visibility !== 'hidden' || !root.querySelector('.ambient-composition')) failures.add('fitting did not retain ornament and hide the entire answer')
-            if (root.querySelector('.ambient-composition') !== compositionBefore) failures.add('fitting restarted the decorative composition')
+            fittingFrames++
+            if (!passage || getComputedStyle(passage).visibility !== 'hidden' || root.querySelector('.ambient-composition') !== composition) failures.add('underfit exposed text or restarted the material')
           }
-          if (ink && getComputedStyle(ink).visibility === 'visible') {
-            if (visibleAt === null) visibleAt = now
-            visibleFrames += 1
-            const css = getComputedStyle(ink), matrix = new DOMMatrixReadOnly(css.transform)
-            if (css.opacity !== '1' || css.filter !== 'none' || matrix.a !== 1 || matrix.d !== 1 || matrix.b !== 0 || matrix.c !== 0 || matrix.e !== 0 || matrix.f < -.201 || matrix.f > 1.501) failures.add('answer left its opaque vertical-settle bounds')
-            if (getComputedStyle(frame).overflow !== 'visible') failures.add('readable answer was still clipped')
-            translations.push(matrix.f)
-            if (root.querySelector('.ambient-composition')) failures.add('ornament remained over the readable answer')
-            sawArrival ||= !!root.querySelector('.settle-answer-arrival')
-            const animation = ink.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'settle-answer-ink')
-            if (animation) observedInkDuration = Number(animation.effect!.getTiming().duration)
-            const node = ink.firstChild!
-            const origin = region.getBoundingClientRect()
-            const positions = [...node.textContent!.matchAll(/\S+/g)].map((match) => {
-              const range = document.createRange(); range.setStart(node, match.index); range.setEnd(node, match.index + 1)
-              const box = range.getBoundingClientRect(); return { x: box.x - origin.x, y: box.y - origin.y }
-            })
-            if (!initialShape) initialShape = positions
-            positions.forEach((position, index) => {
-              const initial = initialShape![index]!
-              maxShapeChange = Math.max(maxShapeChange, Math.abs((position.x - positions[0]!.x) - (initial.x - initialShape![0]!.x)), Math.abs((position.y - positions[0]!.y) - (initial.y - initialShape![0]!.y)))
-            })
-            if (now - visibleAt >= 220) {
-              if (!rested) rested = positions
-              positions.forEach((position, index) => { maxRestMovement = Math.max(maxRestMovement, Math.hypot(position.x - rested![index]!.x, position.y - rested![index]!.y)); restSamples += 1 })
+          if (passage && getComputedStyle(passage).visibility === 'visible') {
+            const css = getComputedStyle(passage), opacity = Number(css.opacity), top = parseFloat(css.top)
+            minOpacity = Math.min(minOpacity, opacity); maxOpacity = Math.max(maxOpacity, opacity); maxTop = Math.max(maxTop, top); minTop = Math.min(minTop, top)
+            if (css.filter !== 'none' || css.transform !== 'none' || top > 1.501 || top < -.201) failures.add('new words left the bounded no-blur handover')
+            if (opacity > .01 && opacity < .99) blendFrames++
+            const transfer = root.querySelector('.bubble-transfer')
+            if (transfer?.querySelector('.bubble-transfer__cell')) transferFrames++
+            const animation = passage.getAnimations().find((item) => item instanceof CSSAnimation && item.animationName === 'reading-ink-arrive')
+            if (animation) duration = Number(animation.effect!.getTiming().duration)
+            if (opacity >= .999 && opaqueAt === null) opaqueAt = now
+            if (root.getAttribute('data-visual-ready') === 'true') {
+              if (restAt === null) restAt = now
+              if (transfer || root.querySelector('.ambient-composition')) failures.add('material survived finished handover')
+              const node = passage.firstChild!, origin = region.getBoundingClientRect()
+              const positions = [...node.textContent!.matchAll(/\S+/g)].map((match) => {
+                const range = document.createRange(); range.setStart(node, match.index!); range.setEnd(node, match.index! + 1)
+                const rect = range.getBoundingClientRect(); return [rect.x - origin.x, rect.y - origin.y]
+              })
+              firstRest ??= positions
+              positions.forEach((position, index) => { restMovement = Math.max(restMovement, Math.hypot(position[0]! - firstRest![index]![0]!, position[1]! - firstRest![index]![1]!)) })
+              restSamples++
+              if (now - restAt > 300) { resolve(); return }
             }
-            if (now - visibleAt >= 500) { resolve(); return }
           }
-          if (sourceAt !== null && now - sourceAt > 2000) { reject(Error('whole answer did not become ready')); return }
+          if (now - started > 3000) { reject(Error('forced finality never completed its handover')); return }
           requestAnimationFrame(tick)
         } catch (error) { reject(error) }
       }
       requestAnimationFrame(tick)
     })
-    const region = root.querySelector('.settle-page')!, range = document.createRange(), selection = window.getSelection()!
-    // Select the text node itself; WebKit may append a block separator when
-    // selecting the surrounding block element's contents.
-    range.selectNodeContents(region.querySelector('.settle-answer-text')!.firstChild!); selection.removeAllRanges(); selection.addRange(range)
-    const selected = selection.toString(); selection.removeAllRanges()
-    return { material: compositionBefore!.getAttribute('data-material'), source: 'sky-blue__lowconf-b128-s32', firstSampledSourceCompleteMs: sourceAt, firstSampledFullyVisibleMs: visibleAt, initialFrameHeightPx: minimumHeight, actualFinalPageHeightPx: region.getBoundingClientRect().height, finalFrameHeightPx: root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height, fittingFrames, visibleFrames, visualDelayMs: visibleAt! - sourceAt!, maxShapeChange, maxRestMovement, restSamples, sawArrival, observedInkDuration, minimumY: Math.min(...translations), maximumY: Math.max(...translations), heightRange: Math.max(...heights) - Math.min(...heights), selected, failures: [...failures] }
+    return { fittingFrames, blendFrames, transferFrames, minOpacity, maxOpacity, minTop, maxTop, duration, initialHeight,
+      finalHeight: frame.getBoundingClientRect().height, finalText: root.querySelector('.settle-page')!.textContent,
+      sourceToOpaqueMs: opaqueAt! - sourceAt!, sourceToRestMs: restAt! - sourceAt!, restSamples, restMovement, failures: [...failures] }
   })
-  await testInfo.attach('forced-fit-result', { body: JSON.stringify({ recordedAt: new Date().toISOString(), project: testInfo.project.name, browser: browserName, browserVersion: browser.version(), viewport: page.viewportSize(), method: 'Authored underallocation stress: restart the sky recording to a verified active five-line envelope, then force its final event. Delay is first sampled source-complete to first sampled full visibility; these are browser rendering observations, not measured model or request latency.', result }, null, 2), contentType: 'application/json' })
+  await testInfo.attach('v6-forced-fit-result', { body: JSON.stringify(result, null, 2), contentType: 'application/json' })
   expect(result.failures).toEqual([])
   expect(result.fittingFrames).toBeGreaterThan(0)
-  expect(result.visualDelayMs).toBeGreaterThan(100)
-  expect(result.visualDelayMs).toBeLessThan(500)
-  expect(result.heightRange).toBeGreaterThan(20)
-  expect(result.visibleFrames).toBeGreaterThan(5)
-  expect(result.observedInkDuration).toBe(180)
-  expect(result.maximumY).toBeGreaterThan(.1)
-  expect(result.minimumY).toBeGreaterThanOrEqual(-.201)
-  expect(result.maximumY).toBeLessThanOrEqual(1.501)
-  // WebKit DOM Range coordinates quantize during a uniform text transform.
-  // Keep the same subpixel bound as the measurement harness; rest is separate.
-  expect(result.maxShapeChange).toBeLessThan(.05)
-  expect(result.restSamples).toBeGreaterThan(20)
-  expect(result.maxRestMovement).toBeLessThan(.01)
-  expect(result.sawArrival).toBe(true)
-  expect(result.selected).toBe(sky.answer)
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
+  expect(result.blendFrames).toBeGreaterThan(1)
+  expect(result.transferFrames).toBeGreaterThan(1)
+  expect(result.duration).toBe(280)
+  expect(result.minOpacity).toBeLessThan(.5)
+  expect(result.maxOpacity).toBe(1)
+  expect(result.maxTop).toBeGreaterThan(.1)
+  expect(result.sourceToOpaqueMs).toBeGreaterThan(180)
+  expect(result.sourceToRestMs).toBeLessThan(900)
+  expect(result.restSamples).toBeGreaterThan(5)
+  expect(result.restMovement).toBeLessThan(.01)
+  expect(result.finalHeight).toBeGreaterThan(result.initialHeight + 20)
+  expect(result.finalText).toBe(sky.answer)
 })
 
 test.describe('whole answer with reduced motion', () => {
@@ -311,87 +295,58 @@ test.describe('whole answer with reduced motion', () => {
     const study = await startStudy(page)
     for (const surface of await study.locator('.settle').all()) await expect(surface).toHaveAttribute('data-motion', 'off')
     expect(await study.evaluate((root) => [...root.querySelectorAll('.settle')].flatMap((surface) => surface.getAnimations({ subtree: true })).filter((animation) => animation.playState === 'running').length)).toBe(0)
-    await expect(study.locator('.settle[data-status="complete"]')).toHaveCount(3, { timeout: 10_000 })
+    await expect(study.locator('.settle[data-status="complete"]')).toHaveCount(1, { timeout: 10_000 })
     for (const answer of await study.locator('.settle-page').all()) expect(await answer.textContent()).toBe(sleep.answer)
     expect(await study.evaluate((root) => [...root.querySelectorAll('.settle')].flatMap((surface) => surface.getAnimations({ subtree: true })).filter((animation) => animation.playState === 'running').length)).toBe(0)
   })
 })
 
-test('word bubbles make room inside anchored rows while full lines stay fixed', async ({ page }) => {
+test('seeded cells evolve inside left-anchored rows without lexical placeholders or overlap', async ({ page }) => {
   const study = await startStudy(page)
   await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
-  await study.getByRole('button', { name: 'replay all', exact: true }).click()
   const surface = study.locator('.settle[data-ambient-condition="reshape"]')
   await surface.scrollIntoViewIfNeeded()
-  await expect(surface.locator('.ambient-composition')).toHaveAttribute('data-material', 'adaptive-cell-skeleton-v5')
-  const observation = await surface.evaluate(async (el) => {
-    const rows = [...el.querySelectorAll<HTMLElement>('.ambient-composition__bar')].slice(0, 5)
-    const origin = el.getBoundingClientRect()
-    const initial = rows.map((row) => { const box = row.getBoundingClientRect(); return { x: box.x - origin.x, y: box.y - origin.y, width: box.width, height: box.height } })
-    const frame = el.querySelector('.settle-answer-frame')!
-    const minimumHeight = parseFloat(getComputedStyle(el.querySelector('.settle-page')!).lineHeight) * 5
-    const opacities = new Set<string>(), neighborShapes = new Set<string>()
-    const newborns = new Map<number, { opacity: number[]; width: number[]; scale: number[] }>()
-    const failures = new Set<string>()
-    let samples = 0, glyphs = false, maxAnchorDrift = 0, minGap = Infinity
+  await expect(surface).toHaveAttribute('data-material', 'responsive-cell-skeleton-v6')
+  const result = await surface.evaluate(async (root) => {
+    const rows = [...root.querySelectorAll<HTMLElement>('.ambient-composition__bar')], cells = [...root.querySelectorAll('.ambient-composition__presence')]
+    const shapes = new Set<string>(), periods = new Set<string>(), failures = new Set<string>()
+    let samples = 0, minGap = Infinity, leftDrift = 0
+    const activityStart = Number(root.querySelector('.ambient-composition')!.getAttribute('data-activity-ms'))
     const started = performance.now()
     await new Promise<void>((resolve) => {
       const tick = () => {
-        const origin = el.getBoundingClientRect()
-        rows.forEach((row, rowIndex) => {
-          const box = row.getBoundingClientRect(), base = initial[rowIndex]!
-          // Adaptive frame growth may adjust document scroll. Test the rows in
-          // their own surface coordinates, not against the browser viewport.
-          if (Math.abs(box.x - origin.x - base.x) > .05 || Math.abs(box.y - origin.y - base.y) > .05 || Math.abs(box.width - base.width) > .05 || Math.abs(box.height - base.height) > .05) failures.add('row envelope moved')
-          const pills = [...row.querySelectorAll<HTMLElement>('.ambient-composition__presence')]
-          const visible: DOMRect[] = []
-          pills.forEach((pill, index) => {
-            const ink = pill.firstElementChild!, css = getComputedStyle(ink), presence = getComputedStyle(pill), rect = ink.getBoundingClientRect()
-            if (css.filter !== 'none' || css.maskImage !== 'none' || css.backgroundImage !== 'none' || css.boxShadow !== 'none' || css.clipPath !== 'none') failures.add('solid material lost')
-            if (!pill.hasAttribute('data-new') && presence.opacity !== '1') failures.add('persistent neighbor disappeared')
-            if (row.dataset.kind === 'line' && (Math.abs(rect.x - box.x) > .05 || Math.abs(rect.y - box.y) > .05 || Math.abs(rect.width - box.width) > .05 || Math.abs(rect.height - box.height) > .05)) failures.add('full line moved')
-            if (index === 0) maxAnchorDrift = Math.max(maxAnchorDrift, Math.abs(rect.left - box.left))
-            if (index === pills.length - 1) maxAnchorDrift = Math.max(maxAnchorDrift, Math.abs(rect.right - box.right))
-            if (pill.hasAttribute('data-new')) {
-              if (!newborns.has(rowIndex)) newborns.set(rowIndex, { opacity: [], width: [], scale: [] })
-              const series = newborns.get(rowIndex)!
-              series.opacity.push(Number(presence.opacity)); series.width.push(rect.width); series.scale.push(rect.height / box.height)
-            } else if (pill.hasAttribute('data-moving')) neighborShapes.add(`${rowIndex}:${index}:${rect.x}:${rect.width}`)
-            if (Number(presence.opacity) > .01 && rect.width > .01) visible.push(rect)
+        const composition = root.querySelector('.ambient-composition')!, origin = composition.getBoundingClientRect()
+        const currentCells = [...root.querySelectorAll('.ambient-composition__presence')]
+        if (currentCells.length !== cells.length || currentCells.some((cell, index) => cell !== cells[index])) failures.add('cell identity changed')
+        for (const row of rows.filter((row) => row.dataset.shown === 'true')) {
+          const box = row.getBoundingClientRect()
+          leftDrift = Math.max(leftDrift, Math.abs(box.left - origin.left))
+          const css = getComputedStyle(row); periods.add(css.animationDuration)
+          const visible = [...row.querySelectorAll<HTMLElement>('.ambient-composition__presence')].map((cell) => ({ css: getComputedStyle(cell), rect: cell.getBoundingClientRect(), ink: getComputedStyle(cell.firstElementChild!) })).filter((cell) => Number(cell.css.opacity) > .01 && cell.rect.width > .01)
+          visible.forEach((cell, index) => {
+            if (cell.ink.filter !== 'none' || cell.ink.backgroundImage !== 'none' || cell.ink.boxShadow !== 'none' || cell.ink.maskImage !== 'none') failures.add('solid capsule gained an effect')
+            if (index) minGap = Math.min(minGap, cell.rect.left - visible[index - 1]!.rect.right)
+            shapes.add(`${row.dataset.row}:${index}:${cell.rect.left - box.left}:${cell.rect.width}:${cell.css.opacity}`)
           })
-          for (let i = 1; i < visible.length; i++) minGap = Math.min(minGap, visible[i]!.left - visible[i - 1]!.right)
-          opacities.add(getComputedStyle(row).opacity)
-        })
-        if (frame.getBoundingClientRect().height < minimumHeight - 1) failures.add('loading frame lost its five-line minimum')
-        glyphs ||= !!el.querySelector('.settle-answer-text')
-        samples += 1
-        if (performance.now() - started < 5200) requestAnimationFrame(tick)
+        }
+        if (root.querySelector('.settle-page')?.textContent) failures.add('words appeared before whole-answer finality')
+        samples++
+        if (performance.now() - started < 3400) requestAnimationFrame(tick)
         else resolve()
       }
       requestAnimationFrame(tick)
     })
-    return { samples, opacities: opacities.size, neighborShapes: neighborShapes.size, maxAnchorDrift, minGap, glyphs,
-      newborns: [...newborns.values()].map((series) => ({ minOpacity: Math.min(...series.opacity), maxOpacity: Math.max(...series.opacity), minWidth: Math.min(...series.width), maxWidth: Math.max(...series.width), minScale: Math.min(...series.scale), maxScale: Math.max(...series.scale) })), failures: [...failures] }
+    return { samples, minGap, leftDrift, shapes: shapes.size, periods: periods.size,
+      activityAdvance: Number(root.querySelector('.ambient-composition')!.getAttribute('data-activity-ms')) - activityStart, failures: [...failures] }
   })
-  expect(observation.failures).toEqual([])
-  expect(observation.samples).toBeGreaterThan(30)
-  expect(observation.opacities).toBeGreaterThan(2)
-  expect(observation.neighborShapes).toBeGreaterThan(50)
-  expect(observation.maxAnchorDrift).toBeLessThan(.05)
-  expect(observation.minGap).toBeGreaterThanOrEqual(-.05)
-  expect(observation.newborns).toHaveLength(3)
-  for (const newborn of observation.newborns) {
-    expect(newborn.minOpacity).toBe(0)
-    expect(newborn.maxOpacity).toBe(1)
-    expect(newborn.minWidth).toBe(0)
-    expect(newborn.maxWidth).toBeGreaterThan(15)
-    expect(newborn.minScale).toBeGreaterThan(.819)
-    expect(newborn.maxScale).toBeLessThan(1.081)
-    expect(newborn.maxScale).toBeGreaterThan(1.07)
-  }
-  expect(observation.glyphs).toBe(false)
+  expect(result.failures).toEqual([])
+  expect(result.samples).toBeGreaterThan(20)
+  expect(result.shapes).toBeGreaterThan(50)
+  expect(result.periods).toBeGreaterThan(2)
+  expect(result.leftDrift).toBeLessThan(.05)
+  expect(result.minGap).toBeGreaterThanOrEqual(-.05)
+  expect(result.activityAdvance).toBeGreaterThan(1000)
 })
-
 
 test('one capsule divides inside its frame and each cell shares the occasional glimmer', async ({ page }) => {
   const study = await startStudy(page)
@@ -431,13 +386,13 @@ test('one capsule divides inside its frame and each cell shares the occasional g
         const inks = [...el.querySelectorAll('.ambient-composition__ink')]
         const glimmers = composition.getAnimations({ subtree: true }).filter((animation) => animation instanceof CSSAnimation && animation.animationName === 'skeleton-glimmer')
         const times = glimmers.map((animation) => Number(animation.currentTime))
-        if (glimmers.length !== 43 || glimmers.some((animation) => animation.effect?.getTiming().duration !== 8000)) failures.add('incorrect glimmer clock')
+        if (glimmers.length !== inks.length || glimmers.some((animation) => animation.effect?.getTiming().duration !== 8000)) failures.add('incorrect glimmer clock')
         if (Math.max(...times) - Math.min(...times) > 1) failures.add('cell glimmers lost their shared phase')
         if (times[0]! >= 1280 && times[0]! <= 2080) {
           sawGlimmer = true
           glimmerPositions.add(getComputedStyle(inks[0]!, '::after').transform)
         }
-        if (el.querySelector('.settle-answer-text')) failures.add('text appeared during decorative opening')
+        if (el.querySelector('.settle-page')?.textContent) failures.add('text appeared during decorative opening')
         samples += 1
         if (performance.now() - started < 2250) requestAnimationFrame(tick)
         else resolve()
@@ -466,6 +421,7 @@ test('the waiting envelope grows from received ink while rows and glimmer clocks
   await expect(study).toHaveAttribute('data-source-id', sky.id)
   await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
   const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.evaluate((root) => { (root as HTMLElement).style.width = '240px' })
   await surface.scrollIntoViewIfNeeded()
   const result = await surface.evaluate(async (root) => {
     const rows = [...root.querySelectorAll('.ambient-composition__bar')]
@@ -482,10 +438,10 @@ test('the waiting envelope grows from received ink while rows and glimmer clocks
           const count = current.filter((row) => row.getAttribute('data-shown') === 'true').length
           const height = root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height
           if (count < previousCount || height < previousHeight - .05 || count < 5 || count > 14 || height < 5 * lineHeight - 1 || height > 14 * lineHeight + 1) failures.add('waiting envelope violated its monotonic typographic budget')
-          if (root.querySelector('.settle-answer-text')) failures.add('text appeared before source finality')
+          if (root.querySelector('.settle-page')?.textContent) failures.add('text appeared before source finality')
           const glimmers = root.getAnimations({ subtree: true }).filter((animation) => animation instanceof CSSAnimation && animation.animationName === 'skeleton-glimmer')
           const phases = glimmers.map((animation) => Number(animation.currentTime))
-          if (glimmers.length !== 43 || Math.max(...phases) - Math.min(...phases) > 1) failures.add('newly exposed rows lost their shared glimmer phase')
+          if (glimmers.length !== root.querySelectorAll('.ambient-composition__ink').length || Math.max(...phases) - Math.min(...phases) > 1) failures.add('newly exposed rows lost their shared glimmer phase')
           previousCount = count; previousHeight = height; counts.push(count); heights.push(height)
           if (performance.now() - started > 11000) { reject(Error('long source did not complete')); return }
           requestAnimationFrame(tick)
@@ -502,4 +458,31 @@ test('the waiting envelope grows from received ink while rows and glimmer clocks
   expect(result.heightGrowth).toBeGreaterThan(20)
   await expect(surface).toHaveAttribute('data-visual-ready', 'true')
   expect(await surface.locator('.settle-answer-text').textContent()).toBe(sky.answer)
+})
+
+test('an answer released during the joined opening fades the intact capsule without cloning slabs', async ({ page }) => {
+  const study = await startStudy(page)
+  const surface = study.locator('.settle[data-ambient-condition="reshape"]')
+  await surface.scrollIntoViewIfNeeded()
+  const result = await surface.evaluate(async (root) => {
+    const controls = [...root.closest('.ambient-study')!.querySelectorAll('button')]
+    controls.find((button) => button.textContent === 'replay all')!.click()
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+    controls.find((button) => button.textContent === 'to the end')!.click()
+    let fadedField = false, blendedInk = false, maximumCopies = 0
+    await new Promise<void>((resolve) => {
+      const started = performance.now()
+      const tick = () => {
+        const field = root.querySelector('.settle-waiting-field'), passage = root.querySelector('[data-passage]')
+        if (field) { const opacity = Number(getComputedStyle(field).opacity); fadedField ||= opacity > 0 && opacity < 1 }
+        if (passage) { const opacity = Number(getComputedStyle(passage).opacity); blendedInk ||= opacity > 0 && opacity < 1 }
+        maximumCopies = Math.max(maximumCopies, root.querySelectorAll('.bubble-transfer__cell').length)
+        if (root.getAttribute('data-visual-ready') === 'true' || performance.now() - started > 1500) resolve()
+        else requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    })
+    return { fadedField, blendedInk, maximumCopies, ready: root.getAttribute('data-visual-ready') }
+  })
+  expect(result).toEqual({ fadedField: true, blendedInk: true, maximumCopies: 0, ready: 'true' })
 })

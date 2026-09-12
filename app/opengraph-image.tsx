@@ -6,7 +6,7 @@ import { ImageResponse } from 'next/og'
 export const dynamic = 'force-static'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
-export const alt = 'After Tokens: product design and engineering case study by Christopher Robin Fiore'
+export const alt = 'After Tokens: a web and motion design study by globalanomalyindex'
 
 export default function OG() {
   return new ImageResponse(
@@ -25,7 +25,7 @@ export default function OG() {
         }}
       >
         <div style={{ fontSize: 18, color: '#6C685C', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 24 }}>
-          motion, interaction, research
+          web design, motion, research
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', fontSize: 140, fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
           <span>after</span>
@@ -35,7 +35,7 @@ export default function OG() {
           still. breathe. reshape. a skeleton motion study for generated text.
         </div>
         <div style={{ fontSize: 18, color: '#6C685C', marginTop: 18 }}>
-          christopher robin fiore
+          globalanomalyindex
         </div>
       </div>
     ),

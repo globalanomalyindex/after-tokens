@@ -81,7 +81,7 @@ export function SectionPreviews() {
     <Section id="previews" title="In the wild">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">in the wild</h2>
       <p className="standfirst max-w-3xl">
-        the surface in three products: a desktop assistant thread, a search answer, a phone. each frame runs the
+        three contexts for the same web motion: a desktop assistant thread, a search answer, a phone-sized browser frame. each runs the
         reducer over a real recording on its brand&rsquo;s own surface and voice, in the system type an assistant
         actually uses. the answers are the model&rsquo;s, unedited, at the recorded forward-pass pace; the earlier
         turns in the thread are authored context.
@@ -137,9 +137,9 @@ export function SectionPreviews() {
         </Frame>
       </div>
       <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-        three surfaces, three voices, one whole-answer policy. a capsule divides into rows that breathe, reshape and briefly glimmer within the text area. the individual shapes do not map to source tokens,
-        final words or line lengths. the waiting size estimates available source content; after source finality, a brief fit can prepare missing room.
-        the answer then appears together with one small settling motion and a thin outline. the recorded source has not been accelerated for the phone.
+        three surfaces, three voices, one whole-answer policy. a capsule divides into rows that breathe, reshape and briefly glimmer within the text area. the waiting shapes have no token identity.
+        current content guides approximate space; after source finality, a brief fit can prepare missing room.
+        the visible bubbles then reshape toward actual word groups as the answer fades in and settles over 280 ms. the recorded source has not been accelerated for the phone.
       </p>
     </Section>
   )

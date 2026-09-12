@@ -16,7 +16,7 @@ export function SectionCost() {
     <Section id="cost" title="What waiting costs">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what waiting costs</h2>
       <p className="standfirst max-w-3xl">
-        the ambient composition waits for the whole answer. that removes intermediate word arrivals by giving up early reading. the earlier policies remain available, and their real availability costs are measured separately from how the motion feels.
+        the default whole-answer policy removes intermediate word arrivals by giving up early reading. the same cell material also supports earlier words, sentences and paragraphs. each policy’s source-eligibility cost is measured separately from the visual handover and how the motion feels.
       </p>
       <Reveal className="mt-12 md:mt-16">
         <CostTable scope="all60" />
@@ -25,20 +25,20 @@ export function SectionCost() {
         <Reveal className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each sentence</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the earlier-sentence alternative releases its first passage after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine. production latency depends on the model, sampler and hardware. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. its forming-text channel is nonempty for a median {' '}{formingPct} percent of the recorded run. that reducer measure is not a viewport exposure or readability result.
+            the earlier-sentence alternative releases its first passage after a median of {s.medianFirstPassageAt} steps, {secs(sr.medianFirstPassageAt)} seconds on this machine. production latency depends on the model, sampler and hardware. text waits a mean of {s.meanExtraHold?.toFixed(0)} steps after it is in order. committed in-order text awaits its next passage boundary for a median {' '}{formingPct} percent of the recorded run. that reducer measure describes held text, not visible text or a readability result.
           </p>
         </Reveal>
         <Reveal delay={80} className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each word</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the earlier-word alternative. the first word lands at {w.medianFirstPassageAt} steps and the only wait is the word rule itself, a mean of
+            the earlier-word alternative. the first word becomes eligible at {w.medianFirstPassageAt} steps and the source-policy wait is the word rule itself, a mean of
             {' '}{w.meanWordSafeLag?.toFixed(1)} steps: the price of keeping incomplete words off the released page. release follows the word-safe prefix in bursts.
           </p>
         </Reveal>
         <Reveal delay={160} className="rule pt-6">
           <h3 className="text-xl font-bold tracking-tight leading-tight">each paragraph</h3>
           <p className="mt-3 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>
-            the median first paragraph arrives at step {p.medianFirstPassageAt} of {TRACE_NUMBERS.steps}. a paragraph boundary can still precede source finality, so this policy is not equivalent to waiting for the whole answer.
+            the median first paragraph becomes eligible at step {p.medianFirstPassageAt} of {TRACE_NUMBERS.steps}. a paragraph boundary can still precede source finality, so this policy is not equivalent to waiting for the whole answer.
           </p>
         </Reveal>
       </div>
@@ -46,7 +46,7 @@ export function SectionCost() {
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">the cost of one arrival</h3>
         <div className="text-base leading-relaxed max-w-[60ch]" style={{ color: 'var(--ink-2)' }}>
           <p>
-            whole-answer release becomes eligible at a median 15.8 seconds on the original recordings. across 57 nonempty matched runs, its first passage waits a median 10.5 seconds longer than sentence release. that is the median of paired differences, not a subtraction of the two medians. three empty outputs remain in the exact-output audit. these are reducer eligibility times, not measured browser paint or human reading times. the adaptive renderer’s final size fit adds a separate presentation cost when more room is needed. {' '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/data/experiments/answer-policy-cost-2026-09-09.json">policy report and definitions</a>.
+            whole-answer release becomes eligible at a median 15.8 seconds on the original recordings. across 57 nonempty matched runs, its first passage waits a median 10.5 seconds longer than sentence release. that is the median of paired differences, not a subtraction of the two medians. three empty outputs remain in the exact-output audit. these are reducer eligibility times, not measured browser paint or human reading times. the 280 ms bubble-to-word handover and optional 180 ms size fit add separate presentation costs. {' '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/data/experiments/answer-policy-cost-2026-09-09.json">policy report and definitions</a>.
           </p>
           <p className="mt-4">
             the clock here is a 0.6B model at {TRACE_NUMBERS.msPerStepRecorded} ms a step on a laptop. it is the capture&rsquo;s

@@ -1,6 +1,6 @@
 # Ambient answer composition implementation plan
 
-> **For agentic workers:** Use the independent work assignments below, then review the complete integration. The user has authorized implementation and publication; no additional design approval is needed.
+> **Implementation workflow:** Use the independent work assignments below, then review the complete integration. Implementation and publication proceed through the release checks in this plan.
 
 **Goal:** Replace the default token-shaped waiting surface with a continuous ambient bar composition, then present the exact whole answer together at verified source finality.
 
@@ -58,6 +58,6 @@ Files: remaining existing section copy, `README.md`, research note, complete Mar
 - [x] Record same-source static/coherent/independent comparisons. Report frame measurements and final container height change without claiming physical iPhone or human-study results.
 - [x] Run lint, typecheck, unit tests, browser checks, normal and GitHub Pages builds. Obtain independent review of the final code and evidence.
 - [x] Update the complete implementation handoff with code, sources, rationale, acceptance gates and unresolved reader hypotheses.
-Publication follows the local release checkpoint below. The user has authorized a normal push to `main`; the commit-specific GitHub Actions deployment and delivered live-verification report establish publication status. Do not infer deployment from this plan.
+Publication follows the local release checkpoint below. The planned release uses a normal push to `main`; the commit-specific GitHub Actions deployment and delivered live-verification report establish publication status. Do not infer deployment from this plan.
 
 **Local release checkpoint:** All implementation, writing, source validation and rendering checks above are complete. See [release verification](../../ambient-release-verification-2026-09-09.md). The self-contained Markdown source bundle and binary patches are assembled from the final commit, so their commit identifiers and file hashes refer to the delivered tree.

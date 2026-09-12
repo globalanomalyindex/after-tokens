@@ -102,7 +102,7 @@ try {
     referenceImages.push({ frame: id, status: received.status(), bytes: bytes.length, sha256: sha256(bytes) })
   }
   // Independent literal for the authored adapter exercise, never a Google
-  // transcript or a timing measurement derived from the supplied JPEGs.
+  // transcript or a timing measurement derived from the reference JPEGs.
   const authoredAnswer = `The result is 39.
 
 1. Take the square root: √81 = 9.

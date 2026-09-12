@@ -43,7 +43,7 @@ test('revisable whole drafts can size the field without becoming a premature ans
   expect(result.largestRowCount).toBeGreaterThan(5)
   expect(result.largestRowCount).toBeLessThanOrEqual(14)
   await expect(answer.locator('.ambient-composition')).toHaveCount(0)
-  await expect(answer.locator('.settle-answer-arrival')).toHaveCount(0)
+  await expect(answer.locator('.bubble-transfer, [data-pending], [data-arriving]')).toHaveCount(0)
   expect(await answer.locator('.settle-page').textContent()).toBe(SNAPSHOT_STUDY_ANSWER)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
 })

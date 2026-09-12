@@ -43,7 +43,7 @@ export function SectionOpen() {
     <Section id="open" title="Open">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">open</h2>
       <p className="standfirst max-w-3xl">
-        the prototype establishes a source contract and an inspectable motion experiment. production integration, richer structures and reader benefit remain open. these are the next checks, and the commands that reproduce the existing evidence.
+        the website makes the motion inspectable, and its source contract makes the experiment reproducible. production integration, richer structures and reader benefit remain open. these are the next checks, and the commands that reproduce the existing evidence.
       </p>
       <dl className="mt-12 md:mt-16 grid gap-x-12 gap-y-8 md:grid-cols-2 rule pt-8">
         {OPEN.map((o, i) => (
@@ -76,9 +76,9 @@ export function SectionOpen() {
 
       <div className="mt-16 md:mt-24 rule pt-8 max-w-2xl">
         <p className="text-base">
-          product design and engineering by <span style={{ fontWeight: 600 }}>christopher robin fiore</span>, with claude as design and engineering
-          partner. the causal audit and the first implementation of the reading contract were made by codex on 7 september 2026, under the name
-          margin. codex developed the skeleton motion study and source-evidence refresh on 9 september; both contributions are credited in the design record.
+          web design, motion design and implementation by <span style={{ fontWeight: 600 }}>globalanomalyindex</span>.
+          my design record follows the causal audit and reading contract of 7 september 2026, the skeleton motion experiments,
+          and the source-evidence refresh of 9 september.
         </p>
         <p className="text-base mt-1" style={{ color: 'var(--ink-2)' }}>
           portfolio theme: looking to <NatureWord kind="nature">nature</NatureWord>{' '}for questions, then measuring the answers.

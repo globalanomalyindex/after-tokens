@@ -2,7 +2,7 @@
 
 Date: 7 September 2026. Base: ab95e6a. Status: design locked, implementing. Amended 8 September 2026, in place, for the draft register, the piece, the build, the spins, the phase in the margin, the reel, the set, the prior, and the widths that hold the line still.
 
-This spec supersedes `2026-09-06-crystallize-arrival-grammar-design.md` for the reading surface, and absorbs the Codex proposal "After Tokens: Margin" (branch `codex/after-tokens-margin`, handoff of 7 September 2026). It keeps Margin's reading contract and its causal audit, rejects Margin's conclusion that the answer should carry no trace of the process, and replaces the crystallize grammar with a system that shows the process only where the process is real.
+This spec supersedes `2026-09-06-crystallize-arrival-grammar-design.md` for the reading surface, and absorbs my proposal "After Tokens: Margin", developed with Codex (branch `codex/after-tokens-margin`, handoff of 7 September 2026). It keeps Margin's reading contract and its causal audit, rejects Margin's conclusion that the answer should carry no trace of the process, and replaces the crystallize grammar with a system that shows the process only where the process is real.
 
 ## 1. The question, restated
 
@@ -12,7 +12,7 @@ A diffusion sampler produces two kinds of fact at every step. It commits tokens,
 
 ## 2. What the audit established
 
-The Codex audit of `ab95e6a` is accepted in full. Its findings are facts about this repository, and the new system is built so that none of them can recur.
+I accepted the separate Codex audit of `ab95e6a` in full. Its findings are facts about this repository, and the new system is built so that none of them can recur.
 
 - The reveal knew the answer. `traceAnswerText` joined the final word table; the component tokenized and measured the complete answer before the first step, reserving every final word's width. A live renderer has none of this.
 - A word was shown at its first token. 700 of 3,880 corpus words (18.04 percent) span more than one commitment step; the curated subset has 188 of 1,205 (15.60 percent). The old resolving state rendered final text for all of them. That is potential exposure of text the model had not produced. 353 of the 700 happened to match the provisional guess; 347 did not.

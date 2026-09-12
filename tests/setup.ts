@@ -5,6 +5,11 @@ import '@testing-library/jest-dom/vitest'
 // standard animationend event explicitly, as real supported browsers do.
 if (!('AnimationEvent' in window)) Object.defineProperty(window, 'AnimationEvent', { value: Event, configurable: true })
 
+// jsdom has no layout engine. Range geometry follows its zero-size element
+// geometry; real bubble-to-word bounds are checked in the browser suite.
+if (!Range.prototype.getClientRects) Object.defineProperty(Range.prototype, 'getClientRects', { value: () => [], configurable: true })
+if (!Range.prototype.getBoundingClientRect) Object.defineProperty(Range.prototype, 'getBoundingClientRect', { value: () => new DOMRect(), configurable: true })
+
 // jsdom does not implement matchMedia; mock with a default of "not reduced motion"
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

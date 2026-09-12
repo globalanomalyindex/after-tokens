@@ -1,46 +1,17 @@
 'use client'
 
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { carve, type CarveItem } from '@/lib/settle/carve'
 import type { SettleState } from '@/lib/settle/types'
 import { clampSettleVoice, settleVoiceStyle, type SettleVoice } from '@/lib/settle/voice'
 import { useBrand } from '@/lib/brand/provider'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
-import { useFormationLayout } from './use-formation-layout'
-import { Field } from './field'
-import { Margin, statusWords } from './margin'
+import { statusWords } from './margin'
 import { AmbientComposition, type AmbientCondition } from './ambient-composition'
-import { useAnswerEnvelope } from './use-answer-envelope'
+import { useReadingSurface } from './use-reading-surface'
+import { BubbleTransfer } from './bubble-transfer'
 
+/** Retained for old integrations; these names no longer select a renderer. */
 export type FormingMode = 'carve' | 'flow' | 'held'
-type DisplayItem = CarveItem & { joined?: boolean }
-
-// The same outer source range stays mounted when a candidate changes or a
-// passage releases. Candidate whitespace never owns parents or line breaks.
-function Cell({ item, released, offset, limit }: { item: DisplayItem; released: number; offset: number | undefined; limit: number }) {
-  const committed = item.kind === 'word' || item.kind === 'piece'
-  const raw = 'text' in item ? item.text.slice(0, limit) : ''
-  const register = item.kind === 'slot' ? item.state : item.kind === 'draft' && item.end ? 'open' : item.kind
-  const end = item.position + (item.kind === 'word' || item.kind === 'end' ? item.span : 1) - 1
-  const isReleased = committed && offset !== undefined && offset + raw.length <= released
-  let char = 0
-  return (
-    <span className="settle-unit" data-pos={item.position} data-end={end} data-state={register}
-      data-released={isReleased || undefined} aria-hidden={committed ? undefined : true}
-      style={{ ['--formation-phase' as string]: `${-(Math.floor(item.position / 8) * 3 % 4) * 1400}ms` } as CSSProperties}>
-      {committed ? raw.split(/(\s+)/).filter(Boolean).map((part) => {
-        const start = char
-        char += part.length
-        if (/^\s+$/.test(part)) return part
-        const ready = offset !== undefined && offset + char <= released
-        return <span key={start} className="settle-ink" data-layout={`${item.position}:${start}`} data-spatial={item.kind === 'word' && !item.joined || undefined} data-released={ready || undefined} aria-hidden={ready ? undefined : true}>{part}</span>
-      }) : <span className="settle-candidate" data-layout={`${item.position}:slot`}>
-        <span className="settle-draft" data-text={raw.replace(/\s+/g, ' ').trim()} />
-        <span className="settle-ambient" data-text={raw.replace(/\s+/g, ' ').trim()} aria-hidden="true" />
-      </span>}
-    </span>
-  )
-}
 
 type Props = {
   state: SettleState
@@ -50,17 +21,17 @@ type Props = {
   focus?: number | null
   /** a voice on top of the surrounding brand's, clamped to the ranges */
   voice?: Partial<SettleVoice>
-  /** what the zone after the page shows: the carved field (default), only the in-order forming text, or nothing, as Margin did */
+  /** what the zone after the page shows: deprecated compatibility options; every policy now uses the cell field */
   forming?: FormingMode
-  /** kept for callers that only know on and off: false is 'held' */
+  /** deprecated compatibility input; it no longer selects a preview treatment */
   preview?: boolean
-  /** draw the strip, the field's compact form (default: only when the zone is not carved) */
+  /** deprecated; progress strips are no longer rendered */
   field?: boolean
-  /** draw the margin's words (default true) */
+  /** draw the status line (default true) */
   status?: boolean
   /** A shared comparison can own one announcement instead of repeating it. */
   announce?: boolean
-  /** a short vibration when a sentence settles, where the platform allows it */
+  /** optional short vibration when a handover begins, including the final field fade */
   haptics?: boolean
   /** Disable decorative and spatial motion without changing source timing. */
   motion?: boolean
@@ -71,62 +42,41 @@ type Props = {
   onVisualReady?: (ready: boolean) => void
   /** the accessible name of the answer region */
   label?: string
-  /** what the page says while nothing has arrived */
+  /** deprecated compatibility input; the waiting field now owns the empty state */
   empty?: ReactNode
   className?: string
   style?: CSSProperties
 }
 
 export function SettleAnswer({
-  state, runId = 'default', voice: voiceProp, forming: formingProp, preview, field, status = true, announce = true,
+  state, runId = 'default', voice: voiceProp, status = true, announce = true,
   haptics = false, motion = true, ambient = 'reshape', paused = false, onApplyRevision, onVisualReady,
-  label = 'answer', empty, className = '', style,
+  label = 'answer', className = '', style,
 }: Props) {
   const brand = useBrand()
   const reduced = usePrefersReducedMotion()
   const enabled = motion && !reduced
   const voice = useMemo(() => clampSettleVoice({ ...brand.settle, ...voiceProp }), [brand.settle, voiceProp])
   const voiceVars = useMemo(() => voiceProp ? settleVoiceStyle(voice, { ink: brand.ink, surface: brand.surface, stageText: brand.stageText, stage: brand.stage, accent: brand.accent }) : undefined, [voice, voiceProp, brand])
-  const mode: FormingMode = formingProp ?? (preview === false ? 'held' : 'carve')
   const wholeAnswer = state.policy === 'answer'
   const receiving = state.status === 'waiting' || state.status === 'receiving'
-  const answerText = wholeAnswer ? state.passages.map((passage) => passage.text).join('') : ''
-  const showField = !wholeAnswer && (field ?? mode !== 'carve')
-  // Promotion changes styling, never the text's parent or whitespace. The
-  // source reducer remains authoritative about exactly which characters release.
-  const items = useMemo<DisplayItem[]>(() => wholeAnswer ? [] : carve({ ...state, releasedLength: 0 }).flatMap((item) => {
-    if (item.kind !== 'word' || item.span === 1) return [item]
-    // A boundary proves a word complete without replacing its token children.
-    // Native inline fragments keep a multi-token word together while wrapping.
-    return Array.from({ length: item.span }, (_, index) => ({ ...item, position: item.position + index, span: 1, text: state.tokens[item.position + index]!.text, joined: true }))
-  }), [state, wholeAnswer])
-  const offsets = useMemo(() => {
-    let chars = 0
-    const map = new Map<number, number>()
-    state.prefixTokens.forEach((t) => { map.set(t.position, chars); chars += t.text.length })
-    return map
-  }, [state.prefixTokens])
-  const visible = useMemo(() => items.filter((item) => {
-    if (item.kind === 'slot' && item.state === 'beyond') return false
-    if (item.kind === 'end') return state.status !== 'complete' && state.status !== 'revision'
-    if (mode === 'carve') return true
-    const offset = offsets.get(item.position)
-    return (item.kind === 'word' || item.kind === 'piece') && offset !== undefined && offset < (mode === 'held' ? state.releasedLength : state.wordSafeLength)
-  }), [items, mode, offsets, state.releasedLength, state.wordSafeLength, state.status])
+  const answerText = state.passages.map((passage) => passage.text).join('')
   const rootRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const pageRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(true)
   const [documentVisible, setDocumentVisible] = useState(true)
   const effectiveMotion = enabled && !paused && inView && documentVisible
-  const envelope = useAnswerEnvelope({ state, runId, frameRef, pageRef, effectiveMotion })
-  const active = effectiveMotion && (receiving || (wholeAnswer && envelope.phase !== 'ready'))
-  useEffect(() => { onVisualReady?.(!receiving && envelope.phase === 'ready') }, [onVisualReady, receiving, envelope.phase])
+  const surface = useReadingSurface({ state, runId, frameRef, pageRef, effectiveMotion })
+  const active = effectiveMotion && (receiving || surface.phase === 'fitting')
+  const visualReady = !receiving && surface.phase === 'ready'
+  useEffect(() => { onVisualReady?.(visualReady) }, [onVisualReady, visualReady])
   const reviewId = useId()
   const [reviewing, setReviewing] = useState(false)
   const revisionKey = state.revisionText === null ? null : `${state.lastEventAtMs}:${state.revisionText}`
   useEffect(() => setReviewing(false), [revisionKey])
-  const announcement = wholeAnswer && envelope.phase === 'fitting' ? 'answer received · fitting the view' : statusWords(state, paused, false)
+  const announcement = surface.phase === 'fitting' ? 'text received · fitting the view'
+    : surface.phase === 'revealing' ? 'text received · settling into place' : statusWords(state, paused, false)
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? false))
@@ -142,51 +92,49 @@ export function SettleAnswer({
     el.style.removeProperty('--settle-ink')
     el.style.setProperty('--settle-ink', getComputedStyle(el).color)
   }, [brand, className, style?.color])
-
-  useFormationLayout(rootRef, state, visible, !wholeAnswer && enabled && !paused && inView && documentVisible, voice, runId)
-  const passagesRef = useRef(state.passages.length)
-  useEffect(() => {
-    if (!wholeAnswer && state.passages.length > passagesRef.current && haptics && enabled && !paused && inView && documentVisible && 'vibrate' in navigator) navigator.vibrate(12)
-    passagesRef.current = state.passages.length
-  }, [state.passages.length, wholeAnswer, haptics, enabled, paused, inView, documentVisible])
   const hapticArrival = useRef<string | null>(null)
   useEffect(() => {
-    if (envelope.arrivalKey !== null && envelope.arrivalKey !== hapticArrival.current && haptics && effectiveMotion && 'vibrate' in navigator) navigator.vibrate(12)
-    hapticArrival.current = envelope.arrivalKey
-  }, [envelope.arrivalKey, haptics, effectiveMotion])
-
-  const snapshot = state.source === 'snapshot' || (state.previousPassages !== null && !Object.keys(state.tokens).length)
+    if (surface.phase === 'revealing' && surface.arrivalKey !== null && surface.arrivalKey !== hapticArrival.current) {
+      if (haptics && effectiveMotion && 'vibrate' in navigator) navigator.vibrate(12)
+      hapticArrival.current = surface.arrivalKey
+    }
+  }, [surface.phase, surface.arrivalKey, haptics, effectiveMotion])
   const failed = state.status === 'stopped' || state.status === 'error'
-  const page = (
-    <div ref={pageRef} className="settle-page" role="region" aria-label={label} aria-busy={wholeAnswer ? receiving || envelope.phase === 'fitting' : undefined} tabIndex={state.previousPassages ? 0 : undefined}>
-      {wholeAnswer ? (answerText && <span className="settle-answer-text" data-arriving={envelope.arrivalKey !== null || undefined}>{answerText}</span>)
-        : snapshot ? state.passages.map((p) => <span key={p.id} className="settle-passage">{p.text}</span>)
-          : visible.map((item) => <Cell key={`${runId}:v${state.version}:${item.position}`} item={item} released={state.releasedLength} offset={offsets.get(item.position)} limit={mode === 'carve' ? Infinity : Math.max(0, (mode === 'held' ? state.releasedLength : state.wordSafeLength) - (offsets.get(item.position) ?? 0))} />)}
-      {!wholeAnswer && !state.prefix && !visible.length && empty !== undefined && <span className="settle-empty" aria-hidden="true">{empty}</span>}
-    </div>
-  )
+  let start = 0
+  const page = <div ref={pageRef} className="settle-page" role="region" aria-label={label} aria-busy={receiving || surface.phase !== 'ready'} tabIndex={state.previousPassages ? 0 : undefined}>
+    <span className="settle-answer-text">
+      {state.passages.map((passage) => {
+        const from = start
+        start += passage.text.length
+        const arriving = surface.phase === 'revealing' && start > surface.visibleLength && from < surface.revealTo
+        const pending = start > surface.visibleLength && !arriving
+        return <span key={`${runId}:${passage.id}`} className="settle-passage" data-passage={passage.id} data-start={from} data-end={start}
+          data-pending={pending || undefined} data-arriving={arriving || undefined}>{passage.text}</span>
+      })}
+    </span>
+  </div>
   return (
-    <div ref={rootRef} className={`settle ${className}`} data-status={state.status} data-policy={state.policy} data-ambient-condition={wholeAnswer ? ambient : undefined}
-      data-answer-phase={wholeAnswer ? envelope.phase : undefined} data-visual-ready={wholeAnswer ? !receiving && envelope.phase === 'ready' : undefined}
+    <div ref={rootRef} className={`settle ${className}`} data-status={state.status} data-policy={state.policy}
+      data-material="responsive-cell-skeleton-v6" data-ambient-condition={ambient}
+      data-source-at-ms={state.lastEventAtMs} data-released-length={state.releasedLength}
+      data-answer-phase={surface.phase} data-visual-ready={visualReady}
       data-paused={paused} data-active={active} data-motion={enabled ? 'on' : 'off'}
-      data-visible={inView && documentVisible}
-      data-preview={mode !== 'held'} data-forming={mode} data-mark={voice.mark} data-demo
+      data-visible={inView && documentVisible} data-forming="cells" data-mark={voice.mark} data-demo
       style={{ ...voiceVars, ...style }}>
-      {wholeAnswer ? <div ref={frameRef} className="settle-answer-frame" data-phase={envelope.phase} data-occupied={receiving || !!answerText}>
-        {(receiving || envelope.phase !== 'ready') && <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={runId} tempo={voice.tempo} rowCount={envelope.rowCount} lineHeightPx={envelope.lineHeightPx} barHeightPx={envelope.barHeightPx} />}
+      <div ref={frameRef} className="settle-answer-frame" data-phase={surface.phase} data-occupied={receiving || !!answerText} data-receiving={receiving}>
+        {(receiving || surface.phase !== 'ready') && <div className="settle-waiting-field" style={{ top: surface.tailOffset, height: surface.rowCount * surface.lineHeightPx }}>
+          <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={`${runId}:v${state.version}`} tempo={voice.tempo} rowCount={surface.rowCount} profile={surface.profile} lineHeightPx={surface.lineHeightPx} barHeightPx={surface.barHeightPx} />
+        </div>}
         {page}
-        {!!answerText && envelope.arrivalKey !== null && <span key={envelope.arrivalKey} className="settle-answer-arrival" aria-hidden="true" onAnimationEnd={envelope.dismissArrival} />}
-      </div> : page}
-      {wholeAnswer && state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}
+        {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} onComplete={surface.finishHandover} />}
+      </div>
+      {state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}
       {wholeAnswer && failed && state.prefix && <details className="settle-history mt-3">
         <summary className="readout">inspect unfinished text</summary>
         <p className="readout mt-2">committed prefix only · incomplete; gaps and later fragments are not a finished answer</p>
         <div className="settle-partial-text settle-revision-text mt-2">{state.prefix}</div>
       </details>}
-      {showField && <Field state={state} mark={voice.mark} />}
-      {status && (wholeAnswer && envelope.phase === 'fitting'
-        ? <div className="settle-margin readout"><span className="settle-status">answer received · fitting the view</span></div>
-        : <Margin state={state} mark={voice.mark} paused={paused} />)}
+      {status && <div className="settle-margin readout"><span className="settle-status">{announcement}</span></div>}
       {(state.status === 'stopped' || state.status === 'error') && state.error && (
         <p className="readout mt-2" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>{state.error}</p>
       )}

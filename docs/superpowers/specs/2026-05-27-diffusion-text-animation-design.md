@@ -6,7 +6,7 @@
 |---|---|
 | Date | 2026-05-27 |
 | Status | Design locked, ready for implementation planning |
-| Author | Chris Fiore (product designer / design engineer) |
+| Author | globalanomalyindex (product designer / design engineer) |
 | Portfolio theme | Looking to nature for answers |
 
 ---

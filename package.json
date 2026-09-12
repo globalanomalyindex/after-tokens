@@ -1,8 +1,8 @@
 {
   "name": "after-tokens",
   "version": "0.1.0",
-  "description": "A product design and engineering case study: an arrival grammar for diffusion-generated text.",
-  "author": "Christopher Robin Fiore",
+  "description": "A web and motion design study of adaptive skeleton loading and the arrival of generated text.",
+  "author": "globalanomalyindex",
   "private": true,
   "packageManager": "pnpm@11.7.0",
   "engines": {

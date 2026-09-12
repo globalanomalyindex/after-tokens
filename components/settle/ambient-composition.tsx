@@ -1,6 +1,7 @@
 'use client'
 
-import type { CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { AMBIENT_TICK_MS, ambientRowAt, createAmbientRows } from '@/lib/settle/ambient-geometry'
 import { SkeletonDivision } from './skeleton-division'
 
 export type AmbientCondition = 'static' | 'breathe' | 'reshape'
@@ -11,66 +12,87 @@ type Props = {
   condition?: AmbientCondition
   complete: boolean
   runId: string | number
+  seed?: string | number
+  profile?: readonly number[]
   tempo?: number
   rowCount?: number
   lineHeightPx?: number
   barHeightPx?: number
 }
 
-// Authored composition, not a prediction of answer lines, words or length.
-// Every condition uses these exact shapes and starts at the same phase.
-type Pill = readonly [x0: number, width0: number, x1: number, width1: number]
-type Row = { width: number; phase: number; newborn?: number; pills: readonly Pill[] }
-const ROWS: readonly Row[] = [
-  { width: 88, phase: 0, pills: [[0, 100, 0, 100]] },
-  { width: 92, phase: 0, newborn: 1, pills: [[0, 25, 0, 20], [27, 0, 22, 13], [27, 32, 37, 25], [61, 16, 64, 13], [79, 21, 79, 21]] },
-  { width: 96, phase: 0, pills: [[0, 100, 0, 100]] },
-  { width: 84, phase: .43, newborn: 2, pills: [[0, 33, 0, 24], [35, 24, 26, 22], [61, 0, 50, 15], [61, 39, 67, 33]] },
-  { width: 70, phase: .82, newborn: 2, pills: [[0, 18, 0, 18], [20, 31, 20, 23], [53, 0, 45, 12], [53, 21, 59, 15], [76, 24, 76, 24]] },
-]
+/** Nonlexical activity. Numeric current-content occupancy can guide space,
+ * but no bubble claims a word identity, commitment or convergence value. */
+export function AmbientComposition(props: Props) {
+  if (props.complete) return null
+  return <AmbientField key={props.runId} {...props} />
+}
 
-/** Nonlexical activity composition. A capped row estimate and measured type
- * rhythm adapt its space; no cell maps to a token, word or confidence value.
- * Persistent CSS clocks survive row exposure, pause and resume. The parent
- * owns the separate exact-size handoff and whole-answer arrival. */
-export function AmbientComposition({ active, motion, condition = 'reshape', complete, runId, tempo = 1, rowCount = 5, lineHeightPx, barHeightPx }: Props) {
-  if (complete) return null
+function AmbientField({ active, motion, condition = 'reshape', runId, seed, profile, tempo = 1, rowCount = 5, lineHeightPx, barHeightPx }: Props) {
   const rate = Number.isFinite(tempo) ? Math.max(.7, Math.min(1.4, tempo)) : 1
-  const period = 4800 / rate
+  const rows = useMemo(() => createAmbientRows(seed ?? runId), [seed, runId])
+  const [elapsed, setElapsed] = useState(0)
+  const root = useRef<HTMLDivElement>(null)
+  const pausedTransitions = useRef<Animation[]>([])
+  const running = active && motion && condition === 'reshape'
+
+  useEffect(() => {
+    if (!running) return
+    // A local activity clock, not source time or percent complete. Stopping
+    // the interval preserves phase across pause/offscreen/hidden states.
+    const interval = setInterval(() => setElapsed((value) => value + AMBIENT_TICK_MS), AMBIENT_TICK_MS)
+    return () => clearInterval(interval)
+  }, [running])
+
+  useEffect(() => {
+    const element = root.current
+    if (!element?.getAnimations) return
+    if (active && motion) {
+      for (const transition of pausedTransitions.current) {
+        if (transition.playState === 'paused') transition.play()
+      }
+      pausedTransitions.current = []
+    } else if (motion) {
+      // CSS animations pause through their stylesheet. In-flight geometry
+      // transitions need their own pause; removing transitions would jump.
+      pausedTransitions.current = element.getAnimations({ subtree: true }).filter((animation) => 'transitionProperty' in animation)
+      for (const transition of pausedTransitions.current) transition.pause()
+    } else {
+      for (const transition of pausedTransitions.current) transition.cancel()
+      pausedTransitions.current = []
+    }
+    // Revisit on a source-driven render too: an offscreen source may keep
+    // sending numeric occupancy targets while its activity clock is paused.
+  })
+
+  const geometry = rows.map((row, index) => ambientRowAt(row, elapsed * rate, profile?.[index]))
   return (
-    <div key={runId} className="ambient-composition" aria-hidden="true"
-      data-ambient-composition data-material="adaptive-cell-skeleton-v5" data-condition={condition} data-active={active} data-motion={motion ? 'on' : 'off'}
-      style={{ ['--ambient-period' as string]: `${period}ms`, ['--glimmer-period' as string]: `${8000 / rate}ms`,
+    <div ref={root} className="ambient-composition" aria-hidden="true"
+      data-ambient-composition data-material="responsive-cell-skeleton-v6" data-condition={condition} data-active={active} data-motion={motion ? 'on' : 'off'} data-activity-ms={elapsed}
+      style={{ ['--ambient-period' as string]: `${4800 / rate}ms`, ['--glimmer-period' as string]: `${8000 / rate}ms`,
         ['--ambient-line-height' as string]: lineHeightPx ? `${lineHeightPx}px` : '1.625em',
         ['--ambient-bar-height' as string]: barHeightPx ? `${barHeightPx}px` : '.9em',
       } as CSSProperties}>
-      {condition === 'reshape' && <SkeletonDivision lineHeightPx={lineHeightPx} barHeightPx={barHeightPx} />}
+      {condition === 'reshape' && <SkeletonDivision widths={geometry.slice(0, 5).map((row) => row.width)} lineHeightPx={lineHeightPx} barHeightPx={barHeightPx} />}
       <div className="ambient-composition__field">
-      {Array.from({ length: 14 }, (_, index) => {
-        const row = ROWS[index % ROWS.length]!
-        return (
-        <span key={index} className="ambient-composition__bar" data-row={index} data-shown={index < rowCount} data-kind={row.pills.length === 1 ? 'line' : 'cluster'} style={{
-          ['--ambient-left' as string]: '0%',
-          ['--ambient-width' as string]: `${row.width}%`,
-          ['--ambient-top' as string]: `calc(${index} * var(--ambient-line-height) + (var(--ambient-line-height) - var(--ambient-bar-height)) / 2)`,
-          ['--cluster-delay' as string]: `${-period * row.phase}ms`,
-        } as CSSProperties}>
-          <span className="ambient-composition__row-content">
-          {row.pills.map(([x0, width0, x1, width1], pill) => <span key={pill}
-            className="ambient-composition__presence" data-pill={pill}
-            data-new={pill === row.newborn || undefined}
-            data-moving={x0 !== x1 || width0 !== width1 || undefined}
-            style={{
-              ['--pill-x0' as string]: `${x0}%`, ['--pill-w0' as string]: `${width0}%`,
-              ['--pill-x1' as string]: `${x1}%`, ['--pill-w1' as string]: `${width1}%`,
-              ['--pill-x-peak' as string]: `${x0 + 1.025 * (x1 - x0)}%`,
-              ['--pill-w-peak' as string]: `${width0 + 1.025 * (width1 - width0)}%`,
-            } as CSSProperties}>
-            <span className="ambient-composition__ink" />
-          </span>)}
+        {rows.map((row, index) => {
+          const shape = geometry[index]!
+          return <span key={index} className="ambient-composition__bar" data-row={index} data-shown={index < rowCount} data-kind={shape.stable ? 'line' : 'cluster'} style={{
+            ['--ambient-width' as string]: `${shape.width * 100}%`,
+            ['--ambient-top' as string]: `calc(${index} * var(--ambient-line-height) + (var(--ambient-line-height) - var(--ambient-bar-height)) / 2)`,
+            ['--row-period' as string]: `${row.breathPeriodMs / rate}ms`,
+            ['--row-delay' as string]: `${-row.breathPhaseMs / rate}ms`,
+            ['--shape-duration' as string]: `${row.transitionMs / rate}ms`,
+          } as CSSProperties}>
+            <span className="ambient-composition__row-content">
+              {shape.pills.map((pill, index) => <span key={index} className="ambient-composition__presence" data-pill={index} data-new={pill.opacity < 1 || undefined} data-moving={!shape.stable || undefined} style={{
+                left: `${pill.x * 100}%`, width: `${pill.width * 100}%`, opacity: pill.opacity,
+                ['--pill-float' as string]: `${pill.float}em`,
+              } as CSSProperties}>
+                <span className="ambient-composition__ink" />
+              </span>)}
+            </span>
           </span>
-        </span>
-      )})}
+        })}
       </div>
     </div>
   )

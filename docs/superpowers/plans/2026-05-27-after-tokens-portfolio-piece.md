@@ -1,6 +1,6 @@
 # After Tokens — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Implementation workflow:** Work through the plan task by task, review the integrated result, and use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a portfolio-grade scrollytelling case study at a single Next.js URL that demonstrates four nature-derived diffusion text rendering animations, mapped to response types, and bendable across four variant brand identities.
 
@@ -3427,7 +3427,7 @@ function BrandTile({ prompt, response, industry }: { prompt: string; response: s
 
 - [ ] **Step 2: Wire**
 
-Add `<SectionBrandVariations />` to `app/page.tsx` after section 04 (we'll fill 05-08 in a later phase if not already done; for now order doesn't matter for testing).
+Add `<SectionBrandVariations />` to `app/page.tsx` after section 04 (sections 05-08 can be filled in a later phase; their order does not affect this check).
 
 - [ ] **Step 3: Visual check across brands**
 
@@ -4160,7 +4160,7 @@ export function SectionClose() {
             + Credit
           </p>
           <p className="text-base">
-            Designed and built by Chris Fiore. Portfolio theme: looking to nature for answers.
+            Designed and built by globalanomalyindex. Portfolio theme: looking to nature for answers.
           </p>
         </div>
       </div>
@@ -4269,7 +4269,7 @@ If any score is below target, investigate the audit's specific recommendations.
 
 - [ ] **Step 4: Bundle size check**
 
-In the production server's startup output, verify the First Load JS for `/` is under 220KB (after JS gzip + Next.js framework + our app code).
+In the production server's startup output, verify the First Load JS for `/` is under 220KB (after JS gzip + Next.js framework + application code).
 
 - [ ] **Step 5: Stop production server**
 
@@ -4332,7 +4332,7 @@ Open VoiceOver (macOS: Cmd+F5) or NVDA. Navigate the page. Verify:
 Reload `http://localhost:3000`. Scroll section by section. For each animation moment, watch frame by frame. Apply the motion-discipline checklist:
 
 - [ ] No `transform: scale(0)` anywhere — entries start from at least `scale(0.95)` (verify by reviewing component styles; the diffusion modes don't scale, so this is mainly a check on any other animated UI)
-- [ ] Easing is custom ease-out for entries (we use `var(--ease-out-strong)` everywhere)
+- [ ] Easing is custom ease-out for entries (use `var(--ease-out-strong)` throughout)
 - [ ] No `transition: all` (search the codebase for `transition: all` — should return no results)
 - [ ] Button `:active` states scale to `0.97` — verify on coda prompt chips and toggle buttons. If missing, add to `app/globals.css`:
 
@@ -4341,7 +4341,7 @@ button { transition: transform 160ms var(--ease-out-strong); }
 button:active { transform: scale(0.97); }
 ```
 
-- [ ] No `transform-origin: center` on dropdowns/popovers (we don't ship popovers, so N/A)
+- [ ] No `transform-origin: center` on dropdowns/popovers (no popovers are included, so N/A)
 - [ ] Color transitions blur briefly when crossfading (the diffusion overlays handle this naturally; if any solid color change feels stiff, add `filter: blur(2px)` during the transition)
 
 - [ ] **Step 2: Search for forbidden patterns**

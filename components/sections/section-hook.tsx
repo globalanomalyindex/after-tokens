@@ -20,15 +20,15 @@ export function SectionHook() {
           </h1>
           <p className="standfirst mt-8 max-w-[34ch]">a little movement. then, a whole thought.</p>
           <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
-            a motion and interaction study for generated text. a capsule divides into breathing rows; small rounded shapes form, make room and briefly glimmer;
-            the field makes room from available source content; the complete answer arrives together and settles once. the cells do not predict its words.
+            a web and motion design study for generated text. a capsule divides into breathing rows; small rounded shapes form, make room and briefly glimmer;
+            the field makes room from available source content; the bubbles carry into newly released words, which settle once. waiting cells do not predict the answer.
             a working prototype, grounded in {TRACE_NUMBERS.trajectories} original sampler recordings, four new batched runs,
             and an explicit account of the extra wait. reader benefits remain to be tested.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>
             <div>
               <dt className="label mb-1">role</dt>
-              <dd style={{ color: 'var(--ink)' }}>product design, design engineering</dd>
+              <dd style={{ color: 'var(--ink)' }}>web design, motion design</dd>
             </div>
             <div>
               <dt className="label mb-1">year</dt>
