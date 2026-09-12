@@ -2,8 +2,13 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SectionHook } from '@/components/sections/section-hook'
 
+const SEEN = 'after-tokens:intro-seen:v1'
+const WELCOME = 'It should feel like a thought taking shape. Complete sentences find their place while the rest keeps breathing. Each arrival has a little weight, then settles into something you can read. Welcome to After Tokens, a motion study of how generated words arrive.'
 const observers: Array<(visible: boolean) => void> = []
 beforeEach(() => {
+  sessionStorage.clear()
+  history.replaceState(null, '', '/')
+  vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'requestAnimationFrame', 'cancelAnimationFrame', 'performance'] })
   vi.stubGlobal('IntersectionObserver', class {
     constructor(private callback: IntersectionObserverCallback) { observers.push((visible) => this.callback([{ isIntersecting: visible } as IntersectionObserverEntry], this as unknown as IntersectionObserver)) }
@@ -11,25 +16,73 @@ beforeEach(() => {
     unobserve() {} disconnect() {}
   })
 })
-afterEach(() => { cleanup(); observers.length = 0; vi.useRealTimers(); vi.unstubAllGlobals(); vi.restoreAllMocks() })
+afterEach(() => { cleanup(); observers.length = 0; vi.useRealTimers(); vi.unstubAllGlobals(); vi.restoreAllMocks(); sessionStorage.clear() })
 const advance = async (ms: number) => { await act(async () => { await vi.advanceTimersByTimeAsync(ms) }) }
 
-describe('the authored opening', () => {
-  it('keeps a static heading and transcript while typing only the prompt, then permits an immediate static welcome', async () => {
+describe('the authored cinematic opening', () => {
+  it('starts fullscreen once, locks background scrolling, and permits an immediate case study', async () => {
     const { container } = render(<SectionHook />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('after tokens')
-    expect(container.querySelector('[data-hero-transcript]')).toHaveTextContent('What should diffusion text rendering look like?')
-    const typing = () => container.querySelector('[data-hero-typed]')?.textContent ?? ''
+    expect(screen.getByRole('dialog', { name: 'After Tokens motion introduction' })).toHaveAttribute('aria-modal', 'true')
+    expect(document.body.style.position).toBe('fixed')
+    expect(sessionStorage.getItem(SEEN)).toBe('1')
+    expect(container.querySelector('[data-hero-transcript]')).toHaveTextContent(WELCOME)
     await advance(800)
-    expect(typing().length).toBeGreaterThan(0)
-    expect(typing().length).toBeLessThan(46)
-    expect(container.querySelector('[data-hero-intro] .settle-page')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'show welcome' }))
-    expect(container.querySelector('[data-hero-intro] .settle-page')).toHaveTextContent('It should look like this. Welcome to after tokens.')
-    expect(container.querySelector('[data-hero-intro] .settle')).toHaveAttribute('data-motion', 'off')
+    const typed = container.querySelector('[data-hero-typed]')?.textContent ?? ''
+    expect(typed.length).toBeGreaterThan(0)
+    expect(typed.length).toBeLessThan(46)
+    fireEvent.click(screen.getByRole('button', { name: 'skip to case study' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.body.style.position).toBe('')
+    expect(container.querySelector('.settle-page')).toHaveTextContent(WELCOME)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('after tokens')
+    fireEvent.click(screen.getByRole('button', { name: 'replay intro' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.body.style.position).toBe('')
   })
 
-  it('freezes its presentation clock for manual pause, offscreen and hidden states without restarting', async () => {
+  it('releases four complete sentences as separate immutable batches before docking', async () => {
+    const { container } = render(<SectionHook />)
+    const hero = container.querySelector('[data-hero-intro]')!
+    await advance(3300)
+    expect(hero.querySelector('.settle')).toHaveAttribute('data-policy', 'sentence')
+    expect(hero.querySelector('.settle-page')?.textContent).toBe('')
+    await advance(1900)
+    expect(hero.querySelectorAll('[data-passage]')).toHaveLength(1)
+    expect(hero.querySelector('.settle')).toHaveAttribute('data-status', 'receiving')
+    await advance(1200)
+    expect(hero.querySelectorAll('[data-passage]')).toHaveLength(2)
+    expect(hero.querySelector('[data-passage]')).not.toHaveAttribute('data-arriving', 'true')
+    await advance(1400)
+    expect(hero.querySelectorAll('[data-passage]')).toHaveLength(3)
+    expect(hero.querySelector('.settle')).toHaveAttribute('data-status', 'receiving')
+    await advance(1400)
+    expect(hero.querySelectorAll('[data-passage]')).toHaveLength(4)
+    expect(hero.querySelector('.settle')).toHaveAttribute('data-status', 'complete')
+    expect(hero.querySelector('.settle-page')).toHaveTextContent(WELCOME)
+    fireEvent.animationEnd(hero.querySelector('[data-bubble-transfer]')!)
+    await advance(2400)
+    expect(hero).toHaveAttribute('data-presentation', 'embedded')
+    expect(document.body.style.position).toBe('')
+    const end = hero.getAttribute('data-elapsed-ms')
+    await advance(2000)
+    expect(hero).toHaveAttribute('data-elapsed-ms', end!)
+  })
+
+  it('supports Escape and traps keyboard focus only during the fullscreen scene', () => {
+    render(<SectionHook />)
+    const skip = screen.getByRole('button', { name: 'skip to case study' })
+    const pause = screen.getByRole('button', { name: 'pause intro' })
+    skip.focus()
+    fireEvent.keyDown(document, { key: 'Tab' })
+    expect(pause).toHaveFocus()
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+    expect(skip).toHaveFocus()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.body.style.position).toBe('')
+  })
+
+  it('pauses the authored clock and resumes without restarting, including embedded offscreen playback', async () => {
     const { container } = render(<SectionHook />)
     const elapsed = () => Number(container.querySelector('[data-hero-intro]')?.getAttribute('data-elapsed-ms'))
     await advance(600)
@@ -40,6 +93,9 @@ describe('the authored opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'resume intro' }))
     await advance(200)
     expect(elapsed()).toBeGreaterThan(paused)
+    fireEvent.click(screen.getByRole('button', { name: 'skip to case study' }))
+    fireEvent.click(screen.getByRole('button', { name: 'replay intro' }))
+    await advance(200)
     act(() => observers.forEach((notify) => notify(false)))
     const offscreen = elapsed()
     await advance(500)
@@ -54,35 +110,17 @@ describe('the authored opening', () => {
     expect(elapsed()).toBe(hidden)
   })
 
-  it('runs once through the shared skeleton and releases the complete welcome in one batch', async () => {
+  it.each(['returning', 'deep-linked', 'reduced-motion'])('starts %s visits embedded, complete and unlocked', async (path) => {
+    if (path === 'returning') sessionStorage.setItem(SEEN, '1')
+    if (path === 'deep-linked') history.replaceState(null, '', '/#field')
+    if (path === 'reduced-motion') vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({ matches: true, media: query, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }))
     const { container } = render(<SectionHook />)
-    await advance(3200)
-    const surface = container.querySelector('[data-hero-intro] .settle')
-    expect(surface).toHaveAttribute('data-ambient-condition', 'reshape')
-    expect(surface).toHaveAttribute('data-policy', 'sentence')
-    expect(surface?.querySelector('.ambient-composition')).not.toBeNull()
-    expect(surface?.querySelector('.settle-page')?.textContent).toBe('')
-    await advance(1600)
-    expect(surface?.querySelector('.settle-page')?.textContent).toBe('')
-    await advance(800)
-    expect(surface?.querySelectorAll('[data-passage]')).toHaveLength(2)
-    expect(surface?.querySelectorAll('[data-passage][data-arriving="true"]')).toHaveLength(2)
-    expect(surface?.querySelector('.settle-page')).toHaveTextContent('It should look like this. Welcome to after tokens.')
-    const end = container.querySelector('[data-hero-intro]')?.getAttribute('data-elapsed-ms')
-    await advance(8000)
-    expect(container.querySelector('[data-hero-intro]')).toHaveAttribute('data-elapsed-ms', end!)
-    fireEvent.click(screen.getByRole('button', { name: 'replay intro' }))
-    expect(container.querySelector('[data-hero-intro] .settle-page')).toBeNull()
-  })
-
-  it('renders the full exchange without waiting or moving when reduced motion is preferred', async () => {
-    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({ matches: true, media: query, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }))
-    const { container } = render(<SectionHook />)
-    expect(container.querySelector('[data-hero-typed]')).toHaveTextContent('What should diffusion text rendering look like?')
-    expect(container.querySelector('[data-hero-intro] .settle-page')).toHaveTextContent('It should look like this. Welcome to after tokens.')
-    expect(container.querySelector('[data-hero-intro] .settle')).toHaveAttribute('data-motion', 'off')
-    await advance(6000)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.body.style.position).toBe('')
+    expect(container.querySelector('[data-hero-intro]')).toHaveAttribute('data-presentation', 'embedded')
+    expect(container.querySelector('.settle-page')).toHaveTextContent(WELCOME)
+    expect(container.querySelector('.settle')).toHaveAttribute('data-motion', 'off')
+    await advance(1000)
     expect(container.querySelector('[data-hero-intro]')).toHaveAttribute('data-elapsed-ms', '0')
-    expect(screen.queryByRole('button', { name: 'pause intro' })).toBeNull()
   })
 })

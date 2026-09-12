@@ -1,6 +1,9 @@
 # After Tokens v8 — copy audit
 
-12 September 2026 · by globalanomalyindex · `growing-cell-skeleton-v8`
+> Frozen v8 baseline at `bd5cf9f0955fbd7ebdec8c89435ed5ac9af20243`. All measurements, captures and counts below retain that scope. They do not verify the subsequent [sentence continuity correction](sentence-continuity-fix-2026-09-12.md). Original machine evidence and media bytes remain unchanged.
+
+
+12 September 2026 · Christopher Robin Fiore · GitHub: `globalanomalyindex` · `growing-cell-skeleton-v8`
 
 I updated the case-study writing around the restored fuller bars and coarse height reservation. The [v8 handoff](growing-skeleton-v8-handoff-2026-09-12.md) owns the current motion contract; the [release record](growing-skeleton-v8-release-verification-2026-09-12.md) owns current verification status.
 

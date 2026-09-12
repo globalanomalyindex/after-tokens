@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures'
 
 test.describe('reduced motion full audit', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
@@ -7,10 +7,8 @@ test.describe('reduced motion full audit', () => {
     test.setTimeout(90_000)
     await page.goto('/')
     await page.waitForLoadState('networkidle')
-    // The eleven-section cut: the thing itself, the wrong shape, the audit,
-    // the contract, the field, the cost, the voice, in the wild, the wait,
-    // try it, what is known, and open.
-    const sectionIds = ['hook', 'problem', 'audit', 'contract', 'field', 'cost', 'voice', 'previews', 'concept', 'playground', 'evidence', 'open']
+    // The motion is introduced and compared before the research chapters.
+    const sectionIds = ['hook', 'showcase', 'problem', 'audit', 'contract', 'field', 'cost', 'voice', 'previews', 'concept', 'playground', 'evidence', 'open']
     await expect(page.locator('[data-section]')).toHaveCount(sectionIds.length)
 
     const demos = page.locator('[data-demo]:visible')

@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     'A web and motion design study of fuller, growing skeletons and the transition into readable text. An authored introduction, real diffusion replays and an explicit account of presentation costs.',
   authors: [
     {
-      name: 'globalanomalyindex',
+      name: 'Christopher Robin Fiore',
       url: 'https://github.com/globalanomalyindex',
     },
   ],
-  creator: 'globalanomalyindex',
+  creator: 'Christopher Robin Fiore',
   alternates: {
     canonical: 'https://globalanomalyindex.github.io/after-tokens/',
   },

@@ -1,63 +1,71 @@
-.root { margin: 0; min-width: 0; }
+.root { margin: 0; min-width: 0; outline: none; }
+.slot { position: relative; height: 43rem; }
 .canvas {
-  position: relative;
+  --hero-pad: clamp(1.25rem, 4vw, 3rem);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background: var(--stage);
   color: var(--stage-text);
   border-radius: 1.5rem;
-  min-height: 28rem;
-  padding: 1.5rem clamp(1.25rem, 5vw, 4.5rem) 2.5rem;
+  padding: 1.5rem var(--hero-pad);
 }
-.topline { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .08em; opacity: .56; }
-.conversation { max-width: 48rem; margin: 2.75rem auto 0; }
+.canvas[data-presentation='fullscreen'], .canvas[data-presentation='docking'] {
+  position: fixed; inset: auto; left: 0; top: 0; width: 100%; height: 100dvh;
+  z-index: 10000; border-radius: 0;
+}
+.topline { display: flex; justify-content: space-between; gap: 1rem; flex-shrink: 0; font-family: var(--font-mono), monospace; font-size: 10px; letter-spacing: .08em; opacity: .56; }
+.scene { flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+.conversation { flex-shrink: 0; width: min(48rem, calc(var(--hero-slot-width) - var(--hero-pad) * 2)); max-width: 100%; padding-block: 1.5rem; margin-block: auto; }
 .prompt {
-  display: grid;
-  width: fit-content;
-  max-width: 33rem;
-  margin-left: auto;
+  display: grid; width: fit-content; max-width: 33rem; margin-left: auto;
   padding: .95rem 1.35rem;
   border-radius: 1.5rem 1.5rem .4rem 1.5rem;
   background: color-mix(in oklab, var(--stage-text) 8%, var(--stage));
-  color: var(--stage-text);
-  font-family: var(--font-ui);
-  font-size: clamp(1rem, 1.6vw, 1.2rem);
-  line-height: 1.5;
-  text-align: left;
+  font-family: var(--font-ui); font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.5; text-align: left;
 }
 .promptSpace, .promptInk { grid-area: 1 / 1; min-width: 0; overflow-wrap: break-word; }
 .promptSpace { visibility: hidden; }
 .cursor { display: inline-block; width: 1px; height: 1em; margin-left: 3px; background: currentColor; vertical-align: -.12em; animation: caret 900ms step-end infinite; }
-.answerSpace { min-height: 19.4rem; margin-top: 2.25rem; }
+.answerSpace { min-height: 24rem; margin-top: 2rem; }
 .reply {
-  width: min(100%, 37rem);
-  font-size: clamp(1.3rem, 2.4vw, 2rem);
-  min-height: calc(7.5em + 4.25rem);
-  transition: min-height 420ms cubic-bezier(.23, 1, .32, 1);
-  padding: 1.05rem 1.3rem 1.3rem;
+  width: 100%; padding: 1.2rem 1.3rem 1.4rem;
   border: 1px solid color-mix(in oklab, var(--stage-text) 10%, transparent);
   border-radius: .45rem 1.6rem 1.6rem 1.6rem;
   transform-origin: 12% 0;
   animation: open 320ms cubic-bezier(.23, 1, .32, 1) both;
 }
 .replyLabel { display: block; margin-bottom: 1rem; font-family: var(--font-mono), monospace; font-size: 10px; line-height: 1.2; letter-spacing: .06em; opacity: .58; }
-.answer { font-size: inherit; line-height: 1.5; }
-.reply[data-ready='true'] { min-height: 0; }
+.answer { font-size: clamp(1.125rem, 1.9vw, 1.625rem); line-height: 1.45; letter-spacing: -.018em; }
+.sceneFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; flex-shrink: 0; min-height: 2.75rem; padding-top: .75rem; font-family: var(--font-mono), monospace; font-size: 10px; }
+.provenance { opacity: .52; }
+.sceneControls { display: flex; gap: 1.25rem; align-items: center; }
+.sceneControls button { cursor: pointer; min-height: 44px; padding: .5rem 0; color: inherit; }
+.sceneControls button:first-child { opacity: .58; }
+.sceneControls button:disabled { opacity: .28; cursor: default; }
+.sceneControls button:focus-visible { outline: 1px solid currentColor; outline-offset: 5px; border-radius: 2px; }
 .caption { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 1rem; }
 .controls { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--font-mono), monospace; font-size: 11px; }
 .controls button { min-height: 32px; cursor: pointer; }
 .controls button:disabled { opacity: .42; cursor: default; }
+.root[data-presentation='fullscreen'] .caption, .root[data-presentation='docking'] .caption { visibility: hidden; }
 .root[data-paused='true'] .cursor, .root[data-paused='true'] .reply { animation-play-state: paused; }
 .reply[data-static='true'] { animation: none; transition: none; }
 .noScript { position: absolute; inset: 0; padding: clamp(2rem, 8vw, 6rem); background: var(--stage); color: var(--stage-text); display: grid; align-content: center; gap: 2rem; font-size: clamp(1.15rem, 2vw, 1.625rem); line-height: 1.5; }
 @keyframes caret { 50% { opacity: 0; } }
 @keyframes open { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
 @media (max-width: 640px) {
-  .canvas { min-height: 25.5rem; border-radius: 1.1rem; padding-top: 1.2rem; padding-bottom: 1.5rem; }
-  .conversation { margin-top: 2.4rem; }
-  .prompt { padding: .85rem 1rem; max-width: 94%; }
-  .answerSpace { margin-top: 1.8rem; min-height: 14.1rem; }
-  .reply { width: 100%; padding: 1rem; }
-  .reply { font-size: 1.3rem; }
+  .slot { height: 45rem; }
+  .canvas { padding-top: max(1.2rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  .conversation { padding-block: 1.5rem; }
+  .prompt { padding: .85rem 1rem; max-width: 100%; }
+  .answerSpace { margin-top: 1.65rem; min-height: 27rem; }
+  .reply { padding: 1rem; }
+  .sceneFooter { gap: .5rem; }
+  .sceneControls { justify-content: space-between; width: 100%; }
   .caption { align-items: flex-start; }
   .controls { gap: 1.25rem; }
 }

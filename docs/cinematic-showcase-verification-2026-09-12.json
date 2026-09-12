@@ -1,0 +1,1588 @@
+{
+  "schema": "after-tokens.presentation-release.v1",
+  "recordedAt": "2026-09-12T17:40:16.065Z",
+  "author": "Christopher Robin Fiore",
+  "github": "globalanomalyindex",
+  "baseline": "bd5cf9f0955fbd7ebdec8c89435ed5ac9af20243",
+  "scope": "Fullscreen cinematic introduction, upfront shared-clock comparison, default raw prefix, personal credit, and continuing-sentence refill. This is a browser/software verification record, not a new diffusion capture or reader study.",
+  "limitations": [
+    "Finite browser checks; mobile-portrait is iPhone 14 emulation, not a physical phone.",
+    "Authored intro and showcase clocks do not measure inference speed.",
+    "Historical v8 observer reports and media remain frozen at the baseline and are not relabeled as current measurements."
+  ],
+  "sourceFingerprint": "e46f30035ccad5be6de2077eb6602d49e57b2f9574a0874f5b5caafd8cb1224f",
+  "sourceInputs": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "50778a06cc9bef9c6935ada1dc917f070b5dc4e4df3c00df59ec862e3526c609"
+    },
+    {
+      "file": "app/favicon.ico",
+      "sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "cf3344654a18d0e3ad99d43a1acdb573afb1306d323ebfbb0f1909b45b6c0ef9"
+    },
+    {
+      "file": "app/layout.tsx",
+      "sha256": "ab06c0ff8110bec398969583292579c38390e9f79ccab111156650a1fb9c3f4c"
+    },
+    {
+      "file": "app/opengraph-image.tsx",
+      "sha256": "856572f9f201abf6fb299dab64c2807eee4c30365e7cfecdd657c19677dee9bd"
+    },
+    {
+      "file": "app/page.tsx",
+      "sha256": "05343827f2929fb1b90fea55398a4cd1cd547683496ff57ee68f23372d7fdc12"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "components/arrival/lock-map.tsx",
+      "sha256": "07e8c4df1e6925ac0f65cee25ca7fdb09c947f4fed7a2a1b7515d232277ca51d"
+    },
+    {
+      "file": "components/arrival/profile-readout.tsx",
+      "sha256": "b83e9f4fad369f6b41e719f8c4fb224681a699e76f90529d1297077c7d6def53"
+    },
+    {
+      "file": "components/chat/chat-bubble.tsx",
+      "sha256": "b723f9ef3a725ece361731bbaf97a201c1b0374eb3e132bb8ec8130d26d86a25"
+    },
+    {
+      "file": "components/chat/chat-exchange.tsx",
+      "sha256": "737d0708c65a6372f2287694737ac38b02ba75598238778ec9c5c54e9ec9d8eb"
+    },
+    {
+      "file": "components/chrome/definition-term.tsx",
+      "sha256": "8f597ab366c1c897dda7c32e8240b66299ee8df8d03bf09bff4de90db0a5641e"
+    },
+    {
+      "file": "components/chrome/nature-word.tsx",
+      "sha256": "2451278972ffd11c9eb216641d48f2a1f49e27b2edeccad68e46d55848343ea2"
+    },
+    {
+      "file": "components/chrome/scroll-progress.tsx",
+      "sha256": "a668860f97550c87069b8ef1bfc41c35a42e23f905081ac1b0cce0687b58c216"
+    },
+    {
+      "file": "components/chrome/section-nav.tsx",
+      "sha256": "bb650c65fe3300453f1d28715fc002fb66517e19a9f3d066ba2b9efb7c4f14d7"
+    },
+    {
+      "file": "components/chrome/site-footer.tsx",
+      "sha256": "842785a095c35845fd830fd044582552aadad94d71ebfe6712f68b9b0d6eebc6"
+    },
+    {
+      "file": "components/coda/prompt-picker.tsx",
+      "sha256": "205ad2e354898271f09cae7db506a0c086ca241ad1c9ae81cf8d91e7dcbfdc33"
+    },
+    {
+      "file": "components/coda/toggle-rail.tsx",
+      "sha256": "0e5362ada6ad026fe028c22eeadda2b530825a5c8a183f61f3b2dfc266eee8ad"
+    },
+    {
+      "file": "components/diffusion/aurora-overlay.tsx",
+      "sha256": "26aedf1f3e822f7b37bda2047e1f789c77aede1b44883a72bdddb03d3d4cd2ea"
+    },
+    {
+      "file": "components/diffusion/cycling-word.tsx",
+      "sha256": "a0050f8fd5bf961db4f4957019cc47b1157da18676d520caa76a8b556bddb662"
+    },
+    {
+      "file": "components/diffusion/decoding-word.tsx",
+      "sha256": "68c27fbb6a60657fd393873b505ea684963be02052700fd8b5c0eb4de033435f"
+    },
+    {
+      "file": "components/diffusion/diffusion-text.tsx",
+      "sha256": "3d186385db90bd71d341fcfbd04db1d4ae7479e06d65fe5c53622318bca01af0"
+    },
+    {
+      "file": "components/diffusion/fog-overlay.tsx",
+      "sha256": "846013fdb63a5c1f088dfe224399882799c47c20f4750f6cefd3c9f9ed9a177b"
+    },
+    {
+      "file": "components/diffusion/mitosis-overlay.tsx",
+      "sha256": "93c9e95345cd75b4c026e0570ede529d1e87e4a221f888f4f41cbdebee372590"
+    },
+    {
+      "file": "components/diffusion/mycelium-overlay.tsx",
+      "sha256": "d94aec1a87324d21710d9dc63818934e1e6c63ac84758b6af49e5a737d0c9610"
+    },
+    {
+      "file": "components/diffusion/unmask-map.tsx",
+      "sha256": "ef6c4647fd82941fc83bb1d2f2958894181f8b3eb4fc61f9b3ddb9198a7eafee"
+    },
+    {
+      "file": "components/motion/reveal.tsx",
+      "sha256": "d4c74a0c4d8b9677f0e4d5975cc4c4408cc09c3c7c94b38e58c8c22b60f4f64d"
+    },
+    {
+      "file": "components/playground/hue-wheel.tsx",
+      "sha256": "c60edffa353b3f4a258974f4dcd1df717af886f4c968b31105605d0a0383d4f1"
+    },
+    {
+      "file": "components/section.tsx",
+      "sha256": "3f1fafc8540dd4d55baeba98d9b9510c758d416c7bd697f5aec71b1e1b6b40fc"
+    },
+    {
+      "file": "components/sections/section-audit.tsx",
+      "sha256": "1d6963e96fdb3d46bd825163fd026ecb62d040743eca6cc26ffb50756995885f"
+    },
+    {
+      "file": "components/sections/section-concept.tsx",
+      "sha256": "17e8aff95f5fb5cd48d3a3417d65734c19d05ac393ea2a2a5ae33a3787f282f2"
+    },
+    {
+      "file": "components/sections/section-contract.tsx",
+      "sha256": "93ced3ce49ea028f2bc311b8ce521ba40a968fb58b37fa5c98cf808acc9afebb"
+    },
+    {
+      "file": "components/sections/section-cost.tsx",
+      "sha256": "6c2acf249aa4fd8645785f9cb6e33d4be78afb79021b4097f0ded48d05f58bf1"
+    },
+    {
+      "file": "components/sections/section-evidence.tsx",
+      "sha256": "559cf79121c9961bad355143ba015bad92c5738ada95da041865e473de345cda"
+    },
+    {
+      "file": "components/sections/section-field.tsx",
+      "sha256": "76ce42aa2d95dcdd20e9e291f0c2e73adb2a313998d67d57ccb26b736b098b29"
+    },
+    {
+      "file": "components/sections/section-hook.tsx",
+      "sha256": "6b3ab520136cef24a2fea19434281af556e1b3351e7b09ea982de38aa0694d1d"
+    },
+    {
+      "file": "components/sections/section-open.tsx",
+      "sha256": "d3ca0a297a8bd80227f23d387dd6b53ab3e1dec0896d121d810d4403774c9e94"
+    },
+    {
+      "file": "components/sections/section-playground.tsx",
+      "sha256": "bbea9f0dc55ca8f0d7247a90063d7b363600220609faecf3f664baf9244fbb03"
+    },
+    {
+      "file": "components/sections/section-previews.tsx",
+      "sha256": "f8e5821303d6222c0ded0f77372d2442733b411b00b20fcf0483f8bb57875a20"
+    },
+    {
+      "file": "components/sections/section-problem.tsx",
+      "sha256": "597909d36f70aaa14d15a551b80e9adcc8399f538355f324d16566ecefefdafc"
+    },
+    {
+      "file": "components/sections/section-showcase.module.css",
+      "sha256": "a3a448f686c67eb587cf14f7e89204c85e7dcaa856567c5bfdf3a5edb139460b"
+    },
+    {
+      "file": "components/sections/section-showcase.tsx",
+      "sha256": "1b689079b1b0834fa8b951a95d5f3e6c6442bc9e2cfe3d96dd1cbe734c155ea1"
+    },
+    {
+      "file": "components/sections/section-voice.tsx",
+      "sha256": "3acea6ac3204ad0ddc51a01793da7743f9acefb3c9a9bac226042e52a1459628"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "28ef929ad40dcd0348c9038e047b1335ccfa083ce52838044f40d529c859ceae"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64b5ab69eec5e2e0b6222a26ef37a8318eece41282ac1ba3199f3548a8adc0a1"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "4fce9b70692ec3f38d034b021ffd348023db8e1e4906858aaa2a95b45dc4ee2c"
+    },
+    {
+      "file": "components/settle/cost-table.tsx",
+      "sha256": "65dec9c7bdc801ecc71700c0be32cf95ba04889d5bb73da1991b141df8298430"
+    },
+    {
+      "file": "components/settle/exposure-figure.tsx",
+      "sha256": "855868888863633f13fb288cbbe81d9324291aaf770f0f38b21542be5fe4e3bd"
+    },
+    {
+      "file": "components/settle/field.tsx",
+      "sha256": "5ac4c0a2eb576d060a505252c801622ce5224f7b2e3d39310f9a5451753c728b"
+    },
+    {
+      "file": "components/settle/google-reference.tsx",
+      "sha256": "2fe3d5876cc9c5722a0807a2d6daecb1d4e6bfc650614bdfb56af0a869dbcb05"
+    },
+    {
+      "file": "components/settle/hero-intro.module.css",
+      "sha256": "6ff148b2df7ca5272252362569ca40cf3c0666315578328da28454503b3a6c01"
+    },
+    {
+      "file": "components/settle/hero-intro.tsx",
+      "sha256": "80756a6814a63c094189c9d2580e71a5a333e60f59b50a1ce2d35f189dc66aff"
+    },
+    {
+      "file": "components/settle/margin.tsx",
+      "sha256": "355585e5457b938eda856ff55a153997f98150ea467ec5faed32a738e5275b4d"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "4ac91a0ef539a23b167c183bfb01f38b814a3677172bbbd77aaf50b2c1f5d19f"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "ca4607b5ec0f120d7f21a92bac9ee9c64e428fda589c1064c918db5b0f347063"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "72b77d89c8e92ba109d244d16f19481352da74eeba08737476c6fd4bdb81f55f"
+    },
+    {
+      "file": "components/settle/use-answer-envelope.ts",
+      "sha256": "9da85bc291d760b0f25b3f0b1f7cee5951a953ae9a9785bcf1dc1648440b9c83"
+    },
+    {
+      "file": "components/settle/use-formation-layout.ts",
+      "sha256": "7775d6854dc2dc57e75511c63c81942550b5f7eadd00d285d1bf40ae49e5529e"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "5f745cae8b5e91281e6622d935ce2238e04372411d8ba0c5841d80fc539b4fff"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/widget/weather-answer.tsx",
+      "sha256": "10b09a26411096955d6f6b18de2ffcd50f55feb2b4e6ada8620ee639f6efe61b"
+    },
+    {
+      "file": "components/widget/weather-icon.tsx",
+      "sha256": "5f2939c5a1a897240feebb7b7a6eb4ec08f33d31db8c4de8c3d381a544831947"
+    },
+    {
+      "file": "components/widget/weather-widget.tsx",
+      "sha256": "3b08465fa0497acc21ac09e8912f0843e0ab6174cbe8429cd0862b8c8a05b5bd"
+    },
+    {
+      "file": "lib/arrival/phrases.ts",
+      "sha256": "a4ddc86c9c085285d0275871e864124905a10c8b7523c57125f931d0f697582d"
+    },
+    {
+      "file": "lib/arrival/profile.ts",
+      "sha256": "dba997ecfa87b147ed0c25b1068148ece7613a1ee86ede04834f8001d105279b"
+    },
+    {
+      "file": "lib/arrival/reading-order.ts",
+      "sha256": "2d87bc4425e272b45d7f7347ece4a19a80b5f4ef31a7518b8e4043350127b118"
+    },
+    {
+      "file": "lib/arrival/references.ts",
+      "sha256": "44dd205ca5f189eae65b0af49b2b3881178cfbded2fb78191682bb238eabe937"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/brand/types.ts",
+      "sha256": "af9332ce0337e53b6cc0fb5d2be48a48deff59caba4fce3c421f75ecc7a5fb19"
+    },
+    {
+      "file": "lib/coda/fixtures.ts",
+      "sha256": "b344a9c9654e41965576cf7aad3d4b2c474056d91b738204120379e2e2604b76"
+    },
+    {
+      "file": "lib/diffusion/candidate-pool.ts",
+      "sha256": "beaacf5768b9b7ae7885cf55940ea34bdd969dbe21c3e5163c14e5eb58818a91"
+    },
+    {
+      "file": "lib/diffusion/choreographer.ts",
+      "sha256": "ccf62798bb9172c7f09c7fd7d400638f4c536a7e84122a70a77c529c5dc91ae4"
+    },
+    {
+      "file": "lib/diffusion/decode.ts",
+      "sha256": "42a7b19e57d1385a7afdf3638138d56f680dc8e2224e173246720c32cfeabff3"
+    },
+    {
+      "file": "lib/diffusion/glyph-styles.ts",
+      "sha256": "80153e320416376fe87a5a02ca7418db4471e5e3e369313dd27c6888971bd50c"
+    },
+    {
+      "file": "lib/diffusion/modes/aurora-lines.ts",
+      "sha256": "7a811245797e3497e44c563ee0fcb022351c64b2c62a9d8a0ee3e6e6d91b4641"
+    },
+    {
+      "file": "lib/diffusion/modes/aurora.ts",
+      "sha256": "506a269674ee3625d358d8598ce48fed349c340d344a3e8780b95cec3f572c02"
+    },
+    {
+      "file": "lib/diffusion/modes/crystal.ts",
+      "sha256": "4908bcb6cea4969c7635cb0660700ed29e5b002d956bb8f4eafdc72e4ef3cac5"
+    },
+    {
+      "file": "lib/diffusion/modes/fog.ts",
+      "sha256": "f77f9768ab8ac46e4d370fc49a4d04b6a36d1deaaccedf4a6a3b22517dc309ea"
+    },
+    {
+      "file": "lib/diffusion/modes/mitosis.ts",
+      "sha256": "334d7605886bf98040ecc3736cb42fa0e5290a4d52ad990d806a0a3fb86d7358"
+    },
+    {
+      "file": "lib/diffusion/modes/mycelium.ts",
+      "sha256": "4e84d131176f2bc73d68b581a89c802295b28c43e0470c34fa67b9f534eb756a"
+    },
+    {
+      "file": "lib/diffusion/reduced-motion.ts",
+      "sha256": "6353b9ca946c95562cba6bcf14d49fc0c19005f8c5d9e0c40b9038fcc35a384b"
+    },
+    {
+      "file": "lib/diffusion/salience.ts",
+      "sha256": "742ec630cb972eb74b160dda9da2bd9f42696cb729cb3abe75f2bc31e9120464"
+    },
+    {
+      "file": "lib/diffusion/tokenize.ts",
+      "sha256": "b0c8dc86da5bf287c8eb4b4a79f0a53d0f3061b96ce7d876291cc3247e6cd77e"
+    },
+    {
+      "file": "lib/diffusion/trace-hybrid.ts",
+      "sha256": "51e43d66ed0f5393a3b60a30ea38b23122ec9c046b36c9969b47a18d4f1e153b"
+    },
+    {
+      "file": "lib/diffusion/traces.ts",
+      "sha256": "ec89f732ede94a61a3c87b6b8ddab3cf988048d03c4b9df53b90e8d20f9f4b66"
+    },
+    {
+      "file": "lib/diffusion/types.ts",
+      "sha256": "4234be9e3d29c3f17bfa4391ab35209359346e4769a7694897eafaf7b297899b"
+    },
+    {
+      "file": "lib/fonts.ts",
+      "sha256": "a6d0b7542bb8802944d929dc2ef9046e67e64bd8b33c1be3468a92e94ba858ee"
+    },
+    {
+      "file": "lib/glossary.ts",
+      "sha256": "6fe016d3b6c7b3731c6ca88f555c0cee6d861962e9e32ab196f20ecce9cc494b"
+    },
+    {
+      "file": "lib/motion/use-prefers-reduced-motion.ts",
+      "sha256": "c5c53ad54178d9231e07519692cb74fa853554b26cd2e07d957d85be04ecc18e"
+    },
+    {
+      "file": "lib/nature/palettes.ts",
+      "sha256": "927bc0c0a3c812bfee4d924953729f069f7040ba764f7268f3e61471e574c9b7"
+    },
+    {
+      "file": "lib/playground/color.ts",
+      "sha256": "c7076768aeea60cb03c92d56e67b339b1b60e532f754bb8cf67aba20994d2145"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/ambient-score.ts",
+      "sha256": "99623c7d2167f266dfbc2be231a9d46d3cb139c032732a5a8e3f0567e1e6a403"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/boundary.ts",
+      "sha256": "7806ffe057f0464792f777c2f10eb5ceba2e9514ade90891fc82f6949d6fd691"
+    },
+    {
+      "file": "lib/settle/carve.ts",
+      "sha256": "8644d333ce1e278306a084e95300b1b25e184e830efacd3f6ac84f80f25c15ab"
+    },
+    {
+      "file": "lib/settle/cost.ts",
+      "sha256": "2851b1e09b4f03ff0d43477cd8fecb6ae76d101272517d9d9da5923f14d1923b"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/field.ts",
+      "sha256": "8c55155b8319edf1e36a75f5b05b37e9e8b9359129cd61d6521949af1a0f36d8"
+    },
+    {
+      "file": "lib/settle/fixtures.ts",
+      "sha256": "6dfabbef17a24929afdbc353a18ac14718512bd2197f2578dda8b04b1b167efb"
+    },
+    {
+      "file": "lib/settle/growing-geometry.ts",
+      "sha256": "fd351229c024f63f3ca210401af20e38a364f58c0ad20d688ab73549a12e17a5"
+    },
+    {
+      "file": "lib/settle/phase.ts",
+      "sha256": "5718cf6d6800758c26f5a52bdeb96c8bdd74a784641e169b484f020c1c9cf050"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/showcase-replay.ts",
+      "sha256": "9ce7e0ecf00188a0708419c90a25c5e7b9cb315775957956162201ad0eb48e7f"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "lib/traces/arrival.json",
+      "sha256": "9e91e2dff4cb68a338eebb7c425e0d493b8ec94dd93a0a99c14c4205a7585e95"
+    },
+    {
+      "file": "lib/traces/findings.ts",
+      "sha256": "7e875194e6af2d5bb9fd75871d0323cfc23ad11a053a9fe39e3ec71fc06daf16"
+    },
+    {
+      "file": "lib/traces/index.ts",
+      "sha256": "17ec3cd18f78357f9faae3200dbf41fb666a78aa86d0e8a0b7d4c82e5ec18883"
+    },
+    {
+      "file": "lib/traces/prompts.ts",
+      "sha256": "f165d946a4bafa4b449dd732619b58a5d49c9cd27be60a5d1c155e1e90794f4d"
+    },
+    {
+      "file": "lib/traces/select.ts",
+      "sha256": "dd7a324268cb685d02ac19cce7915916cdf9870878a6bee7940414909b840765"
+    },
+    {
+      "file": "lib/traces/settle.json",
+      "sha256": "39865d613ebe70fd6bd67d91c0645d9a97772826a36f5a459aaba7c41a3d3513"
+    },
+    {
+      "file": "lib/widget/weather-data.ts",
+      "sha256": "811b2046e5040bdb9dd14f8de046f4aae30c8b4850beb30972fa7a55f2c314dc"
+    },
+    {
+      "file": "next.config.ts",
+      "sha256": "aaf31398503ede59aba7c44d1eb20a330734f613a3a5ca7ccf11da3cf7900e00"
+    },
+    {
+      "file": "package.json",
+      "sha256": "580f9f15d001b04328892d720987c501440596b2723ee81919b90db1045f9c29"
+    },
+    {
+      "file": "playwright.config.ts",
+      "sha256": "93f811e1321d599e1c3e2f764e1aeebae27468f695fd4eea907d4ac30d6fe202"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "6efdda2e2738b7011fa99017581605775ed92d7bdaa7153b0f83c9dab756120c"
+    },
+    {
+      "file": "tests/__mocks__/next-font-google.ts",
+      "sha256": "d577277b23cdaecb209f04136b328943783f0b7f18e88a635234ed97ff402f0a"
+    },
+    {
+      "file": "tests/__mocks__/next-font-local.ts",
+      "sha256": "e5b00d18003931bf9390580a4f9de88e7d77fc17c2b1ae981436261f395bf9b5"
+    },
+    {
+      "file": "tests/arrival/phrases.test.ts",
+      "sha256": "b9a0ebf6ab823c88ad859157d65adb4f0f5b0d10d3c8e83254ede39debbe03ec"
+    },
+    {
+      "file": "tests/arrival/profile.test.ts",
+      "sha256": "b69ecbb07a663fbdc22f6d2c02f346ff93c58880c20d87f1fe865ef97c7a2098"
+    },
+    {
+      "file": "tests/arrival/reading-order.test.ts",
+      "sha256": "06a445a70fbcd743c442541258e699b92b10bc6fcc9463ef5236dbc39ca9fe6d"
+    },
+    {
+      "file": "tests/arrival/report.test.ts",
+      "sha256": "e88330aa65024e0f1a9465f7b511a909b7a13c53dcd3cd36ecd7d8976abc75c1"
+    },
+    {
+      "file": "tests/brand-provider.test.tsx",
+      "sha256": "bf187211a808f72ec103797ac8c96316c612998d5cb383c0038cdb9f5ee2e6f9"
+    },
+    {
+      "file": "tests/brand-voice.test.tsx",
+      "sha256": "0f77491c575119d21a4500d581e30f63760b050b7134866d19874c2fad8f184e"
+    },
+    {
+      "file": "tests/brand.test.ts",
+      "sha256": "fde48d1dec28f169fd5fb3656306f31ed247e1e7361b697f0a1e0233ff3a360e"
+    },
+    {
+      "file": "tests/choreographer.test.tsx",
+      "sha256": "44c469215c8f4eed0e040b737bdb5b9bb2176d38e968c1218ab0378ebc3c32e1"
+    },
+    {
+      "file": "tests/coda-fixtures.test.ts",
+      "sha256": "43aa7af8f7f77cfab8f735e40098cead276179529312f1e1355ece47d4381005"
+    },
+    {
+      "file": "tests/diffusion-text.test.tsx",
+      "sha256": "c7ae332a1cf54a3971f309637c0e984bb4b45897c6f8e66c5b6dba9674902e50"
+    },
+    {
+      "file": "tests/e2e/a11y.spec.ts",
+      "sha256": "42739ef4099c580e45fdfe1264129e125c1c7d45bbc62f3a48beec6a72c80ad9"
+    },
+    {
+      "file": "tests/e2e/ambient-answer.spec.ts",
+      "sha256": "e40d10eff777f2b5927baf4b2550538d527d251aca378415fd49cde6136cfcc8"
+    },
+    {
+      "file": "tests/e2e/fixtures.ts",
+      "sha256": "67a074c38d2d89e825bdf865073a315e00e55617c135b46ffa15b9645bf51ab3"
+    },
+    {
+      "file": "tests/e2e/hero-intro.spec.ts",
+      "sha256": "45f0dda9f6f3ca5df2ea67c5dff79ae20647ccd3621398a0e928ad8232f825dd"
+    },
+    {
+      "file": "tests/e2e/reduced-motion-full.spec.ts",
+      "sha256": "18dc4dc4e8079d943c5553c59579b0e9190651bac0340898423e23d5c0f92e50"
+    },
+    {
+      "file": "tests/e2e/sentence-continuity.spec.ts",
+      "sha256": "3811de9a7d4dd78bec93fdf9389b3d275b116e2a54090e94320a3c8b163a9808"
+    },
+    {
+      "file": "tests/e2e/settle-motion.spec.ts",
+      "sha256": "39f125088a41a00519bd9ca2ac05ff88cfa5b089411d53822c53b44ea976a96a"
+    },
+    {
+      "file": "tests/e2e/showcase.spec.ts",
+      "sha256": "526642ed7412feee67a35dc7b8238b7ddb1874d8ff210ff79ef568181b0931cb"
+    },
+    {
+      "file": "tests/e2e/snapshot-study.spec.ts",
+      "sha256": "a93cd642a5ab7f39578cf5e7de55b2f3637d321901d7e5621a516b7b197f8b71"
+    },
+    {
+      "file": "tests/fonts.test.tsx",
+      "sha256": "ad1587fdcdbe9572a4dc0c68a98493bacc04f20e768c78249927aeeb8c5fd06c"
+    },
+    {
+      "file": "tests/glossary.test.ts",
+      "sha256": "5814647bd8237c022d2a99dd6c5a194d199bb03daea1cf402babdda759a2915d"
+    },
+    {
+      "file": "tests/hue-wheel.test.tsx",
+      "sha256": "bf091680bbefd8eaddeb6da3a26a3cbe884af921dd8e17e831991c22c21afafe"
+    },
+    {
+      "file": "tests/modes/aurora.test.ts",
+      "sha256": "72fe6dcc1720a304bb5276d68239fe635a037dcc0bec9fa04777596868266cbf"
+    },
+    {
+      "file": "tests/modes/contract.test.ts",
+      "sha256": "70fb5c94373b152c019d513808e2b6fdca76b598791ace1611340be794faee7e"
+    },
+    {
+      "file": "tests/modes/crystal.test.ts",
+      "sha256": "c4666a716fa3106c7dd62e6c634710616ab48160a09b0fa965cf3e70fff958a2"
+    },
+    {
+      "file": "tests/modes/fog.test.ts",
+      "sha256": "2e6bd70f370c59be8bfae1231919b94e21a7c5f4b3be6936d99a46813104971b"
+    },
+    {
+      "file": "tests/modes/mycelium.test.ts",
+      "sha256": "3dc851c6f815ac30779157502842a3ccb9514919d59c069b66b77adf4fec379e"
+    },
+    {
+      "file": "tests/nature-word.test.tsx",
+      "sha256": "d7bfe7f1ec18601cae868b792a0286d1b9a6827c1f4c726aedeb30433a5e4416"
+    },
+    {
+      "file": "tests/reduced-motion.test.ts",
+      "sha256": "fccd7c31fdb547e43111dc9c3dce7043517a1f0a8a875967279bdb894880dc59"
+    },
+    {
+      "file": "tests/section.test.tsx",
+      "sha256": "1cca14d312d93cd6519f594968718433c97a0acd58163fe46c9825583d4c4d48"
+    },
+    {
+      "file": "tests/settle/ambient-composition.test.tsx",
+      "sha256": "106b39b34b9beb63a3c2495d1403c1bd4b34a2268433d144e1b69f21c4f94c5f"
+    },
+    {
+      "file": "tests/settle/ambient-geometry.test.tsx",
+      "sha256": "48f9aff4562272848c618cebe7bc443259458cabcf9ca5209de584d8beba832b"
+    },
+    {
+      "file": "tests/settle/ambient-score.test.tsx",
+      "sha256": "7c5cae0702750acf16670985e294192dca31c5f1efd2bd21f1bf7388b17165d0"
+    },
+    {
+      "file": "tests/settle/answer-envelope.test.tsx",
+      "sha256": "125aac7a240cc7ac5b905c66f59bc4f519c31fd15a1793ca1e6158c098b1e13a"
+    },
+    {
+      "file": "tests/settle/answer-policy.test.ts",
+      "sha256": "22357c6fe39192c78299d152498bded27a83031af53c90e02b63c3b303a7c640"
+    },
+    {
+      "file": "tests/settle/answer-surface.test.tsx",
+      "sha256": "e9ed9feffcab18dbe91aaa0e461969aaa9e72b7e646e18c88ca98505d855cc91"
+    },
+    {
+      "file": "tests/settle/answer.test.tsx",
+      "sha256": "9802c8026101c28fb721573d195a4e0afa9a570904358f2d01e01316e82a0337"
+    },
+    {
+      "file": "tests/settle/bubble-transfer.test.tsx",
+      "sha256": "21a9504ac38bea19c203658bdfc773d8b39ed1e3c1c23391709be83177694fd1"
+    },
+    {
+      "file": "tests/settle/carve.test.ts",
+      "sha256": "9aa080c514271c739f356da7245a58f7404593e1a83c808967406dd0fd5bde4c"
+    },
+    {
+      "file": "tests/settle/drafts.test.ts",
+      "sha256": "d473d768b3eb886a12a76e178cc741bb067c291d81ba8350c691bfaae00fe422"
+    },
+    {
+      "file": "tests/settle/experimental-recordings.test.ts",
+      "sha256": "ed2c453615dd7436c13348b8d9551c3052eb6313693114a9708fd3750bd7665f"
+    },
+    {
+      "file": "tests/settle/field.test.ts",
+      "sha256": "5d25e544bec4ec5532f424c5d69798ea040289eece659171ec5e7c303c19eb77"
+    },
+    {
+      "file": "tests/settle/formation-motion.test.tsx",
+      "sha256": "293ab49648ca7727e4a8ea621857f7810f9f2b334be9072d32abd6f29ef8cd67"
+    },
+    {
+      "file": "tests/settle/growing-geometry.test.tsx",
+      "sha256": "4bea7fc966155e6a0d8371f78c6a82cb16a36c6b546370c1d8d15a674387e69a"
+    },
+    {
+      "file": "tests/settle/growing-surface.test.tsx",
+      "sha256": "721162304aeff4a9f65c820d901363185130f3f5d2223d0f99f941a8fdc77249"
+    },
+    {
+      "file": "tests/settle/hero-intro.test.tsx",
+      "sha256": "3cdbcea47e2c7e7c92b2adfde4f757fb78f3786921f60bfeb6d05edd3165810a"
+    },
+    {
+      "file": "tests/settle/reader.test.ts",
+      "sha256": "041dee9740c8f87d0d7d6bc2692ce5b6e22c5deab3406c123a6fe73170292cee"
+    },
+    {
+      "file": "tests/settle/replay.test.ts",
+      "sha256": "04478d262e2d7a4d9a3de8416f8395b0eabfd3f780835529d40915c3a513f915"
+    },
+    {
+      "file": "tests/settle/report.test.ts",
+      "sha256": "87415eea835ed2c68e206bedc1bb2892ed2b4d2245cbef799d8069cca036fe86"
+    },
+    {
+      "file": "tests/settle/showcase-replay.test.ts",
+      "sha256": "23cd3109e5bfff7e5b6007b9ed16f2587f76539b0607e5b039ec589dc94f848c"
+    },
+    {
+      "file": "tests/settle/showcase.test.tsx",
+      "sha256": "7fc92824bf929d1efde4ff20fcfb6c8aad54b0ba5c3607f7d4ed59adc9034c64"
+    },
+    {
+      "file": "tests/settle/snapshot-candidate.test.tsx",
+      "sha256": "1bd15b7d670a6b86ace31b435150373ea86140f4f2adc51177ab76cded03365a"
+    },
+    {
+      "file": "tests/settle/voice.test.ts",
+      "sha256": "1d83368b9ac3ad6da0812e7ba98846a74f051610a09b1537ba3adbcda93de4b4"
+    },
+    {
+      "file": "tests/setup.ts",
+      "sha256": "6da70fce69a5858d51befdc2ea001912d87f3ded76f3f99f39cd98b80eb056b2"
+    },
+    {
+      "file": "tests/toggle-rail.test.tsx",
+      "sha256": "fda82d2a787249d10ae75bf9271831fcf9014c4b78992ad3edeb6e5ec9de86d2"
+    },
+    {
+      "file": "tests/tokenize.test.ts",
+      "sha256": "6983cb638a39b9d89eb6e39e403ad4460417c1a610421d5d6ec3008ce99901e5"
+    },
+    {
+      "file": "tests/tokens.test.ts",
+      "sha256": "adcd1137c25eabbea521d25bb9bc0e16492e7483edd9fac9e76036283d0db867"
+    },
+    {
+      "file": "tests/trace-hybrid.test.ts",
+      "sha256": "698661bb6b6f27077fc5e1fc452326e761758de468bf3a001c0e1029070bcf25"
+    },
+    {
+      "file": "tests/trace-select.test.ts",
+      "sha256": "f9e5b88ed1d8161eddb31e64267d3ce59b4c64d470c5fe354a826ea28e9c4f11"
+    },
+    {
+      "file": "tests/traces.test.ts",
+      "sha256": "23cef4675ea110651f6020faef78f1e926a41b84d88a5a1099384d432f88f514"
+    }
+  ],
+  "unit": {
+    "passed": 394,
+    "failed": 0,
+    "files": 50,
+    "startedAt": "2026-09-12T17:28:34.169Z"
+  },
+  "browser": {
+    "startTime": "2026-09-12T17:30:34.331Z",
+    "duration": 550173.02,
+    "expected": 96,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "cases": [
+      {
+        "file": "a11y.spec.ts",
+        "title": "home page has no axe-core violations at WCAG 2.1 AA",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 18941
+      },
+      {
+        "file": "a11y.spec.ts",
+        "title": "home page has no axe-core violations at WCAG 2.1 AA",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 22459
+      },
+      {
+        "file": "a11y.spec.ts",
+        "title": "home page has no axe-core violations at WCAG 2.1 AA",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 31343
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the selected whole-answer policy preserves source finality and hands over one exact answer",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 5472
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "shared controls pause motion and source time, and offscreen activity rests",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1467
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 822
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "changing and restarting recordings cannot leak a previous answer",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 709
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1508
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1497
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4146
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3464
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the waiting capacity grows from received ink while authored row widths and identities remain stable",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 9388
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1499
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the selected whole-answer policy preserves source finality and hands over one exact answer",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 6128
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "shared controls pause motion and source time, and offscreen activity rests",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2032
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2005
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "changing and restarting recordings cannot leak a previous answer",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2058
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2701
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2261
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4961
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4399
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the waiting capacity grows from received ink while authored row widths and identities remain stable",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 10278
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1894
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the selected whole-answer policy preserves source finality and hands over one exact answer",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 6307
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "shared controls pause motion and source time, and offscreen activity rests",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2163
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1997
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "changing and restarting recordings cannot leak a previous answer",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1930
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2757
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2490
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4981
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4546
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "the waiting capacity grows from received ink while authored row widths and identities remain stable",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11082
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2553
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "reduced motion removes movement and preserves exact shared source finality",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 4835
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "reduced motion removes movement and preserves exact shared source finality",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 5246
+      },
+      {
+        "file": "ambient-answer.spec.ts",
+        "title": "reduced motion removes movement and preserves exact shared source finality",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 5300
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "short narrow viewports keep the opening prompt within the reachable scroll area",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3370
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh cinematic opening fills the viewport, contains focus, and unlocks immediately with Skip or Escape",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1510
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "four distinct sentence batches use the shared handover before the same stage docks and scrolling resumes",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11144
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "returning visits show the full exchange without relocking",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 397
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh direct link bypasses the opening without an existing seen flag",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 310
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "reduced motion is immediately complete and leaves the page unlocked",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 593
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "short narrow viewports keep the opening prompt within the reachable scroll area",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3957
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh cinematic opening fills the viewport, contains focus, and unlocks immediately with Skip or Escape",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2755
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "four distinct sentence batches use the shared handover before the same stage docks and scrolling resumes",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11897
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "returning visits show the full exchange without relocking",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1882
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh direct link bypasses the opening without an existing seen flag",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 563
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "reduced motion is immediately complete and leaves the page unlocked",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1069
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "short narrow viewports keep the opening prompt within the reachable scroll area",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3885
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh cinematic opening fills the viewport, contains focus, and unlocks immediately with Skip or Escape",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2659
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "four distinct sentence batches use the shared handover before the same stage docks and scrolling resumes",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11834
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "returning visits show the full exchange without relocking",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 780
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "a fresh direct link bypasses the opening without an existing seen flag",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 585
+      },
+      {
+        "file": "hero-intro.spec.ts",
+        "title": "reduced motion is immediately complete and leaves the page unlocked",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1001
+      },
+      {
+        "file": "reduced-motion-full.spec.ts",
+        "title": "all sections mount and every stage reaches its recording's end",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1561
+      },
+      {
+        "file": "reduced-motion-full.spec.ts",
+        "title": "all sections mount and every stage reaches its recording's end",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2118
+      },
+      {
+        "file": "reduced-motion-full.spec.ts",
+        "title": "all sections mount and every stage reaches its recording's end",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2074
+      },
+      {
+        "file": "sentence-continuity.spec.ts",
+        "title": "the continuing sentence field refills during arrival and does not blink at cleanup",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 8866
+      },
+      {
+        "file": "sentence-continuity.spec.ts",
+        "title": "the continuing sentence field refills during arrival and does not blink at cleanup",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 9818
+      },
+      {
+        "file": "sentence-continuity.spec.ts",
+        "title": "the continuing sentence field refills during arrival and does not blink at cleanup",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 9688
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "earlier reading hands over only released passages and never reanimates settled words",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11590
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1904
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "a finished real recording is exact, selectable and stationary",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 18073
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "motion off cancels decoration while the recorded source keeps advancing",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2013
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "the embedded phone preserves its answer width and exact final text",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 16058
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "whole answer uses the shared modern material by default",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1068
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each word uses the shared modern material by default",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 453
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each sentence uses the shared modern material by default",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 417
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each paragraph uses the shared modern material by default",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 592
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "earlier reading hands over only released passages and never reanimates settled words",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 12530
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2987
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "a finished real recording is exact, selectable and stationary",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 18886
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "motion off cancels decoration while the recorded source keeps advancing",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 2614
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "the embedded phone preserves its answer width and exact final text",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 16637
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "whole answer uses the shared modern material by default",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1930
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each word uses the shared modern material by default",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1039
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each sentence uses the shared modern material by default",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 955
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each paragraph uses the shared modern material by default",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1039
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "earlier reading hands over only released passages and never reanimates settled words",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 13091
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3706
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "a finished real recording is exact, selectable and stationary",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 19608
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "motion off cancels decoration while the recorded source keeps advancing",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 3543
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "the embedded phone preserves its answer width and exact final text",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 16608
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "whole answer uses the shared modern material by default",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 1070
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each word uses the shared modern material by default",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 960
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each sentence uses the shared modern material by default",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 960
+      },
+      {
+        "file": "settle-motion.spec.ts",
+        "title": "each paragraph uses the shared modern material by default",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 997
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "the upfront gallery shows the same-clock raw fragments beside a sentence answer, then both finish exactly",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 9558
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "whole-answer selection, pause, offscreen resume and replay preserve one shared clock",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 10761
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "the upfront gallery shows the same-clock raw fragments beside a sentence answer, then both finish exactly",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 10225
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "whole-answer selection, pause, offscreen resume and replay preserve one shared clock",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11637
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "the upfront gallery shows the same-clock raw fragments beside a sentence answer, then both finish exactly",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 10165
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "whole-answer selection, pause, offscreen resume and replay preserve one shared clock",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 11554
+      },
+      {
+        "file": "snapshot-study.spec.ts",
+        "title": "revisable whole drafts can reserve coarse height but never become a premature answer",
+        "project": "chromium",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 5371
+      },
+      {
+        "file": "snapshot-study.spec.ts",
+        "title": "revisable whole drafts can reserve coarse height but never become a premature answer",
+        "project": "webkit",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 6761
+      },
+      {
+        "file": "snapshot-study.spec.ts",
+        "title": "revisable whole drafts can reserve coarse height but never become a premature answer",
+        "project": "mobile-portrait",
+        "status": "expected",
+        "attempts": 1,
+        "durationMs": 5943
+      }
+    ]
+  },
+  "guards": {
+    "passed": 166,
+    "failed": 0,
+    "scope": "Current and historical instrument guard suites; not a rerun of historical motion observations."
+  },
+  "lint": "passed",
+  "rootBuild": "passed",
+  "artifacts": [
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/browser.json",
+      "bytes": 116844,
+      "sha256": "8e5685012c869c02f12893c1cdef3afdb0852d9cd630d066114426839a204cda"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/unit.json",
+      "bytes": 136304,
+      "sha256": "5133cd92590e0894c614496b843bc036286e6c34dd99810cff0dcd374e7bee4c"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/guards.log",
+      "bytes": 9107,
+      "sha256": "8c17de457922e3f5065c4220215e8e41bf37a078d4c4c978c34bf6e0dba3d214"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/build.log",
+      "bytes": 640,
+      "sha256": "ca88a5b50ab0619cd7fae8ee59177dc2a4e318310e883aee5a857e2623828618"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/lint.log",
+      "bytes": 28,
+      "sha256": "b543827ce56a63357c629028555ecec2cc964dda33dbbf2a9a2872b1a2ab20f8"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/pages-build.log",
+      "bytes": 640,
+      "sha256": "be673252613c8173676ef2fbdd1880d04d9f839877f75e44b4923255aa68d7c3"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/cinematic-showcase-visual.json",
+      "bytes": 867,
+      "sha256": "7126928da785c89bb95755024517b61d487459d8b4ac6d4f945109f83972c936"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/cinematic-showcase-desktop.png",
+      "bytes": 89341,
+      "sha256": "be79fb33add7107b4cf36f18d7bb6c5fc851df84628585b89a190b6e595284d0"
+    },
+    {
+      "file": "data/experiments/cinematic-showcase-2026-09-12/cinematic-showcase-mobile.png",
+      "bytes": 69370,
+      "sha256": "e238d8154c7415f7f9833e8fef699b23be8ce20568cb3ffea208e39a69d8eaca"
+    }
+  ],
+  "pagesBuild": "passed",
+  "visualCheck": "Desktop and mobile captures inspected; exact final text, zero horizontal overflow and no page errors."
+}

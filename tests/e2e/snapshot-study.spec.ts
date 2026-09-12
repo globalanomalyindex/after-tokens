@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures'
 import { SNAPSHOT_STUDY_ANSWER } from '../../lib/settle/snapshot-study'
 
 test('revisable whole drafts can reserve coarse height but never become a premature answer', async ({ page }) => {

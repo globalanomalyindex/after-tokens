@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 // to jump. Desktop only, where the column leaves a gutter.
 export const NAV_ITEMS: { id: string; label: string }[] = [
   { id: 'hook', label: 'after tokens' },
+  { id: 'showcase', label: 'see it move' },
   { id: 'problem', label: 'the wrong shape' },
   { id: 'audit', label: 'the audit' },
   { id: 'contract', label: 'the contract' },

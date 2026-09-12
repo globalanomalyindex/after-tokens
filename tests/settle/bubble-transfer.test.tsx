@@ -26,6 +26,21 @@ function fixture(count: number, priorReadable = false) {
 }
 
 describe('actual visible bubble capture', () => {
+  it('refills a continuing field during transfer without starting another fade at cleanup', () => {
+    const { frame } = fixture(5)
+    frame.dataset.receiving = 'true'
+    const { unmount } = render(<BubbleTransfer frameRef={{ current: frame }} transferKey="sentence" onComplete={() => {}} />)
+    const originals = [...frame.querySelectorAll('[data-borrowed]')]
+    expect(originals.length).toBeGreaterThan(0)
+    for (const original of originals) expect(original).toHaveAttribute('data-refilling', 'sentence')
+    unmount()
+    for (const original of originals) {
+      expect(original).not.toHaveAttribute('data-borrowed')
+      expect(original).not.toHaveAttribute('data-refilling')
+      expect(original).not.toHaveAttribute('data-replenish')
+    }
+  })
+
   it('captures before advancing the source field and hides originals while their clones carry the handover', () => {
     const { frame, shift } = fixture(1)
     const onCaptured = vi.fn(() => shift())
@@ -45,6 +60,7 @@ describe('actual visible bubble capture', () => {
     const { container } = render(<BubbleTransfer frameRef={{ current: frame }} transferKey="terminal" onComplete={() => {}} />)
     expect(container.querySelectorAll('.bubble-transfer__cell')).toHaveLength(6)
     expect(frame.querySelectorAll('[data-borrowed]')).toHaveLength(6)
+    expect(frame.querySelectorAll('[data-refilling]')).toHaveLength(0)
   })
 
   it('does not clone or borrow old material when a terminal event adds no new words', () => {

@@ -63,9 +63,9 @@ export function SectionEvidence() {
       </dl>
 
       <div className="mt-16 md:mt-24 rule pt-8">
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">the current material, recorded</h3>
+        <h3 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight mb-3">the study baseline, recorded</h3>
         <p className="text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-          two fresh browser recordings show the fuller growing material: successive sentences on a narrow page, and a whole-answer comparison with more room. both replay the same original source at its recorded clock, preserving its wording and imperfections. the different widths and release policies make these examples, not a controlled comparison.
+          these recordings are frozen at the published v8 baseline, bd5cf9f, before the sentence continuity correction. they show the fuller growing material: successive sentences on a narrow page, and a whole-answer comparison with more room. both replay the same original source at its recorded clock, preserving its wording and imperfections. the different widths and release policies make these examples, not a controlled comparison.
         </p>
         <div className="grid gap-8 md:grid-cols-2 max-w-3xl mt-7">
           {[
@@ -98,12 +98,13 @@ export function SectionEvidence() {
           ))}
         </div>
         <p className="readout leading-relaxed max-w-4xl mt-5" style={{ color: 'var(--muted)' }}>
-          v8 chromium captures · original 15.36 s forward-pass clock at 1× · untrimmed setup, scrolling and replay · no audio. these passive recordings omit per-frame measurement. posters are separate browser screenshots, not extracted video frames. recording still has overhead.{' '}
+          v8 baseline bd5cf9f · chromium captures · original 15.36 s forward-pass clock at 1× · untrimmed setup, scrolling and replay · no audio. these passive recordings omit per-frame measurement. posters are separate browser screenshots, not extracted video frames. recording still has overhead.{' '}
           <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/growing-skeleton-v8-showcase-capture-2026-09-12.json">capture provenance</a>
         </p>
         <p className="text-sm leading-relaxed max-w-3xl mt-5" style={{ color: 'var(--ink-2)' }}>
-          Four focused observations covered sentence and whole-answer release at both widths. Final text stayed exact; protected text never exceeded the committed source prefix. Both sentence runs had four handovers and at most six borrowed cells. Settled text showed zero measured drift within the reading page. Near-full final opacity followed sampled source completion by 200–201 ms, and text rest by about 300 ms. Where surplus height remained, the container finished later, at 465–467 ms. These are instrumented browser observations of one source, not reader benefits, model latency or physical iPhone performance.{' '}
+          Four focused observations of that same frozen baseline covered sentence and whole-answer release at both widths. They do not validate the subsequent concurrent-refill correction. Final text stayed exact; protected text never exceeded the committed source prefix. Both sentence runs had four handovers and at most six borrowed cells. Settled text showed zero measured drift within the reading page. Near-full final opacity followed sampled source completion by 200–201 ms, and text rest by about 300 ms. Where surplus height remained, the container finished later, at 465–467 ms. These are instrumented browser observations of one source, not reader benefits, model latency or physical iPhone performance.{' '}
           <a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/growing-skeleton-v8-release-verification-2026-09-12.md">results and limits</a>
+          {' · '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/sentence-continuity-fix-2026-09-12.md">sentence continuity correction</a>
           {' · '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/ambient-skeleton-v7-release-verification-2026-09-12.md">historical v7 evidence</a>
           {' · '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/responsive-skeleton-v6-release-verification-2026-09-12.md">historical v6 evidence</a>
           {' · '}<a className="underline underline-offset-4" href="https://github.com/globalanomalyindex/after-tokens/blob/main/docs/anchored-skeleton-release-verification-2026-09-09.md">historical v5 evidence</a>

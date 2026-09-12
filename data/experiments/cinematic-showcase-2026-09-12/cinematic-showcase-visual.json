@@ -1,0 +1,32 @@
+{
+  "capturedAt": "2026-09-12T17:40:38.555Z",
+  "scope": "Finite local browser screenshots and final-state checks; not physical-device testing.",
+  "results": [
+    {
+      "name": "desktop",
+      "engine": "Chromium",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "screenshot": "data/experiments/cinematic-showcase-2026-09-12/cinematic-showcase-desktop.png",
+      "pausedAtMs": 3966,
+      "exactFinalText": true,
+      "horizontalOverflowPx": 0,
+      "pageErrors": []
+    },
+    {
+      "name": "mobile",
+      "engine": "WebKit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshot": "data/experiments/cinematic-showcase-2026-09-12/cinematic-showcase-mobile.png",
+      "pausedAtMs": 4035,
+      "exactFinalText": true,
+      "horizontalOverflowPx": 0,
+      "pageErrors": []
+    }
+  ]
+}

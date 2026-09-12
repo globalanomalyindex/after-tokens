@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from './fixtures'
 import sleep from '../../data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json'
 import sky from '../../data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json'
 

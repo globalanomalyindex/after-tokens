@@ -1,0 +1,50 @@
+.section { padding-top: clamp(2.5rem, 7vw, 6rem); }
+.heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+.eyebrow { color: var(--muted); margin-bottom: 1rem; }
+.heading h2 { margin: 0; font-size: clamp(2.3rem, 5.2vw, 4.7rem); line-height: .98; letter-spacing: -.065em; font-weight: 650; }
+.introduction { color: var(--ink-2); font-size: 1rem; line-height: 1.5; margin: 0 0 .25rem; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem 1rem; margin-bottom: 1rem; }
+.policies { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0; margin: 0; border: 0; min-width: 0; }
+.choice { position: relative; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice span { display: inline-flex; align-items: center; min-height: 44px; padding: .6rem 1rem; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--ink) 24%, transparent); font-size: .8rem; line-height: 1; }
+.choice input:checked + span { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.choice input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 3px; }
+.controls { display: flex; align-items: center; gap: .5rem; }
+.controls button { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; padding: .4rem .45rem; border: 0; background: transparent; font-family: var(--font-mono), monospace; font-size: .69rem; letter-spacing: .04em; cursor: pointer; }
+.controls button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.controls button:disabled { opacity: .4; cursor: default; }
+.controls button > span { font-size: 1rem; line-height: 1; }
+.stage { overflow: hidden; border-radius: 1.3rem; }
+.prompt { display: flex; gap: .85rem; padding: 1.4rem 1.6rem; border-bottom: 1px solid color-mix(in oklab, var(--stage-text) 14%, transparent); font-size: .9rem; color: color-mix(in oklab, var(--stage-text) 80%, transparent); }
+.prompt > span { opacity: .7; }
+.panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.panel { padding: 1.5rem 1.6rem 2rem; min-width: 0; min-height: 16rem; }
+.rawPanel { border-left: 1px solid color-mix(in oklab, var(--stage-text) 14%, transparent); }
+.panelHeading { min-height: 1.75rem; display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin-bottom: 1.75rem; }
+.panelHeading h3 { font-size: .85rem; font-weight: 550; letter-spacing: -.015em; margin: 0; }
+.panelHeading > span { font-family: var(--font-mono), monospace; font-size: .58rem; color: color-mix(in oklab, var(--stage-text) 65%, transparent); }
+.signature { border: 1px solid color-mix(in oklab, var(--stage-text) 22%, transparent); border-radius: 999px; padding: .3rem .5rem; }
+.answer, .raw { font-size: clamp(.94rem, 1.25vw, 1.075rem); line-height: 1.65; }
+.raw { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.raw mark { background: color-mix(in oklab, var(--stage-text) 14%, transparent); color: inherit; text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--stage-text) 50%, transparent); text-underline-offset: .16em; }
+.empty { color: color-mix(in oklab, var(--stage-text) 55%, transparent); font-size: .78rem; }
+.stageFooter { display: flex; justify-content: space-between; gap: 1rem; padding: .9rem 1.6rem; border-top: 1px solid color-mix(in oklab, var(--stage-text) 14%, transparent); font-family: var(--font-mono), monospace; font-size: .6rem; letter-spacing: .06em; color: color-mix(in oklab, var(--stage-text) 70%, transparent); }
+.caption { display: flex; justify-content: space-between; gap: .5rem 2rem; margin-top: .9rem; color: var(--muted); font-family: var(--font-mono), monospace; font-size: .61rem; line-height: 1.6; }
+.caption p { margin: 0; max-width: 48ch; }
+@media (max-width: 640px) {
+  .heading { display: block; margin-bottom: 1.4rem; }
+  .introduction { margin-top: 1rem; font-size: .9rem; }
+  .choice span { padding-inline: .8rem; font-size: .75rem; }
+  .toolbar { column-gap: .4rem; }
+  .controls { gap: .2rem; }
+  .controls button { font-size: .61rem; padding-inline: .3rem; }
+  .panels { grid-template-columns: minmax(0, 1fr); }
+  .panel { padding: 1.1rem 1.2rem 1.4rem; min-height: 11rem; }
+  .panelHeading { margin-bottom: 1.15rem; }
+  .rawPanel { border-left: 0; border-top: 1px solid color-mix(in oklab, var(--stage-text) 14%, transparent); min-height: 8.5rem; }
+  .prompt { padding: 1.1rem 1.2rem; font-size: .8rem; }
+  .stageFooter { padding-inline: 1.2rem; font-size: .55rem; }
+  .caption { display: block; }
+  .caption p + p { margin-top: .3rem; }
+}

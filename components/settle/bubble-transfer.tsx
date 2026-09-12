@@ -76,16 +76,23 @@ export function BubbleTransfer({ frameRef, transferKey, onCaptured, onComplete }
       : origins
     setCells(targets.length ? selected.map((origin, index) => ({ ...origin, target: targets[Math.min(targets.length - 1, Math.floor(index * targets.length / selected.length))]! })) : [])
     frame.dataset.transferCaptured = selected.length && targets.length ? 'true' : 'empty'
-    // A clone replaces the exact visible origin. Its original is replenished
-    // only after the handover, now in the continuing field's new position.
+    // A continuing field refills as it moves, alongside the captured bridge.
+    // Waiting until cleanup would leave its leading rows empty for the whole
+    // handover, then add a second fade after the words had already settled.
+    const refilling = frame.dataset.receiving === 'true'
     const borrowed = targets.length ? selected.map((origin) => origin.element) : []
-    for (const element of borrowed) { delete element.dataset.replenish; element.dataset.borrowed = transferKey }
+    for (const element of borrowed) {
+      delete element.dataset.replenish
+      element.dataset.borrowed = transferKey
+      if (refilling) element.dataset.refilling = transferKey
+    }
     onCaptured?.(transferKey)
     return () => {
       delete frame.dataset.transferCaptured
       for (const element of borrowed) if (element.dataset.borrowed === transferKey) {
         delete element.dataset.borrowed
-        element.dataset.replenish = 'true'
+        delete element.dataset.refilling
+        if (!refilling) element.dataset.replenish = 'true'
       }
     }
   }, [frameRef, transferKey, onCaptured])

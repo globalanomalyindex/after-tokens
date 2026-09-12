@@ -19,7 +19,7 @@ export function SiteFooter() {
             sixty original diffusion recordings, four batched captures and measured presentation costs.
           </p>
           <p className="mt-5 readout max-w-md" style={{ color: 'var(--muted)' }}>
-            cite as: globalanomalyindex (2026). after tokens: a skeleton motion study for generated text.
+            cite as: Christopher Robin Fiore (2026). after tokens: a skeleton motion study for generated text.
             github.com/globalanomalyindex/after-tokens
           </p>
         </div>

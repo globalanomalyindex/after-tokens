@@ -76,7 +76,7 @@ export function SectionOpen() {
 
       <div className="mt-16 md:mt-24 rule pt-8 max-w-2xl">
         <p className="text-base">
-          web design, motion design and implementation by <span style={{ fontWeight: 600 }}>globalanomalyindex</span>.
+          web design, motion design and implementation by <span style={{ fontWeight: 600 }}>Christopher Robin Fiore</span>.
           my design record follows the causal audit and reading contract of 7 september 2026, the skeleton motion experiments,
           and the source-evidence refresh of 9 september.
         </p>

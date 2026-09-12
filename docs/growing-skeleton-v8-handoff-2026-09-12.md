@@ -1,10 +1,10 @@
 # After Tokens — fuller bars, room to grow
 
-12 September 2026 · current direction v8 · material `growing-cell-skeleton-v8` · by globalanomalyindex
+12 September 2026 · current direction v8 · material `growing-cell-skeleton-v8` · Christopher Robin Fiore · GitHub: `globalanomalyindex`
 
 I restore the fuller silhouette of the earlier skeleton: long, rounded bars interspersed with a few larger cells. The waiting area can reserve more room as currently received content accumulates. Its individual shapes keep an authored rhythm, rather than tracking every change in a provisional sentence. Eligible text still arrives through the retained material handover.
 
-This is an implementation and research handoff, with high-level design decisions and their limits. Fresh v8 evidence includes 383 unit/component tests, 72 browser checks, 35 current observer guards, four focused motion observations and two new passive recordings with separate screenshot posters. The [release record](growing-skeleton-v8-release-verification-2026-09-12.md) owns current verification status. Historical v7 recordings and measurements remain separately labeled; they are not measurements of this revision.
+This is an implementation and research handoff, with high-level design decisions and their limits. The frozen v8 baseline at `bd5cf9f0955fbd7ebdec8c89435ed5ac9af20243` has evidence including 383 unit/component tests, 72 browser checks, 35 current observer guards, four focused motion observations and two new passive recordings with separate screenshot posters. The [release record](growing-skeleton-v8-release-verification-2026-09-12.md) retains that baseline’s verification status. The subsequent [sentence continuity correction](sentence-continuity-fix-2026-09-12.md) retains its initial focused checks. The [integrated verification record](cinematic-showcase-verification-2026-09-12.md) covers that correction together with the fullscreen opening and upfront live gallery: 394 unit/component tests, 96 browser checks, 166 instrument guards, lint and the normal production build passed. The older measurements and media do not validate these subsequent changes. Historical v7 recordings and measurements remain separately labeled.
 
 ## The design decision
 
@@ -14,18 +14,33 @@ I separate three things that the previous versions had coupled too tightly:
 2. **The waiting material.** Authored long bars and two-to-three-cell groups breathe and redistribute their space. Their widths have no word identity, confidence value or model-stage meaning.
 3. **The reading surface.** Once a passage meets its source and release contract, the browser can measure the actual words and carry the visible material into them. Earlier readable text does not repeat that arrival.
 
-The opening cinematic scene is an authored introduction to this design idea. It is not a diffusion recording, API trace, latency test or demonstration of model quality. The case study separately provides real source replays, an explicitly authored snapshot exercise and inspected Google reference frames.
+The opening cinematic scene is an authored introduction to this design idea. Four prewritten sentences arrive through the shared sentence-release renderer. The scene begins fullscreen and contracts into its place in the page, then the live comparison comes before the research explanation. It is not a diffusion recording, API trace, latency test or demonstration of model quality. Real source replays, the explicitly authored snapshot exercise and inspected Google reference frames keep their separate provenance.
 
-| Authored opening beat | Nominal duration |
+The fullscreen treatment is introductory choreography, not part of the reader’s inference protocol. Its source events are authored immutable sentence commitments; they are not invented observations of a model becoming certain. The answer is:
+
+> It should feel like a thought taking shape.
+>
+> Complete sentences find their place while the rest keeps breathing.
+>
+> Each arrival has a little weight, then settles into something you can read.
+>
+> Welcome to After Tokens, a motion study of how generated words arrive.
+
+| Authored opening event | Nominal clock or duration |
 | --- | ---: |
-| Prompt formation | 2,652 ms |
-| Prompt hold | 400 ms |
-| Waiting-field beat | 2,100 ms |
-| Authored final event | At 5,152 ms |
-| Welcome text handover | 280 ms |
-| Reply-border response after text readiness | 420 ms |
+| Prompt finishes | 2,652 ms |
+| Reply opens after the prompt hold | 3,052 ms |
+| Four sentence commitments | 4,952 / 6,202 / 7,552 / 8,902 ms |
+| Explicit source finality | Committed EOS with the fourth sentence at 8,902 ms |
+| Shared handover for each eligible sentence | 280 ms, after any required fit |
+| Hold after final text readiness | 750 ms |
+| Fullscreen rectangle contracts into the page | 760 ms |
 
-These values choreograph the introduction; they are not a measured generation schedule. Its static welcome and transcript preserve the same message without requiring the animation.
+These are authored parameters, not measured model latency or guaranteed browser wall-clock times. The same stage remains mounted while its actual outer rectangle contracts into a reserved slot. Its conversation column keeps the same width through that move, so the docking motion does not deliberately rewrap the words. Page scrolling remains locked until docking completes. Skip or Escape exits immediately to the complete static exchange. Focus stays within the fullscreen scene and background content is inert; prior scroll and background state are restored on exit.
+
+Fullscreen runs on the first ordinary visit in a session. A prior-seen session, URL hash, restored scroll beyond 80 px or reduced-motion preference bypasses it. Replay stays embedded. Manual pause and a hidden document pause its source clock; the embedded replay also pauses offscreen. The accessible transcript and static exchange preserve the same content without requiring motion. This current four-sentence scene supersedes the older two-sentence opening in the frozen baseline, without changing that baseline’s evidence.
+
+The upfront gallery puts the raw committed prefix and the composed reading surface on one replay clock. Its reply and 8.5-second event schedule are explicitly authored, with some later positions delivered before earlier gaps close. Reshape and each-sentence release are selected initially; whole-answer release is available, and the raw prefix remains visible with incomplete word tails marked. Wide layouts place the panels alongside each other; narrow layouts stack them. Pause/resume and replay control the shared clock, which pauses offscreen and when the document is hidden. This allows visitors to inspect the presentation and the earlier availability of ungrouped text together. It is an illustrative demonstration of the current renderer, not a model recording, controlled reader study or evidence that grouping makes an answer faster. Original model recordings remain available later in the case study.
 
 Every preview starts with each sentence. Whole-answer release remains available as a comparison where policy controls are exposed. A revisable snapshot still cannot release a provisional sentence: it needs explicit finality. These defaults favor continuing reading while leaving its availability tradeoff inspectable.
 
@@ -35,7 +50,7 @@ V5 provided the useful visual reference: a fuller field that made room gradually
 
 I restore only coarse space reservation, with broader cells and independent row rhythms. Keeping at least four rows below released text leaves several visible activity regions. This is a design response to observed presentation behavior, not a measured reader preference or proof that four is optimal.
 
-The other correction is temporal: capture actual on-screen cells before advancing the field below a new sentence. Moving the field first would create transfer origins that the reader had never seen. Borrowed originals stay hidden while their transfer copies move, then reappear in the continuing field. At source finality, surplus activity fades; previously readable words do not celebrate again.
+The other correction is temporal: capture actual on-screen cells before advancing the field below a new sentence. Moving the field first would create transfer origins that the reader had never seen. While the source continues, the remaining field refills alongside the transfer copies instead of waiting for their animation to finish. Terminal activity keeps the original fade behavior. At source finality, surplus activity fades; previously readable words do not celebrate again.
 
 ## Source capabilities and honesty
 
@@ -66,6 +81,7 @@ The authoritative implementation lives in the files below. Keep the reducer and 
 | `components/settle/settle-answer.tsx`, `app/globals.css` | Protected text nodes, arrival states, continuing field and terminal fade |
 | `components/settle/skeleton-division.tsx`, `app/skeleton-division.css` | One-capsule opening for Reshape |
 | `components/settle/hero-intro.tsx`, `hero-intro.module.css` | Separate authored cinematic introduction |
+| `components/sections/section-showcase.tsx`, `section-showcase.module.css`, `lib/settle/showcase-replay.ts` | Upfront, shared-clock illustrative comparison with a permanently visible raw prefix |
 
 ### Height, not draft word shapes
 
@@ -121,7 +137,7 @@ Still and Breathe use the same source, release policy and coarse height rule as 
 2. The protected page lays out the exact new batch, initially hidden for its measured fit and handover. No future or provisional lexical text enters that page.
 3. If the actual released page is underallocated by more than one pixel, fit it over an authored 180 ms. Retargeting the same pending fit preserves its existing deadline.
 4. Capture the actual visible cell rectangles and opacity, plus the new eligible word groups. A still-opening capsule remains its original clipped layer rather than becoming fabricated pill origins.
-5. Only after capture, advance the remaining field below the new passage over its authored 380 ms change. Hide borrowed originals while their copies carry toward actual word-group rectangles.
+5. Only after capture, advance the remaining field below the new passage over its authored 380 ms change. When the source is still receiving, refill its borrowed cells over 160 ms concurrently with the 280 ms bridge. Cleanup removes the temporary refill flag without starting another 320 ms fade. Transfers that begin after source finality keep the originals hidden and do not start a refill. A refill that already began while receiving can finish within the terminal fade. This is the small post-baseline sentence continuity correction.
 6. The handover lasts 280 ms. New text reaches nominal full opacity at 74% (207.2 ms), then finishes a small vertical settle at 280 ms. No letter stagger or blur is introduced; words in the batch share the arrival clock.
 7. Continuing batches borrow a small nearby subset, at most six cells. A final batch with earlier readable text retains this limit. A first batch that is already the complete answer can use the visible field. Remaining terminal activity fades over the same 280 ms handover while the reserved frame height is held. Only after that fade and text settle may surplus height contract over 180 ms. If no new characters arrive at finality, only the field fades, followed by the same delayed contraction; all old text remains untouched.
 
@@ -151,7 +167,7 @@ Test the 280 ms handover separately from waiting motion, including an immediate-
 
 ## Verification and delivery requirements
 
-Current status belongs to the [v8 release record](growing-skeleton-v8-release-verification-2026-09-12.md). The new observer report is `docs/growing-skeleton-v8-validation-2026-09-12.json`, with archived raw observations under `data/experiments/growing-skeleton-v8-2026-09-12/`. The four passing focused cases cover whole-answer and sentence release at 390 px and 1380 px. They retain exact output and report zero measured drift in settled reading-page text. Both sentence cases have four handovers, with at most six borrowed cells. Near-full final opacity followed sampled source completion by 200–201 ms; text rest followed at about 300 ms. Where the reserved height exceeded the final page, container rest followed later at 465–467 ms. These observations do not replace the original corpus audit or constitute a reader experiment.
+Baseline evidence belongs to the [v8 release record](growing-skeleton-v8-release-verification-2026-09-12.md). The [integrated opening and gallery record](cinematic-showcase-verification-2026-09-12.md) covers the later software revision, including the continuity correction, short-viewport safe centering and offscreen Replay regression. Its raw checks and source fingerprint are separate from the baseline. The frozen baseline observer report is `docs/growing-skeleton-v8-validation-2026-09-12.json`, with archived raw observations under `data/experiments/growing-skeleton-v8-2026-09-12/`. The four passing focused cases cover whole-answer and sentence release at 390 px and 1380 px. They retain exact output and report zero measured drift in settled reading-page text. Both sentence cases have four handovers, with at most six borrowed cells. Near-full final opacity followed sampled source completion by 200–201 ms; text rest followed at about 300 ms. Where the reserved height exceeded the final page, container rest followed later at 465–467 ms. These observations do not replace the original corpus audit or constitute a reader experiment.
 
 Before calling a published revision verified, require current unit/component checks, the current browser suite, adversarial observer guards, exact archived evidence hashes, a production build and successful verification of the served commit. Test capture-before-shift, nearest-cell limits, no-new-text terminal fade, pause/restart/resize, source-only estimate inputs and absence of provisional protected text. Preserve all old JSON, traces, media and hashes under their historical material identities. Attach exact code and patches to the final release handoff rather than presenting a conceptual recipe as a finished integration.
 

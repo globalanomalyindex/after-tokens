@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| Role | Web design, motion design, interaction research, prototyping and front-end engineering by globalanomalyindex; Claude and Codex assisted the design, implementation and causal audit |
+| Role | Web design, motion design, interaction research, prototyping and front-end engineering by Christopher Robin Fiore (`globalanomalyindex` on GitHub); Claude and Codex assisted the design, implementation and causal audit |
 | Timeline | May to September 2026 |
 | Status | A concept exploration in a working prototype; the cost measured on sixty recorded runs; untested on readers; a two-experiment study designed |
 | Live | https://globalanomalyindex.github.io/after-tokens/ · source: https://github.com/globalanomalyindex/after-tokens |

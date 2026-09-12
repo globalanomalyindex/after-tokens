@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from './fixtures'
 import weather from '../../data/traces/compact/weather__random-b32.json'
 import sky from '../../data/traces/compact/sky-blue__lowconf-b128.json'
 
@@ -6,6 +6,8 @@ async function startEarlierWords(page: Page): Promise<Locator> {
   await page.goto('/')
   const hook = page.locator('#playground')
   await hook.scrollIntoViewIfNeeded()
+  await expect(hook.getByRole('radiogroup', { name: 'beside it', exact: true }).getByRole('radio', { name: 'the raw prefix', exact: true })).toHaveAttribute('aria-checked', 'true')
+  await expect(hook.locator('.settle-baseline-text')).toBeVisible()
   await hook.getByRole('radiogroup', { name: 'sampler', exact: true }).getByRole('radio', { name: 'random · 4 blocks', exact: true }).click()
   await hook.getByRole('radiogroup', { name: 'Prompt', exact: true }).getByRole('radio', { name: weather.prompt, exact: true }).click()
   await hook.getByRole('radio', { name: 'each sentence', exact: true }).click()

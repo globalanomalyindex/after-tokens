@@ -83,7 +83,7 @@ export function SettleStage({
   pace: paceProp = 'recorded',
   brand: brandProp = 'after-tokens',
   voice,
-  comparison: comparisonProp = false,
+  comparison: comparisonProp = controls.includes('comparison'),
   autoplay = 'inView',
   compact = false,
   runKey,
@@ -145,7 +145,7 @@ export function SettleStage({
           {has('policy') && <ToggleRail label="the page takes" items={POLICIES} activeId={policy} onSelect={(id) => setPolicy(id as Policy)} />}
           {has('voice') && <ToggleRail label="voice" items={BRAND_IDS.map((id) => ({ id, label: brands[id].name.toLowerCase() }))} activeId={brand} onSelect={(id) => setBrand(id as BrandId)} />}
           {has('pace') && traceId && <ToggleRail label="clock" items={PACES.map((p) => ({ id: p.id, label: p.label }))} activeId={paceId} onSelect={setPaceId} />}
-          {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'none', label: 'nothing' }, { id: 'prefix', label: 'the raw prefix' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
+          {has('comparison') && <ToggleRail label="beside it" items={[{ id: 'prefix', label: 'the raw prefix' }, { id: 'none', label: 'nothing' }]} activeId={comparison ? 'prefix' : 'none'} onSelect={(id) => setComparison(id === 'prefix')} />}
         </div>
       )}
       <div ref={ref} className={`grid gap-6 ${readout ? 'lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] items-start' : ''}`}>
@@ -175,7 +175,7 @@ export function SettleStage({
               </div>
             )}
             <div className="min-w-0">
-              {comparison && !compact && <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>settle · the page takes each {policy}</p>}
+              {comparison && !compact && <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>settle · the page takes {POLICIES.find((item) => item.id === policy)?.label}</p>}
               <SettleAnswer
                 state={state}
                 runId={clock.runId}
