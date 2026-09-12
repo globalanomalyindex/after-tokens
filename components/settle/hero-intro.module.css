@@ -1,5 +1,5 @@
 .root { margin: 0; min-width: 0; outline: none; }
-.slot { position: relative; height: 43rem; }
+.slot { position: relative; height: var(--hero-slot-height, 43rem); }
 .canvas {
   --hero-pad: clamp(1.25rem, 4vw, 3rem);
   position: absolute;
@@ -24,7 +24,7 @@
   padding: .95rem 1.35rem;
   border-radius: 1.5rem 1.5rem .4rem 1.5rem;
   background: color-mix(in oklab, var(--stage-text) 8%, var(--stage));
-  font-family: var(--font-ui); font-size: clamp(1rem, 1.6vw, 1.2rem);
+  font-family: var(--font-ui); font-size: var(--hero-prompt-size, clamp(1rem, 1.6vw, 1.2rem));
   line-height: 1.5; text-align: left;
 }
 .promptSpace, .promptInk { grid-area: 1 / 1; min-width: 0; overflow-wrap: break-word; }
@@ -39,7 +39,7 @@
   animation: open 320ms cubic-bezier(.23, 1, .32, 1) both;
 }
 .replyLabel { display: block; margin-bottom: 1rem; font-family: var(--font-mono), monospace; font-size: 10px; line-height: 1.2; letter-spacing: .06em; opacity: .58; }
-.answer { font-size: clamp(1.125rem, 1.9vw, 1.625rem); line-height: 1.45; letter-spacing: -.018em; }
+.answer { font-size: var(--hero-answer-size, clamp(1.125rem, 1.9vw, 1.625rem)); line-height: 1.45; letter-spacing: -.018em; }
 .sceneFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; flex-shrink: 0; min-height: 2.75rem; padding-top: .75rem; font-family: var(--font-mono), monospace; font-size: 10px; }
 .provenance { opacity: .52; }
 .sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; }
@@ -58,7 +58,7 @@
 @keyframes caret { 50% { opacity: 0; } }
 @keyframes open { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
 @media (max-width: 640px) {
-  .slot { height: 45rem; }
+  .slot { height: var(--hero-slot-height, 45rem); }
   .canvas { padding-top: max(1.2rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
   .conversation { padding-block: 1.5rem; }
   .prompt { padding: .85rem 1rem; max-width: 100%; }

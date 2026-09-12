@@ -41,7 +41,10 @@ test('the upfront gallery shows the same-clock raw fragments beside a sentence a
   expect(await answer.locator('.settle-page').textContent()).toBe(SHOWCASE_ANSWER)
   expect(await raw.textContent()).toBe(SHOWCASE_ANSWER)
   await expect(progressPill).toHaveText('100%')
+  await page.evaluate(() => scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }))
   await expect.poll(() => progressPill.evaluate(element => Number(getComputedStyle(element).opacity))).toBe(0)
+  await expect(progressPill).toHaveCSS('visibility', 'hidden')
+  await placeStage(showcase)
   expect(await showcase.evaluate((element) => {
     const surface = element.querySelector('.settle')!.getBoundingClientRect(), prefix = element.querySelector('[data-showcase-prefix]')!.getBoundingClientRect()
     return { layout: innerWidth > 640 ? prefix.left > surface.left && Math.abs(prefix.top - surface.top) < 2 : prefix.top > surface.bottom,

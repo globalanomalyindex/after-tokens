@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SectionHook } from '@/components/sections/section-hook'
 
 const SEEN = 'after-tokens:intro-seen:v1'
-const WELCOME = 'It should feel like a thought taking shape. Complete sentences find their place while the rest keeps breathing. Each arrival has a little weight, then settles into something you can read. Welcome to After Tokens, a motion study of how generated words arrive.'
+const WELCOME = 'Diffusion text can take shape in several places at once. It doesn’t have to arrive one word after another. Here, complete sentences settle while the rest of the answer keeps forming. Welcome to After Tokens, a different arrival for the same words.'
 const observers: Array<(visible: boolean) => void> = []
 beforeEach(() => {
   sessionStorage.clear()

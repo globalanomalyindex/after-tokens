@@ -1037,6 +1037,8 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle[data-visible="false"] *,
 .settle[data-visible="false"] *::before,
 .settle[data-visible="false"] *::after { animation-play-state: paused !important; }
+/* Completion exits finish even when ambient activity pauses offscreen. */
+.settle [data-demo-progress][data-complete="true"] { animation-play-state: running !important; }
 .settle-unit[data-state="end"] .settle-candidate { inline-size: .5ch; }
 .settle-unit[data-state="end"] .settle-ambient { animation: none; opacity: .25; }
 /* The legend remains a static key for the source states. */
@@ -1062,7 +1064,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   gap: 0.6rem;
   margin-top: 0.7rem;
   min-height: 16px;
-  color: color-mix(in oklab, currentColor 72%, transparent);
+  color: var(--settle-ink, currentColor);
 }
 .settle-mark {
   position: relative;

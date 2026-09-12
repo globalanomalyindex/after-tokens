@@ -18,13 +18,13 @@ The opening cinematic scene is an authored introduction to this design idea. Fou
 
 The fullscreen treatment is introductory choreography, not part of the reader’s inference protocol. Its source events are authored immutable sentence commitments; they are not invented observations of a model becoming certain. The answer is:
 
-> It should feel like a thought taking shape.
+> Diffusion text can take shape in several places at once.
 >
-> Complete sentences find their place while the rest keeps breathing.
+> It doesn’t have to arrive one word after another.
 >
-> Each arrival has a little weight, then settles into something you can read.
+> Here, complete sentences settle while the rest of the answer keeps forming.
 >
-> Welcome to After Tokens, a motion study of how generated words arrive.
+> Welcome to After Tokens, a different arrival for the same words.
 
 | Authored opening event | Nominal clock or duration |
 | --- | ---: |
@@ -186,3 +186,10 @@ Comparison order is consistent in both markup and layout: After Tokens first/lef
 ### Each-word motion refinement
 
 I use an in-place ink arrival for the frequent each-word policy: opacity rises from 0.35 to 1 over 180 ms, with only 0.35 px of vertical settling. This mode creates no transfer cells, measures no destination word boxes, and borrows no waiting bars. The same 280 ms handover lifecycle still advances the waiting field and preserves its terminal fade. Sentence, paragraph, and whole-answer policies retain the spatial bubble handover. This is a motion-frequency design choice; no new reader-benefit claim is inferred. Source events, release eligibility, and exact answer text remain unchanged.
+
+The status and percentage use the answer’s full ink color to remain readable on colored chat surfaces. Only the pill surface is translucent. A completed pill finishes its exit even offscreen, then becomes hidden without changing the status row’s size; ambient motion still pauses normally.
+
+
+## Fullscreen presentation update
+
+The [presentation handoff](horizontal-case-study-handoff-2026-09-12.md) contains the new twelve-chapter case study, varied examples reused from the full article, the original Spectrum wash and automatic brand playback, integration instructions, source snapshots and verification limits. The full article remains accessible. The presentation preserves the shared renderer, source timing, sentence default, word-local arrival and After Tokens-only reply progress.

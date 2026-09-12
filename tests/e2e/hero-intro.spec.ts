@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-const SITE = process.env.HERO_TEST_URL ?? '/'
+const SITE = process.env.HERO_TEST_URL ?? '/?view=reading'
 const SEEN = 'after-tokens:intro-seen:v1'
 const SENTENCES = [
-  'It should feel like a thought taking shape.\n',
-  'Complete sentences find their place while the rest keeps breathing.\n',
-  'Each arrival has a little weight, then settles into something you can read.\n',
-  'Welcome to After Tokens, a motion study of how generated words arrive.',
+  'Diffusion text can take shape in several places at once.\n',
+  'It doesn’t have to arrive one word after another.\n',
+  'Here, complete sentences settle while the rest of the answer keeps forming.\n',
+  'Welcome to After Tokens, a different arrival for the same words.',
 ]
 
 test('short narrow viewports keep the opening prompt within the reachable scroll area', async ({ page }) => {

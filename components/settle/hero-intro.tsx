@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { createContext, useContext, useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion'
 import { createSettleState, reduceSettle } from '@/lib/settle/reader'
 import type { Replay } from '@/lib/settle/types'
@@ -11,10 +11,10 @@ import { DemoProgress } from './demo-progress'
 
 const QUESTION = 'What should diffusion text rendering look like?'
 const SENTENCES = [
-  'It should feel like a thought taking shape.\n',
-  'Complete sentences find their place while the rest keeps breathing.\n',
-  'Each arrival has a little weight, then settles into something you can read.\n',
-  'Welcome to After Tokens, a motion study of how generated words arrive.',
+  'Diffusion text can take shape in several places at once.\n',
+  'It doesn’t have to arrive one word after another.\n',
+  'Here, complete sentences settle while the rest of the answer keeps forming.\n',
+  'Welcome to After Tokens, a different arrival for the same words.',
 ]
 const WELCOME = SENTENCES.join('')
 // These are authored immutable commitments, not captured model output or
@@ -38,13 +38,15 @@ const INTRO: Replay = {
 }
 const STATIC_ANSWER = INTRO.events.reduce(reduceSettle, createSettleState('sentence'))
 type Presentation = 'pending' | 'fullscreen' | 'docking' | 'embedded'
+export const SkipOpeningContext = createContext(false)
 
-export function HeroIntro() {
+export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: () => void } = {}) {
   const root = useRef<HTMLElement>(null)
   const slot = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLDivElement>(null)
   const skipButton = useRef<HTMLButtonElement>(null)
   const openingDecided = useRef(false)
+  const openingReported = useRef(false)
   const dockAnimation = useRef<Animation | null>(null)
   const dockFallback = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [presentation, setPresentation] = useState<Presentation>('pending')
@@ -56,6 +58,7 @@ export function HeroIntro() {
   const [showStatic, setShowStatic] = useState(false)
   const [visualReady, setVisualReady] = useState(false)
   const reduced = usePrefersReducedMotion()
+  const skipOpening = useContext(SkipOpeningContext)
   const titleId = useId()
   const clock = useReplay(INTRO, { policy: 'sentence', autoplay: false })
   const { play, pause } = clock
@@ -93,11 +96,17 @@ export function HeroIntro() {
     openingDecided.current = true
     // Every document load gets the opening, regardless of visit history,
     // hash links or restored scroll. Reduced motion keeps the static exchange.
-    const bypass = reduced
+    const bypass = reduced || skipOpening
     setShowStatic(bypass)
     setPresentation(bypass ? 'embedded' : 'fullscreen')
-  }, [hydrated, reduced])
+  }, [hydrated, reduced, skipOpening])
   useEffect(() => { if (reduced && hydrated) skip() }, [reduced, hydrated, skip])
+  useEffect(() => {
+    if (hydrated && presentation === 'embedded' && !openingReported.current) {
+      openingReported.current = true
+      onOpeningComplete?.()
+    }
+  }, [hydrated, presentation, onOpeningComplete])
   useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
 
   useLayoutEffect(() => {
@@ -218,7 +227,7 @@ export function HeroIntro() {
           </div>
         </div>
         <div className={styles.sceneFooter}>
-          <span className={styles.provenance}>authored introduction · prewritten words</span>
+          <span className={styles.provenance}>web &amp; motion design</span>
           {expanded && <div className={styles.sceneControls}>
             <button type="button" disabled={complete || presentation === 'docking'} onClick={() => setManualPause((value) => !value)}>{manualPause ? 'resume intro' : 'pause intro'}</button>
             <button ref={skipButton} type="button" onClick={skip}>skip to case study <span aria-hidden="true">↗</span></button>
@@ -228,7 +237,7 @@ export function HeroIntro() {
       </div>
     </div>
     <figcaption className={styles.caption} aria-hidden={expanded || undefined}>
-      <span className="readout" style={{ color: 'var(--muted)' }}>four authored sentences · the same shared renderer</span>
+      <span className="readout" style={{ color: 'var(--muted)' }}>illustrative sequence · the same shared renderer</span>
       {reduced ? <span className="readout" style={{ color: 'var(--muted)' }}>reduced motion · full exchange shown</span> : <div className={styles.controls}>
         <button type="button" className="replay-btn replay-btn-on-surface" disabled={complete} onClick={() => setManualPause((value) => !value)}>{manualPause ? 'resume intro' : 'pause intro'}</button>
         <button type="button" className="replay-btn replay-btn-on-surface" onClick={replay}>replay intro</button>

@@ -76,7 +76,7 @@ const POLICIES: { id: Policy; label: string }[] = [
 const BRAND_IDS = Object.keys(brands) as BrandId[]
 
 export function SettleStage({
-  source = 'trace:heron-poem__lowconf-b32',
+  source = 'trace:travel__lowconf-b32',
   sources = 'curated',
   controls = [],
   policy: policyProp = 'sentence',

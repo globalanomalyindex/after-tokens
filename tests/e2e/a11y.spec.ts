@@ -37,6 +37,13 @@ test('home page has no axe-core violations at WCAG 2.1 AA', async ({ page }) => 
       { timeout: 10_000 },
     )
     .toEqual([])
+  // Freeze source clocks through their real controls before auditing resting
+  // contrast. A source finishing during axe's multi-second scan can otherwise
+  // legitimately put the terminal pill halfway through its exit. No text or
+  // progress indicators are excluded from the contrast check.
+  await page.getByRole('button', { name: /^pause /i }).evaluateAll(buttons => {
+    for (const button of buttons) if (button instanceof HTMLButtonElement && !button.disabled) button.click()
+  })
   await page.waitForTimeout(1500)
 
   const results = await new AxeBuilder({ page })

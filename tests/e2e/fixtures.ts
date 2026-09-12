@@ -8,7 +8,10 @@ export const test = base.extend({
   page: async ({ page }, provide) => {
     const navigate = page.goto.bind(page)
     page.goto = async (...args: Parameters<typeof page.goto>) => {
-      const response = await navigate(...args)
+      const [destination, options] = args
+      const url = new URL(destination, 'http://localhost:3000')
+      url.searchParams.set('view', 'reading')
+      const response = await navigate(url.href, options)
       await expect(page.locator('[data-hero-intro]')).toHaveAttribute('data-presentation', /^(fullscreen|embedded|docking)$/)
       const skip = page.getByRole('button', { name: 'skip to case study' })
       if (await skip.isVisible()) await skip.click()
