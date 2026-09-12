@@ -1,48 +1,29 @@
 'use client'
 
 import { Section } from '@/components/section'
-import { Reveal } from '@/components/motion/reveal'
-import { SettleStage } from '@/components/settle/settle-stage'
+import { HeroIntro } from '@/components/settle/hero-intro'
 import { TRACE_NUMBERS } from '@/lib/traces/findings'
 
-// A real trajectory drives the first screen through the causal reducer.
-// Local source updates may happen together; layout and motion are authored.
-// Neither text nor availability is choreographed from the eventual answer.
-
+// The opening is an explicitly authored motion introduction. Recorded
+// sources and their measured availability appear in the case study below.
 export function SectionHook() {
   return (
-    <Section id="hook" title="After tokens" className="pt-14 md:pt-20">
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16 items-center">
+    <Section id="hook" title="After tokens" className="pt-10 md:pt-14">
+      <header className="flex flex-wrap items-end justify-between gap-5 mb-8 md:mb-10">
+        <h1 className="m-0 text-[clamp(2.6rem,6vw,4.5rem)] font-bold leading-none tracking-tighter">after tokens</h1>
+        <p className="readout" style={{ color: 'var(--muted)' }}>web &amp; motion design · 2026</p>
+      </header>
+      <HeroIntro />
+      <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:gap-16 mt-10 md:mt-14">
+        <p className="standfirst max-w-[32ch]">a little movement.<br />then, a whole thought.</p>
         <div>
-          <h1 className="hero-title m-0">
-            <span className="hero-word" style={{ animationDelay: '120ms' }}>after</span>{' '}
-            <span className="hero-word" style={{ animationDelay: '380ms' }}>tokens</span>
-          </h1>
-          <p className="standfirst mt-8 max-w-[34ch]">a little movement. then, a whole thought.</p>
-          <p className="mt-5 text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
-            a web and motion design study for generated text. a capsule opens into breathing rows; small rounded shapes occasionally divide, gather and rest.
-            the waiting motion follows its own rhythm; visible bubbles carry into newly released words, which settle once.
-            a working prototype, grounded in {TRACE_NUMBERS.trajectories} original sampler recordings, four new batched runs,
-            and an explicit account of the extra wait. reader benefits remain to be tested.
+          <p className="text-base leading-relaxed max-w-[52ch]" style={{ color: 'var(--ink-2)' }}>
+            a web and motion design study for generated text. rounded shapes carry the wait, then become a readable answer through one shared material handover.
+            the opening is choreographed; the experiments below use {TRACE_NUMBERS.trajectories} original sampler recordings and four new batched runs,
+            with an explicit account of the extra wait. reader benefits remain to be tested.
           </p>
-          <dl className="mt-8 grid grid-cols-3 gap-6 max-w-md readout" style={{ color: 'var(--muted)' }}>
-            <div>
-              <dt className="label mb-1">role</dt>
-              <dd style={{ color: 'var(--ink)' }}>web design, motion design</dd>
-            </div>
-            <div>
-              <dt className="label mb-1">year</dt>
-              <dd style={{ color: 'var(--ink)' }}>2026</dd>
-            </div>
-            <div>
-              <dt className="label mb-1">status</dt>
-              <dd style={{ color: 'var(--ink)' }}>concept, working prototype, untested on readers</dd>
-            </div>
-          </dl>
+          <p className="readout mt-5" style={{ color: 'var(--muted)' }}>independent study · working prototype · untested on readers</p>
         </div>
-        <Reveal delay={260} className="min-w-0">
-          <SettleStage source="trace:weather__random-b32" autoplay="immediate" compact />
-        </Reveal>
       </div>
     </Section>
   )

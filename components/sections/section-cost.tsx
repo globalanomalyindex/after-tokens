@@ -16,7 +16,7 @@ export function SectionCost() {
     <Section id="cost" title="What waiting costs">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">what waiting costs</h2>
       <p className="standfirst max-w-3xl">
-        the default whole-answer policy removes intermediate word arrivals by giving up early reading. the same cell material also supports earlier words, sentences and paragraphs. each policy’s source-eligibility cost is measured separately from the visual handover and how the motion feels.
+        each sentence is the default, letting eligible passages arrive while the field continues below them. whole-answer release remains a comparison that gives up earlier reading for one arrival. the same cell material also supports words and paragraphs. each policy’s source-eligibility cost is measured separately from the visual handover and how the motion feels.
       </p>
       <Reveal className="mt-12 md:mt-16">
         <CostTable scope="all60" />

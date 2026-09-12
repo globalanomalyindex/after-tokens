@@ -1,6 +1,6 @@
 # After Tokens: a causal reading surface for diffusion text
 
-> Historical case-study draft. The current implementation and research narrative are in [the anchored motion research](anchored-skeleton-research-2026-09-09.md) and [implementation handoff](anchored-skeleton-handoff-2026-09-09.md). Earlier renderer descriptions below retain their original scope.
+> Historical case-study draft. The current implementation and research narrative are in the [v8 growing-skeleton handoff](growing-skeleton-v8-handoff-2026-09-12.md). Earlier renderer descriptions below retain their original scope.
 
 **A product design and engineering case study**
 

@@ -7,15 +7,15 @@ type Cell = Rect & { alpha: number; target: Rect }
 
 /** A visual bridge made from the bubbles actually on screen and text that
  * has ALREADY met its release policy. These rectangles never predict words. */
-export function BubbleTransfer({ frameRef, transferKey, onComplete }: {
-  frameRef: RefObject<HTMLDivElement | null>; transferKey: string; onComplete: (key: string) => void
+export function BubbleTransfer({ frameRef, transferKey, onCaptured, onComplete }: {
+  frameRef: RefObject<HTMLDivElement | null>; transferKey: string; onCaptured?: (key: string) => void; onComplete: (key: string) => void
 }) {
   const [cells, setCells] = useState<Cell[]>([])
   useLayoutEffect(() => {
     const frame = frameRef.current
     if (!frame) return
     const box = frame.getBoundingClientRect()
-    const origins: (Rect & { alpha: number })[] = []
+    const origins: (Rect & { alpha: number; element: HTMLElement })[] = []
     const division = frame.querySelector<HTMLElement>('.skeleton-division')
     const divisionStyle = division ? getComputedStyle(division) : null
     const opening = divisionStyle && divisionStyle.visibility !== 'hidden' && Number(divisionStyle.opacity) > .006
@@ -34,7 +34,7 @@ export function BubbleTransfer({ frameRef, transferKey, onComplete }: {
       const left = Math.max(box.left, r.left), right = Math.min(box.right, r.right)
       const top = Math.max(box.top, r.top), bottom = Math.min(box.bottom, r.bottom)
       if (right <= left || bottom <= top) continue
-      origins.push({ x: left - box.left, y: top - box.top, width: right - left, height: bottom - top, alpha })
+      origins.push({ x: left - box.left, y: top - box.top, width: right - left, height: bottom - top, alpha, element: ink.parentElement! })
     }
     const words: Rect[] = []
     for (const passage of frame.querySelectorAll<HTMLElement>('[data-passage][data-arriving="true"]')) {
@@ -67,7 +67,8 @@ export function BubbleTransfer({ frameRef, transferKey, onComplete }: {
     // An incremental release borrows only a nearby handful of cells. The
     // remaining field can keep forming without funneling a whole tail into
     // each new word. A whole-answer release can transfer the entire field.
-    const selected = frame.dataset.receiving === 'true' && targets.length
+    const incremental = frame.dataset.receiving === 'true' || frame.dataset.priorReadable === 'true'
+    const selected = incremental && targets.length
       ? [...origins].sort((a, b) => {
         const distance = (origin: Rect) => Math.min(...targets.map((target) => (origin.x - target.x) ** 2 + (origin.y - target.y) ** 2))
         return distance(a) - distance(b)
@@ -75,8 +76,19 @@ export function BubbleTransfer({ frameRef, transferKey, onComplete }: {
       : origins
     setCells(targets.length ? selected.map((origin, index) => ({ ...origin, target: targets[Math.min(targets.length - 1, Math.floor(index * targets.length / selected.length))]! })) : [])
     frame.dataset.transferCaptured = selected.length && targets.length ? 'true' : 'empty'
-    return () => { delete frame.dataset.transferCaptured }
-  }, [frameRef, transferKey])
+    // A clone replaces the exact visible origin. Its original is replenished
+    // only after the handover, now in the continuing field's new position.
+    const borrowed = targets.length ? selected.map((origin) => origin.element) : []
+    for (const element of borrowed) { delete element.dataset.replenish; element.dataset.borrowed = transferKey }
+    onCaptured?.(transferKey)
+    return () => {
+      delete frame.dataset.transferCaptured
+      for (const element of borrowed) if (element.dataset.borrowed === transferKey) {
+        delete element.dataset.borrowed
+        element.dataset.replenish = 'true'
+      }
+    }
+  }, [frameRef, transferKey, onCaptured])
   return <div className="bubble-transfer" data-bubble-transfer aria-hidden="true" onAnimationEnd={(event) => {
     if (event.target === event.currentTarget) onComplete(transferKey)
   }}>

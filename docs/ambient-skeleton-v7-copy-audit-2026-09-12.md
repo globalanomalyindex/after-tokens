@@ -1,5 +1,8 @@
 # After Tokens v7: copy audit
 
+> Historical v7 at `9b42b6f0d744dae59cdc836e4438d6bb61e8419d`, material `ambient-cell-skeleton-v7`. The measurements and implementation below retain their original scope. The current direction is the [v8 growing skeleton](growing-skeleton-v8-handoff-2026-09-12.md); no historical result is relabeled as v8 evidence.
+
+
 **12 September 2026 · globalanomalyindex.**
 
 The current narrative returns to an independent waiting composition: five authored rows, occasional local changes and deliberate rests, with exact word geometry used only after text is eligible. The explanation leads with the web motion experience rather than a draft-stream integration problem.

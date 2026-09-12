@@ -1,0 +1,153 @@
+{
+  "material": "growing-cell-skeleton-v8",
+  "fingerprint": "cc7fafe740e83e285763d0009913735ef97483d7fa8081d12491fe6fa0bfe2bd",
+  "implementation": [
+    {
+      "file": "app/globals.css",
+      "sha256": "6acb6c6643d3735f088effa653dcc78e4a99676204dec20de2f743a587ba1194"
+    },
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "50778a06cc9bef9c6935ada1dc917f070b5dc4e4df3c00df59ec862e3526c609"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "4ac91a0ef539a23b167c183bfb01f38b814a3677172bbbd77aaf50b2c1f5d19f"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "5f745cae8b5e91281e6622d935ce2238e04372411d8ba0c5841d80fc539b4fff"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "eeb8f933c2a5bdc6e2c4a3968e392f16dfcd15d323560864d6bab70e091316a0"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "28ef929ad40dcd0348c9038e047b1335ccfa083ce52838044f40d529c859ceae"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/hero-intro.tsx",
+      "sha256": "59506f04a2d3c98a72be979dea9b97517b19fd2c9b432b34cad0cb981529cd40"
+    },
+    {
+      "file": "components/settle/hero-intro.module.css",
+      "sha256": "1f231608f98906ccaa21a98387839a70b28f9d745c7603d5b0a426367e9757da"
+    },
+    {
+      "file": "components/sections/section-hook.tsx",
+      "sha256": "947ea2db5783e793773b5272d379992d06b4b417338246a0075a2aeff4eac674"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "c62760b0e5eb3fe4bc4d99d30726fd11d01f9fb80f401070e4e67c32db20bac3"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64b5ab69eec5e2e0b6222a26ef37a8318eece41282ac1ba3199f3548a8adc0a1"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "72b77d89c8e92ba109d244d16f19481352da74eeba08737476c6fd4bdb81f55f"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/boundary.ts",
+      "sha256": "7806ffe057f0464792f777c2f10eb5ceba2e9514ade90891fc82f6949d6fd691"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/growing-geometry.ts",
+      "sha256": "fd351229c024f63f3ca210401af20e38a364f58c0ad20d688ab73549a12e17a5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "scripts/growing-skeleton-v8-observer.mjs",
+      "sha256": "d8ba010832e4cd2a6bdcd6f91ca6e239e944c4f9500668bdcf1291eac519e3bb"
+    },
+    {
+      "file": "scripts/measure-growing-skeleton-v8.mjs",
+      "sha256": "76a2f442662a3985fb18ac8442779f9d401641ff9c537c4875b2dd456ea58d31"
+    },
+    {
+      "file": "scripts/archive-growing-skeleton-v8.mjs",
+      "sha256": "38a8f1f8ae42f90ee9bf99f084200b0ee385241cf2456114414841af86489a54"
+    }
+  ],
+  "fixture": {
+    "file": "data/traces/compact/weather__random-b32.json",
+    "id": "weather__random-b32",
+    "sha256": "0b914bb859f67c44c5dec653bcb427d5cb12f17d87aff72123ba6b1059ea32cc"
+  },
+  "records": [
+    {
+      "name": "390-answer",
+      "file": "data/experiments/growing-skeleton-v8-2026-09-12/390-answer.json.gz",
+      "bytes": 227883,
+      "sha256": "1f7dd1611c5fe9b729174b414115b8243f4cd98391910d5ff34a59b4e96af461",
+      "rawBytes": 7426273,
+      "rawSha256": "e848f24fb1f7ffee656c851eb3915498c27e4920ff6de9ecfda66d0874578b06"
+    },
+    {
+      "name": "390-sentence",
+      "file": "data/experiments/growing-skeleton-v8-2026-09-12/390-sentence.json.gz",
+      "bytes": 240152,
+      "sha256": "3ac99ff45c1ec4d539c75e325343666e82e19fb801dfe5cb30c8bf08690facb0",
+      "rawBytes": 10223820,
+      "rawSha256": "df8b27a4fb764b6b1a802437e1f37467147b290dd6ad528b4942e05c09c431b3"
+    },
+    {
+      "name": "1380-answer",
+      "file": "data/experiments/growing-skeleton-v8-2026-09-12/1380-answer.json.gz",
+      "bytes": 198519,
+      "sha256": "183faf2a3b95be0b514e462a4bfa5fc0a305551987b20599659f0ef821dda1b9",
+      "rawBytes": 7503499,
+      "rawSha256": "38a0a865d1f6a6f68045ac867a22b45303f6d82966d1cc22edacb47a97e12697"
+    },
+    {
+      "name": "1380-sentence",
+      "file": "data/experiments/growing-skeleton-v8-2026-09-12/1380-sentence.json.gz",
+      "bytes": 235347,
+      "sha256": "63cac79c82cece07a4aeda2737d40dd7c7fb2217d2ff3edba669ce6243ee6745",
+      "rawBytes": 10196781,
+      "rawSha256": "47dbc0dd1a8cc7edaaf97214098a13ab57f69414c3c27282d69b31dd88f5df1e"
+    }
+  ]
+}

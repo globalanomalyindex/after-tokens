@@ -9,6 +9,7 @@ import { statusWords } from './margin'
 import { AmbientComposition, type AmbientCondition } from './ambient-composition'
 import { useReadingSurface } from './use-reading-surface'
 import { BubbleTransfer } from './bubble-transfer'
+import { GROWING_MATERIAL } from '@/lib/settle/growing-geometry'
 
 /** Retained for old integrations; these names no longer select a renderer. */
 export type FormingMode = 'carve' | 'flow' | 'held'
@@ -115,18 +116,18 @@ export function SettleAnswer({
   </div>
   return (
     <div ref={rootRef} className={`settle ${className}`} data-status={state.status} data-policy={state.policy}
-      data-material="ambient-cell-skeleton-v7" data-ambient-condition={ambient}
+      data-material={GROWING_MATERIAL} data-ambient-condition={ambient}
       data-source-at-ms={state.lastEventAtMs} data-released-length={state.releasedLength}
       data-answer-phase={surface.phase} data-visual-ready={visualReady}
       data-paused={paused} data-active={active} data-motion={enabled ? 'on' : 'off'}
       data-visible={inView && documentVisible} data-forming="cells" data-mark={voice.mark} data-demo
       style={{ ...voiceVars, ...style }}>
-      <div ref={frameRef} className="settle-answer-frame" data-phase={surface.phase} data-occupied={receiving || !!answerText} data-receiving={receiving}>
+      <div ref={frameRef} className="settle-answer-frame" data-phase={surface.phase} data-occupied={receiving || !!answerText} data-receiving={receiving} data-prior-readable={surface.visibleLength > 0}>
         {(receiving || surface.phase !== 'ready') && <div className="settle-waiting-field" style={{ top: surface.tailOffset, height: surface.rowCount * surface.lineHeightPx }}>
           <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={`${runId}:v${state.version}`} tempo={voice.tempo} rowCount={surface.rowCount} lineHeightPx={surface.lineHeightPx} barHeightPx={surface.barHeightPx} />
         </div>}
         {page}
-        {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} onComplete={surface.finishHandover} />}
+        {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} onCaptured={surface.advanceWaitingField} onComplete={surface.finishHandover} />}
       </div>
       {state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}
       {wholeAnswer && failed && state.prefix && <details className="settle-history mt-3">

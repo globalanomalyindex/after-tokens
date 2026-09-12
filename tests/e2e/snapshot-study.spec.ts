@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { SNAPSHOT_STUDY_ANSWER } from '../../lib/settle/snapshot-study'
 
-test('revisable whole drafts leave the five-line field unchanged and never become a premature answer', async ({ page }) => {
+test('revisable whole drafts can reserve coarse height but never become a premature answer', async ({ page }) => {
   await page.goto('/')
   const study = page.locator('[data-snapshot-study]')
   await study.scrollIntoViewIfNeeded()
-  const answer = study.locator('.settle[data-policy="answer"]')
+  const answer = study.locator('.settle[data-policy="sentence"]')
   await answer.scrollIntoViewIfNeeded()
   const result = await study.evaluate(async (root, expected) => {
     const surface = root.querySelector<HTMLElement>('.settle')!
@@ -24,7 +24,7 @@ test('revisable whole drafts leave the five-line field unchanged and never becom
             if (region.textContent) failures.add('provisional words reached the protected answer')
             if (raw.textContent === expected) nonfinalCorrectSamples += 1
             const count = surface.querySelectorAll('.ambient-composition__bar[data-shown="true"]').length
-            if (count !== 5) failures.add('provisional content changed the decorative row budget')
+            if (count < 5 || count > 14) failures.add('provisional capacity escaped its coarse bounds')
             largestRowCount = Math.max(largestRowCount, count)
           } else if (surface.dataset.visualReady === 'true') {
             if (visibleAt === null) visibleAt = now
@@ -42,7 +42,8 @@ test('revisable whole drafts leave the five-line field unchanged and never becom
   expect(result.failures).toEqual([])
   expect(result.draftCount).toBeGreaterThanOrEqual(4)
   expect(result.nonfinalCorrectSamples).toBeGreaterThan(10)
-  expect(result.largestRowCount).toBe(5)
+  expect(result.largestRowCount).toBeGreaterThan(5)
+  expect(result.largestRowCount).toBeLessThanOrEqual(14)
   await expect(answer.locator('.ambient-composition')).toHaveCount(0)
   await expect(answer.locator('.bubble-transfer, [data-pending], [data-arriving]')).toHaveCount(0)
   expect(await answer.locator('.settle-page').textContent()).toBe(SNAPSHOT_STUDY_ANSWER)

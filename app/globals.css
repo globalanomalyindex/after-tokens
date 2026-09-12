@@ -812,8 +812,10 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   position: absolute; inset-inline: 0; pointer-events: none;
   transition: top 380ms cubic-bezier(.22, 1, .36, 1), height 380ms cubic-bezier(.22, 1, .36, 1);
 }
-.settle-answer-frame[data-receiving="false"][data-transfer-captured="true"] > .settle-waiting-field { visibility: hidden; }
-.settle-answer-frame[data-receiving="false"][data-transfer-captured="empty"] > .settle-waiting-field { animation: reading-field-leave 280ms ease-out both; }
+.settle-answer-frame[data-receiving="false"][data-phase="revealing"] > .settle-waiting-field { animation: reading-field-leave 280ms ease-out both; }
+.ambient-composition__presence[data-borrowed] > .ambient-composition__ink { visibility: hidden; }
+.ambient-composition__presence[data-replenish="true"] > .ambient-composition__ink { animation: reading-cell-return 320ms ease-out both; }
+@keyframes reading-cell-return { from { opacity: 0; } to { opacity: .2; } }
 @keyframes reading-field-leave { to { opacity: 0; } }
 .bubble-transfer {
   position: absolute; inset: 0; pointer-events: none; user-select: none; z-index: 1;
@@ -1023,7 +1025,7 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 .settle[data-paused="true"] *::after,
 .settle[data-visible="false"] *,
 .settle[data-visible="false"] *::before,
-.settle[data-visible="false"] *::after { transition: none !important; animation-play-state: paused !important; }
+.settle[data-visible="false"] *::after { animation-play-state: paused !important; }
 .settle-unit[data-state="end"] .settle-candidate { inline-size: .5ch; }
 .settle-unit[data-state="end"] .settle-ambient { animation: none; opacity: .25; }
 /* The legend remains a static key for the source states. */

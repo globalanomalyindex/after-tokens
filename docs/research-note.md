@@ -1,5 +1,8 @@
 # How a masked diffusion language model commits its answer, and what an interface should do about it
 
+> Historical research record. See the [current v8 implementation and rationale](growing-skeleton-v8-handoff-2026-09-12.md). The earlier findings below retain their original renderer and measurement scope.
+
+
 **Historical scope:** the feathered ambient implementation and its verification below belong to revision `05914c1`. The latest anchored material is documented in the [anchored motion research](anchored-skeleton-research-2026-09-09.md) and [implementation handoff](anchored-skeleton-handoff-2026-09-09.md). Its validation is separate; this record is preserved rather than relabeled.
 
 globalanomalyindex. After Tokens project, 2026.

@@ -1,0 +1,1861 @@
+{
+  "schemaVersion": 1,
+  "material": "growing-cell-skeleton-v8",
+  "fingerprint": "cc7fafe740e83e285763d0009913735ef97483d7fa8081d12491fe6fa0bfe2bd",
+  "implementation": [
+    {
+      "file": "app/globals.css",
+      "sha256": "6acb6c6643d3735f088effa653dcc78e4a99676204dec20de2f743a587ba1194"
+    },
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "50778a06cc9bef9c6935ada1dc917f070b5dc4e4df3c00df59ec862e3526c609"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "4ac91a0ef539a23b167c183bfb01f38b814a3677172bbbd77aaf50b2c1f5d19f"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "5f745cae8b5e91281e6622d935ce2238e04372411d8ba0c5841d80fc539b4fff"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "eeb8f933c2a5bdc6e2c4a3968e392f16dfcd15d323560864d6bab70e091316a0"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "28ef929ad40dcd0348c9038e047b1335ccfa083ce52838044f40d529c859ceae"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/hero-intro.tsx",
+      "sha256": "59506f04a2d3c98a72be979dea9b97517b19fd2c9b432b34cad0cb981529cd40"
+    },
+    {
+      "file": "components/settle/hero-intro.module.css",
+      "sha256": "1f231608f98906ccaa21a98387839a70b28f9d745c7603d5b0a426367e9757da"
+    },
+    {
+      "file": "components/sections/section-hook.tsx",
+      "sha256": "947ea2db5783e793773b5272d379992d06b4b417338246a0075a2aeff4eac674"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "c62760b0e5eb3fe4bc4d99d30726fd11d01f9fb80f401070e4e67c32db20bac3"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64b5ab69eec5e2e0b6222a26ef37a8318eece41282ac1ba3199f3548a8adc0a1"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "72b77d89c8e92ba109d244d16f19481352da74eeba08737476c6fd4bdb81f55f"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/boundary.ts",
+      "sha256": "7806ffe057f0464792f777c2f10eb5ceba2e9514ade90891fc82f6949d6fd691"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/growing-geometry.ts",
+      "sha256": "fd351229c024f63f3ca210401af20e38a364f58c0ad20d688ab73549a12e17a5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "scripts/growing-skeleton-v8-observer.mjs",
+      "sha256": "d8ba010832e4cd2a6bdcd6f91ca6e239e944c4f9500668bdcf1291eac519e3bb"
+    },
+    {
+      "file": "scripts/measure-growing-skeleton-v8.mjs",
+      "sha256": "76a2f442662a3985fb18ac8442779f9d401641ff9c537c4875b2dd456ea58d31"
+    },
+    {
+      "file": "scripts/archive-growing-skeleton-v8.mjs",
+      "sha256": "38a8f1f8ae42f90ee9bf99f084200b0ee385241cf2456114414841af86489a54"
+    }
+  ],
+  "fixture": {
+    "file": "data/traces/compact/weather__random-b32.json",
+    "id": "weather__random-b32",
+    "sha256": "0b914bb859f67c44c5dec653bcb427d5cb12f17d87aff72123ba6b1059ea32cc"
+  },
+  "startedAt": "2026-09-12T16:24:24.532Z",
+  "observedAt": "2026-09-12T16:25:47.715Z",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "url": "http://localhost:3000",
+  "results": [
+    {
+      "name": "390-answer",
+      "policy": "answer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "source": "weather__random-b32",
+      "observedAt": "2026-09-12T16:24:43.565Z",
+      "frames": 1002,
+      "exactFinalText": true,
+      "changes": 1,
+      "batches": 1,
+      "transfers": [
+        {
+          "id": 46,
+          "firstAtMs": 15385.699999928474,
+          "sourceAtMs": 15359.999999999998,
+          "releasedLength": 567,
+          "newText": true,
+          "newPassageIds": [
+            45
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 5.4375,
+              "width": 276.78125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 5.4375,
+                "width": 276.781,
+                "height": 13.5
+              },
+              "alpha": 0.19893160000000001,
+              "opacity": 0.198932,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 29.78125,
+              "width": 147.765625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 29.7924,
+                "width": 147.766,
+                "height": 13.5
+              },
+              "alpha": 0.1833186,
+              "opacity": 0.183319,
+              "duration": "0.28s"
+            },
+            {
+              "x": 154.734375,
+              "y": 29.78125,
+              "width": 67.34375,
+              "height": 13.5,
+              "origin": {
+                "x": 154.734,
+                "y": 29.7884,
+                "width": 67.3438,
+                "height": 13.5
+              },
+              "alpha": 0.1833186,
+              "opacity": 0.183319,
+              "duration": "0.28s"
+            },
+            {
+              "x": 229.046875,
+              "y": 29.734375,
+              "width": 49.5625,
+              "height": 13.5,
+              "origin": {
+                "x": 229.047,
+                "y": 29.7476,
+                "width": 49.5625,
+                "height": 13.5
+              },
+              "alpha": 0.1833186,
+              "opacity": 0.183319,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 54.1875,
+              "width": 285.34375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 54.1875,
+                "width": 285.344,
+                "height": 13.5
+              },
+              "alpha": 0.19925120000000002,
+              "opacity": 0.199251,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 78.71875,
+              "width": 148.4375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 78.7334,
+                "width": 148.438,
+                "height": 13.5
+              },
+              "alpha": 0.14440440000000002,
+              "opacity": 0.144404,
+              "duration": "0.28s"
+            },
+            {
+              "x": 155.5625,
+              "y": 78.5,
+              "width": 26.625,
+              "height": 13.5,
+              "origin": {
+                "x": 155.562,
+                "y": 78.5084,
+                "width": 26.625,
+                "height": 13.5
+              },
+              "alpha": 0.14440440000000002,
+              "opacity": 0.144404,
+              "duration": "0.28s"
+            },
+            {
+              "x": 189.328125,
+              "y": 78.359375,
+              "width": 95.796875,
+              "height": 13.5,
+              "origin": {
+                "x": 189.328,
+                "y": 78.3663,
+                "width": 95.7969,
+                "height": 13.5
+              },
+              "alpha": 0.14440440000000002,
+              "opacity": 0.144404,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 102.71875,
+              "width": 101.875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 102.731,
+                "width": 101.875,
+                "height": 13.5
+              },
+              "alpha": 0.167909,
+              "opacity": 0.167909,
+              "duration": "0.28s"
+            },
+            {
+              "x": 107.328125,
+              "y": 102.96875,
+              "width": 49.953125,
+              "height": 13.5,
+              "origin": {
+                "x": 107.328,
+                "y": 102.975,
+                "width": 49.9531,
+                "height": 13.5
+              },
+              "alpha": 0.167909,
+              "opacity": 0.167909,
+              "duration": "0.28s"
+            },
+            {
+              "x": 162.75,
+              "y": 102.921875,
+              "width": 55.59375,
+              "height": 13.5,
+              "origin": {
+                "x": 162.75,
+                "y": 102.937,
+                "width": 55.5938,
+                "height": 13.5
+              },
+              "alpha": 0.167909,
+              "opacity": 0.167909,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 127.3125,
+              "width": 278.34375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 127.312,
+                "width": 278.344,
+                "height": 13.5
+              },
+              "alpha": 0.16553,
+              "opacity": 0.16553,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 151.609375,
+              "width": 142.1875,
+              "height": 13.484375,
+              "origin": {
+                "x": 0,
+                "y": 151.611,
+                "width": 142.188,
+                "height": 13.5
+              },
+              "alpha": 0.184536,
+              "opacity": 0.184536,
+              "duration": "0.28s"
+            },
+            {
+              "x": 148.78125,
+              "y": 151.75,
+              "width": 114.765625,
+              "height": 13.5,
+              "origin": {
+                "x": 148.781,
+                "y": 151.759,
+                "width": 114.766,
+                "height": 13.5
+              },
+              "alpha": 0.184536,
+              "opacity": 0.184536,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 176.0625,
+              "width": 289.5625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 176.062,
+                "width": 289.562,
+                "height": 13.5
+              },
+              "alpha": 0.163978,
+              "opacity": 0.163978,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 200.5,
+              "width": 163.0625,
+              "height": 13.484375,
+              "origin": {
+                "x": 0,
+                "y": 200.511,
+                "width": 163.062,
+                "height": 13.4999
+              },
+              "alpha": 0.1450276,
+              "opacity": 0.145028,
+              "duration": "0.28s"
+            },
+            {
+              "x": 170.234375,
+              "y": 200.296875,
+              "width": 116.21875,
+              "height": 13.5,
+              "origin": {
+                "x": 170.234,
+                "y": 200.304,
+                "width": 116.219,
+                "height": 13.5
+              },
+              "alpha": 0.1450276,
+              "opacity": 0.145028,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 224.953125,
+              "width": 134.640625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 224.963,
+                "width": 134.641,
+                "height": 13.5
+              },
+              "alpha": 0.1844806,
+              "opacity": 0.184481,
+              "duration": "0.28s"
+            },
+            {
+              "x": 140.71875,
+              "y": 224.6875,
+              "width": 102.359375,
+              "height": 13.5,
+              "origin": {
+                "x": 140.719,
+                "y": 224.694,
+                "width": 102.359,
+                "height": 13.5
+              },
+              "alpha": 0.1844806,
+              "opacity": 0.184481,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 249.1875,
+              "width": 293.96875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 249.188,
+                "width": 293.969,
+                "height": 13.5
+              },
+              "alpha": 0.1455276,
+              "opacity": 0.145528,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 273.765625,
+              "width": 163.109375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 273.767,
+                "width": 163.109,
+                "height": 13.5
+              },
+              "alpha": 0.1807002,
+              "opacity": 0.1807,
+              "duration": "0.28s"
+            },
+            {
+              "x": 169.984375,
+              "y": 273.34375,
+              "width": 104.78125,
+              "height": 13.5,
+              "origin": {
+                "x": 169.984,
+                "y": 273.354,
+                "width": 104.781,
+                "height": 13.5
+              },
+              "alpha": 0.1807002,
+              "opacity": 0.1807,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 297.9375,
+              "width": 295.578125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 297.938,
+                "width": 295.578,
+                "height": 13.5
+              },
+              "alpha": 0.14442,
+              "opacity": 0.14442,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 322.09375,
+              "width": 130.515625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 322.107,
+                "width": 130.516,
+                "height": 13.5
+              },
+              "alpha": 0.14461,
+              "opacity": 0.14461,
+              "duration": "0.28s"
+            },
+            {
+              "x": 137.28125,
+              "y": 322.484375,
+              "width": 23.671875,
+              "height": 13.5,
+              "origin": {
+                "x": 137.281,
+                "y": 322.494,
+                "width": 23.6719,
+                "height": 13.5
+              },
+              "alpha": 0.14461,
+              "opacity": 0.14461,
+              "duration": "0.28s"
+            },
+            {
+              "x": 167.703125,
+              "y": 322.25,
+              "width": 102.421875,
+              "height": 13.5,
+              "origin": {
+                "x": 167.703,
+                "y": 322.257,
+                "width": 102.422,
+                "height": 13.5
+              },
+              "alpha": 0.14461,
+              "opacity": 0.14461,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 15385.699999928474,
+          "firstSampledInkMs": 15402.299999928473,
+          "firstSampledNearFullOpacityMs": 15585.699999928474,
+          "firstSampledRestMs": 15685.699999928474,
+          "eligibilityToInkMs": 16.599999999998545,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300
+        }
+      ],
+      "maximumOriginMismatchPx": 0.0005000000000023874,
+      "verifiedCaptureBatches": 1,
+      "skippedOriginComparisons": 0,
+      "coherentRestSamples": 61,
+      "incoherentRestSamples": 0,
+      "localGlyphDriftPx": 0,
+      "reanimatedOldPassages": 0,
+      "maximumRows": 14,
+      "waitingFrameVariationPx": 219.375,
+      "maximumClonedCells": 26,
+      "minimumVisibleGapPx": 0.15625,
+      "sourceToFinalOpacityMs": 200,
+      "sourceToFinalRestMs": 300,
+      "fittingFrames": 0,
+      "sourceToContainerRestMs": 300,
+      "inkRestToContainerRestMs": 0,
+      "containerRestSamples": 61,
+      "finalFrameHeightPx": 341.25,
+      "finalPageHeightPx": 341.25,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-sentence",
+      "policy": "sentence",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "source": "weather__random-b32",
+      "observedAt": "2026-09-12T16:25:03.952Z",
+      "frames": 1003,
+      "exactFinalText": true,
+      "changes": 4,
+      "batches": 4,
+      "transfers": [
+        {
+          "id": 46,
+          "firstAtMs": 3942.200000023842,
+          "sourceAtMs": 3908.2000000000003,
+          "releasedLength": 127,
+          "newText": true,
+          "newPassageIds": [
+            45
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 5.4375,
+              "width": 284.53125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 5.4375,
+                "width": 284.531,
+                "height": 13.5
+              },
+              "alpha": 0.1443828,
+              "opacity": 0.144383,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 54.1875,
+              "width": 277.40625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 54.1875,
+                "width": 277.406,
+                "height": 13.5
+              },
+              "alpha": 0.18635880000000002,
+              "opacity": 0.186359,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 78.65625,
+              "width": 165.15625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 78.6635,
+                "width": 165.156,
+                "height": 13.5
+              },
+              "alpha": 0.177626,
+              "opacity": 0.177626,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 29.9375,
+              "width": 175.1875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 29.9417,
+                "width": 175.188,
+                "height": 13.5
+              },
+              "alpha": 0.149926,
+              "opacity": 0.149926,
+              "duration": "0.28s"
+            },
+            {
+              "x": 204.703125,
+              "y": 78.484375,
+              "width": 63.046875,
+              "height": 13.5,
+              "origin": {
+                "x": 204.703,
+                "y": 78.486,
+                "width": 63.0469,
+                "height": 13.5
+              },
+              "alpha": 0.177626,
+              "opacity": 0.177626,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 103.046875,
+              "width": 99.296875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 103.061,
+                "width": 99.2969,
+                "height": 13.5
+              },
+              "alpha": 0.1999118,
+              "opacity": 0.199912,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 3942.200000023842,
+          "firstSampledInkMs": 3958.900000023842,
+          "firstSampledNearFullOpacityMs": 4142.200000023842,
+          "firstSampledRestMs": 4242.200000023842,
+          "eligibilityToInkMs": 16.699999999999818,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300
+        },
+        {
+          "id": 48,
+          "firstAtMs": 7842.200000023842,
+          "sourceAtMs": 7813.700000000002,
+          "releasedLength": 249,
+          "newText": true,
+          "newPassageIds": [
+            47
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 137.03125,
+              "width": 174.03125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 137.045,
+                "width": 174.031,
+                "height": 13.5
+              },
+              "alpha": 0.16459500000000002,
+              "opacity": 0.164595,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 112.6875,
+              "width": 284.53125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 112.688,
+                "width": 284.531,
+                "height": 13.5
+              },
+              "alpha": 0.1881654,
+              "opacity": 0.188165,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 161.4375,
+              "width": 277.40625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 161.438,
+                "width": 277.406,
+                "height": 13.5
+              },
+              "alpha": 0.17817260000000001,
+              "opacity": 0.178173,
+              "duration": "0.28s"
+            },
+            {
+              "x": 180.703125,
+              "y": 136.90625,
+              "width": 85.984375,
+              "height": 13.5,
+              "origin": {
+                "x": 180.703,
+                "y": 136.914,
+                "width": 85.9844,
+                "height": 13.5
+              },
+              "alpha": 0.16459500000000002,
+              "opacity": 0.164595,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 185.78125,
+              "width": 179.125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 185.794,
+                "width": 179.125,
+                "height": 13.5
+              },
+              "alpha": 0.14778860000000002,
+              "opacity": 0.147789,
+              "duration": "0.28s"
+            },
+            {
+              "x": 185.828125,
+              "y": 185.984375,
+              "width": 81.921875,
+              "height": 13.5,
+              "origin": {
+                "x": 185.828,
+                "y": 185.998,
+                "width": 81.9219,
+                "height": 13.5
+              },
+              "alpha": 0.14778860000000002,
+              "opacity": 0.147789,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 7842.200000023842,
+          "firstSampledInkMs": 7858.900000023841,
+          "firstSampledNearFullOpacityMs": 8042.200000023842,
+          "firstSampledRestMs": 8142.200000023842,
+          "eligibilityToInkMs": 16.69999999999891,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300
+        },
+        {
+          "id": 50,
+          "firstAtMs": 11658.800000023843,
+          "sourceAtMs": 11623.8,
+          "releasedLength": 435,
+          "newText": true,
+          "newPassageIds": [
+            49
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 185.703125,
+              "width": 127.421875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 185.704,
+                "width": 127.422,
+                "height": 13.5
+              },
+              "alpha": 0.19865860000000002,
+              "opacity": 0.198659,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 234.484375,
+              "width": 133.390625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 234.496,
+                "width": 133.391,
+                "height": 13.5
+              },
+              "alpha": 0.199878,
+              "opacity": 0.199878,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 258.859375,
+              "width": 104.96875,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 258.872,
+                "width": 104.969,
+                "height": 13.5
+              },
+              "alpha": 0.17010860000000003,
+              "opacity": 0.170109,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 161.4375,
+              "width": 284.53125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 161.438,
+                "width": 284.531,
+                "height": 13.5
+              },
+              "alpha": 0.1782266,
+              "opacity": 0.178227,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 210.1875,
+              "width": 277.40625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 210.188,
+                "width": 277.406,
+                "height": 13.5
+              },
+              "alpha": 0.15084140000000001,
+              "opacity": 0.150841,
+              "duration": "0.28s"
+            },
+            {
+              "x": 180.375,
+              "y": 234.453125,
+              "width": 87.375,
+              "height": 13.5,
+              "origin": {
+                "x": 180.375,
+                "y": 234.464,
+                "width": 87.375,
+                "height": 13.5
+              },
+              "alpha": 0.199878,
+              "opacity": 0.199878,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 11658.800000023843,
+          "firstSampledInkMs": 11675.500000023841,
+          "firstSampledNearFullOpacityMs": 11858.800000023843,
+          "firstSampledRestMs": 11958.900000023841,
+          "eligibilityToInkMs": 16.69999999999891,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300.09999999999854
+        },
+        {
+          "id": 52,
+          "firstAtMs": 15391.500000023843,
+          "sourceAtMs": 15359.999999999998,
+          "releasedLength": 567,
+          "newText": true,
+          "newPassageIds": [
+            51
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 283.3125,
+              "width": 284.53125,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 283.312,
+                "width": 284.531,
+                "height": 13.5
+              },
+              "alpha": 0.1496242,
+              "opacity": 0.149624,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 332.0625,
+              "width": 277.40625,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 332.062,
+                "width": 277.406,
+                "height": 13.5
+              },
+              "alpha": 0.1991756,
+              "opacity": 0.199176,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 307.71875,
+              "width": 144.59375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 307.722,
+                "width": 144.594,
+                "height": 13.5
+              },
+              "alpha": 0.1467738,
+              "opacity": 0.146774,
+              "duration": "0.28s"
+            },
+            {
+              "x": 212.984375,
+              "y": 307.84375,
+              "width": 53.703125,
+              "height": 13.5,
+              "origin": {
+                "x": 212.984,
+                "y": 307.845,
+                "width": 53.7031,
+                "height": 13.5
+              },
+              "alpha": 0.1467738,
+              "opacity": 0.146774,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 356.34375,
+              "width": 118.109375,
+              "height": 13.5,
+              "origin": {
+                "x": 0,
+                "y": 356.355,
+                "width": 118.109,
+                "height": 13.5
+              },
+              "alpha": 0.1499112,
+              "opacity": 0.149911,
+              "duration": "0.28s"
+            },
+            {
+              "x": 151.265625,
+              "y": 307.609375,
+              "width": 55.046875,
+              "height": 13.5,
+              "origin": {
+                "x": 151.266,
+                "y": 307.62,
+                "width": 55.0469,
+                "height": 13.5
+              },
+              "alpha": 0.1467738,
+              "opacity": 0.146774,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 15391.500000023843,
+          "firstSampledInkMs": 15408.70000002384,
+          "firstSampledNearFullOpacityMs": 15592.20000002384,
+          "firstSampledRestMs": 15692.20000002384,
+          "eligibilityToInkMs": 17.19999999999709,
+          "eligibilityToNearFullOpacityMs": 200.6999999999971,
+          "eligibilityToRestMs": 300.6999999999971
+        }
+      ],
+      "maximumOriginMismatchPx": 0.0005000000000023874,
+      "verifiedCaptureBatches": 4,
+      "skippedOriginComparisons": 0,
+      "coherentRestSamples": 1612,
+      "incoherentRestSamples": 0,
+      "localGlyphDriftPx": 0,
+      "reanimatedOldPassages": 0,
+      "maximumRows": 7,
+      "waitingFrameVariationPx": 253.5,
+      "maximumClonedCells": 6,
+      "minimumVisibleGapPx": 0.234375,
+      "sourceToFinalOpacityMs": 200.6999999999971,
+      "sourceToFinalRestMs": 300.6999999999971,
+      "fittingFrames": 0,
+      "sourceToContainerRestMs": 467.2999999999993,
+      "inkRestToContainerRestMs": 166.60000000000218,
+      "containerRestSamples": 52,
+      "finalFrameHeightPx": 341.25,
+      "finalPageHeightPx": 341.25,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-answer",
+      "policy": "answer",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "source": "weather__random-b32",
+      "observedAt": "2026-09-12T16:25:24.612Z",
+      "frames": 1003,
+      "exactFinalText": true,
+      "changes": 1,
+      "batches": 1,
+      "transfers": [
+        {
+          "id": 46,
+          "firstAtMs": 15384.300000071526,
+          "sourceAtMs": 15359.999999999998,
+          "releasedLength": 567,
+          "newText": true,
+          "newPassageIds": [
+            45
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 5.796875,
+              "width": 601.25,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 5.79688,
+                "width": 601.25,
+                "height": 14.3906
+              },
+              "alpha": 0.1990252,
+              "opacity": 0.199025,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 31.765625,
+              "width": 320.984375,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 31.7755,
+                "width": 320.984,
+                "height": 14.3906
+              },
+              "alpha": 0.183734,
+              "opacity": 0.183734,
+              "duration": "0.28s"
+            },
+            {
+              "x": 336.109375,
+              "y": 31.765625,
+              "width": 146.3125,
+              "height": 14.390625,
+              "origin": {
+                "x": 336.109,
+                "y": 31.7711,
+                "width": 146.312,
+                "height": 14.3906
+              },
+              "alpha": 0.183734,
+              "opacity": 0.183734,
+              "duration": "0.28s"
+            },
+            {
+              "x": 497.5625,
+              "y": 31.71875,
+              "width": 107.65625,
+              "height": 14.390625,
+              "origin": {
+                "x": 497.562,
+                "y": 31.7277,
+                "width": 107.656,
+                "height": 14.3906
+              },
+              "alpha": 0.183734,
+              "opacity": 0.183734,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 57.796875,
+              "width": 619.8125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 57.7969,
+                "width": 619.812,
+                "height": 14.3906
+              },
+              "alpha": 0.199334,
+              "opacity": 0.199334,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 83.96875,
+              "width": 322.453125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 83.9792,
+                "width": 322.453,
+                "height": 14.3906
+              },
+              "alpha": 0.1444944,
+              "opacity": 0.144494,
+              "duration": "0.28s"
+            },
+            {
+              "x": 337.9375,
+              "y": 83.734375,
+              "width": 57.859375,
+              "height": 14.390625,
+              "origin": {
+                "x": 337.938,
+                "y": 83.7392,
+                "width": 57.8594,
+                "height": 14.3906
+              },
+              "alpha": 0.1444944,
+              "opacity": 0.144494,
+              "duration": "0.28s"
+            },
+            {
+              "x": 411.28125,
+              "y": 83.578125,
+              "width": 208.109375,
+              "height": 14.390625,
+              "origin": {
+                "x": 411.281,
+                "y": 83.5876,
+                "width": 208.109,
+                "height": 14.3906
+              },
+              "alpha": 0.1444944,
+              "opacity": 0.144494,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 109.5625,
+              "width": 221.28125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 109.576,
+                "width": 221.281,
+                "height": 14.3906
+              },
+              "alpha": 0.16839360000000003,
+              "opacity": 0.168394,
+              "duration": "0.28s"
+            },
+            {
+              "x": 233.140625,
+              "y": 109.828125,
+              "width": 108.53125,
+              "height": 14.390625,
+              "origin": {
+                "x": 233.141,
+                "y": 109.837,
+                "width": 108.531,
+                "height": 14.3906
+              },
+              "alpha": 0.16839360000000003,
+              "opacity": 0.168394,
+              "duration": "0.28s"
+            },
+            {
+              "x": 353.53125,
+              "y": 109.78125,
+              "width": 120.765625,
+              "height": 14.390625,
+              "origin": {
+                "x": 353.531,
+                "y": 109.796,
+                "width": 120.766,
+                "height": 14.3906
+              },
+              "alpha": 0.16839360000000003,
+              "opacity": 0.168394,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 135.796875,
+              "width": 604.625,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 135.797,
+                "width": 604.625,
+                "height": 14.3906
+              },
+              "alpha": 0.1649676,
+              "opacity": 0.164968,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 161.703125,
+              "width": 308.875,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 161.715,
+                "width": 308.875,
+                "height": 14.3906
+              },
+              "alpha": 0.18513120000000002,
+              "opacity": 0.185131,
+              "duration": "0.28s"
+            },
+            {
+              "x": 323.1875,
+              "y": 161.859375,
+              "width": 249.328125,
+              "height": 14.390625,
+              "origin": {
+                "x": 323.188,
+                "y": 161.873,
+                "width": 249.328,
+                "height": 14.3906
+              },
+              "alpha": 0.18513120000000002,
+              "opacity": 0.185131,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 187.796875,
+              "width": 629,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 187.797,
+                "width": 629,
+                "height": 14.3906
+              },
+              "alpha": 0.16348620000000003,
+              "opacity": 0.163486,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 213.875,
+              "width": 354.21875,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 213.875,
+                "width": 354.219,
+                "height": 14.3906
+              },
+              "alpha": 0.1449196,
+              "opacity": 0.14492,
+              "duration": "0.28s"
+            },
+            {
+              "x": 369.78125,
+              "y": 213.640625,
+              "width": 252.46875,
+              "height": 14.390625,
+              "origin": {
+                "x": 369.781,
+                "y": 213.654,
+                "width": 252.469,
+                "height": 14.3906
+              },
+              "alpha": 0.1449196,
+              "opacity": 0.14492,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 15384.300000071526,
+          "firstSampledInkMs": 15401.000000071526,
+          "firstSampledNearFullOpacityMs": 15584.300000071526,
+          "firstSampledRestMs": 15684.400000071524,
+          "eligibilityToInkMs": 16.700000000000728,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300.09999999999854
+        }
+      ],
+      "maximumOriginMismatchPx": 0.0004999999999881766,
+      "verifiedCaptureBatches": 1,
+      "skippedOriginComparisons": 0,
+      "coherentRestSamples": 62,
+      "incoherentRestSamples": 0,
+      "localGlyphDriftPx": 0,
+      "reanimatedOldPassages": 0,
+      "maximumRows": 9,
+      "waitingFrameVariationPx": 103.984375,
+      "maximumClonedCells": 17,
+      "minimumVisibleGapPx": 0.34375,
+      "sourceToFinalOpacityMs": 200,
+      "sourceToFinalRestMs": 300.09999999999854,
+      "fittingFrames": 0,
+      "sourceToContainerRestMs": 466.7000000000007,
+      "inkRestToContainerRestMs": 166.60000000000218,
+      "containerRestSamples": 52,
+      "finalFrameHeightPx": 182,
+      "finalPageHeightPx": 182,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-sentence",
+      "policy": "sentence",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "source": "weather__random-b32",
+      "observedAt": "2026-09-12T16:25:44.898Z",
+      "frames": 1003,
+      "exactFinalText": true,
+      "changes": 4,
+      "batches": 4,
+      "transfers": [
+        {
+          "id": 46,
+          "firstAtMs": 3933.8999999999996,
+          "sourceAtMs": 3908.2000000000003,
+          "releasedLength": 127,
+          "newText": true,
+          "newPassageIds": [
+            45
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 5.796875,
+              "width": 618.078125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 5.79688,
+                "width": 618.078,
+                "height": 14.3906
+              },
+              "alpha": 0.1443192,
+              "opacity": 0.144319,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 31.9375,
+              "width": 380.625,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 31.9385,
+                "width": 380.625,
+                "height": 14.3906
+              },
+              "alpha": 0.1496248,
+              "opacity": 0.149625,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 57.796875,
+              "width": 602.578125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 57.7969,
+                "width": 602.578,
+                "height": 14.3906
+              },
+              "alpha": 0.1867808,
+              "opacity": 0.186781,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 83.890625,
+              "width": 358.78125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 83.9045,
+                "width": 358.781,
+                "height": 14.3906
+              },
+              "alpha": 0.1770962,
+              "opacity": 0.177096,
+              "duration": "0.28s"
+            },
+            {
+              "x": 395.109375,
+              "y": 31.875,
+              "width": 184.203125,
+              "height": 14.390625,
+              "origin": {
+                "x": 395.109,
+                "y": 31.8817,
+                "width": 184.203,
+                "height": 14.3906
+              },
+              "alpha": 0.1496248,
+              "opacity": 0.149625,
+              "duration": "0.28s"
+            },
+            {
+              "x": 444.671875,
+              "y": 83.703125,
+              "width": 136.953125,
+              "height": 14.390625,
+              "origin": {
+                "x": 444.672,
+                "y": 83.7153,
+                "width": 136.953,
+                "height": 14.3906
+              },
+              "alpha": 0.1770962,
+              "opacity": 0.177096,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 3933.8999999999996,
+          "firstSampledInkMs": 3950.2,
+          "firstSampledNearFullOpacityMs": 4133.8,
+          "firstSampledRestMs": 4233.9,
+          "eligibilityToInkMs": 16.300000000000182,
+          "eligibilityToNearFullOpacityMs": 199.90000000000055,
+          "eligibilityToRestMs": 300
+        },
+        {
+          "id": 48,
+          "firstAtMs": 7833.5,
+          "sourceAtMs": 7813.700000000002,
+          "releasedLength": 249,
+          "newText": true,
+          "newPassageIds": [
+            47
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 68.1875,
+              "width": 618.078125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 68.1875,
+                "width": 618.078,
+                "height": 14.3906
+              },
+              "alpha": 0.1885756,
+              "opacity": 0.188576,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 94.15625,
+              "width": 378.03125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 94.1687,
+                "width": 378.031,
+                "height": 14.3906
+              },
+              "alpha": 0.1651488,
+              "opacity": 0.165149,
+              "duration": "0.28s"
+            },
+            {
+              "x": 392.515625,
+              "y": 94.015625,
+              "width": 186.796875,
+              "height": 14.390625,
+              "origin": {
+                "x": 392.516,
+                "y": 94.0291,
+                "width": 186.797,
+                "height": 14.3906
+              },
+              "alpha": 0.1651488,
+              "opacity": 0.165149,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 120.1875,
+              "width": 602.578125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 120.188,
+                "width": 602.578,
+                "height": 14.3906
+              },
+              "alpha": 0.17766300000000002,
+              "opacity": 0.177663,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 146.15625,
+              "width": 389.109375,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 146.167,
+                "width": 389.109,
+                "height": 14.3906
+              },
+              "alpha": 0.14801660000000003,
+              "opacity": 0.148017,
+              "duration": "0.28s"
+            },
+            {
+              "x": 403.65625,
+              "y": 146.375,
+              "width": 177.96875,
+              "height": 14.390625,
+              "origin": {
+                "x": 403.656,
+                "y": 146.386,
+                "width": 177.969,
+                "height": 14.3906
+              },
+              "alpha": 0.14801660000000003,
+              "opacity": 0.148017,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 7833.5,
+          "firstSampledInkMs": 7848.6,
+          "firstSampledNearFullOpacityMs": 8031.799999999999,
+          "firstSampledRestMs": 8133.799999999999,
+          "eligibilityToInkMs": 15.100000000000364,
+          "eligibilityToNearFullOpacityMs": 198.29999999999927,
+          "eligibilityToRestMs": 300.2999999999993
+        },
+        {
+          "id": 50,
+          "firstAtMs": 11650.5,
+          "sourceAtMs": 11623.8,
+          "releasedLength": 435,
+          "newText": true,
+          "newPassageIds": [
+            49
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 120.0625,
+              "width": 276.78125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 120.072,
+                "width": 276.781,
+                "height": 14.3906
+              },
+              "alpha": 0.198519,
+              "opacity": 0.198519,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 94.1875,
+              "width": 618.078125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 94.1875,
+                "width": 618.078,
+                "height": 14.3906
+              },
+              "alpha": 0.1776994,
+              "opacity": 0.177699,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 146.1875,
+              "width": 602.578125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 146.188,
+                "width": 602.578,
+                "height": 14.3906
+              },
+              "alpha": 0.1511422,
+              "opacity": 0.151142,
+              "duration": "0.28s"
+            },
+            {
+              "x": 291.265625,
+              "y": 120.15625,
+              "width": 159.484375,
+              "height": 14.390625,
+              "origin": {
+                "x": 291.266,
+                "y": 120.163,
+                "width": 159.484,
+                "height": 14.3906
+              },
+              "alpha": 0.198519,
+              "opacity": 0.198519,
+              "duration": "0.28s"
+            },
+            {
+              "x": 465.25,
+              "y": 120.09375,
+              "width": 114.0625,
+              "height": 14.390625,
+              "origin": {
+                "x": 465.25,
+                "y": 120.108,
+                "width": 114.062,
+                "height": 14.3906
+              },
+              "alpha": 0.198519,
+              "opacity": 0.198519,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 172.109375,
+              "width": 291.203125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 172.117,
+                "width": 291.203,
+                "height": 14.3906
+              },
+              "alpha": 0.1999118,
+              "opacity": 0.199912,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 11650.5,
+          "firstSampledInkMs": 11665.2,
+          "firstSampledNearFullOpacityMs": 11850.5,
+          "firstSampledRestMs": 11950.5,
+          "eligibilityToInkMs": 14.700000000000728,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300
+        },
+        {
+          "id": 52,
+          "firstAtMs": 15383.8,
+          "sourceAtMs": 15359.999999999998,
+          "releasedLength": 567,
+          "newText": true,
+          "newPassageIds": [
+            51
+          ],
+          "cloned": [
+            {
+              "x": 0,
+              "y": 146.1875,
+              "width": 618.078125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 146.188,
+                "width": 618.078,
+                "height": 14.3906
+              },
+              "alpha": 0.14987360000000002,
+              "opacity": 0.149874,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 172.21875,
+              "width": 314.09375,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 172.225,
+                "width": 314.094,
+                "height": 14.3906
+              },
+              "alpha": 0.146599,
+              "opacity": 0.146599,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 198.1875,
+              "width": 602.578125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 198.188,
+                "width": 602.578,
+                "height": 14.3906
+              },
+              "alpha": 0.19908920000000002,
+              "opacity": 0.199089,
+              "duration": "0.28s"
+            },
+            {
+              "x": 462.65625,
+              "y": 172.34375,
+              "width": 116.65625,
+              "height": 14.390625,
+              "origin": {
+                "x": 462.656,
+                "y": 172.356,
+                "width": 116.656,
+                "height": 14.3906
+              },
+              "alpha": 0.146599,
+              "opacity": 0.146599,
+              "duration": "0.28s"
+            },
+            {
+              "x": 0,
+              "y": 224.09375,
+              "width": 256.578125,
+              "height": 14.390625,
+              "origin": {
+                "x": 0,
+                "y": 224.099,
+                "width": 256.578,
+                "height": 14.3906
+              },
+              "alpha": 0.1496626,
+              "opacity": 0.149663,
+              "duration": "0.28s"
+            },
+            {
+              "x": 328.578125,
+              "y": 172.109375,
+              "width": 119.59375,
+              "height": 14.390625,
+              "origin": {
+                "x": 328.578,
+                "y": 172.115,
+                "width": 119.594,
+                "height": 14.3906
+              },
+              "alpha": 0.146599,
+              "opacity": 0.146599,
+              "duration": "0.28s"
+            }
+          ],
+          "duration": "0.28s",
+          "firstSampledEligibilityMs": 15383.8,
+          "firstSampledInkMs": 15400.400000000001,
+          "firstSampledNearFullOpacityMs": 15583.8,
+          "firstSampledRestMs": 15683.8,
+          "eligibilityToInkMs": 16.600000000002183,
+          "eligibilityToNearFullOpacityMs": 200,
+          "eligibilityToRestMs": 300
+        }
+      ],
+      "maximumOriginMismatchPx": 0.0005000000000023874,
+      "verifiedCaptureBatches": 4,
+      "skippedOriginComparisons": 0,
+      "coherentRestSamples": 1612,
+      "incoherentRestSamples": 0,
+      "localGlyphDriftPx": 0,
+      "reanimatedOldPassages": 0,
+      "maximumRows": 5,
+      "waitingFrameVariationPx": 114.390625,
+      "maximumClonedCells": 6,
+      "minimumVisibleGapPx": 0.515625,
+      "sourceToFinalOpacityMs": 200,
+      "sourceToFinalRestMs": 300,
+      "fittingFrames": 0,
+      "sourceToContainerRestMs": 464.7000000000007,
+      "inkRestToContainerRestMs": 164.70000000000073,
+      "containerRestSamples": 52,
+      "finalFrameHeightPx": 182,
+      "finalPageHeightPx": 182,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    }
+  ],
+  "method": "Four sequential focused observations: one original unedited recorded source, whole-answer and sentence policies, at390×844 and1380×900. The source runs at its original recorded forward-pass clock. An independent fixture oracle reconstructs committed prefixes and finality; existing corpus tests separately verify exact policy segmentation. rAF geometry records newly released ink, actual captured cells, remaining field and final rest. Sampling continues for 1,000 ms after final ink rest, including the separate container contraction when needed.",
+  "caveats": [
+    "Emulated viewports, not physical devices.",
+    "No reader preference, dopamine, speed improvement or device-FPS claim.",
+    "Raw samples are instrumented observations, not passive presentation recordings.",
+    "Source eligibility, ink opacity and settled readiness are distinct browser milestones.",
+    "Captured origins are compared with the immediately preceding visible frame when its sample gap is at most 34 ms, with a 6 px guard. The separate unit regression checks capture before a 100 px authored tail movement."
+  ],
+  "archive": {
+    "file": "data/experiments/growing-skeleton-v8-2026-09-12/manifest.json",
+    "sha256": "5c3213a851e10c95231798635231355b9c0cae0b0db3a417c5602169effe3761",
+    "records": 4
+  }
+}

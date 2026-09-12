@@ -12,7 +12,7 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'samplers that change their mind',
-    body: 'remasking samplers can send a token back to mask. the snapshot path keeps candidate words off the protected page, and they do not drive the waiting geometry. only a final snapshot releases the answer; a later revision requires review and apply. the authored exercise tests this contract, but a production snapshot protocol still needs integration.',
+    body: 'remasking samplers can send a token back to mask. the snapshot path keeps candidate words off the protected page. their approximate amount can reserve height, but individual bar widths never copy the candidate. only a final snapshot releases the answer; a later revision requires review and apply. the authored exercise tests this contract, but a production snapshot protocol still needs integration.',
   },
   {
     title: 'markdown, code and math',
@@ -28,7 +28,7 @@ const OPEN: { title: string; body: string }[] = [
   },
   {
     title: 'the study',
-    body: 'compare still, breathing and the combined reshape treatment with shared source timing and final handover rules; measure actual visual arrival separately. measure whether the division introduction, pill formation, neighbor movement and glimmer feel fluid or distracting, and whether readers mistake the shapes for actual words, model stages or progress. test earlier-word access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
+    body: 'compare still, breathing and the combined reshape treatment with shared source timing, coarse sizing and final handover rules; measure actual visual arrival separately. measure whether the division introduction, pill formation, neighbor movement and glimmer feel fluid or distracting, and whether readers mistake the shapes for actual words, model stages or progress. test earlier-sentence access separately, with its real wait advantage. waiting may cost more than the final answer arriving together gives back; no reader study has answered that yet.',
   },
 ]
 

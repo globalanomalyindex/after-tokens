@@ -68,9 +68,9 @@ const PACES: { id: string; label: string; pace: Pace }[] = [
   { id: 'slow', label: '2× stress', pace: { scale: 2 } },
 ]
 const POLICIES: { id: Policy; label: string }[] = [
+  { id: 'sentence', label: 'each sentence' },
   { id: 'answer', label: 'whole answer' },
   { id: 'word', label: 'each word' },
-  { id: 'sentence', label: 'each sentence' },
   { id: 'paragraph', label: 'each paragraph' },
 ]
 const BRAND_IDS = Object.keys(brands) as BrandId[]
@@ -79,7 +79,7 @@ export function SettleStage({
   source = 'trace:heron-poem__lowconf-b32',
   sources = 'curated',
   controls = [],
-  policy: policyProp = 'answer',
+  policy: policyProp = 'sentence',
   pace: paceProp = 'recorded',
   brand: brandProp = 'after-tokens',
   voice,
@@ -195,7 +195,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · the waiting field follows its own decorative score; the page fits the actual answer and takes one material handover after source finality. Earlier reading is deliberately held.' : ' · the same ambient cells hand over to each newly eligible batch; earlier readable text stays still. The chosen policy controls eligibility, not the waiting animation.'}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · longer bars keep their own rhythm; received content can reserve rough total space. The complete answer takes one material handover after source finality. Earlier reading is deliberately held.' : ' · visible bars hand over to each newly eligible batch before the remaining field moves below it. Earlier readable text stays still. The chosen policy controls eligibility, not the waiting animation.'}
         </p>
       )}
     </div>

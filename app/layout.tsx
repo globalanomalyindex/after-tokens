@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
   title: 'After Tokens: a skeleton motion study for generated text',
   description:
-    'A web and motion design study of ambient skeleton loading, the transition into text and a readable final state. Working browser experiments, real diffusion recordings and an explicit account of presentation costs.',
+    'A web and motion design study of fuller, growing skeletons and the transition into readable text. An authored introduction, real diffusion replays and an explicit account of presentation costs.',
   authors: [
     {
       name: 'globalanomalyindex',

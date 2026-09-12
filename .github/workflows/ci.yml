@@ -32,6 +32,7 @@ jobs:
       - run: node --test scripts/test-anchored-skeleton-harness.mjs
       - run: node --test scripts/test-responsive-skeleton-harness.mjs
       - run: node --test scripts/test-ambient-skeleton-v7-harness.mjs
+      - run: node --test scripts/test-growing-skeleton-v8-harness.mjs
 
       # Root build covers the canonical Vercel configuration and supplies the
       # production server used by Playwright.

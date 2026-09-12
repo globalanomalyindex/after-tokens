@@ -1,0 +1,18 @@
+{
+  "fittingFrames": 11,
+  "blendFrames": 11,
+  "transferFrames": 19,
+  "minOpacity": 0.108086,
+  "maxOpacity": 1,
+  "minTop": -0.199826,
+  "maxTop": 1.467393,
+  "duration": 280,
+  "initialHeight": 121.875,
+  "finalHeight": 292.5,
+  "finalText": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+  "sourceToOpaqueMs": 379,
+  "sourceToRestMs": 499,
+  "restSamples": 20,
+  "restMovement": 0,
+  "failures": []
+}

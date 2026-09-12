@@ -1,5 +1,8 @@
 # After Tokens v7: release verification
 
+> Historical v7 at `9b42b6f0d744dae59cdc836e4438d6bb61e8419d`, material `ambient-cell-skeleton-v7`. The measurements and implementation below retain their original scope. The current direction is the [v8 growing skeleton](growing-skeleton-v8-handoff-2026-09-12.md); no historical result is relabeled as v8 evidence.
+
+
 **12 September 2026 · globalanomalyindex · `ambient-cell-skeleton-v7`.**
 
 This is the v7 local release record. The baseline is published v6 commit `ca43a251bd095f37dad35163ccc1aad682d06371`. V6 reports and recordings remain historical; they do not validate the new score or its fixed waiting allocation.

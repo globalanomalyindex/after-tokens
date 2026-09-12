@@ -17,11 +17,11 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'an active area, without a predicted shape',
-    body: 'a capsule opens into five breathing rows. occasional changes and deliberate rests give the area a quiet rhythm independent of the draft. the shapes do not map to actual words. after source finality, a short size fit can prepare missing room before the bubbles carry into the complete answer.',
+    body: 'a capsule opens into fuller breathing rows. the area can reserve more height from content already received, while individual bars follow their own rhythms and never map to draft words. each eligible sentence can arrive through the material handover, with a short size fit only when its actual text needs more room.',
   },
   {
-    title: 'one readable arrival',
-    body: 'the ambient composition continues between source events. after authoritative finality, a growing frame has an authored 180 ms fit before the text appears; browser scheduling can add more delay. visible bubbles then move toward measured word groups while the answer fades in and settles over 280 ms. this deliberately withholds words that could have been shown earlier; the delay is a presentation cost, not faster inference.',
+    title: 'each sentence, one arrival',
+    body: 'the ambient composition continues between eligible sentences. each new batch can receive a 180 ms size fit when needed, then a 280 ms material handover; browser scheduling can add delay. earlier sentences remain readable and do not replay the effect. these are presentation costs, separate from the sentence policy’s source-boundary wait.',
   },
   {
     title: 'a tick under the thumb',
@@ -37,7 +37,7 @@ const NOTES: { title: string; body: string }[] = [
   },
 ]
 
-const TIPS = ['tip · ask for a shorter answer when you want the essentials', 'tip · compare the earlier-reading option to see the tradeoff', 'concept · a contextual tip can leave when the answer arrives']
+const TIPS = ['tip · ask for a shorter answer when you want the essentials', 'tip · compare whole-answer release to see the tradeoff', 'concept · a contextual tip can leave when the answer arrives']
 
 export function SectionConcept() {
   const [run, setRun] = useState(0)
@@ -50,7 +50,7 @@ export function SectionConcept() {
   }, [])
   const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLDivElement>(0.3)
-  const clock = useReplay(replay, { policy: 'answer', autoplay: inView, runKey: run })
+  const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
   const waiting = clock.state.status === 'receiving' || clock.state.status === 'waiting'
   const tip = TIPS[run % TIPS.length]!
   return (

@@ -8,13 +8,15 @@ async function startStudy(page: Page): Promise<Locator> {
   await study.scrollIntoViewIfNeeded()
   await page.evaluate(() => document.fonts.ready)
   await expect(study).toHaveAttribute('data-source-id', sleep.id)
+  await expect(study.locator('.settle').first()).toHaveAttribute('data-policy', 'sentence')
+  await study.getByRole('radiogroup', { name: 'the page takes', exact: true }).getByRole('radio', { name: 'whole answer', exact: true }).click()
   await study.getByRole('button', { name: 'replay all', exact: true }).click()
   await expect(study.locator('.settle[data-policy="answer"]')).toHaveCount(1)
   await expect(study.locator('[role="status"][aria-live="polite"]')).toHaveCount(1)
   return study
 }
 
-test('the reshape default preserves source finality and hands over one exact answer', async ({ page }) => {
+test('the selected whole-answer policy preserves source finality and hands over one exact answer', async ({ page }) => {
   const study = await startStudy(page)
   const observations = await study.evaluate(async (root) => {
     const surfaces = [...root.querySelectorAll<HTMLElement>('.settle[data-policy="answer"]')]
@@ -48,7 +50,7 @@ test('the reshape default preserves source finality and hands over one exact ans
           if (states[index] !== 'complete') {
             if (texts[index]) failures.push('text appeared before source finality')
             const bars = [...surface.querySelectorAll<HTMLElement>('.ambient-composition__bar')]
-            if (bars.length !== 5) failures.push('loading composition lost its authored geometry')
+            if (bars.length !== 14) failures.push('loading composition lost its authored geometry')
             if (surface.getBoundingClientRect().width > 0) {
               const condition = surface.dataset.ambientCondition!
               visibleConditions.add(condition)
@@ -271,7 +273,7 @@ test('authored narrow underallocation fits before a bounded bubble-to-word hando
       finalHeight: frame.getBoundingClientRect().height, finalText: root.querySelector('.settle-page')!.textContent,
       sourceToOpaqueMs: opaqueAt! - sourceAt!, sourceToRestMs: restAt! - sourceAt!, restSamples, restMovement, failures: [...failures] }
   })
-  await testInfo.attach('v7-forced-fit-result', { body: JSON.stringify(result, null, 2), contentType: 'application/json' })
+  await testInfo.attach('v8-forced-fit-result', { body: JSON.stringify(result, null, 2), contentType: 'application/json' })
   expect(result.failures).toEqual([])
   expect(result.fittingFrames).toBeGreaterThan(0)
   expect(result.blendFrames).toBeGreaterThan(1)
@@ -306,7 +308,7 @@ test('seeded cells evolve inside left-anchored rows without lexical placeholders
   await study.getByRole('radiogroup', { name: 'clock', exact: true }).getByRole('radio', { name: '0.5× inspection', exact: true }).click()
   const surface = study.locator('.settle[data-ambient-condition="reshape"]')
   await surface.scrollIntoViewIfNeeded()
-  await expect(surface).toHaveAttribute('data-material', 'ambient-cell-skeleton-v7')
+  await expect(surface).toHaveAttribute('data-material', 'growing-cell-skeleton-v8')
   const result = await surface.evaluate(async (root) => {
     const rows = [...root.querySelectorAll<HTMLElement>('.ambient-composition__bar')], cells = [...root.querySelectorAll('.ambient-composition__presence')]
     const shapes = new Set<string>(), periods = new Set<string>(), failures = new Set<string>()
@@ -415,7 +417,7 @@ test('one capsule divides inside its frame and each cell shares the occasional g
   expect(await surface.locator('.settle-page').textContent()).toBe(sleep.answer)
 })
 
-test('the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities', async ({ page }) => {
+test('the waiting capacity grows from received ink while authored row widths and identities remain stable', async ({ page }) => {
   const study = await startStudy(page)
   await study.getByRole('radiogroup', { name: 'recording', exact: true }).getByRole('radio', { name: 'an explanation', exact: true }).click()
   await expect(study).toHaveAttribute('data-source-id', sky.id)
@@ -427,22 +429,22 @@ test('the five-line waiting envelope ignores received ink while rows and glimmer
     const rows = [...root.querySelectorAll('.ambient-composition__bar')]
     const lineHeight = parseFloat(getComputedStyle(root.querySelector('.settle-page')!).lineHeight)
     const heights: number[] = [], counts: number[] = [], failures = new Set<string>()
-    const initialHeight = root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height
+    let previousHeight = 0, previousCount = 5
     await new Promise<void>((resolve, reject) => {
       const started = performance.now()
       const tick = () => {
         try {
           if (root.getAttribute('data-status') === 'complete') { resolve(); return }
           const current = [...root.querySelectorAll('.ambient-composition__bar')]
-          if (current.length !== 5 || current.some((row, index) => row !== rows[index])) failures.add('row nodes remounted while waiting')
+          if (current.length !== 14 || current.some((row, index) => row !== rows[index])) failures.add('row nodes remounted while waiting')
           const count = current.filter((row) => row.getAttribute('data-shown') === 'true').length
           const height = root.querySelector('.settle-answer-frame')!.getBoundingClientRect().height
-          if (count !== 5 || Math.abs(height - initialHeight) > .05 || Math.abs(height - 5 * lineHeight) > 1) failures.add('waiting envelope changed with unreleased source content')
+          if (count < previousCount || height < previousHeight - .05 || count < 5 || count > 14 || height < 5 * lineHeight - 1 || height > 14 * lineHeight + 1) failures.add('waiting capacity exceeded its monotonic budget')
           if (root.querySelector('.settle-page')?.textContent) failures.add('text appeared before source finality')
           const glimmers = root.getAnimations({ subtree: true }).filter((animation) => animation instanceof CSSAnimation && animation.animationName === 'skeleton-glimmer')
           const phases = glimmers.map((animation) => Number(animation.currentTime))
           if (glimmers.length !== root.querySelectorAll('.ambient-composition__ink').length || Math.max(...phases) - Math.min(...phases) > 1) failures.add('newly exposed rows lost their shared glimmer phase')
-          counts.push(count); heights.push(height)
+          previousCount = count; previousHeight = height; counts.push(count); heights.push(height)
           if (performance.now() - started > 11000) { reject(Error('long source did not complete')); return }
           requestAnimationFrame(tick)
         } catch (error) { reject(error) }
@@ -453,9 +455,10 @@ test('the five-line waiting envelope ignores received ink while rows and glimmer
   })
   expect(result.failures).toEqual([])
   expect(result.samples).toBeGreaterThan(30)
-  expect(result.minRows).toBe(5)
-  expect(result.maxRows).toBe(5)
-  expect(result.heightGrowth).toBeLessThan(.05)
+  expect(result.minRows).toBeGreaterThanOrEqual(5)
+  expect(result.maxRows).toBeGreaterThan(5)
+  expect(result.maxRows).toBeLessThanOrEqual(14)
+  expect(result.heightGrowth).toBeGreaterThan(20)
   await expect(surface).toHaveAttribute('data-visual-ready', 'true')
   expect(await surface.locator('.settle-answer-text').textContent()).toBe(sky.answer)
 })

@@ -8,7 +8,7 @@ import { DefinitionTerm } from '@/components/chrome/definition-term'
 const RULES: string[] = [
   'released text requires source commitments or an explicitly final snapshot. the renderer cannot inspect future answer text, widths or formatting. once a batch meets its release policy, its actual text can supply the targets for the bubble handover.',
   'the whole-answer policy waits for source finality. earlier word, sentence and paragraph policies release eligible passages sooner. all four use the same cell material; a guessed period or animation endpoint cannot complete the source.',
-  'the waiting field follows an authored clock and seed. its five rows do not resize from drafts, committed fragments or guessed formatting. after earlier passages arrive, two rows remain below them. these shapes indicate waiting, not answer length or percent complete.',
+  'individual bars follow an authored clock and seed. only a coarse amount of currently received content can reserve more height: five initial rows, at most fourteen, and at least four below earlier passages. guessed final words, line breaks and word widths cannot shape the bars. they indicate waiting, not percent complete.',
   'newly released text crosses from the visible bubbles over 280 ms. ink begins transparent, reaches full opacity at 74 percent of that authored interval and rests at its endpoint. text already released does not replay the effect.',
   'when newly released text needs more room, an authored 180 ms fit precedes the handover. otherwise it starts immediately as the frame adjusts. browser scheduling can extend either interval; source eligibility and visual availability are measured separately.',
   'the protected page contains only released passages. provisional words may appear in the separately labeled draft inspector, and never become released text merely because they look plausible. waiting pills have no token identity.',
@@ -46,7 +46,7 @@ export function SectionContract() {
         <p className="text-base leading-relaxed max-w-[64ch] mb-8" style={{ color: 'var(--ink-2)' }}>
           the raw prefix shows in-order source pieces, including half-words. the comparison applies a release policy to those same events. the whole-answer option waits for finality; earlier policies expose useful text sooner. this is an availability comparison, separate from testing still, breathe and reshape with shared source timing and final handover rules. actual visual arrival is measured separately. reading research, including <DefinitionTerm term="parafoveal preview">parafoveal preview</DefinitionTerm> and studies of unstable text, motivates preserving readable text. it does not prove that withholding it is better.
         </p>
-        <SettleStage source="trace:hash-function__lowconf-b32" controls={['policy']} comparison />
+        <SettleStage policy="sentence" source="trace:hash-function__lowconf-b32" controls={['policy']} comparison />
       </div>
 
       <div className="mt-16 md:mt-24 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] rule pt-8">

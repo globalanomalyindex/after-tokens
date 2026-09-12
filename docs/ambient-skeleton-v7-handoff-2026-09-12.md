@@ -1,5 +1,8 @@
 # After Tokens: an ambient score, then readable text
 
+> Historical v7 at `9b42b6f0d744dae59cdc836e4438d6bb61e8419d`, material `ambient-cell-skeleton-v7`. The measurements and implementation below retain their original scope. The current direction is the [v8 growing skeleton](growing-skeleton-v8-handoff-2026-09-12.md); no historical result is relabeled as v8 evidence.
+
+
 **12 September 2026 · globalanomalyindex · material `ambient-cell-skeleton-v7`.**
 
 My current direction is a calm web motion study: five text-like rows breathe, a small group occasionally changes, and the composition rests before the next episode. The waiting animation follows its own score instead of reacting to the draft. When text is eligible to appear, the existing bubble-to-word handover carries the visible material into real word groups.

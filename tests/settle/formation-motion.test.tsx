@@ -76,6 +76,21 @@ describe('released-batch material handover lifecycle', () => {
     expect(container.querySelector('.bubble-transfer')).toBeNull()
   })
 
+  it.each(['word', 'sentence', 'paragraph'] as const)('keeps earlier %s passages stationary during a later release', (policy) => {
+    let state = reduceSettle(createSettleState(policy), { type: 'commit', atMs: 1, tokens: [{ position: 0, text: 'One.\n\n' }] })
+    const { container, rerender } = render(<SettleAnswer state={state} />)
+    const first = [...container.querySelectorAll('[data-passage]')]
+    finish(container)
+    state = reduceSettle(state, { type: 'commit', atMs: 2, tokens: [{ position: 1, text: 'Two.\n\n' }] })
+    rerender(<SettleAnswer state={state} />)
+    for (const [index, passage] of first.entries()) {
+      expect(container.querySelectorAll('[data-passage]')[index]).toBe(passage)
+      expect(passage).not.toHaveAttribute('data-arriving')
+      expect(passage).not.toHaveAttribute('data-pending')
+    }
+    expect(container.querySelectorAll('[data-arriving]').length).toBeGreaterThan(0)
+  })
+
   it('starts a fresh handover for an explicit new run at the same source time', () => {
     const state = sentence()
     const { container, rerender } = render(<SettleAnswer state={state} runId="first" />)

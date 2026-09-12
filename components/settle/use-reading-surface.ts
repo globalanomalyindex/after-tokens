@@ -1,7 +1,8 @@
 'use client'
 
-import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import type { SettleState } from '@/lib/settle/types'
+import { estimateAnswerEnvelope, estimateCandidateEnvelope } from '@/lib/settle/answer-envelope'
 
 export const HANDOVER_MS = 280
 export type ReadingPhase = 'waiting' | 'fitting' | 'revealing' | 'ready'
@@ -27,6 +28,10 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
   const animation = useRef<Animation | null>(null)
   const fallback = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fitDeadline = useRef(0)
+  const capacityRows = useRef(5)
+  const capacityDue = useRef(true)
+  const canvas = useRef<CanvasRenderingContext2D | null>(null)
+  const pendingField = useRef<{ rowCount: number; tailOffset: number } | null>(null)
   const measureRef = useRef<() => void>(() => {})
   const update = useCallback((patch: Partial<Surface>) => {
     const next = { ...current.current, ...patch }
@@ -48,8 +53,21 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
     clearFallback()
     fitDeadline.current = 0
     const receiving = latest.current.status === 'waiting' || latest.current.status === 'receiving'
-    update({ visibleLength: current.current.revealTo, arrivalKey: null, phase: receiving ? 'waiting' : 'ready' })
+    const field = receiving ? pendingField.current : null
+    pendingField.current = null
+    update({ ...field, visibleLength: current.current.revealTo, arrivalKey: null, phase: receiving ? 'waiting' : 'ready' })
+    // The residual field has finished fading. Only now contract its reserved
+    // space, so fading ink cannot overlap the status or following content.
+    if (!receiving) measureRef.current()
   }, [clearFallback, update])
+  const advanceWaitingField = useCallback((key: string) => {
+    if (current.current.arrivalKey !== key) return
+    const receiving = latest.current.status === 'waiting' || latest.current.status === 'receiving'
+    // BubbleTransfer calls this only AFTER reading the on-screen origins.
+    // CSS can now carry the unborrowed field below the newly eligible text.
+    if (receiving && pendingField.current) update(pendingField.current)
+    pendingField.current = null
+  }, [update])
 
   useLayoutEffect(() => {
     latest.current = state
@@ -67,6 +85,9 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
         fitDeadline.current = 0
         identity.current = key
         observedLength.current = 0
+        capacityRows.current = 5
+        capacityDue.current = true
+        pendingField.current = null
         sizingContext.current = ''
         lastTarget.current = 5 * lineHeightPx
         frame.style.height = `${lastTarget.current}px`
@@ -82,10 +103,22 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
       const newBatch = length > observedLength.current
       const previousLength = Math.min(observedLength.current, length)
       const pageHeight = length > 0 ? page.getBoundingClientRect().height : 0
-      // Waiting space is an authored five-line composition, not a forecast.
-      // Only already eligible text can alter the reading surface. Earlier
-      // release policies leave a compact two-line activity tail beneath it.
-      const rowCount = receiving ? (length > 0 ? 2 : 5) : current.current.rowCount
+      // Restore the earlier high-level space budget, not draft word shapes.
+      // Coalesce source-only sizing into 600 ms samples; a released batch,
+      // finality or typography change always bypasses that decorative gate.
+      if (capacityDue.current || changedRun || changedContext || newBatch || !receiving || !effectiveMotion) {
+        capacityDue.current = false
+        if (!canvas.current && typeof CanvasRenderingContext2D !== 'undefined') canvas.current = document.createElement('canvas').getContext('2d')
+        if (canvas.current) { canvas.current.font = font; canvas.current.fontKerning = 'none' }
+        const spacing = parseFloat(style.letterSpacing) || 0
+        const advance = (text: string) => (canvas.current ? canvas.current.measureText(text).width : Array.from(text).length * fontSize * .52) + Math.max(0, Array.from(text).length - 1) * spacing
+        const estimate = state.source === 'snapshot'
+          ? estimateCandidateEnvelope(state.snapshotCandidate ?? '', width, advance)
+          : estimateAnswerEnvelope(state, width, advance)
+        capacityRows.current = Math.max(changedContext ? 5 : capacityRows.current, estimate.rowCount)
+      }
+      const occupiedRows = Math.ceil(pageHeight / lineHeightPx)
+      const rowCount = receiving ? Math.max(length > 0 ? 4 : 5, Math.min(14, capacityRows.current - occupiedRows)) : current.current.rowCount
       const tailOffset = receiving ? pageHeight + (length > 0 ? lineHeightPx * .4 : 0) : current.current.tailOffset
       const target = receiving ? tailOffset + rowCount * lineHeightPx : pageHeight
       const resize = (height: number, duration: number, done?: () => void) => {
@@ -102,7 +135,12 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
           animation.current = null; next.cancel(); done?.()
         }
       }
-      update({ rowCount, tailOffset, lineHeightPx, barHeightPx })
+      // Preserve the visible cells across the first layout of an arrival.
+      // Measuring after moving this field would invent an offscreen origin.
+      if (effectiveMotion && receiving && (newBatch || current.current.arrivalKey)) {
+        pendingField.current = { rowCount, tailOffset }
+        update({ lineHeightPx, barHeightPx })
+      } else update({ rowCount, tailOffset, lineHeightPx, barHeightPx })
       const reveal = (arrivalKey: string) => {
         if (identity.current !== key || current.current.arrivalKey !== arrivalKey) return
         clearFallback()
@@ -116,6 +154,7 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
         || (changedContext && current.current.arrivalKey !== null)) {
         clearFallback(); resize(target, 0)
         fitDeadline.current = 0
+        pendingField.current = null
         observedLength.current = length
         update({ visibleLength: length, revealTo: length, arrivalKey: null, phase: receiving ? 'waiting' : 'ready' })
         return
@@ -130,15 +169,18 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
           update({ phase: 'fitting' })
           fitDeadline.current = performance.now() + 180
           resize(target, 180, () => reveal(arrivalKey))
-        } else { resize(target, receiving ? 380 : 180); reveal(arrivalKey) }
+        } else {
+          resize(receiving ? target : Math.max(target, frame.getBoundingClientRect().height), receiving ? 380 : 0)
+          reveal(arrivalKey)
+        }
       } else if (!receiving && length > 0 && current.current.phase === 'waiting') {
         // An early-reading policy may have released every character before
         // EOS. Fade the remaining activity field without moving old words.
         const arrivalKey = `${key}:done`
         update({ visibleLength: length, revealTo: length, arrivalKey, phase: 'revealing' })
-        resize(target, 180)
+        resize(Math.max(target, frame.getBoundingClientRect().height), 0)
         fallback.current = setTimeout(() => finishHandover(arrivalKey), 700)
-      } else if (lastTarget.current !== target) {
+      } else if (lastTarget.current !== target && !(!receiving && current.current.phase === 'revealing' && target < frame.getBoundingClientRect().height)) {
         // A later viewport/font reflow cannot replay any old word animation.
         const pendingFit = current.current.phase === 'fitting' ? current.current.arrivalKey : null
         // A layout change cannot keep an already eligible batch hidden.
@@ -151,6 +193,13 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
     }
     measureRef.current()
   }, [state, runId, effectiveMotion, frameRef, pageRef, update, cancelResize, clearFallback, finishHandover])
+
+  const receiving = state.status === 'waiting' || state.status === 'receiving'
+  useEffect(() => {
+    if (!receiving || !effectiveMotion) return
+    const timer = setInterval(() => { capacityDue.current = true; measureRef.current() }, 600)
+    return () => clearInterval(timer)
+  }, [receiving, runId, effectiveMotion])
 
   useLayoutEffect(() => {
     const frame = frameRef.current, page = pageRef.current
@@ -173,5 +222,5 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
     return () => { mounted = false; observer.disconnect(); document.fonts?.removeEventListener('loadingdone', fontsChanged) }
   }, [frameRef, pageRef])
   useLayoutEffect(() => () => { cancelResize(); clearFallback(); measureRef.current = () => {} }, [cancelResize, clearFallback])
-  return { ...surface, finishHandover }
+  return { ...surface, advanceWaitingField, finishHandover }
 }

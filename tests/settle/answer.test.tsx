@@ -72,7 +72,7 @@ describe('the unified reading surface', () => {
   it.each(['word', 'sentence', 'paragraph', 'answer'] as const)('uses modern reshape material under %s without exposing a revisable snapshot', (policy) => {
     const state = reduceSettle(createSettleState(policy), { type: 'snapshot', atMs: 100, final: false, text: 'A complete-looking answer.\n\nStill provisional.' })
     const { container } = render(<SettleAnswer state={state} motion={false} />)
-    expect(container.querySelector('.settle')).toHaveAttribute('data-material', 'ambient-cell-skeleton-v7')
+    expect(container.querySelector('.settle')).toHaveAttribute('data-material', 'growing-cell-skeleton-v8')
     expect(container.querySelector('.settle')).toHaveAttribute('data-ambient-condition', 'reshape')
     expect(container.querySelector('.settle-page')?.textContent).toBe('')
     expect(container.querySelector('.ambient-composition')).not.toBeNull()

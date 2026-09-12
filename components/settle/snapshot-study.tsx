@@ -7,7 +7,7 @@ import { useReplay } from './use-replay'
 import { SettleAnswer } from './settle-answer'
 
 export function SnapshotStudy() {
-  const clock = useReplay(SNAPSHOT_STUDY, { policy: 'answer', autoplay: false })
+  const clock = useReplay(SNAPSHOT_STUDY, { policy: 'sentence', autoplay: false })
   const [motion, setMotion] = useState(true)
   const [view, setView] = useState('protected')
   const draft = clock.state.status === 'complete' ? clock.state.prefix : clock.state.snapshotCandidate ?? ''
@@ -38,11 +38,11 @@ export function SnapshotStudy() {
         <figure className={`m-0 min-w-0 ${view === 'protected' ? 'block' : 'hidden md:block'}`}>
           <figcaption className="mb-3"><h4 className="font-semibold">After Tokens</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>The same input. One complete answer to read.</p></figcaption>
           <div className="stage p-5">
-            <SettleAnswer state={clock.state} runId={clock.runId} motion={motion} paused={clock.paused} label="protected whole answer" className="text-[15px] leading-relaxed" />
+            <SettleAnswer state={clock.state} runId={clock.runId} motion={motion} paused={clock.paused} label="protected answer" className="text-[15px] leading-relaxed" />
           </div>
         </figure>
       </div>
-      <p className="readout mt-5 max-w-4xl leading-relaxed" style={{ color: 'var(--muted)' }}>scripted 4.2-second sequence · revisions and final signal are authored. this tests an adapter contract; it is not a google recording, inferred frame timing or a connected gemini api. the waiting field does not use the candidate&rsquo;s text or size.</p>
+      <p className="readout mt-5 max-w-4xl leading-relaxed" style={{ color: 'var(--muted)' }}>scripted 4.2-second sequence · revisions and final signal are authored. this tests an adapter contract; it is not a google recording, inferred frame timing or a connected gemini api. the current candidate can reserve rough total space; individual bars keep their authored widths. only an explicit final signal releases the words.</p>
     </div>
   )
 }

@@ -1,0 +1,15 @@
+{
+  "failures": [],
+  "batches": 2,
+  "restingSamples": 454,
+  "materialSamples": 589,
+  "blendSamples": 19,
+  "maxRestDrift": 0,
+  "maximumTransferCells": 6,
+  "coherentRestSamples": 454,
+  "discardedIncoherentSamples": 0,
+  "maxViewportDrift": 0,
+  "maximumIntraSampleScrollPx": 0,
+  "distinctPassages": 2,
+  "drifts": []
+}

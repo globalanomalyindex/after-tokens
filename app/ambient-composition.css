@@ -1,5 +1,5 @@
-/* A source-independent score moves one row at a time, then holds geometry.
-   The pills are activity shapes, not words or confidence indicators. */
+/* The earlier fuller skeleton: quiet long lines alternate with a few broad
+   cells. Only the outer capacity adapts to received content. */
 .ambient-composition {
   position: relative;
   display: block;
@@ -24,7 +24,7 @@
   animation-play-state: paused;
 }
 
-/* Five row identities persist, including temporarily absent cells, so the
+/* Fourteen row identities persist, including temporarily absent cells, so the
    shared glimmer never restarts between authored gestures. */
 .ambient-composition__row-content {
   position: absolute;
@@ -70,10 +70,10 @@
 .ambient-composition[data-condition="static"] .ambient-composition__bar,
 .ambient-composition[data-condition="static"] .ambient-composition__presence { transition: none; }
 
-/* Each row breathes independently. Geometry receives one discrete target
-   per cue, eases for 900–1300 ms, then holds. The 100 ms activity clock never
-   changes targets between cues. Left/width touch layout and paint; this is
-   not a compositor-only or physical spring claim. */
+/* Each row has an independent breath and successive seeded arrangements.
+   One 1300–1800 ms gesture finishes before its 4200–6600 ms rhythm turns.
+   Timer and source updates do not retarget an in-progress gesture.
+   Left/width touch layout and paint: this is not compositor-only or a spring. */
 @keyframes skeleton-breathe {
   0%, 100% { opacity: .72; }
   50% { opacity: 1; }

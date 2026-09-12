@@ -1,0 +1,128 @@
+{
+  "startedAt": "2026-09-12T16:16:11.734Z",
+  "runtimeFingerprint": "be4ca53533e13ce36cce2fe133fa07d4fad78b51e92f09ee1064455559400f20",
+  "runtimeImplementation": [
+    {
+      "file": "app/globals.css",
+      "sha256": "6acb6c6643d3735f088effa653dcc78e4a99676204dec20de2f743a587ba1194"
+    },
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "50778a06cc9bef9c6935ada1dc917f070b5dc4e4df3c00df59ec862e3526c609"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "4ac91a0ef539a23b167c183bfb01f38b814a3677172bbbd77aaf50b2c1f5d19f"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "5f745cae8b5e91281e6622d935ce2238e04372411d8ba0c5841d80fc539b4fff"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "eeb8f933c2a5bdc6e2c4a3968e392f16dfcd15d323560864d6bab70e091316a0"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "28ef929ad40dcd0348c9038e047b1335ccfa083ce52838044f40d529c859ceae"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/hero-intro.tsx",
+      "sha256": "59506f04a2d3c98a72be979dea9b97517b19fd2c9b432b34cad0cb981529cd40"
+    },
+    {
+      "file": "components/settle/hero-intro.module.css",
+      "sha256": "1f231608f98906ccaa21a98387839a70b28f9d745c7603d5b0a426367e9757da"
+    },
+    {
+      "file": "components/sections/section-hook.tsx",
+      "sha256": "947ea2db5783e793773b5272d379992d06b4b417338246a0075a2aeff4eac674"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "c62760b0e5eb3fe4bc4d99d30726fd11d01f9fb80f401070e4e67c32db20bac3"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "64b5ab69eec5e2e0b6222a26ef37a8318eece41282ac1ba3199f3548a8adc0a1"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "72b77d89c8e92ba109d244d16f19481352da74eeba08737476c6fd4bdb81f55f"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/boundary.ts",
+      "sha256": "7806ffe057f0464792f777c2f10eb5ceba2e9514ade90891fc82f6949d6fd691"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/growing-geometry.ts",
+      "sha256": "fd351229c024f63f3ca210401af20e38a364f58c0ad20d688ab73549a12e17a5"
+    },
+    {
+      "file": "lib/settle/ambient-geometry.ts",
+      "sha256": "7fb73b89646cc655f97d28ee4f719a3f530cbc5b4f16213ecc81f24593907338"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    }
+  ],
+  "testFiles": [
+    {
+      "file": "tests/e2e/a11y.spec.ts",
+      "sha256": "c75c99486e6954d9507fdaafff03d754be850e96e92a17ef27e73bb121285ede"
+    },
+    {
+      "file": "tests/e2e/ambient-answer.spec.ts",
+      "sha256": "6d93d276344a65ecb9129be71050724f5ef0d6f5f50e9bb72453be81341f12a9"
+    },
+    {
+      "file": "tests/e2e/hero-intro.spec.ts",
+      "sha256": "de05316006f640f2e07c400fb1542d0460a422e4da39706fcdb5ffacb0fd1841"
+    },
+    {
+      "file": "tests/e2e/reduced-motion-full.spec.ts",
+      "sha256": "c941beb54f1041c645019858d7b679017e8538ac57f3773243c5085bc4c88a47"
+    },
+    {
+      "file": "tests/e2e/settle-motion.spec.ts",
+      "sha256": "f7d3cfa799a93870a507f8085b1a2694c64ea1a13fc153a44eadcf7c9c8231fb"
+    },
+    {
+      "file": "tests/e2e/snapshot-study.spec.ts",
+      "sha256": "25a227f4dad55d60f957fed776cb4db52925cca36007be698bccd920145ca1f7"
+    }
+  ]
+}

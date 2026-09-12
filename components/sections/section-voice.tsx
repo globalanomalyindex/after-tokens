@@ -13,7 +13,7 @@ import { SETTLE_RANGES, type SettleVoice } from '@/lib/settle/voice'
 
 const TOKENS = [
   { key: 'palette', range: 'five brand palettes', changes: 'the page, reading ink and cell material', keeps: 'the exact answer and its release policy' },
-  { key: 'tempo', range: '0.7 to 1.4', changes: 'the breathing, local episodes, rests and occasional glimmer', keeps: 'source eligibility and the 280 ms text handover' },
+  { key: 'tempo', range: '0.7 to 1.4', changes: 'the breathing, independent reshaping and occasional glimmer', keeps: 'source eligibility and the 280 ms text handover' },
 ]
 const SLIDERS = [{ key: 'tempo', step: .05 }] as const
 
@@ -63,7 +63,7 @@ export function SectionVoice() {
         <SettleStage
           key={brand}
           source="trace:golden-sunflower__lowconf-b32"
-          policy="answer"
+          policy="sentence"
           brand={brand}
           voice={voice}
           runKey={run}

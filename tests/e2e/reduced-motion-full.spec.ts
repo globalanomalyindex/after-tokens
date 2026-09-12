@@ -26,6 +26,7 @@ test.describe('reduced motion full audit', () => {
     // and settle, on the same clock, to the same page.
     const surfaces = page.locator('.settle[data-status]')
     await expect.poll(() => surfaces.count()).toBeGreaterThan(0)
+    await expect(page.locator('[data-hero-intro]')).toHaveAttribute('data-static', 'true')
     const hook = page.locator('#hook .settle').first()
     await expect(hook).toHaveAttribute('data-status', 'complete', { timeout: 30_000 })
     await expect(hook.locator('.settle-answer-text')).toBeVisible()

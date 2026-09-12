@@ -29,7 +29,7 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
   }, [traceId])
   const replay = useMemo(() => (trace ? replayTrace(trace, 'recorded') : null), [trace])
   const { ref, inView } = useInView<HTMLElement>(0.3)
-  const clock = useReplay(replay, { policy: 'answer', autoplay: inView, runKey: run })
+  const clock = useReplay(replay, { policy: 'sentence', autoplay: inView, runKey: run })
   const answer = (
     <SettleAnswer
       state={clock.state}
@@ -137,9 +137,9 @@ export function SectionPreviews() {
         </Frame>
       </div>
       <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-        three surfaces, three voices, one whole-answer policy. a capsule opens into rows that breathe, occasionally change and rest within the text area. the waiting shapes have no token identity.
-        the composition follows its own rhythm; after source finality, a brief fit can prepare missing room.
-        the visible bubbles then reshape toward actual word groups as the answer fades in and settles over 280 ms. the recorded source has not been accelerated for the phone.
+        three surfaces, three voices, each sentence as it becomes eligible. a capsule opens into rows that breathe, occasionally change and rest within the text area. the waiting shapes have no token identity.
+        the composition follows its own rhythm; a brief fit can prepare missing room for an eligible passage.
+        the visible bubbles then reshape toward actual word groups as the new sentence fades in and settles over 280 ms. earlier readable text stays still. the recorded source has not been accelerated for the phone.
       </p>
     </Section>
   )

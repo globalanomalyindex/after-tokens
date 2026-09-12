@@ -13,13 +13,14 @@ export function SectionPlayground() {
     <Section id="playground" title="Try it">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">try it</h2>
       <p className="standfirst max-w-3xl">
-        compare the whole-answer arrival with earlier words, sentences or paragraphs. all four policies use the same
+        start with each sentence, then compare earlier words, paragraphs or the whole-answer arrival. all four policies use the same
         cell material and show text only after its release. each new batch crosses from bubbles into words; earlier
         readable text stays in place. the readout measures source eligibility over the original corpus, separately
         from the short visual handover. a presentation change restarts the same source timeline.
       </p>
       <div className="mt-12 md:mt-16">
         <SettleStage
+          policy="sentence"
           source="trace:heist-plot__lowconf-b32"
           controls={['prompt', 'config', 'policy', 'voice', 'pace', 'comparison']}
          
@@ -42,7 +43,7 @@ export function SectionPlayground() {
             const rows: [string, string][] = [
               ['first passage', `${u.medianFirstPassageAt ?? '·'} steps · ${r.medianFirstPassageAt === null ? '·' : (r.medianFirstPassageAt / 1000).toFixed(1)} s`],
               ['extra wait', `${u.meanExtraHold?.toFixed(1) ?? '·'} steps mean`],
-              ['waiting material', 'two ambient rows after released text'],
+              ['waiting material', 'at least four ambient rows after released text'],
               ['new batch handover', '280 ms · earlier text stays still'],
               ['passages', `${u.medianPassages ?? '·'} of ${u.medianPassageChars ?? '·'} characters`],
               ['exact outputs', `${u.exactFinalOutputs} of ${u.traces}`],
