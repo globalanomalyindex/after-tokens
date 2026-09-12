@@ -803,6 +803,13 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
   74% { opacity: 1; top: -.2px; }
   100% { opacity: 1; top: 0; }
 }
+.settle[data-policy="word"] .settle-passage[data-arriving="true"] {
+  animation: reading-word-settle 180ms cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes reading-word-settle {
+  from { opacity: .35; top: .35px; }
+  to { opacity: 1; top: 0; }
+}
 .settle-answer-frame { position: relative; isolation: isolate; block-size: 8em; overflow: hidden; }
 .settle-answer-frame[data-phase="ready"],
 .settle-answer-frame[data-phase="revealing"] { overflow: visible; }

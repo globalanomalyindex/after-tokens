@@ -195,7 +195,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · longer bars keep their own rhythm; received content can reserve rough total space. The complete answer takes one material handover after source finality. Earlier reading is deliberately held.' : ' · visible bars hand over to each newly eligible batch before the remaining field moves below it. Earlier readable text stays still. The chosen policy controls eligibility, not the waiting animation.'}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · longer bars keep their own rhythm; received content can reserve rough total space. The complete answer takes one material handover after source finality. Earlier reading is deliberately held.' : policy === 'word' ? ' · words settle in place through a soft ink arrival; no bubbles fly toward individual words. The breathing field continues below the readable text. Source eligibility is unchanged.' : ' · visible bars hand over to each newly eligible batch before the remaining field moves below it. Earlier readable text stays still. The chosen policy controls eligibility, not the waiting animation.'}
         </p>
       )}
     </div>

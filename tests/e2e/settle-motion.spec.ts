@@ -105,6 +105,39 @@ test('earlier reading hands over only released passages and never reanimates set
   expect(observation.maxRestDrift).toBeLessThan(.05)
 })
 
+test('each word settles in place without flying or borrowed pills', async ({ page }) => {
+  const surface = await startEarlierWords(page)
+  const playground = page.locator('#playground')
+  await playground.getByRole('radio', { name: 'each word', exact: true }).click()
+  await playground.getByRole('button', { name: 'replay the recording', exact: true }).click()
+  await surface.scrollIntoViewIfNeeded()
+  const result = await surface.evaluate(async root => {
+    let arrivals = 0, blends = 0, fieldFrames = 0
+    const failures = new Set<string>(), keys = new Set<string>(), started = performance.now()
+    await new Promise<void>(resolve => {
+      const tick = () => {
+        if (root.querySelector('.bubble-transfer__cell, [data-borrowed], [data-refilling]')) failures.add('spatial transfer appeared')
+        if (root.querySelector('.ambient-composition')) fieldFrames++
+        for (const el of root.querySelectorAll<HTMLElement>('[data-arriving="true"]')) {
+          const key = el.dataset.passage!
+          if (!keys.has(key)) { keys.add(key); arrivals++ }
+          const css = getComputedStyle(el)
+          if (Number(css.opacity) > .35 && Number(css.opacity) < 1) blends++
+          if (Math.abs(parseFloat(css.top)) > .36 || css.transform !== 'none' || css.filter !== 'none') failures.add('word moved or blurred')
+        }
+        if (performance.now() - started < 10000) requestAnimationFrame(tick)
+        else resolve()
+      }
+      requestAnimationFrame(tick)
+    })
+    return { arrivals, blends, fieldFrames, failures: [...failures] }
+  })
+  expect(result.failures).toEqual([])
+  expect(result.arrivals).toBeGreaterThan(2)
+  expect(result.blends).toBeGreaterThan(0)
+  expect(result.fieldFrames).toBeGreaterThan(0)
+})
+
 test('pause and offscreen states suspend ambient activity without resetting its phase', async ({ page }) => {
   const surface = await startEarlierWords(page)
   const ambient = surface.locator('.ambient-composition__bar').first()

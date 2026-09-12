@@ -182,3 +182,7 @@ The same pill sits at the right of the status row in every demonstration: the sh
 The pill uses the answer’s UI typeface, including the percent sign. It remains mounted in the chat’s own status row during a response, including sentence handovers; completion fades its appearance without collapsing that row. The intro pill belongs to its reply bubble, and the upfront comparison keeps the pill in its After Tokens panel. Raw-prefix and evolving-draft views have no percentage pill.
 
 Comparison order is consistent in both markup and layout: After Tokens first/left, the raw prefix or evolving draft second/right. Mobile stacking keeps After Tokens first. Its progress pill stays inside its own answer box when the comparison order changes.
+
+### Each-word motion refinement
+
+I use an in-place ink arrival for the frequent each-word policy: opacity rises from 0.35 to 1 over 180 ms, with only 0.35 px of vertical settling. This mode creates no transfer cells, measures no destination word boxes, and borrows no waiting bars. The same 280 ms handover lifecycle still advances the waiting field and preserves its terminal fade. Sentence, paragraph, and whole-answer policies retain the spatial bubble handover. This is a motion-frequency design choice; no new reader-benefit claim is inferred. Source events, release eligibility, and exact answer text remain unchanged.

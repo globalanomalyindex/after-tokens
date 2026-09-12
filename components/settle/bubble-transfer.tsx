@@ -7,13 +7,21 @@ type Cell = Rect & { alpha: number; target: Rect }
 
 /** A visual bridge made from the bubbles actually on screen and text that
  * has ALREADY met its release policy. These rectangles never predict words. */
-export function BubbleTransfer({ frameRef, transferKey, onCaptured, onComplete }: {
-  frameRef: RefObject<HTMLDivElement | null>; transferKey: string; onCaptured?: (key: string) => void; onComplete: (key: string) => void
+export function BubbleTransfer({ frameRef, transferKey, inPlace = false, onCaptured, onComplete }: {
+  frameRef: RefObject<HTMLDivElement | null>; transferKey: string; inPlace?: boolean; onCaptured?: (key: string) => void; onComplete: (key: string) => void
 }) {
   const [cells, setCells] = useState<Cell[]>([])
   useLayoutEffect(() => {
     const frame = frameRef.current
     if (!frame) return
+    // Frequent word arrivals settle as ink in their own positions. Keep the
+    // shared handover clock and field continuity, without borrowing cells or
+    // measuring word targets for a spatial transfer.
+    if (inPlace) {
+      frame.dataset.transferCaptured = 'in-place'
+      onCaptured?.(transferKey)
+      return () => { delete frame.dataset.transferCaptured }
+    }
     const box = frame.getBoundingClientRect()
     const origins: (Rect & { alpha: number; element: HTMLElement })[] = []
     const division = frame.querySelector<HTMLElement>('.skeleton-division')
@@ -95,7 +103,7 @@ export function BubbleTransfer({ frameRef, transferKey, onCaptured, onComplete }
         if (!refilling) element.dataset.replenish = 'true'
       }
     }
-  }, [frameRef, transferKey, onCaptured])
+  }, [frameRef, transferKey, inPlace, onCaptured])
   return <div className="bubble-transfer" data-bubble-transfer aria-hidden="true" onAnimationEnd={(event) => {
     if (event.target === event.currentTarget) onComplete(transferKey)
   }}>

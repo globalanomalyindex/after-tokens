@@ -8,7 +8,7 @@ export function SectionField() {
     <Section id="field" title="A field, then an answer">
       <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.02] mb-6 max-w-4xl">a field, then an answer</h2>
       <p className="standfirst max-w-3xl">
-        long, rounded bars give the waiting area a fuller shape. a few larger cells make room for one another, breathing on their own rhythms. the field can grow without chasing every word in a changing draft. when text is ready to show, the visible material carries into its real word groups. new text settles once; earlier readable text stays still.
+        long, rounded bars give the waiting area a fuller shape. a few larger cells make room for one another, breathing on their own rhythms. the field can grow without chasing every word in a changing draft. sentences carry the visible material into their real word groups. the faster each-word option settles the ink in place, without sending pills across the page. new text settles once; earlier readable text stays still.
       </p>
       <div className="mt-12 md:mt-16"><AmbientStudy /></div>
       <p className="readout mt-6 leading-relaxed max-w-4xl" style={{ color: 'var(--muted)' }}>
