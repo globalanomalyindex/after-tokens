@@ -6,7 +6,7 @@ By Christopher Robin Fiore. GitHub: globalanomalyindex.
 
 I brought the motion to the front of the case study. The default view is a twelve-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
 
-The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available.
+The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available.
 
 This is a web and motion design proposal, with product integration constraints. A polished transition does not establish a reading, trust, or perceived-speed benefit.
 
@@ -477,8 +477,9 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
 .showcaseLayout .answerScroll { min-height: 220px; max-height: 35dvh; }
 .showcaseLayout .answer, .showcaseLayout .raw { font-size: clamp(22px, 2vw, 30px); }
 .opening { width: 100%; min-width: 0; --hero-slot-height: calc(100dvh - 226px); --hero-answer-size: clamp(23px, 2.35vw, 34px); --hero-prompt-size: clamp(18px, 1.5vw, 23px); }
-.opening :global([data-hero-canvas][data-presentation='embedded']) { background: #ffffff03; border: 1px solid #ffffff10; }
-.opening :global([data-hero-canvas][data-presentation='fullscreen']) { background: var(--deck-bg); }
+/* One opaque material across pending, fullscreen, docking and embedded states. */
+.opening :global([data-hero-canvas]) { background: var(--deck-bg); }
+.opening :global([data-hero-canvas][data-presentation='embedded']) { border: 1px solid #ffffff10; }
 .opening :global([data-hero-intro] > figcaption) { color: var(--deck-muted); }
 .opening :global([data-hero-intro] > figcaption > span) { font-family: var(--font-ui); font-size: 10px; }
 .edge {

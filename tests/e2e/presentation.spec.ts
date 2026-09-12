@@ -123,3 +123,23 @@ test('reply progress stays anchored while long answer text scrolls', async ({ pa
   expect(progress!.y).toBeGreaterThanOrEqual(scrollArea!.y)
   expect(progress!.y + progress!.height).toBeLessThanOrEqual(scrollArea!.y + scrollArea!.height + 1)
 })
+
+test('the intro keeps one off-black background through its natural zoom-out', async ({ page }) => {
+  await page.goto('/')
+  const canvas = page.locator('[data-hero-canvas]')
+  await expect(canvas).toHaveAttribute('data-presentation', 'fullscreen')
+  const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string }>>((resolve, reject) => {
+    const frames: Array<{ phase: string; color: string }> = []
+    const deadline = performance.now() + 18000
+    function sample() {
+      const phase = element.getAttribute('data-presentation') ?? ''
+      frames.push({ phase, color: getComputedStyle(element).backgroundColor })
+      if (phase === 'embedded') { resolve(frames); return }
+      if (performance.now() > deadline) { reject(new Error('The opening did not finish docking')); return }
+      requestAnimationFrame(sample)
+    }
+    sample()
+  }))
+  expect(samples.some(frame => frame.phase === 'docking')).toBe(true)
+  expect(new Set(samples.map(frame => frame.color))).toEqual(new Set(['rgb(24, 22, 21)']))
+})
