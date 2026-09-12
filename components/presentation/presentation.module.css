@@ -189,3 +189,11 @@
   .colophonCredits .credit { margin-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .studyArrow { transition: none; }.studyCta:hover .studyArrow { transform: none; } }
+
+/* The opening owns viewport geometry; a transformed slide ancestor would
+   change the containing block of its fixed canvas. */
+.openingSlide { animation: none; }
+.header { z-index: 10020; }
+.indexMenu { z-index: 10030; }
+.footerNavigation button { display: none; }
+@media (max-width: 900px) { .footerNavigation button { display: inline-block; } }

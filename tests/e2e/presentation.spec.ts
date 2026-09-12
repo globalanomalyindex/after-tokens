@@ -3,9 +3,9 @@ import AxeBuilder from '@axe-core/playwright'
 
 async function start(page: import('@playwright/test').Page) {
   await page.goto('/')
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
   await page.keyboard.press('Escape')
-  await expect(page.getByRole('button', { name: 'Go to next slide', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true })).toBeEnabled()
   return page.locator('[data-case-study]')
 }
 
@@ -45,7 +45,7 @@ test('scroll gestures, arrows and the index navigate one spacious example at a t
   await page.goBack()
   await expect(deck).toHaveAttribute('data-slide', 'words')
   await page.reload()
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(deck).toHaveAttribute('data-slide', 'words')
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
@@ -58,17 +58,17 @@ test('the full study stays available and reduced motion supports every chapter',
   const deck = page.locator('[data-case-study]')
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await expect(deck).toHaveAttribute('data-reduced-motion', 'true')
-  await expect(page.getByRole('button', { name: 'Go to next slide', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true })).toBeEnabled()
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   for (let i = 0; i < 12; i++) {
-    if (i) await page.getByRole('button', { name: 'Go to next slide', exact: true }).click()
+    if (i) await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
     await expect(deck.locator('[aria-roledescription="slide"]')).toHaveCount(1)
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
     const result = await new AxeBuilder({ page }).include('[data-case-study]').withTags(['wcag2a', 'wcag2aa']).analyze()
     expect(result.violations).toEqual([])
   }
-  await expect(page.getByRole('button', { name: 'Go to next slide', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true })).toBeDisabled()
   if (page.viewportSize()!.width <= 900) {
     await expect(page.getByRole('button', { name: 'Previous slide', exact: true })).toBeHidden()
     await expect(page.getByRole('button', { name: 'Next slide', exact: true })).toBeHidden()
@@ -85,7 +85,7 @@ test('the full study stays available and reduced motion supports every chapter',
 test('examples vary and brand voices cycle only after the answer, with a pause control', async ({ page }) => {
   test.setTimeout(45000)
   await page.goto('/#voices')
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
   await page.keyboard.press('Escape')
   const demo = page.locator('[data-presentation-demo]')
   await expect(demo).toHaveAttribute('data-voice', 'spectrum')
@@ -97,7 +97,7 @@ test('examples vary and brand voices cycle only after the answer, with a pause c
   await expect(demo).toHaveAttribute('data-voice', 'after-tokens')
   await page.getByRole('button', { name: 'spectrum', exact: true }).click()
   await expect(demo).toHaveAttribute('data-voice', 'spectrum')
-  await page.getByRole('button', { name: 'Go to next slide', exact: true }).click()
+  await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
   await expect(demo).toHaveAttribute('data-example', 'travel__lowconf-b32')
   await expect(page.locator('[data-raw-reply]')).toBeVisible()
   await expect(page.locator('[data-after-tokens-reply]')).not.toContainText('heron')
@@ -133,13 +133,14 @@ test('the intro keeps its off-black background and stays put until manual naviga
   await page.goto('/#comparison')
   const canvas = page.locator('[data-hero-canvas]')
   await expect(canvas).toHaveAttribute('data-presentation', 'fullscreen')
-  const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number }>>((resolve, reject) => {
-    const frames: Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number }> = []
+  const samples = await canvas.evaluate(element => new Promise<Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number; textX: number; textY: number }>>((resolve, reject) => {
+    const frames: Array<{ phase: string; color: string; controlsOpacity: number; footerHeight: number; textX: number; textY: number }> = []
     const deadline = performance.now() + 18000
     function sample() {
       const phase = element.getAttribute('data-presentation') ?? ''
       const controls = element.querySelector<HTMLElement>('[data-hero-controls]')!
-      frames.push({ phase, color: getComputedStyle(element).backgroundColor, controlsOpacity: controls ? Number(getComputedStyle(controls).opacity) : -1, footerHeight: controls?.parentElement?.getBoundingClientRect().height ?? -1 })
+      const text = element.querySelector('[data-hero-typed]')!.getBoundingClientRect()
+      frames.push({ textX: text.x, textY: text.y, phase, color: getComputedStyle(element).backgroundColor, controlsOpacity: controls ? Number(getComputedStyle(controls).opacity) : -1, footerHeight: controls?.parentElement?.getBoundingClientRect().height ?? -1 })
       if (phase === 'embedded') { resolve(frames); return }
       if (performance.now() > deadline) { reject(new Error('The opening did not finish docking')); return }
       requestAnimationFrame(sample)
@@ -148,13 +149,32 @@ test('the intro keeps its off-black background and stays put until manual naviga
   }))
   const docking = samples.filter(frame => frame.phase === 'docking')
   expect(docking.length).toBeGreaterThan(0)
-  expect(docking.every(frame => frame.controlsOpacity === 0)).toBe(true)
+  expect(docking.every(frame => frame.controlsOpacity === 1)).toBe(true)
   expect(Math.abs(samples.at(-1)!.footerHeight - docking.at(-1)!.footerHeight)).toBeLessThan(1)
+  expect(Math.abs(samples.at(-1)!.textX - docking.at(-1)!.textX)).toBeLessThan(1)
+  expect(Math.abs(samples.at(-1)!.textY - docking.at(-1)!.textY)).toBeLessThan(1)
   await expect(canvas.locator('[data-hero-controls]')).toHaveAttribute('inert', '')
   await expect(canvas.getByRole('button', { name: /skip to case study/ })).toHaveCount(0)
   expect(new Set(samples.map(frame => frame.color))).toEqual(new Set(['rgb(24, 22, 21)']))
   await page.waitForTimeout(700)
   await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'opening')
-  await page.getByRole('button', { name: 'Go to next slide', exact: true }).click()
+  await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
   await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'comparison')
+})
+
+test('intro keeps header navigation and skip available, with arrows appropriate to the screen', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'skip to case study' })).toBeVisible()
+  await page.locator('button[aria-controls="chapter-index"]').click()
+  await page.getByRole('navigation', { name: 'Case study chapters' }).getByRole('button', { name: /a different arrival/ }).click()
+  await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'comparison')
+  const mobileArrow = page.getByRole('button', { name: 'Go to next slide', exact: true })
+  if (page.viewportSize()!.width <= 900) await expect(mobileArrow).toBeVisible()
+  else await expect(mobileArrow).toBeHidden()
+  await page.reload()
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
+  await page.getByRole('button', { name: 'read the study ↗', exact: true }).click()
+  await expect(page).toHaveURL(/view=reading/)
+  await expect(page.locator('[data-hero-canvas][role="dialog"]')).toHaveCount(0)
 })

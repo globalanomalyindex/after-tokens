@@ -61,7 +61,8 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
   }, [])
   const navigate = useCallback((next: number) => {
     const clamped = Math.max(0, Math.min(CHAPTERS.length - 1, next))
-    if (document.querySelector('[data-hero-canvas][role="dialog"]')) return
+    setOpeningDone(true)
+    pending.current = 0
     setDirection(clamped >= index ? 1 : -1)
     setIndex(clamped); setMenu(false)
     history.pushState(null, '', `${location.pathname}#${CHAPTERS[clamped]!.id}`)
@@ -169,7 +170,7 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
           else if (Math.abs(dy) > 85 && !scrollable(start.target, dy)) navigate(index + Math.sign(dy))
         }}>
         <section data-slide-scroll tabIndex={0} key={chapter.id} className={`${styles.slide} ${index === 0 ? styles.openingSlide : ''}`} data-direction={direction} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${CHAPTERS.length}: ${chapter.label}`}>
-          {index === 0 ? <div className={styles.opening}><h1 className="sr-only">After Tokens — a different arrival for generated text</h1><HeroIntro onOpeningComplete={finishOpening} /></div> : <SlideContent index={index} read={read} />}
+          {index === 0 ? <div className={styles.opening}><h1 className="sr-only">After Tokens — a different arrival for generated text</h1><HeroIntro navigable onOpeningComplete={finishOpening} /></div> : <SlideContent index={index} read={read} />}
         </section>
       </div>
       <footer className={styles.footer}>

@@ -40,7 +40,7 @@ const STATIC_ANSWER = INTRO.events.reduce(reduceSettle, createSettleState('sente
 type Presentation = 'pending' | 'fullscreen' | 'docking' | 'embedded'
 export const SkipOpeningContext = createContext(false)
 
-export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped: boolean) => void } = {}) {
+export function HeroIntro({ onOpeningComplete, navigable = false }: { onOpeningComplete?: (skipped: boolean) => void; navigable?: boolean } = {}) {
   const root = useRef<HTMLElement>(null)
   const slot = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLDivElement>(null)
@@ -64,7 +64,7 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
   const { play, pause } = clock
   const expanded = presentation === 'fullscreen' || presentation === 'docking'
   const staticView = hydrated && (reduced || showStatic)
-  const introControlsVisible = presentation === 'fullscreen' && !clock.finished && !staticView
+  const introControlsVisible = !staticView && (navigable ? expanded : presentation === 'fullscreen' && !clock.finished)
   const paused = !hydrated || manualPause || (!expanded && !inView) || !documentVisible
   const active = !paused && !staticView && !clock.finished && presentation !== 'pending'
 
@@ -163,6 +163,11 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
     const element = canvas.current
     const focusTarget = root.current
     if (!expanded || !element) return
+    if (navigable) {
+      const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); skip() } }
+      document.addEventListener('keydown', escape)
+      return () => document.removeEventListener('keydown', escape)
+    }
     const body = document.body, html = document.documentElement
     const x = window.scrollX, y = window.scrollY
     const bodyBefore = { position: body.style.position, top: body.style.top, left: body.style.left, width: body.style.width, overflow: body.style.overflow, paddingRight: body.style.paddingRight }
@@ -204,7 +209,7 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
       html.style.scrollBehavior = 'auto'; window.scrollTo(x, y); html.style.scrollBehavior = behavior
       focusTarget?.focus({ preventScroll: true })
     }
-  }, [expanded, skip])
+  }, [expanded, skip, navigable])
 
   const typed = staticView ? QUESTION : QUESTION.slice(0, LETTER_TIMES.filter((at) => at <= clock.elapsedMs).length)
   const replyVisible = staticView || clock.elapsedMs >= REPLY_AT_MS
@@ -216,7 +221,7 @@ export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped:
 
   return <figure ref={root} tabIndex={-1} className={styles.root} data-hero-intro data-presentation={presentation} data-elapsed-ms={Math.round(clock.elapsedMs)} data-static={staticView} data-paused={paused || staticView}>
     <div ref={slot} className={styles.slot}>
-      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
+      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo data-navigable={navigable} role={expanded && !navigable ? 'dialog' : undefined} aria-modal={expanded && !navigable ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
         <span id={titleId} className="sr-only">After Tokens motion introduction</span>
         <p className="sr-only" data-hero-transcript>Question: {QUESTION} Answer: {WELCOME}</p>
         <div className={styles.topline} aria-hidden="true"><span>after tokens</span><span>a motion study</span></div>

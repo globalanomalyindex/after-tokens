@@ -6,7 +6,7 @@ By Christopher Robin Fiore. GitHub: globalanomalyindex.
 
 I brought the motion to the front of the case study. The default view is a twelve-chapter, fullscreen presentation with large readable answers, restrained translucent surfaces, and a consistent left-to-right comparison. The full research article remains available through “read the study” and `?view=reading`.
 
-The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. Intro controls fade out when the source finishes, before the docking beat; their hidden, inert space stays mounted so removing a button cannot resize the scene. The docking animation retains its final geometry until the embedded layout commits, then releases it before paint. Keyboard focus moves to the dialog surface while the controls are hidden, and Escape remains available.
+The introduction describes diffusion text taking shape in several places at once. It demonstrates sentence-based arrival, then opens the presentation. Its canvas keeps the same opaque off-black (#181615) through fullscreen, docking and embedded states, preventing a darker flash during the zoom-out. It runs on every document reload; switching to the article in the same document does not replay it. Skip and reduced-motion behavior remain available. In presentation mode the intro is non-modal: the top navigation and chapter index remain usable, and Skip stays available through the final beat and docking. The article retains its standalone modal opening. Hidden controls keep their layout space after docking. The opening slide has no parent transform animation, and the scene reserves its scrollbar channel throughout the transition so shortening the canvas does not trigger a text-width change. Fullscreen and embedded padding match, and the final animation geometry stays in place until React commits the embedded layout. Desktop uses the side navigation; bottom arrow buttons appear only at mobile widths.
 
 This is a web and motion design proposal, with product integration constraints. A polished transition does not establish a reading, trust, or perceived-speed benefit.
 
@@ -82,7 +82,6 @@ import { ReadingStudy } from '@/components/presentation/reading-study'
 export default function HomePage() {
   return <CaseStudyExperience reading={<ReadingStudy />} />
 }
-
 ```
 
 ### components/presentation/case-study-experience.tsx
@@ -151,7 +150,8 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
   }, [])
   const navigate = useCallback((next: number) => {
     const clamped = Math.max(0, Math.min(CHAPTERS.length - 1, next))
-    if (document.querySelector('[data-hero-canvas][role="dialog"]')) return
+    setOpeningDone(true)
+    pending.current = 0
     setDirection(clamped >= index ? 1 : -1)
     setIndex(clamped); setMenu(false)
     history.pushState(null, '', `${location.pathname}#${CHAPTERS[clamped]!.id}`)
@@ -259,7 +259,7 @@ export function CaseStudyExperience({ reading }: { reading: ReactNode }) {
           else if (Math.abs(dy) > 85 && !scrollable(start.target, dy)) navigate(index + Math.sign(dy))
         }}>
         <section data-slide-scroll tabIndex={0} key={chapter.id} className={`${styles.slide} ${index === 0 ? styles.openingSlide : ''}`} data-direction={direction} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${CHAPTERS.length}: ${chapter.label}`}>
-          {index === 0 ? <div className={styles.opening}><h1 className="sr-only">After Tokens — a different arrival for generated text</h1><HeroIntro onOpeningComplete={finishOpening} /></div> : <SlideContent index={index} read={read} />}
+          {index === 0 ? <div className={styles.opening}><h1 className="sr-only">After Tokens — a different arrival for generated text</h1><HeroIntro navigable onOpeningComplete={finishOpening} /></div> : <SlideContent index={index} read={read} />}
         </section>
       </div>
       <footer className={styles.footer}>
@@ -323,7 +323,6 @@ function SlideContent({ index, read }: { index: number; read: (hash?: string) =>
     </div>
   </div>
 }
-
 ```
 
 ### components/presentation/presentation-demo.tsx
@@ -427,7 +426,6 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
     <p className={styles.demoNote}>{recorded ? 'Train or plane · original model recording · unedited words · forward-pass timing.' : 'Illustrative reply · authored timing.'} Percentages track playback.</p>
   </div>
 }
-
 ```
 
 ### components/presentation/presentation.module.css
@@ -625,6 +623,13 @@ export function PresentationDemo({ policy: initialPolicy = 'sentence', compare =
 }
 @media (prefers-reduced-motion: reduce) { .studyArrow { transition: none; }.studyCta:hover .studyArrow { transform: none; } }
 
+/* The opening owns viewport geometry; a transformed slide ancestor would
+   change the containing block of its fixed canvas. */
+.openingSlide { animation: none; }
+.header { z-index: 10020; }
+.indexMenu { z-index: 10030; }
+.footerNavigation button { display: none; }
+@media (max-width: 900px) { .footerNavigation button { display: inline-block; } }
 ```
 
 ### components/presentation/reading-study.tsx
@@ -674,7 +679,6 @@ export function ReadingStudy() {
     </BrandProvider>
   )
 }
-
 ```
 
 ## Shared component integration patch
@@ -734,7 +738,7 @@ index 411fce0..b37e905 100644
  .progress[data-motion="false"][data-complete="true"] { animation: none; opacity: 0; }
  @media (prefers-reduced-motion: reduce) { .progress[data-complete="true"] { animation: none; opacity: 0; } }
 diff --git a/components/settle/hero-intro.module.css b/components/settle/hero-intro.module.css
-index 4b72403..f84ba99 100644
+index 4b72403..43d18c0 100644
 --- a/components/settle/hero-intro.module.css
 +++ b/components/settle/hero-intro.module.css
 @@ -1,5 +1,5 @@
@@ -785,14 +789,26 @@ index 4b72403..f84ba99 100644
    .canvas { padding-top: max(1.2rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
    .conversation { padding-block: 1.5rem; }
    .prompt { padding: .85rem 1rem; max-width: 100%; }
-@@ -70,4 +73,4 @@
+@@ -70,4 +73,16 @@
    .caption { align-items: flex-start; }
    .controls { gap: 1.25rem; }
  }
 -@media (prefers-reduced-motion: reduce) { .reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
 +@media (prefers-reduced-motion: reduce) { .sceneControls, .sceneControls[data-visible="false"] { transition: none; }.reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
++
++/* Reserve the scroll channel before docking so text never rewraps when
++   the shorter embedded scene starts overflowing. */
++.scene { scrollbar-gutter: stable both-edges; }
++.canvas[data-navigable='true'] { padding-top: 88px; }
++.canvas[data-navigable='true'] .topline { visibility: hidden; }
++@media (max-width: 900px) {
++  .canvas[data-navigable='true'] { padding-top: 70px; }
++}
++@media (max-width: 480px) {
++  .canvas[data-navigable='true'] { padding-top: 62px; }
++}
 diff --git a/components/settle/hero-intro.tsx b/components/settle/hero-intro.tsx
-index b5d64a6..d9f9045 100644
+index b5d64a6..f735978 100644
 --- a/components/settle/hero-intro.tsx
 +++ b/components/settle/hero-intro.tsx
 @@ -1,6 +1,6 @@
@@ -825,7 +841,7 @@ index b5d64a6..d9f9045 100644
 +export const SkipOpeningContext = createContext(false)
 
 -export function HeroIntro() {
-+export function HeroIntro({ onOpeningComplete }: { onOpeningComplete?: (skipped: boolean) => void } = {}) {
++export function HeroIntro({ onOpeningComplete, navigable = false }: { onOpeningComplete?: (skipped: boolean) => void; navigable?: boolean } = {}) {
    const root = useRef<HTMLElement>(null)
    const slot = useRef<HTMLDivElement>(null)
    const canvas = useRef<HTMLDivElement>(null)
@@ -845,7 +861,7 @@ index b5d64a6..d9f9045 100644
    const { play, pause } = clock
    const expanded = presentation === 'fullscreen' || presentation === 'docking'
    const staticView = hydrated && (reduced || showStatic)
-+  const introControlsVisible = presentation === 'fullscreen' && !clock.finished && !staticView
++  const introControlsVisible = !staticView && (navigable ? expanded : presentation === 'fullscreen' && !clock.finished)
    const paused = !hydrated || manualPause || (!expanded && !inView) || !documentVisible
    const active = !paused && !staticView && !clock.finished && presentation !== 'pending'
 
@@ -888,7 +904,19 @@ index b5d64a6..d9f9045 100644
    useEffect(() => { if (active) play(); else pause() }, [active, play, pause])
 
    useLayoutEffect(() => {
-@@ -163,13 +180,14 @@ export function HeroIntro() {
+@@ -146,6 +163,11 @@ export function HeroIntro() {
+     const element = canvas.current
+     const focusTarget = root.current
+     if (!expanded || !element) return
++    if (navigable) {
++      const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); skip() } }
++      document.addEventListener('keydown', escape)
++      return () => document.removeEventListener('keydown', escape)
++    }
+     const body = document.body, html = document.documentElement
+     const x = window.scrollX, y = window.scrollY
+     const bodyBefore = { position: body.style.position, top: body.style.top, left: body.style.left, width: body.style.width, overflow: body.style.overflow, paddingRight: body.style.paddingRight }
+@@ -163,13 +185,14 @@ export function HeroIntro() {
        }
        if (branch.parentElement === body) break
      }
@@ -905,16 +933,25 @@ index b5d64a6..d9f9045 100644
        if (event.shiftKey && (document.activeElement === first || !element.contains(document.activeElement))) { event.preventDefault(); last?.focus() }
        else if (!event.shiftKey && (document.activeElement === last || !element.contains(document.activeElement))) { event.preventDefault(); first?.focus() }
      }
-@@ -198,7 +216,7 @@ export function HeroIntro() {
+@@ -186,7 +209,7 @@ export function HeroIntro() {
+       html.style.scrollBehavior = 'auto'; window.scrollTo(x, y); html.style.scrollBehavior = behavior
+       focusTarget?.focus({ preventScroll: true })
+     }
+-  }, [expanded, skip])
++  }, [expanded, skip, navigable])
+
+   const typed = staticView ? QUESTION : QUESTION.slice(0, LETTER_TIMES.filter((at) => at <= clock.elapsedMs).length)
+   const replyVisible = staticView || clock.elapsedMs >= REPLY_AT_MS
+@@ -198,7 +221,7 @@ export function HeroIntro() {
 
    return <figure ref={root} tabIndex={-1} className={styles.root} data-hero-intro data-presentation={presentation} data-elapsed-ms={Math.round(clock.elapsedMs)} data-static={staticView} data-paused={paused || staticView}>
      <div ref={slot} className={styles.slot}>
 -      <div ref={canvas} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
-+      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo role={expanded ? 'dialog' : undefined} aria-modal={expanded ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
++      <div ref={canvas} tabIndex={-1} className={styles.canvas} data-hero-canvas data-presentation={presentation} data-demo data-navigable={navigable} role={expanded && !navigable ? 'dialog' : undefined} aria-modal={expanded && !navigable ? true : undefined} aria-labelledby={expanded ? titleId : undefined} style={{ '--hero-slot-width': slotWidth ? `${slotWidth}px` : '100%' } as CSSProperties}>
          <span id={titleId} className="sr-only">After Tokens motion introduction</span>
          <p className="sr-only" data-hero-transcript>Question: {QUESTION} Answer: {WELCOME}</p>
          <div className={styles.topline} aria-hidden="true"><span>after tokens</span><span>a motion study</span></div>
-@@ -218,17 +236,17 @@ export function HeroIntro() {
+@@ -218,17 +241,17 @@ export function HeroIntro() {
            </div>
          </div>
          <div className={styles.sceneFooter}>
@@ -949,5 +986,4 @@ index 7e3385f..b2f8a79 100644
    sources = 'curated',
    controls = [],
    policy: policyProp = 'sentence',
-
 ```

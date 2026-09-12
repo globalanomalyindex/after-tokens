@@ -74,3 +74,15 @@
   .controls { gap: 1.25rem; }
 }
 @media (prefers-reduced-motion: reduce) { .sceneControls, .sceneControls[data-visible="false"] { transition: none; }.reply, .cursor { animation: none; transition: none; } .controls button { transition: none; } }
+
+/* Reserve the scroll channel before docking so text never rewraps when
+   the shorter embedded scene starts overflowing. */
+.scene { scrollbar-gutter: stable both-edges; }
+.canvas[data-navigable='true'] { padding-top: 88px; }
+.canvas[data-navigable='true'] .topline { visibility: hidden; }
+@media (max-width: 900px) {
+  .canvas[data-navigable='true'] { padding-top: 70px; }
+}
+@media (max-width: 480px) {
+  .canvas[data-navigable='true'] { padding-top: 62px; }
+}
