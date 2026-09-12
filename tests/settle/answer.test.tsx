@@ -8,6 +8,19 @@ import { TRACE_IDS, loadTrace } from '@/lib/traces/index'
 afterEach(cleanup)
 
 describe('the unified reading surface', () => {
+  it('does not turn elapsed playback into a completion claim without source finality', () => {
+    const state = createSettleState('sentence')
+    const { container, rerender } = render(<SettleAnswer state={state} progress={100} motion={false} />)
+    expect(container.querySelector('[data-demo-progress]')).toHaveTextContent('99%')
+    expect(container.querySelector('[data-demo-progress]')).toHaveAttribute('data-complete', 'false')
+    rerender(<SettleAnswer state={{ ...state, status: 'error' }} progress={100} motion={false} />)
+    expect(container.querySelector('[data-demo-progress]')).toHaveAttribute('data-complete', 'false')
+    rerender(<SettleAnswer state={state} progress={null} motion={false} />)
+    expect(container.querySelector('[data-demo-progress]')).not.toHaveAttribute('aria-valuenow')
+    rerender(<SettleAnswer state={state} motion={false} />)
+    expect(container.querySelector('[data-demo-progress]')).toBeNull()
+  })
+
   it('keeps changing guesses out of the reading page while preserving its modern ornament', () => {
     let state = createSettleState('sentence', 5)
     state = reduceSettle(state, { type: 'draft', atMs: 100, guesses: [{ position: 1, text: ' blue', p: 0.8 }, { position: 2, text: ' sky', p: 0.8 }] })

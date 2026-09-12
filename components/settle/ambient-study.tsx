@@ -79,7 +79,7 @@ export function AmbientStudy() {
             <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--ink-2)' }}>{item.description}</p>
           </figcaption>
           <div className="stage p-5" data-demo>
-            <SettleAnswer state={clock.state} runId={clock.runId} ambient={item.id} motion={motion} paused={clock.paused || !trace} announce={false} onVisualReady={condition === item.id ? setVisualReady : undefined} label={`answer · ${item.id}`} className="text-[15px] leading-relaxed" />
+            <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} ambient={item.id} motion={motion} paused={clock.paused || !trace} announce={false} onVisualReady={condition === item.id ? setVisualReady : undefined} label={`answer · ${item.id}`} className="text-[15px] leading-relaxed" />
           </div>
         </figure>)}
       </div>
@@ -88,7 +88,7 @@ export function AmbientStudy() {
         <button type="button" className="replay-btn replay-btn-on-surface cursor-pointer" aria-expanded={earlier} aria-controls="ambient-earlier-comparison" onClick={() => setEarlier((value) => !value)}>{earlier ? 'hide comparison' : `compare ${comparisonName}`}</button>
         {earlyState && <div id="ambient-earlier-comparison" className="mt-5">
           <p className="text-sm leading-relaxed mb-4 max-w-2xl" style={{ color: 'var(--ink-2)' }}>The same source clock, with {comparisonPolicy === 'answer' ? 'the whole answer held until source finality' : 'each eligible sentence released earlier'}. This compares availability; it does not isolate the effect of ambient motion.</p>
-          <div className="stage p-5"><SettleAnswer state={earlyState} runId={clock.runId} ambient="reshape" motion={motion} paused={clock.paused} announce={false} label={comparisonName} className="text-[15px] leading-relaxed" /></div>
+          <div className="stage p-5"><SettleAnswer state={earlyState} runId={clock.runId} progress={clock.progress} ambient="reshape" motion={motion} paused={clock.paused} announce={false} label={comparisonName} className="text-[15px] leading-relaxed" /></div>
         </div>}
       </div>
       <p className="settle-sr" role="status" aria-live="polite" aria-atomic="true">{clock.state.status === 'complete' && !visualReady ? 'answer received · settling into place' : statusWords(clock.state, clock.paused, false)}</p>

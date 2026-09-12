@@ -74,7 +74,7 @@ export function SectionShowcase() {
             <div className={styles.panel}>
               <header className={styles.panelHeading}><h3>after tokens</h3><span className={styles.signature}>Reshape</span></header>
               <SettleAnswer state={state} runId={`showcase:${clock.runId}`} ambient="reshape" motion={!clock.reducedMotion} paused={paused}
-                status={false} announce={false} label="After Tokens live answer" onVisualReady={setVisualReady} className={styles.answer} />
+                status={true} progress={clock.progress} announce={false} label="After Tokens live answer" onVisualReady={setVisualReady} className={styles.answer} />
             </div>
             <div className={`${styles.panel} ${styles.rawPanel}`}>
               <header className={styles.panelHeading}><h3>the raw prefix</h3><span>same source</span></header>
@@ -83,12 +83,13 @@ export function SectionShowcase() {
                 {state.prefix.length > state.wordSafeLength && <mark>{state.prefix.slice(state.wordSafeLength)}</mark>}
                 {!state.prefix && <span className={styles.empty}>waiting for the first fragment</span>}
               </p>
+              <div className="settle-margin readout"><span>{clock.finished ? 'complete' : paused ? 'paused' : 'receiving'}</span></div>
             </div>
           </div>
           <div className={styles.stageFooter}><span>{progress}</span><span>one shared clock</span></div>
         </BrandProvider>
         <div className={styles.caption}>
-          <p>Illustrative reply · authored timing, not a model recording.</p>
+          <p>Illustrative reply · authored timing. Percentages track demo playback.</p>
           <p>Raw fragments appear immediately. After Tokens waits for the selected boundary.</p>
         </div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{visualReady ? 'The illustrative comparison is complete.' : paused && clock.elapsedMs === 0 ? 'The illustrative comparison is ready to play.' : paused ? 'The illustrative comparison is paused.' : 'An illustrative reply is playing in both panels.'}</p>

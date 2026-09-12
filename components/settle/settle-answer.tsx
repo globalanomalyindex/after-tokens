@@ -8,6 +8,7 @@ import { usePrefersReducedMotion } from '@/lib/motion/use-prefers-reduced-motion
 import { statusWords } from './margin'
 import { AmbientComposition, type AmbientCondition } from './ambient-composition'
 import { useReadingSurface } from './use-reading-surface'
+import { DemoProgress } from './demo-progress'
 import { BubbleTransfer } from './bubble-transfer'
 import { GROWING_MATERIAL } from '@/lib/settle/growing-geometry'
 
@@ -30,6 +31,8 @@ type Props = {
   field?: boolean
   /** draw the status line (default true) */
   status?: boolean
+  /** Known replay timeline percentage; omit for live sources without a denominator. */
+  progress?: number | null
   /** A shared comparison can own one announcement instead of repeating it. */
   announce?: boolean
   /** optional short vibration when a handover begins, including the final field fade */
@@ -50,7 +53,7 @@ type Props = {
 }
 
 export function SettleAnswer({
-  state, runId = 'default', voice: voiceProp, status = true, announce = true,
+  state, runId = 'default', voice: voiceProp, status = true, progress, announce = true,
   haptics = false, motion = true, ambient = 'reshape', paused = false, onApplyRevision, onVisualReady,
   label = 'answer', className = '', style,
 }: Props) {
@@ -135,7 +138,7 @@ export function SettleAnswer({
         <p className="readout mt-2">committed prefix only · incomplete; gaps and later fragments are not a finished answer</p>
         <div className="settle-partial-text settle-revision-text mt-2">{state.prefix}</div>
       </details>}
-      {status && <div className="settle-margin readout"><span className="settle-status">{announcement}</span></div>}
+      {status && <div className="settle-margin readout"><span className="settle-status">{announcement}</span>{progress !== undefined && <DemoProgress key={runId} value={progress} complete={state.status === 'complete' && visualReady} motion={enabled} />}</div>}
       {(state.status === 'stopped' || state.status === 'error') && state.error && (
         <p className="readout mt-2" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>{state.error}</p>
       )}

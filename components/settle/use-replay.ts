@@ -18,6 +18,8 @@ export type ReplayControls = {
   /** the position the latest event committed, where the cursor goes; null when the latest event was not a commit */
   focus: number | null
   elapsedMs: number
+  /** Known recording duration only; null while the source has not loaded. */
+  progress: number | null
   running: boolean
   finished: boolean
   paused: boolean
@@ -112,7 +114,13 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
 
   const finished = elapsedMs >= durationMs && durationMs > 0
   const play = useCallback(() => setRunning(true), [])
-  const pause = useCallback(() => setRunning(false), [])
+  const pause = useCallback(() => {
+    // Invalidate the scheduled frame immediately and commit its latest time
+    // with the paused state, so the readout cannot creep forward afterward.
+    genRef.current += 1
+    setElapsedMs(elapsedRef.current)
+    setRunning(false)
+  }, [])
   const restart = useCallback(() => {
     genRef.current += 1
     elapsedRef.current = 0
@@ -132,5 +140,5 @@ export function useReplay(replay: Replay | null, { policy = 'sentence', autoplay
     setElapsedMs(elapsedRef.current)
   }, [durationMs])
 
-  return { runId: `${replay?.id ?? 'empty'}:${run}`, state, focus, elapsedMs, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
+  return { runId: `${replay?.id ?? 'empty'}:${run}`, state, focus, elapsedMs, progress: replay && durationMs > 0 ? Math.min(100, elapsedMs / durationMs * 100) : null, running, finished, paused: !running && !finished, play, pause, restart, seekToEnd, applyRevision, reducedMotion }
 }

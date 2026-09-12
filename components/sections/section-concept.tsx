@@ -74,11 +74,11 @@ export function SectionConcept() {
                 <div className="self-start w-[92%] max-w-[92%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-[14px] leading-snug" style={{ background: 'color-mix(in oklab, var(--ink) 4%, transparent)', border: '0.6px solid color-mix(in oklab, var(--ink) 12%, transparent)' }}>
                   <SettleAnswer
                     state={clock.state}
-                    runId={clock.runId}
+                    runId={clock.runId} progress={clock.progress}
                     focus={clock.focus}
                     paused={clock.paused}
                     motion={motion}
-                    status={false}
+                    status={true}
                     haptics
                     label="assistant answer"
                     className="text-[14px] leading-snug"

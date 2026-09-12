@@ -165,20 +165,11 @@ export function SettleStage({
             </span>
           </div>
           <div className={`settle-compare mt-5 ${compact ? '' : 'md:mt-6'}`} data-two={comparison && !compact}>
-            {comparison && !compact && (
-              <div className="min-w-0">
-                <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>the available prefix, as committed · partial words marked</p>
-                <p className={`settle-baseline-text m-0 ${compact ? 'text-[14px]' : 'text-[15px] md:text-base'} leading-relaxed`}>
-                  {state.prefix.slice(0, state.wordSafeLength)}
-                  {state.prefix.length > state.wordSafeLength && <mark>{state.prefix.slice(state.wordSafeLength)}</mark>}
-                </p>
-              </div>
-            )}
             <div className="min-w-0">
-              {comparison && !compact && <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>settle · the page takes {POLICIES.find((item) => item.id === policy)?.label}</p>}
+              {comparison && !compact && <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>after tokens · the page takes {POLICIES.find((item) => item.id === policy)?.label}</p>}
               <SettleAnswer
                 state={state}
-                runId={clock.runId}
+                runId={clock.runId} progress={clock.progress}
                 focus={clock.focus}
                 voice={voice}
                 forming={forming}
@@ -189,6 +180,15 @@ export function SettleStage({
                 style={{ minHeight: compact ? '7.5rem' : '9rem' }}
               />
             </div>
+            {comparison && !compact && (
+              <div className="min-w-0">
+                <p className="readout mb-3" style={{ color: 'color-mix(in oklab, currentColor 72%, transparent)' }}>the available prefix, as committed · partial words marked</p>
+                <p className={`settle-baseline-text m-0 ${compact ? 'text-[14px]' : 'text-[15px] md:text-base'} leading-relaxed`}>
+                  {state.prefix.slice(0, state.wordSafeLength)}
+                  {state.prefix.length > state.wordSafeLength && <mark>{state.prefix.slice(state.wordSafeLength)}</mark>}
+                </p>
+              </div>
+            )}
           </div>
         </BrandProvider>
         {readout && <div className="min-w-0">{readout({ policy, forming, pace, brand })}</div>}

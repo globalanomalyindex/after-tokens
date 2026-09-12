@@ -33,11 +33,11 @@ function Frame({ title, brand, traceId, children, delay = 0, tall = false, relea
   const answer = (
     <SettleAnswer
       state={clock.state}
-      runId={clock.runId}
+      runId={clock.runId} progress={clock.progress}
       focus={clock.focus}
       paused={clock.paused}
       motion={motion}
-      status={false}
+      status={true}
       label="assistant answer"
       className="text-[14px] leading-snug"
       style={{ ['--settle-released' as string]: released } as CSSProperties}

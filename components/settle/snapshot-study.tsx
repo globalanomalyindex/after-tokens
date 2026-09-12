@@ -28,17 +28,17 @@ export function SnapshotStudy() {
       </div>
       <div className="md:hidden mb-5"><ToggleRail label="revision view" items={[{ id: 'protected', label: 'After Tokens' }, { id: 'draft', label: 'evolving draft' }]} activeId={view} onSelect={setView} /></div>
       <div className="grid gap-6 md:grid-cols-2 items-start">
+        <figure className={`m-0 min-w-0 ${view === 'protected' ? 'block' : 'hidden md:block'}`}>
+          <figcaption className="mb-3"><h4 className="font-semibold">After Tokens</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>The same input. One complete answer to read.</p></figcaption>
+          <div className="stage p-5">
+            <SettleAnswer state={clock.state} runId={clock.runId} progress={clock.progress} motion={motion} paused={clock.paused} label="protected answer" className="text-[15px] leading-relaxed" />
+          </div>
+        </figure>
         <figure className={`m-0 min-w-0 ${view === 'draft' ? 'block' : 'hidden md:block'}`}>
           <figcaption className="mb-3"><h4 className="font-semibold">Evolving draft</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>For inspection. This wording can still change.</p></figcaption>
           <div className="stage p-5">
             <div role="region" aria-label="evolving provisional draft" aria-busy={!clock.finished} className="whitespace-pre-wrap break-words text-[15px] leading-relaxed min-h-[8.125em]" data-snapshot-draft>{draft || <span className="readout" style={{ color: 'var(--stage-text)' }}>waiting for a draft</span>}</div>
-            <p className="readout mt-3">{clock.finished ? 'source final' : 'provisional · may change'}</p>
-          </div>
-        </figure>
-        <figure className={`m-0 min-w-0 ${view === 'protected' ? 'block' : 'hidden md:block'}`}>
-          <figcaption className="mb-3"><h4 className="font-semibold">After Tokens</h4><p className="mt-1 text-sm" style={{ color: 'var(--ink-2)' }}>The same input. One complete answer to read.</p></figcaption>
-          <div className="stage p-5">
-            <SettleAnswer state={clock.state} runId={clock.runId} motion={motion} paused={clock.paused} label="protected answer" className="text-[15px] leading-relaxed" />
+            <div className="settle-margin readout"><span>{clock.finished ? 'source final' : 'provisional · may change'}</span></div>
           </div>
         </figure>
       </div>

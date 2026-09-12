@@ -42,7 +42,7 @@
 .answer { font-size: clamp(1.125rem, 1.9vw, 1.625rem); line-height: 1.45; letter-spacing: -.018em; }
 .sceneFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; flex-shrink: 0; min-height: 2.75rem; padding-top: .75rem; font-family: var(--font-mono), monospace; font-size: 10px; }
 .provenance { opacity: .52; }
-.sceneControls { display: flex; gap: 1.25rem; align-items: center; }
+.sceneControls { display: flex; gap: 1.25rem; align-items: center; margin-left: auto; }
 .sceneControls button { cursor: pointer; min-height: 44px; padding: .5rem 0; color: inherit; }
 .sceneControls button:first-child { opacity: .58; }
 .sceneControls button:disabled { opacity: .28; cursor: default; }
@@ -65,7 +65,8 @@
   .answerSpace { margin-top: 1.65rem; min-height: 27rem; }
   .reply { padding: 1rem; }
   .sceneFooter { gap: .5rem; }
-  .sceneControls { justify-content: space-between; width: 100%; }
+  .provenance { flex-basis: 100%; }
+  .sceneControls { gap: .75rem; margin-left: 0; font-size: 9px; }
   .caption { align-items: flex-start; }
   .controls { gap: 1.25rem; }
 }

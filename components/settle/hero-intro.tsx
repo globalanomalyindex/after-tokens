@@ -7,6 +7,7 @@ import type { Replay } from '@/lib/settle/types'
 import { SettleAnswer } from './settle-answer'
 import { useReplay } from './use-replay'
 import styles from './hero-intro.module.css'
+import { DemoProgress } from './demo-progress'
 
 const QUESTION = 'What should diffusion text rendering look like?'
 const SENTENCES = [
@@ -190,6 +191,9 @@ export function HeroIntro() {
   const typed = staticView ? QUESTION : QUESTION.slice(0, LETTER_TIMES.filter((at) => at <= clock.elapsedMs).length)
   const replyVisible = staticView || clock.elapsedMs >= REPLY_AT_MS
   const complete = staticView || clock.finished
+  // Presentation progress, not model confidence. Wait for the final words'
+  // visual handover before showing 100%, then leave a beat for the fade.
+  const introProgress = staticView || (clock.finished && visualReady) ? 100 : Math.min(99, Math.floor((clock.elapsedMs - REPLY_AT_MS) / (INTRO.durationMs - REPLY_AT_MS) * 100))
   const replay = () => { finishDock(); setVisualReady(false); setShowStatic(false); setManualPause(false); clock.restart() }
 
   return <figure ref={root} tabIndex={-1} className={styles.root} data-hero-intro data-presentation={presentation} data-elapsed-ms={Math.round(clock.elapsedMs)} data-static={staticView} data-paused={paused || staticView}>
@@ -208,6 +212,7 @@ export function HeroIntro() {
               {replyVisible && <div key={clock.runId} className={styles.reply} data-static={staticView}>
                 <span className={styles.replyLabel}>after tokens</span>
                 <SettleAnswer state={staticView ? STATIC_ANSWER : clock.state} runId={`hero:${clock.runId}`} ambient="reshape" motion={!staticView} paused={paused} status={false} announce={false} onVisualReady={setVisualReady} label="introductory welcome" className={styles.answer} />
+                <div className="settle-margin readout"><DemoProgress value={introProgress} complete={introProgress === 100} hidden={staticView} intro label="Introduction progress" /></div>
               </div>}
             </div>
           </div>

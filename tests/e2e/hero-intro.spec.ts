@@ -70,6 +70,13 @@ test('four distinct sentence batches use the shared handover before the same sta
   const stage = hero.locator('[data-hero-canvas]')
   await expect(page.getByRole('dialog')).toBeVisible()
   await stage.evaluate((element) => { element.setAttribute('data-original-stage', 'true') })
+  const pill = hero.locator('[data-hero-progress]')
+  await expect(pill).toBeVisible({ timeout: 5000 })
+  expect(await pill.evaluate(element => {
+    const reply = element.closest('[data-static]')!
+    const answer = reply.querySelector('.settle-page')!
+    return getComputedStyle(element).fontFamily === getComputedStyle(answer).fontFamily
+  })).toBe(true)
   const passages = hero.locator('[data-passage]')
   for (let count = 1; count <= 4; count++) {
     await expect(passages).toHaveCount(count, { timeout: count === 1 ? 7500 : 2500 })
@@ -77,6 +84,9 @@ test('four distinct sentence batches use the shared handover before the same sta
     if (count > 1) await expect(passages.first()).not.toHaveAttribute('data-arriving', 'true')
   }
   await expect(hero.locator('.settle')).toHaveAttribute('data-status', 'complete')
+  const progress = hero.locator('[data-hero-progress]')
+  await expect(progress).toHaveText('100%')
+  await expect.poll(() => progress.evaluate(element => Number(getComputedStyle(element).opacity))).toBe(0)
   await expect(hero).toHaveAttribute('data-presentation', 'docking', { timeout: 3000 })
   const during = await stage.boundingBox()
   expect(during!.width).toBeGreaterThan(0)
