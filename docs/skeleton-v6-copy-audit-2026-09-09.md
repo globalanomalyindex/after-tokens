@@ -1,5 +1,7 @@
 # After Tokens v6: writing audit
 
+> Historical v6 record (`responsive-cell-skeleton-v6`, published at `ca43a251bd095f37dad35163ccc1aad682d06371`). Its source-responsive waiting geometry, measurements and captures do not describe or validate the later v7 ambient score.
+
 **Started 9 September 2026 · copy audit refreshed 12 September 2026.**
 
 The primary artifact is my web and motion design study. Engineering makes its demonstrations reproducible and keeps presentation separate from the source. Phone, assistant and search compositions remain secondary browser applications, with no claim of production integration or native iPhone behavior.

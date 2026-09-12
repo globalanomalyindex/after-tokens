@@ -1,10 +1,6 @@
-import { act, cleanup, render } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { AmbientComposition } from '@/components/settle/ambient-composition'
+import { describe, expect, it } from 'vitest'
 import { ambientRowAt, createAmbientRows, deriveAmbientProfile } from '@/lib/settle/ambient-geometry'
 import { createSettleState, reduceSettle } from '@/lib/settle/reader'
-
-afterEach(() => { cleanup(); vi.useRealTimers() })
 
 describe('source-capability-safe ambient profile', () => {
   it('uses current snapshot widths and hard breaks, and changes when a candidate revises', () => {
@@ -99,57 +95,5 @@ describe('persistent variable row geometry', () => {
       expect(state.pills[0]!.opacity).toBe(1)
       expect(state.pills.at(-1)!.opacity).toBe(1)
     }
-  })
-})
-
-describe('ambient activity lifecycle', () => {
-  it('keeps opening keyframe endpoints stable while the persistent field follows new source budgets', () => {
-    const props = { active: true, motion: true, complete: false, runId: 'intro', profile: [.4, .7] }
-    const { container, rerender } = render(<AmbientComposition {...props} />)
-    const division = container.querySelector<HTMLElement>('[data-division-cell="0"]')!
-    expect(division.style.getPropertyValue('--division-width')).toBe('40%')
-    rerender(<AmbientComposition {...props} profile={[.8, .3]} />)
-    expect(container.querySelector('[data-division-cell="0"]')).toBe(division)
-    expect(division.style.getPropertyValue('--division-width')).toBe('40%')
-    expect(container.querySelector<HTMLElement>('.ambient-composition__bar')!.style.getPropertyValue('--ambient-width')).toBe('80%')
-  })
-
-  it('pauses in-flight transitions, including new numeric targets received while inactive', () => {
-    const props = { active: true, motion: true, complete: false, runId: 'pause', profile: [.4, .7] }
-    const { container, rerender } = render(<AmbientComposition {...props} />)
-    const element = container.querySelector('[data-ambient-composition]')!
-    const transition = () => ({ transitionProperty: 'width', playState: 'running', pause: vi.fn(function (this: { playState: string }) { this.playState = 'paused' }), play: vi.fn(function (this: { playState: string }) { this.playState = 'running' }) })
-    const first = transition(), later = transition()
-    const animations = [first]
-    Object.defineProperty(element, 'getAnimations', { value: () => animations })
-    rerender(<AmbientComposition {...props} active={false} />)
-    expect(first.playState).toBe('paused')
-    animations.push(later)
-    rerender(<AmbientComposition {...props} active={false} profile={[.8, .3]} />)
-    expect(later.playState).toBe('paused')
-    rerender(<AmbientComposition {...props} />)
-    expect(first.playState).toBe('running')
-    expect(later.playState).toBe('running')
-  })
-
-  it('retains cell identities, pauses its local clock, and never puts source words in ornament DOM', () => {
-    vi.useFakeTimers()
-    const props = { active: true, motion: true, complete: false, runId: 'one', profile: [.4, .7] }
-    const { container, rerender } = render(<AmbientComposition {...props} />)
-    const before = [...container.querySelectorAll('[data-pill]')]
-    const composition = container.querySelector('[data-ambient-composition]')!
-    expect(composition).toHaveAttribute('data-material', 'responsive-cell-skeleton-v6')
-    act(() => vi.advanceTimersByTime(1000))
-    expect(composition).toHaveAttribute('data-activity-ms', '1000')
-    expect([...container.querySelectorAll('[data-pill]')]).toEqual(before)
-    rerender(<AmbientComposition {...props} active={false} />)
-    act(() => vi.advanceTimersByTime(2000))
-    expect(composition).toHaveAttribute('data-activity-ms', '1000')
-    rerender(<AmbientComposition {...props} />)
-    act(() => vi.advanceTimersByTime(200))
-    expect(composition).toHaveAttribute('data-activity-ms', '1200')
-    expect(composition.textContent).toBe('')
-    rerender(<AmbientComposition {...props} runId="two" />)
-    expect(container.querySelector('[data-ambient-composition]')).toHaveAttribute('data-activity-ms', '0')
   })
 })

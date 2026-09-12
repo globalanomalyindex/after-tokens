@@ -1,7 +1,7 @@
 {
   "name": "after-tokens",
   "version": "0.1.0",
-  "description": "A web and motion design study of adaptive skeleton loading and the arrival of generated text.",
+  "description": "A web and motion design study of ambient skeleton loading and the arrival of generated text.",
   "author": "globalanomalyindex",
   "private": true,
   "packageManager": "pnpm@11.7.0",

@@ -1,10 +1,10 @@
 // The last thing on the page: where the work lives and how to cite it.
 const LINKS: { label: string; href: string; note: string }[] = [
   { label: 'source', href: 'https://github.com/globalanomalyindex/after-tokens', note: 'the engine, the metric suite, the tests' },
-  { label: 'latest study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/responsive-skeleton-v6-handoff-2026-09-09.md#research-justification-and-limits', note: 'the motion direction, primary sources and testable claims' },
+  { label: 'latest study', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/ambient-skeleton-v7-handoff-2026-09-12.md#research-rationale', note: 'the motion direction, primary sources and testable claims' },
   { label: 'research note', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/research-note.md', note: 'method, results, the causal audit, the literature ledger, limits' },
   { label: 'design record', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/redesign.md', note: 'the reasoning, in order, margin included' },
-  { label: 'handoff', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/responsive-skeleton-v6-handoff-2026-09-09.md', note: 'implementation, decisions, motion parameters and acceptance gates' },
+  { label: 'handoff', href: 'https://github.com/globalanomalyindex/after-tokens/blob/main/docs/ambient-skeleton-v7-handoff-2026-09-12.md', note: 'implementation, decisions, motion parameters and acceptance gates' },
   { label: 'experiments', href: 'https://github.com/globalanomalyindex/after-tokens/tree/main/data/experiments', note: 'new batched captures, original-corpus audits and rendering evidence' },
 ]
 
@@ -15,7 +15,7 @@ export function SiteFooter() {
         <div>
           <p className="text-base leading-relaxed max-w-md" style={{ color: 'var(--ink-2)' }}>
             after tokens is an independent web and motion design study of how generated text reaches a reader.
-            adaptive skeleton shapes, text arrival and brand character are explored in a working website, supported by
+            ambient skeleton shapes, text arrival and brand character are explored in a working website, supported by
             sixty original diffusion recordings, four batched captures and measured presentation costs.
           </p>
           <p className="mt-5 readout max-w-md" style={{ color: 'var(--muted)' }}>

@@ -36,7 +36,7 @@ export function GoogleReference({ assetBase = '' }: { assetBase?: string }) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] mb-7">
         <h3 id={titleId} className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">a draft can change<br />in many places</h3>
         <p className="text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-          Google describes Gemini Diffusion as refining blocks of text. I reviewed this frame archive to see how that appears on a page: several parts of a math solution change while its shape develops. That motivates a field that can respond to available content without making each unstable word a reading target. It does not establish that a real integration exposes drafts, final layout or token commitments.{' '}
+          Google describes Gemini Diffusion as refining blocks of text. I reviewed this frame archive to see how that appears on a page: several parts of a math solution change while its shape develops. That motivates keeping unstable words out of the reading surface while an independent ambient composition carries the wait. It does not establish that a real integration exposes drafts, final layout or token commitments.{' '}
           <a className="underline underline-offset-4" href="https://deepmind.google/models/gemini-diffusion/">Google&rsquo;s model overview</a>.
         </p>
       </div>

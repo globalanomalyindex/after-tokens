@@ -41,6 +41,7 @@ jobs:
       - run: pnpm test
       - run: node --test scripts/test-anchored-skeleton-harness.mjs
       - run: node --test scripts/test-responsive-skeleton-harness.mjs
+      - run: node --test scripts/test-ambient-skeleton-v7-harness.mjs
 
       # Verify the canonical root build and its browser behavior before export.
       - run: pnpm build

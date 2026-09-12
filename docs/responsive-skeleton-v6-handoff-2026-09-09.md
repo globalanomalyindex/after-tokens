@@ -1,5 +1,7 @@
 # After Tokens: responsive cells and a material handover
 
+> Historical v6 record (`responsive-cell-skeleton-v6`, published at `ca43a251bd095f37dad35163ccc1aad682d06371`). Its source-responsive waiting geometry, measurements and captures do not describe or validate the later v7 ambient score.
+
 **Started 9 September 2026 · contract refresh 12 September 2026 · globalanomalyindex · material `responsive-cell-skeleton-v6`.**
 
 This is the implementation and research handoff for my current web and motion design study. The website is the primary artifact. Assistant, search and phone-sized compositions show possible applications of the same material; they are browser prototypes, not production integrations or native iPhone implementations.

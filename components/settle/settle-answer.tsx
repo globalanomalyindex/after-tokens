@@ -115,7 +115,7 @@ export function SettleAnswer({
   </div>
   return (
     <div ref={rootRef} className={`settle ${className}`} data-status={state.status} data-policy={state.policy}
-      data-material="responsive-cell-skeleton-v6" data-ambient-condition={ambient}
+      data-material="ambient-cell-skeleton-v7" data-ambient-condition={ambient}
       data-source-at-ms={state.lastEventAtMs} data-released-length={state.releasedLength}
       data-answer-phase={surface.phase} data-visual-ready={visualReady}
       data-paused={paused} data-active={active} data-motion={enabled ? 'on' : 'off'}
@@ -123,7 +123,7 @@ export function SettleAnswer({
       style={{ ...voiceVars, ...style }}>
       <div ref={frameRef} className="settle-answer-frame" data-phase={surface.phase} data-occupied={receiving || !!answerText} data-receiving={receiving}>
         {(receiving || surface.phase !== 'ready') && <div className="settle-waiting-field" style={{ top: surface.tailOffset, height: surface.rowCount * surface.lineHeightPx }}>
-          <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={`${runId}:v${state.version}`} tempo={voice.tempo} rowCount={surface.rowCount} profile={surface.profile} lineHeightPx={surface.lineHeightPx} barHeightPx={surface.barHeightPx} />
+          <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={`${runId}:v${state.version}`} tempo={voice.tempo} rowCount={surface.rowCount} lineHeightPx={surface.lineHeightPx} barHeightPx={surface.barHeightPx} />
         </div>}
         {page}
         {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} onComplete={surface.finishHandover} />}

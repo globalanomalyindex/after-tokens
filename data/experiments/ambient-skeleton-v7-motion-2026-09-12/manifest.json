@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "material": "ambient-cell-skeleton-v7",
+  "fingerprint": "074d46fbf02316d3159fdc31ac4d3039acc5a6cdd8dd84b450f8c3bc69a7e09c",
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "f040bc17db1ed102b3026f8d26add8a5e09f53065b9021e45276dbfc2c501552"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "fcfb7b1b49945c0f53eec3a825bd2d487d08d5d7cb81e2e05d0d5a152e6363cb"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "e553bc2ecc34e74b2b772995f2d5cab2f25b3feea1d107d1d1080e44fbcf39e9"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "db612fb45d0419272e71f55915d380fe0881d7fd08371112bffeb6ff1079eccd"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "63c6e13f70072a99429f4a97b37c0c8914fab739ff39ff4817381091100b5381"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "74c7db5340f1b348ef314ffadd566ab7ce139aa21274f9aa758d650b9a898f8d"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "1348eb039fac6820106345801b120ddbd49079552bce7bd7b3e02a5ace9af798"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "e6a533d7a9df4701708bfdf9f57bfb29ccb600f99dde1972dc82a78e109e2578"
+    },
+    {
+      "file": "lib/settle/ambient-score.ts",
+      "sha256": "99623c7d2167f266dfbc2be231a9d46d3cb139c032732a5a8e3f0567e1e6a403"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "413256e697934e491989aa00dd71b07295e31d5f72aa873ac73c3af49fa99cde"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "scripts/measure-ambient-skeleton-v7-motion.mjs",
+      "sha256": "3f466fcb3f62754fb03b73da91a95932821687c10834a988bcd06599c4bfa1ee"
+    },
+    {
+      "file": "scripts/archive-ambient-skeleton-v7-motion.mjs",
+      "sha256": "1c69fdfc1151b7f00f1cc5d064067d41abf5907ae6ad54e81ca4110a5b3d6f56"
+    },
+    {
+      "file": "scripts/measure-anchored-skeleton-motion.mjs",
+      "sha256": "378c9bc8b94cac12033fa91959b3f91eb04d1cffad178f2da46193f28415efb9"
+    }
+  ],
+  "sourceFixtures": [
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "id": "sleep-tips__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "id": "sky-blue__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-random-2026-09-09/compact/sleep-tips__random-b128-s32.json",
+      "sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "id": "sleep-tips__random-b128-s32"
+    }
+  ],
+  "measurementStartedAt": "2026-09-12T15:21:40.036Z",
+  "measuredAt": "2026-09-12T15:23:10.240Z",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "playbackScale": 0.5,
+  "records": [
+    {
+      "name": "390-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-static-raw.json.gz",
+      "bytes": 54217,
+      "sha256": "8b06cc8e5faade9b1aabdef4a908f1f2144605ec82363de1f0296cea88b39ba2",
+      "uncompressedBytes": 3909839,
+      "uncompressedSha256": "3561b8e4b823938ec266b6a8d1fbf08126a8c1d435963f7eb6905bb56d83d8e7",
+      "frames": 528
+    },
+    {
+      "name": "390-breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "breathe",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-breathe-raw.json.gz",
+      "bytes": 65233,
+      "sha256": "5279323f15f420c7f35522acd59c69868ee06a7a21ce74898cc9a1899bd94798",
+      "uncompressedBytes": 3932895,
+      "uncompressedSha256": "696e3192058ec87f2adbaf56ca8fd5fbd42cd38da9c65ba5c685d880163b2e18",
+      "frames": 528
+    },
+    {
+      "name": "390-reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-reshape-raw.json.gz",
+      "bytes": 80546,
+      "sha256": "1b4d95c0a19ce627f3fdcedcc378df84b3e58679e87ab479468d07cd01c83769",
+      "uncompressedBytes": 4206148,
+      "uncompressedSha256": "31f3b7eb6bf60069cb6f5d5eec064723c98a04cc888a903cff0cce0998219c27",
+      "frames": 528
+    },
+    {
+      "name": "1380-static",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-static-raw.json.gz",
+      "bytes": 53358,
+      "sha256": "b7980220a48bb78157a626d7a9424af4a2c9dd0280a3c558d16fbf367b65da41",
+      "uncompressedBytes": 3915788,
+      "uncompressedSha256": "0afbcab74cac6540bf0992137e7f470cb8772e6bd11162f1cb9d289c691a70f9",
+      "frames": 528
+    },
+    {
+      "name": "1380-breathe",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "breathe",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-breathe-raw.json.gz",
+      "bytes": 64774,
+      "sha256": "6838feefb6a1152dc9fc9d6bee9de0a11bd205847cfe8026423496e541dfb0c5",
+      "uncompressedBytes": 3933866,
+      "uncompressedSha256": "507f778f16ca871a4cbc29589dc709ed1411c3b7d9a2c972f35f9cfad1011582",
+      "frames": 527
+    },
+    {
+      "name": "1380-reshape",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "file": "1380-reshape-raw.json.gz",
+      "bytes": 81239,
+      "sha256": "df28be5a74d39b1fb842d11d9e76417756d0c09c4cf024e09935578cdd7f49ee",
+      "uncompressedBytes": 4245906,
+      "uncompressedSha256": "02fa6876027b657ad686f5cf97af4860150b71d8dcbbe98c06ef72f10ab726f6",
+      "frames": 530
+    },
+    {
+      "name": "390-reshape-sky",
+      "source": "sky-blue__lowconf-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-reshape-sky-raw.json.gz",
+      "bytes": 89367,
+      "sha256": "bd20b769cf6acf5882e92ca30120f775198ce10535369b9659dafc94e7b223ae",
+      "uncompressedBytes": 4555120,
+      "uncompressedSha256": "dc833eb4be1e280b26ee0f029cf098fb243218cb94b048467abe92cf4d131940",
+      "frames": 547
+    },
+    {
+      "name": "390-reshape-random",
+      "source": "sleep-tips__random-b128-s32",
+      "condition": "reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "390-reshape-random-raw.json.gz",
+      "bytes": 85032,
+      "sha256": "c265664c6d5eda4635a6757c3f24189e9cbec5fcb9d3d65fc31b6fbd3af06291",
+      "uncompressedBytes": 4673212,
+      "uncompressedSha256": "293f45e1f94c168b695423a78a6c28c3939f3f4d6f8806e39dbe0684eb6f527c",
+      "frames": 589
+    }
+  ]
+}

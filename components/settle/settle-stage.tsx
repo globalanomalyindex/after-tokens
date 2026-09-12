@@ -195,7 +195,7 @@ export function SettleStage({
       </div>
       {!compact && (
         <p className="readout mt-3 leading-relaxed" style={{ color: 'var(--muted)' }}>
-          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · the cells use coarse current-content geometry; the complete answer takes one material handover after source finality. Earlier reading is deliberately held.' : ' · the same reshaping cells hand over to each newly eligible batch; earlier readable text stays still. The chosen policy controls eligibility, not the material.'}
+          {provenance}{note ? ` · archive note: ${note}` : ''}{policy === 'answer' ? ' · the waiting field follows its own decorative score; the page fits the actual answer and takes one material handover after source finality. Earlier reading is deliberately held.' : ' · the same ambient cells hand over to each newly eligible batch; earlier readable text stays still. The chosen policy controls eligibility, not the waiting animation.'}
         </p>
       )}
     </div>

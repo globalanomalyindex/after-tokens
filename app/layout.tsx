@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://globalanomalyindex.github.io/after-tokens/'),
   title: 'After Tokens: a skeleton motion study for generated text',
   description:
-    'A web and motion design study of adaptive skeleton loading, the transition into text and a readable final state. Working browser experiments, real diffusion recordings and an explicit account of presentation costs.',
+    'A web and motion design study of ambient skeleton loading, the transition into text and a readable final state. Working browser experiments, real diffusion recordings and an explicit account of presentation costs.',
   authors: [
     {
       name: 'globalanomalyindex',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'Adaptive loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
+      'Ambient loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
     url: 'https://globalanomalyindex.github.io/after-tokens/',
     siteName: 'After Tokens',
     locale: 'en_US',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'After Tokens: a skeleton motion study for generated text',
     description:
-      'Adaptive loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
+      'Ambient loading shapes and the arrival of readable text. A web and motion design study with working browser experiments, real diffusion captures and measured presentation costs.',
   },
 }
 

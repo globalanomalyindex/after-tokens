@@ -17,7 +17,7 @@ import { useReplay } from '@/components/settle/use-replay'
 const NOTES: { title: string; body: string }[] = [
   {
     title: 'an active area, without a predicted shape',
-    body: 'a capsule divides into breathing rows and small pills. the waiting area gradually makes room using available source content and the container’s type metrics. the shapes do not map to actual words, and a revisable draft remains provisional. after source finality, a short size fit can prepare missing room before the bubbles carry into the complete answer.',
+    body: 'a capsule opens into five breathing rows. occasional changes and deliberate rests give the area a quiet rhythm independent of the draft. the shapes do not map to actual words. after source finality, a short size fit can prepare missing room before the bubbles carry into the complete answer.',
   },
   {
     title: 'one readable arrival',

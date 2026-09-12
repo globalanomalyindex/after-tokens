@@ -42,7 +42,7 @@ export function SectionPlayground() {
             const rows: [string, string][] = [
               ['first passage', `${u.medianFirstPassageAt ?? '·'} steps · ${r.medianFirstPassageAt === null ? '·' : (r.medianFirstPassageAt / 1000).toFixed(1)} s`],
               ['extra wait', `${u.meanExtraHold?.toFixed(1) ?? '·'} steps mean`],
-              ['waiting material', 'adaptive cells after released text'],
+              ['waiting material', 'two ambient rows after released text'],
               ['new batch handover', '280 ms · earlier text stays still'],
               ['passages', `${u.medianPassages ?? '·'} of ${u.medianPassageChars ?? '·'} characters`],
               ['exact outputs', `${u.exactFinalOutputs} of ${u.traces}`],

@@ -8,11 +8,11 @@ import { NatureWord } from '@/components/chrome/nature-word'
 const OPEN: { title: string; body: string }[] = [
   {
     title: 'a live sampler on the other end',
-    body: 'the adapter consumes commits: a position, a token, a step. a protocol that promises irreversibility, or explicit finality for snapshots, is all the surface needs. reconnection, cancellation, version ids and bounded buffering are the plumbing a product adds.',
+    body: 'the waiting animation needs no draft stream. showing the answer still requires a source that can identify eligible passages or explicitly finish a result. a live integration must define cancellation, reconnection, revisions and errors; this motion study does not solve that protocol for every model.',
   },
   {
     title: 'samplers that change their mind',
-    body: 'remasking samplers can send a token back to mask. the snapshot path keeps candidate words off the protected page while their current size can prepare space. only a final snapshot releases the answer; a later revision requires review and apply. the authored exercise tests this contract, but a production snapshot protocol still needs integration.',
+    body: 'remasking samplers can send a token back to mask. the snapshot path keeps candidate words off the protected page, and they do not drive the waiting geometry. only a final snapshot releases the answer; a later revision requires review and apply. the authored exercise tests this contract, but a production snapshot protocol still needs integration.',
   },
   {
     title: 'markdown, code and math',

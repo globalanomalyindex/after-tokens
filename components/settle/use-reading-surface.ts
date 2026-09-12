@@ -1,8 +1,6 @@
 'use client'
 
 import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from 'react'
-import { estimateAnswerEnvelope, estimateCandidateEnvelope } from '@/lib/settle/answer-envelope'
-import { deriveAmbientProfile } from '@/lib/settle/ambient-geometry'
 import type { SettleState } from '@/lib/settle/types'
 
 export const HANDOVER_MS = 280
@@ -10,9 +8,9 @@ export type ReadingPhase = 'waiting' | 'fitting' | 'revealing' | 'ready'
 type Options = { state: SettleState; runId: string | number; frameRef: RefObject<HTMLDivElement | null>; pageRef: RefObject<HTMLDivElement | null>; effectiveMotion: boolean }
 type Surface = {
   phase: ReadingPhase; visibleLength: number; revealTo: number; arrivalKey: string | null
-  rowCount: number; lineHeightPx: number; barHeightPx: number; tailOffset: number; profile: number[]
+  rowCount: number; lineHeightPx: number; barHeightPx: number; tailOffset: number
 }
-const INITIAL: Surface = { phase: 'waiting', visibleLength: 0, revealTo: 0, arrivalKey: null, rowCount: 5, lineHeightPx: 24, barHeightPx: 14.4, tailOffset: 0, profile: [] }
+const INITIAL: Surface = { phase: 'waiting', visibleLength: 0, revealTo: 0, arrivalKey: null, rowCount: 5, lineHeightPx: 24, barHeightPx: 14.4, tailOffset: 0 }
 
 /** A single reading surface for every release policy. Only released passages
  * enter its page. New batches have a bounded material handover; earlier text
@@ -23,14 +21,12 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
   const latest = useRef(state)
   const identity = useRef('')
   const observedLength = useRef(0)
-  const maximumRows = useRef(5)
   const sizingContext = useRef('')
   const lastTarget = useRef<number | null>(null)
   const operation = useRef(0)
   const animation = useRef<Animation | null>(null)
   const fallback = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fitDeadline = useRef(0)
-  const canvas = useRef<CanvasRenderingContext2D | null>(null)
   const measureRef = useRef<() => void>(() => {})
   const update = useCallback((patch: Partial<Surface>) => {
     const next = { ...current.current, ...patch }
@@ -71,7 +67,6 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
         fitDeadline.current = 0
         identity.current = key
         observedLength.current = 0
-        maximumRows.current = 5
         sizingContext.current = ''
         lastTarget.current = 5 * lineHeightPx
         frame.style.height = `${lastTarget.current}px`
@@ -81,29 +76,16 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
       const font = `${style.fontStyle || 'normal'} ${style.fontWeight || '400'} ${fontSize}px ${style.fontFamily || 'sans-serif'}`
       const context = `${Math.round(width * 2) / 2}:${font}:${lineHeightPx}:${style.letterSpacing}`
       const changedContext = sizingContext.current !== '' && sizingContext.current !== context
-      if (sizingContext.current !== context) { sizingContext.current = context; maximumRows.current = 5 }
-      if (!canvas.current && typeof CanvasRenderingContext2D !== 'undefined') canvas.current = document.createElement('canvas').getContext('2d')
-      const textContext = canvas.current
-      if (textContext) { textContext.font = font; textContext.fontKerning = 'none' }
-      const spacing = parseFloat(style.letterSpacing) || 0
-      const measureAdvance = (text: string) => (textContext ? textContext.measureText(text).width : Array.from(text).length * fontSize * .52) + Math.max(0, Array.from(text).length - 1) * spacing
+      if (sizingContext.current !== context) sizingContext.current = context
       const receiving = state.status === 'waiting' || state.status === 'receiving'
       const length = state.releasedLength
       const newBatch = length > observedLength.current
       const previousLength = Math.min(observedLength.current, length)
       const pageHeight = length > 0 ? page.getBoundingClientRect().height : 0
-      const estimate = state.source === 'snapshot'
-        ? estimateCandidateEnvelope(state.snapshotCandidate ?? '', width, measureAdvance)
-        : estimateAnswerEnvelope(state, width, measureAdvance)
-      const sourceProfile = deriveAmbientProfile(state, width, measureAdvance)
-      const occupiedRows = Math.ceil(pageHeight / lineHeightPx)
-      // Once early text is readable, reserve a compact field for the remainder.
-      // Its extent stays a heuristic, never an estimate of percent complete.
-      const minimum = length > 0 && receiving ? 2 : 5
-      if (newBatch && receiving) maximumRows.current = minimum
-      maximumRows.current = Math.max(maximumRows.current, minimum, estimate.rowCount - (receiving ? occupiedRows : 0))
-      const rowCount = Math.min(14, maximumRows.current)
-      const profile = receiving ? sourceProfile.slice(occupiedRows) : current.current.profile
+      // Waiting space is an authored five-line composition, not a forecast.
+      // Only already eligible text can alter the reading surface. Earlier
+      // release policies leave a compact two-line activity tail beneath it.
+      const rowCount = receiving ? (length > 0 ? 2 : 5) : current.current.rowCount
       const tailOffset = receiving ? pageHeight + (length > 0 ? lineHeightPx * .4 : 0) : current.current.tailOffset
       const target = receiving ? tailOffset + rowCount * lineHeightPx : pageHeight
       const resize = (height: number, duration: number, done?: () => void) => {
@@ -120,7 +102,7 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
           animation.current = null; next.cancel(); done?.()
         }
       }
-      update({ rowCount, profile, tailOffset, lineHeightPx, barHeightPx })
+      update({ rowCount, tailOffset, lineHeightPx, barHeightPx })
       const reveal = (arrivalKey: string) => {
         if (identity.current !== key || current.current.arrivalKey !== arrivalKey) return
         clearFallback()
@@ -159,7 +141,7 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
       } else if (lastTarget.current !== target) {
         // A later viewport/font reflow cannot replay any old word animation.
         const pendingFit = current.current.phase === 'fitting' ? current.current.arrivalKey : null
-        // New source sizing cannot keep an already eligible batch hidden.
+        // A layout change cannot keep an already eligible batch hidden.
         // Retarget from the displayed height within its original fit deadline.
         const duration = pendingFit ? Math.max(0, fitDeadline.current - performance.now()) : receiving ? 380 : 180
         resize(target, duration, pendingFit ? () => reveal(pendingFit) : undefined)

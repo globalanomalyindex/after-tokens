@@ -1,4 +1,4 @@
-/* Numeric current-content budgets guide an independently seeded field.
+/* A source-independent score moves one row at a time, then holds geometry.
    The pills are activity shapes, not words or confidence indicators. */
 .ambient-composition {
   position: relative;
@@ -19,13 +19,13 @@
   block-size: var(--ambient-bar-height, .9em);
   transform: none;
   opacity: .72;
-  transition: inline-size var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1);
+  transition: inline-size var(--shape-duration, 1100ms) cubic-bezier(.32, 0, .25, 1);
   animation: skeleton-breathe var(--row-period, 4800ms) cubic-bezier(.45, 0, .55, 1) var(--row-delay, 0ms) infinite;
   animation-play-state: paused;
 }
 
-/* All fourteen row/cell identities persist, including temporarily absent
-   cells, so the shared glimmer never restarts as occupancy changes. */
+/* Five row identities persist, including temporarily absent cells, so the
+   shared glimmer never restarts between authored gestures. */
 .ambient-composition__row-content {
   position: absolute;
   inset: 0;
@@ -41,10 +41,10 @@
   height: 100%;
   transform: none;
   transform-origin: center;
-  transition: left var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
-    width var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
-    opacity var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1),
-    transform var(--shape-duration, 600ms) cubic-bezier(.32, 0, .25, 1);
+  transition: left var(--shape-duration, 1100ms) cubic-bezier(.32, 0, .25, 1),
+    width var(--shape-duration, 1100ms) cubic-bezier(.32, 0, .25, 1),
+    opacity var(--shape-duration, 1100ms) cubic-bezier(.32, 0, .25, 1),
+    transform var(--shape-duration, 1100ms) cubic-bezier(.32, 0, .25, 1);
 }
 .ambient-composition[data-condition="reshape"] .ambient-composition__presence { transform: translateY(var(--pill-float, 0em)); }
 .ambient-composition__ink {
@@ -70,9 +70,10 @@
 .ambient-composition[data-condition="static"] .ambient-composition__bar,
 .ambient-composition[data-condition="static"] .ambient-composition__presence { transition: none; }
 
-/* Each row has its own breathing rhythm. Geometry retargets every 200 ms
-   while active and eases for 500–700 ms at neutral tempo. Left/width touch
-   layout and paint; this is not a compositor-only or physical spring claim. */
+/* Each row breathes independently. Geometry receives one discrete target
+   per cue, eases for 900–1300 ms, then holds. The 100 ms activity clock never
+   changes targets between cues. Left/width touch layout and paint; this is
+   not a compositor-only or physical spring claim. */
 @keyframes skeleton-breathe {
   0%, 100% { opacity: .72; }
   50% { opacity: 1; }

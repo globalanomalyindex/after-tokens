@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "material": "ambient-cell-skeleton-v7",
+  "archivedAt": "2026-09-12T15:23:17.869Z",
+  "implementationFingerprint": "074d46fbf02316d3159fdc31ac4d3039acc5a6cdd8dd84b450f8c3bc69a7e09c",
+  "measuredReport": "docs/ambient-skeleton-v7-motion-validation-2026-09-12.json",
+  "stats": {
+    "startTime": "2026-09-12T15:13:52.675Z",
+    "duration": 428140.95,
+    "expected": 69,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    "chromium",
+    "webkit",
+    "mobile-portrait"
+  ],
+  "testFiles": [
+    {
+      "file": "tests/e2e/a11y.spec.ts",
+      "sha256": "c75c99486e6954d9507fdaafff03d754be850e96e92a17ef27e73bb121285ede"
+    },
+    {
+      "file": "tests/e2e/ambient-answer.spec.ts",
+      "sha256": "84fb4a751da49c7840dd08383af1fb7728554056d98dc21eb0d55978c5343c87"
+    },
+    {
+      "file": "tests/e2e/reduced-motion-full.spec.ts",
+      "sha256": "553d6d868b99787ea23298ed08af196b9a5bde8358760dc88839ec65df78cf6e"
+    },
+    {
+      "file": "tests/e2e/settle-motion.spec.ts",
+      "sha256": "542c09b47f6b9ccf68c4719246af2c8bb9c43e2f8a99cd4b53473c2fd8e5f5fe"
+    },
+    {
+      "file": "tests/e2e/snapshot-study.spec.ts",
+      "sha256": "6fbf88b4173e15b690a0d117b4212cd63667b8bff861f2834094d3978f22783e"
+    }
+  ],
+  "testHashMethod": "Runtime and test source hashes captured before the uninterrupted passing run and checked unchanged when archived. The measurement-script fingerprint is recorded separately from the browser runtime provenance.",
+  "provenance": {
+    "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/provenance.json",
+    "sha256": "13f0eabeffdea5b1f5f8dd87157ad2768419983ff5e3392620f18d0897269d95",
+    "bytes": 4059,
+    "runtimeFingerprint": "66025f891326aaaa63c065f8fa0cfdaa70ae80e7ab3a38e9141fd531129d1c41"
+  },
+  "raw": {
+    "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/playwright-report.json",
+    "sha256": "cad298d47dcab9181ff581b4b15ff1010eea41e6890a96864a52d1fe4dbfbb10",
+    "bytes": 85090
+  },
+  "tests": [
+    {
+      "title": "home page has no axe-core violations at WCAG 2.1 AA",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 18186
+    },
+    {
+      "title": "home page has no axe-core violations at WCAG 2.1 AA",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 23340
+    },
+    {
+      "title": "home page has no axe-core violations at WCAG 2.1 AA",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 30312
+    },
+    {
+      "title": "the reshape default preserves source finality and hands over one exact answer",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 5239
+    },
+    {
+      "title": "shared controls pause motion and source time, and offscreen activity rests",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1746
+    },
+    {
+      "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1133
+    },
+    {
+      "title": "changing and restarting recordings cannot leak a previous answer",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 594
+    },
+    {
+      "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1773
+    },
+    {
+      "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1760
+    },
+    {
+      "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 3945
+    },
+    {
+      "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 3126
+    },
+    {
+      "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 9722
+    },
+    {
+      "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1624
+    },
+    {
+      "title": "the reshape default preserves source finality and hands over one exact answer",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 6292
+    },
+    {
+      "title": "shared controls pause motion and source time, and offscreen activity rests",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 2502
+    },
+    {
+      "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 2576
+    },
+    {
+      "title": "changing and restarting recordings cannot leak a previous answer",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 2478
+    },
+    {
+      "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 4017
+    },
+    {
+      "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 3370
+    },
+    {
+      "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 5667
+    },
+    {
+      "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 4679
+    },
+    {
+      "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 10418
+    },
+    {
+      "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 2245
+    },
+    {
+      "title": "the reshape default preserves source finality and hands over one exact answer",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 6128
+    },
+    {
+      "title": "shared controls pause motion and source time, and offscreen activity rests",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1770
+    },
+    {
+      "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1820
+    },
+    {
+      "title": "changing and restarting recordings cannot leak a previous answer",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1594
+    },
+    {
+      "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 2386
+    },
+    {
+      "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 2254
+    },
+    {
+      "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 4476
+    },
+    {
+      "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 4378
+    },
+    {
+      "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 10182
+    },
+    {
+      "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1284
+    },
+    {
+      "title": "reduced motion removes movement and preserves exact shared source finality",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 4720
+    },
+    {
+      "title": "reduced motion removes movement and preserves exact shared source finality",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 5515
+    },
+    {
+      "title": "reduced motion removes movement and preserves exact shared source finality",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 5082
+    },
+    {
+      "title": "all sections mount and every stage reaches its recording's end",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 16200
+    },
+    {
+      "title": "all sections mount and every stage reaches its recording's end",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 16654
+    },
+    {
+      "title": "all sections mount and every stage reaches its recording's end",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 16327
+    },
+    {
+      "title": "earlier reading hands over only released passages and never reanimates settled words",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 11418
+    },
+    {
+      "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1134
+    },
+    {
+      "title": "a finished real recording is exact, selectable and stationary",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 17017
+    },
+    {
+      "title": "motion off cancels decoration while the recorded source keeps advancing",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1370
+    },
+    {
+      "title": "the embedded phone preserves its answer width and exact final text",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 15996
+    },
+    {
+      "title": "whole answer uses the shared modern material by default",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 1011
+    },
+    {
+      "title": "each word uses the shared modern material by default",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 361
+    },
+    {
+      "title": "each sentence uses the shared modern material by default",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 382
+    },
+    {
+      "title": "each paragraph uses the shared modern material by default",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 360
+    },
+    {
+      "title": "earlier reading hands over only released passages and never reanimates settled words",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 12423
+    },
+    {
+      "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 1943
+    },
+    {
+      "title": "a finished real recording is exact, selectable and stationary",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 17860
+    },
+    {
+      "title": "motion off cancels decoration while the recorded source keeps advancing",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 1601
+    },
+    {
+      "title": "the embedded phone preserves its answer width and exact final text",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 16445
+    },
+    {
+      "title": "whole answer uses the shared modern material by default",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 1708
+    },
+    {
+      "title": "each word uses the shared modern material by default",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 896
+    },
+    {
+      "title": "each sentence uses the shared modern material by default",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 808
+    },
+    {
+      "title": "each paragraph uses the shared modern material by default",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 859
+    },
+    {
+      "title": "earlier reading hands over only released passages and never reanimates settled words",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 11465
+    },
+    {
+      "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1722
+    },
+    {
+      "title": "a finished real recording is exact, selectable and stationary",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 17930
+    },
+    {
+      "title": "motion off cancels decoration while the recorded source keeps advancing",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1746
+    },
+    {
+      "title": "the embedded phone preserves its answer width and exact final text",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 16435
+    },
+    {
+      "title": "whole answer uses the shared modern material by default",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1726
+    },
+    {
+      "title": "each word uses the shared modern material by default",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 1060
+    },
+    {
+      "title": "each sentence uses the shared modern material by default",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 848
+    },
+    {
+      "title": "each paragraph uses the shared modern material by default",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 858
+    },
+    {
+      "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+      "project": "chromium",
+      "status": "expected",
+      "durationMs": 5439
+    },
+    {
+      "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+      "project": "webkit",
+      "status": "expected",
+      "durationMs": 5973
+    },
+    {
+      "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+      "project": "mobile-portrait",
+      "status": "expected",
+      "durationMs": 5924
+    }
+  ],
+  "stress": [
+    {
+      "project": "chromium",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/chromium-underallocation.json",
+      "sha256": "732b20bce9053c29ccb89b4248972ac55a4ed0569fe12b366cc74a4dd966cf80",
+      "bytes": 733,
+      "result": {
+        "fittingFrames": 11,
+        "blendFrames": 10,
+        "transferFrames": 19,
+        "minOpacity": 0,
+        "maxOpacity": 1,
+        "minTop": -0.199984,
+        "maxTop": 1.5,
+        "duration": 280,
+        "initialHeight": 121.875,
+        "finalHeight": 292.5,
+        "finalText": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+        "sourceToOpaqueMs": 400,
+        "sourceToRestMs": 499.40000009536743,
+        "restSamples": 19,
+        "restMovement": 0,
+        "failures": []
+      }
+    },
+    {
+      "project": "webkit",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/webkit-underallocation.json",
+      "sha256": "5895c6ee5f0a9ad972582f61a1b4bfc53c380e2c608cdc89656a1b65126b9bd3",
+      "bytes": 745,
+      "result": {
+        "fittingFrames": 11,
+        "blendFrames": 9,
+        "transferFrames": 18,
+        "minOpacity": 0,
+        "maxOpacity": 1,
+        "minTop": -0.199992,
+        "maxTop": 1.5,
+        "duration": 280,
+        "initialHeight": 121.875,
+        "finalHeight": 292.5,
+        "finalText": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+        "sourceToOpaqueMs": 389.9999999999998,
+        "sourceToRestMs": 489.9999999999998,
+        "restSamples": 20,
+        "restMovement": 0,
+        "failures": []
+      }
+    },
+    {
+      "project": "mobile-portrait",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/mobile-portrait-underallocation.json",
+      "sha256": "0fbb063f8b680d2cc221179041113b597769f7edc018bb891c96a18f85a11a74",
+      "bytes": 718,
+      "result": {
+        "fittingFrames": 12,
+        "blendFrames": 10,
+        "transferFrames": 19,
+        "minOpacity": 0,
+        "maxOpacity": 1,
+        "minTop": -0.199891,
+        "maxTop": 1.5,
+        "duration": 280,
+        "initialHeight": 121.875,
+        "finalHeight": 292.5,
+        "finalText": "The sky appears blue because of the way sunlight travels through the atmosphere. When sunlight hits through the atmosphere, it gets scattered more the atmosphere is. The atmosphere is mostly made of gases, dust, and water, which sc and and scatters the light. When the sunlight hits through the atmosphere, the light gets scattered scattered, making the sky blue blue.",
+        "sourceToOpaqueMs": 390,
+        "sourceToRestMs": 507,
+        "restSamples": 20,
+        "restMovement": 0,
+        "failures": []
+      }
+    }
+  ],
+  "earlierReading": [
+    {
+      "project": "chromium",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/chromium-earlier-reading.json",
+      "sha256": "76976698619c390c49924849b6161a640017d756a201fc24fc0ffe598796041b",
+      "bytes": 325,
+      "result": {
+        "failures": [],
+        "batches": 2,
+        "restingSamples": 459,
+        "materialSamples": 593,
+        "blendSamples": 20,
+        "maxRestDrift": 0,
+        "maximumTransferCells": 5,
+        "coherentRestSamples": 459,
+        "discardedIncoherentSamples": 0,
+        "maxViewportDrift": 0,
+        "maximumIntraSampleScrollPx": 0,
+        "distinctPassages": 2,
+        "drifts": []
+      }
+    },
+    {
+      "project": "webkit",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/webkit-earlier-reading.json",
+      "sha256": "9fc7c251d9342ee8da1a554858466ff5c1f425f629080a06403845784f05f46a",
+      "bytes": 325,
+      "result": {
+        "failures": [],
+        "batches": 2,
+        "restingSamples": 462,
+        "materialSamples": 593,
+        "blendSamples": 20,
+        "maxRestDrift": 0,
+        "maximumTransferCells": 5,
+        "coherentRestSamples": 462,
+        "discardedIncoherentSamples": 0,
+        "maxViewportDrift": 0,
+        "maximumIntraSampleScrollPx": 0,
+        "distinctPassages": 2,
+        "drifts": []
+      }
+    },
+    {
+      "project": "mobile-portrait",
+      "file": "data/experiments/ambient-skeleton-v7-browser-2026-09-12/mobile-portrait-earlier-reading.json",
+      "sha256": "e12acc1cebd12081dfa97f14fd922775c5862b77d133275a30091c4bf6bb004d",
+      "bytes": 325,
+      "result": {
+        "failures": [],
+        "batches": 2,
+        "restingSamples": 461,
+        "materialSamples": 592,
+        "blendSamples": 18,
+        "maxRestDrift": 0,
+        "maximumTransferCells": 5,
+        "coherentRestSamples": 461,
+        "discardedIncoherentSamples": 0,
+        "maxViewportDrift": 0,
+        "maximumIntraSampleScrollPx": 0,
+        "distinctPassages": 2,
+        "drifts": []
+      }
+    }
+  ],
+  "stressMethod": "Authored240px-wide underallocation fixture at each browser viewport. Restart to five rows, seek only the decorative intro to950ms, then force the sky recording to its final event. Source-to-full-opacity and source-to-rest are first sampled browser events, not model latency. The separate joined-intro finality test checks intact-capsule fading without cloned slabs.",
+  "earlierReadingMethod": "Ten-second real source replay covers at least two released sentence batches. Settled glyphs are compared with their first coherent baseline relative to the reading page. Samples whose page origin changes during geometry reads are counted and excluded from that geometry comparison; more than50 coherent samples and fewer than25% incoherent samples are required. Absolute viewport glyph movement and within-sample scroll changes remain separate diagnostics, not claims of zero on-screen movement.",
+  "caveats": [
+    "Browser projects include an emulated iPhone viewport, not a physical-device test.",
+    "One stress observation per browser project, without reader outcome or device performance claims.",
+    "Reading-page stability does not imply zero absolute viewport movement; browser scroll anchoring can move the page."
+  ]
+}

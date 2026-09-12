@@ -1,0 +1,2545 @@
+{
+  "config": {
+    "configFile": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/playwright.config.ts",
+    "rootDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-portrait",
+        "name": "mobile-portrait",
+        "testDir": "/Users/chrisfiore/Documents/Claude/Projects/diffusion-render-text/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "a11y.spec.ts",
+      "file": "a11y.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "home page has no axe-core violations at WCAG 2.1 AA",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18186,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:13:52.995Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-9073d28507cb21d2d8c2",
+          "file": "a11y.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "home page has no axe-core violations at WCAG 2.1 AA",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23340,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:58.888Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-745e440801fa248b090e",
+          "file": "a11y.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "home page has no axe-core violations at WCAG 2.1 AA",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30312,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:31.957Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-05271dfbb3ea3dabe830",
+          "file": "a11y.spec.ts",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "ambient-answer.spec.ts",
+      "file": "ambient-answer.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "the reshape default preserves source finality and hands over one exact answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5239,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:11.897Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-87eb8e0ff651f4a72537",
+          "file": "ambient-answer.spec.ts",
+          "line": 17,
+          "column": 5
+        },
+        {
+          "title": "shared controls pause motion and source time, and offscreen activity rests",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1746,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:17.146Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-4fe5a8c42c6df619b5a9",
+          "file": "ambient-answer.spec.ts",
+          "line": 104,
+          "column": 5
+        },
+        {
+          "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1133,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:18.903Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-1d052a2cc5d66cf47f5e",
+          "file": "ambient-answer.spec.ts",
+          "line": 129,
+          "column": 5
+        },
+        {
+          "title": "changing and restarting recordings cannot leak a previous answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 594,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:20.042Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-ea8994ac071e2a20db18",
+          "file": "ambient-answer.spec.ts",
+          "line": 145,
+          "column": 5
+        },
+        {
+          "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1773,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:20.642Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-dbcba2c3757c15054637",
+          "file": "ambient-answer.spec.ts",
+          "line": 162,
+          "column": 5
+        },
+        {
+          "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1760,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:22.428Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmaXR0aW5nRnJhbWVzIjogMTEsCiAgImJsZW5kRnJhbWVzIjogMTAsCiAgInRyYW5zZmVyRnJhbWVzIjogMTksCiAgIm1pbk9wYWNpdHkiOiAwLAogICJtYXhPcGFjaXR5IjogMSwKICAibWluVG9wIjogLTAuMTk5OTg0LAogICJtYXhUb3AiOiAxLjUsCiAgImR1cmF0aW9uIjogMjgwLAogICJpbml0aWFsSGVpZ2h0IjogMTIxLjg3NSwKICAiZmluYWxIZWlnaHQiOiAyOTIuNSwKICAiZmluYWxUZXh0IjogIlRoZSBza3kgYXBwZWFycyBibHVlIGJlY2F1c2Ugb2YgdGhlIHdheSBzdW5saWdodCB0cmF2ZWxzIHRocm91Z2ggdGhlIGF0bW9zcGhlcmUuIFdoZW4gc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCBpdCBnZXRzIHNjYXR0ZXJlZCBtb3JlIHRoZSBhdG1vc3BoZXJlIGlzLiBUaGUgYXRtb3NwaGVyZSBpcyBtb3N0bHkgbWFkZSBvZiBnYXNlcywgZHVzdCwgYW5kIHdhdGVyLCB3aGljaCBzYyBhbmQgYW5kIHNjYXR0ZXJzIHRoZSBsaWdodC4gV2hlbiB0aGUgc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCB0aGUgbGlnaHQgZ2V0cyBzY2F0dGVyZWQgc2NhdHRlcmVkLCBtYWtpbmcgdGhlIHNreSBibHVlIGJsdWUuIiwKICAic291cmNlVG9PcGFxdWVNcyI6IDQwMCwKICAic291cmNlVG9SZXN0TXMiOiA0OTkuNDAwMDAwMDk1MzY3NDMsCiAgInJlc3RTYW1wbGVzIjogMTksCiAgInJlc3RNb3ZlbWVudCI6IDAsCiAgImZhaWx1cmVzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-5bc9841283a862ef769e",
+          "file": "ambient-answer.spec.ts",
+          "line": 208,
+          "column": 5
+        },
+        {
+          "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3945,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:28.934Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-7a1b13b6042a5689e486",
+          "file": "ambient-answer.spec.ts",
+          "line": 304,
+          "column": 5
+        },
+        {
+          "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3126,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:32.892Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-6998bce81c46030b8b24",
+          "file": "ambient-answer.spec.ts",
+          "line": 351,
+          "column": 5
+        },
+        {
+          "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9722,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:36.028Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-1440370a6e88eb72d4f9",
+          "file": "ambient-answer.spec.ts",
+          "line": 418,
+          "column": 5
+        },
+        {
+          "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1624,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:14:45.767Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-dc7ac58cb69d0a11be7f",
+          "file": "ambient-answer.spec.ts",
+          "line": 463,
+          "column": 5
+        },
+        {
+          "title": "the reshape default preserves source finality and hands over one exact answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6292,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:24.046Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-ec92a031b90595f7404e",
+          "file": "ambient-answer.spec.ts",
+          "line": 17,
+          "column": 5
+        },
+        {
+          "title": "shared controls pause motion and source time, and offscreen activity rests",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2502,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:30.372Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-3f16dd591d7d22c9249e",
+          "file": "ambient-answer.spec.ts",
+          "line": 104,
+          "column": 5
+        },
+        {
+          "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2576,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:32.901Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-4b00400bc9c4ecdf79e2",
+          "file": "ambient-answer.spec.ts",
+          "line": 129,
+          "column": 5
+        },
+        {
+          "title": "changing and restarting recordings cannot leak a previous answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2478,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:35.494Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-f79f63770aa455b609b3",
+          "file": "ambient-answer.spec.ts",
+          "line": 145,
+          "column": 5
+        },
+        {
+          "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4017,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:37.997Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-6fc4ce73080877872880",
+          "file": "ambient-answer.spec.ts",
+          "line": 162,
+          "column": 5
+        },
+        {
+          "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3370,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:42.037Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmaXR0aW5nRnJhbWVzIjogMTEsCiAgImJsZW5kRnJhbWVzIjogOSwKICAidHJhbnNmZXJGcmFtZXMiOiAxOCwKICAibWluT3BhY2l0eSI6IDAsCiAgIm1heE9wYWNpdHkiOiAxLAogICJtaW5Ub3AiOiAtMC4xOTk5OTIsCiAgIm1heFRvcCI6IDEuNSwKICAiZHVyYXRpb24iOiAyODAsCiAgImluaXRpYWxIZWlnaHQiOiAxMjEuODc1LAogICJmaW5hbEhlaWdodCI6IDI5Mi41LAogICJmaW5hbFRleHQiOiAiVGhlIHNreSBhcHBlYXJzIGJsdWUgYmVjYXVzZSBvZiB0aGUgd2F5IHN1bmxpZ2h0IHRyYXZlbHMgdGhyb3VnaCB0aGUgYXRtb3NwaGVyZS4gV2hlbiBzdW5saWdodCBoaXRzIHRocm91Z2ggdGhlIGF0bW9zcGhlcmUsIGl0IGdldHMgc2NhdHRlcmVkIG1vcmUgdGhlIGF0bW9zcGhlcmUgaXMuIFRoZSBhdG1vc3BoZXJlIGlzIG1vc3RseSBtYWRlIG9mIGdhc2VzLCBkdXN0LCBhbmQgd2F0ZXIsIHdoaWNoIHNjIGFuZCBhbmQgc2NhdHRlcnMgdGhlIGxpZ2h0LiBXaGVuIHRoZSBzdW5saWdodCBoaXRzIHRocm91Z2ggdGhlIGF0bW9zcGhlcmUsIHRoZSBsaWdodCBnZXRzIHNjYXR0ZXJlZCBzY2F0dGVyZWQsIG1ha2luZyB0aGUgc2t5IGJsdWUgYmx1ZS4iLAogICJzb3VyY2VUb09wYXF1ZU1zIjogMzg5Ljk5OTk5OTk5OTk5OTgsCiAgInNvdXJjZVRvUmVzdE1zIjogNDg5Ljk5OTk5OTk5OTk5OTgsCiAgInJlc3RTYW1wbGVzIjogMjAsCiAgInJlc3RNb3ZlbWVudCI6IDAsCiAgImZhaWx1cmVzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-152d3a76ab900d1d0626",
+          "file": "ambient-answer.spec.ts",
+          "line": 208,
+          "column": 5
+        },
+        {
+          "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5667,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:50.971Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-c19674091aedcf74e79b",
+          "file": "ambient-answer.spec.ts",
+          "line": 304,
+          "column": 5
+        },
+        {
+          "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4679,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:16:56.656Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-7aeb1969f048b28495c2",
+          "file": "ambient-answer.spec.ts",
+          "line": 351,
+          "column": 5
+        },
+        {
+          "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10418,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:17:01.348Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-bbd0094a375f752db730",
+          "file": "ambient-answer.spec.ts",
+          "line": 418,
+          "column": 5
+        },
+        {
+          "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2245,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:17:11.782Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-6fb1d4619d4ff04b153e",
+          "file": "ambient-answer.spec.ts",
+          "line": 463,
+          "column": 5
+        },
+        {
+          "title": "the reshape default preserves source finality and hands over one exact answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6128,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:02.924Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-e0a124ed4d203be1fa6e",
+          "file": "ambient-answer.spec.ts",
+          "line": 17,
+          "column": 5
+        },
+        {
+          "title": "shared controls pause motion and source time, and offscreen activity rests",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1770,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:09.111Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-239fad3eca10e4721663",
+          "file": "ambient-answer.spec.ts",
+          "line": 104,
+          "column": 5
+        },
+        {
+          "title": "the comparison switches one visible condition and restarts the shared recording at every width",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1820,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:10.900Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-27be987b13335f119e8e",
+          "file": "ambient-answer.spec.ts",
+          "line": 129,
+          "column": 5
+        },
+        {
+          "title": "changing and restarting recordings cannot leak a previous answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1594,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:12.729Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-5b436aac257fcd3d4a6c",
+          "file": "ambient-answer.spec.ts",
+          "line": 145,
+          "column": 5
+        },
+        {
+          "title": "ambient animation keeps its identity and phase through interruption; final accents do not replay",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2386,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:14.332Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-21fa62be45192f5ccc85",
+          "file": "ambient-answer.spec.ts",
+          "line": 162,
+          "column": 5
+        },
+        {
+          "title": "authored narrow underallocation fits before a bounded bubble-to-word handover",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2254,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:16.729Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-forced-fit-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmaXR0aW5nRnJhbWVzIjogMTIsCiAgImJsZW5kRnJhbWVzIjogMTAsCiAgInRyYW5zZmVyRnJhbWVzIjogMTksCiAgIm1pbk9wYWNpdHkiOiAwLAogICJtYXhPcGFjaXR5IjogMSwKICAibWluVG9wIjogLTAuMTk5ODkxLAogICJtYXhUb3AiOiAxLjUsCiAgImR1cmF0aW9uIjogMjgwLAogICJpbml0aWFsSGVpZ2h0IjogMTIxLjg3NSwKICAiZmluYWxIZWlnaHQiOiAyOTIuNSwKICAiZmluYWxUZXh0IjogIlRoZSBza3kgYXBwZWFycyBibHVlIGJlY2F1c2Ugb2YgdGhlIHdheSBzdW5saWdodCB0cmF2ZWxzIHRocm91Z2ggdGhlIGF0bW9zcGhlcmUuIFdoZW4gc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCBpdCBnZXRzIHNjYXR0ZXJlZCBtb3JlIHRoZSBhdG1vc3BoZXJlIGlzLiBUaGUgYXRtb3NwaGVyZSBpcyBtb3N0bHkgbWFkZSBvZiBnYXNlcywgZHVzdCwgYW5kIHdhdGVyLCB3aGljaCBzYyBhbmQgYW5kIHNjYXR0ZXJzIHRoZSBsaWdodC4gV2hlbiB0aGUgc3VubGlnaHQgaGl0cyB0aHJvdWdoIHRoZSBhdG1vc3BoZXJlLCB0aGUgbGlnaHQgZ2V0cyBzY2F0dGVyZWQgc2NhdHRlcmVkLCBtYWtpbmcgdGhlIHNreSBibHVlIGJsdWUuIiwKICAic291cmNlVG9PcGFxdWVNcyI6IDM5MCwKICAic291cmNlVG9SZXN0TXMiOiA1MDcsCiAgInJlc3RTYW1wbGVzIjogMjAsCiAgInJlc3RNb3ZlbWVudCI6IDAsCiAgImZhaWx1cmVzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-988731e3393f587798f1",
+          "file": "ambient-answer.spec.ts",
+          "line": 208,
+          "column": 5
+        },
+        {
+          "title": "seeded cells evolve inside left-anchored rows without lexical placeholders or overlap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4476,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:24.089Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-bada8a85505f8e8b44aa",
+          "file": "ambient-answer.spec.ts",
+          "line": 304,
+          "column": 5
+        },
+        {
+          "title": "one capsule divides inside its frame and each cell shares the occasional glimmer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4378,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:28.573Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-700c537e73f9b92866a2",
+          "file": "ambient-answer.spec.ts",
+          "line": 351,
+          "column": 5
+        },
+        {
+          "title": "the five-line waiting envelope ignores received ink while rows and glimmer clocks keep their identities",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10182,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:32.970Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-651500286db68475608d",
+          "file": "ambient-answer.spec.ts",
+          "line": 418,
+          "column": 5
+        },
+        {
+          "title": "an answer released during the joined opening fades the intact capsule without cloning slabs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1284,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:19:43.180Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "71d2494d95f7acf6c8d7-097df77f06d4f755556d",
+          "file": "ambient-answer.spec.ts",
+          "line": 463,
+          "column": 5
+        }
+      ],
+      "suites": [
+        {
+          "title": "whole answer with reduced motion",
+          "file": "ambient-answer.spec.ts",
+          "line": 291,
+          "column": 6,
+          "specs": [
+            {
+              "title": "reduced motion removes movement and preserves exact shared source finality",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4720,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:14:24.197Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "71d2494d95f7acf6c8d7-c61acba4df659c88b947",
+              "file": "ambient-answer.spec.ts",
+              "line": 294,
+              "column": 7
+            },
+            {
+              "title": "reduced motion removes movement and preserves exact shared source finality",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5515,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:16:45.433Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "71d2494d95f7acf6c8d7-7ce5c8a767a950ef119e",
+              "file": "ambient-answer.spec.ts",
+              "line": 294,
+              "column": 7
+            },
+            {
+              "title": "reduced motion removes movement and preserves exact shared source finality",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:19:18.994Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "71d2494d95f7acf6c8d7-855c45f61beaa36f4cfb",
+              "file": "ambient-answer.spec.ts",
+              "line": 294,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "reduced-motion-full.spec.ts",
+      "file": "reduced-motion-full.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "reduced motion full audit",
+          "file": "reduced-motion-full.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "all sections mount and every stage reaches its recording's end",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16200,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:14:47.416Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "59439ccac26e1de773e7-8da38a1423a54dac48b8",
+              "file": "reduced-motion-full.spec.ts",
+              "line": 6,
+              "column": 7
+            },
+            {
+              "title": "all sections mount and every stage reaches its recording's end",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16654,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:17:14.051Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "59439ccac26e1de773e7-7c2504c3745393a722ad",
+              "file": "reduced-motion-full.spec.ts",
+              "line": 6,
+              "column": 7
+            },
+            {
+              "title": "all sections mount and every stage reaches its recording's end",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16327,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-12T15:19:44.476Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "59439ccac26e1de773e7-ba60a7a03d25ca2c072a",
+              "file": "reduced-motion-full.spec.ts",
+              "line": 6,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "settle-motion.spec.ts",
+      "file": "settle-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "earlier reading hands over only released passages and never reanimates settled words",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11418,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:03.686Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-earlier-reading-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmYWlsdXJlcyI6IFtdLAogICJiYXRjaGVzIjogMiwKICAicmVzdGluZ1NhbXBsZXMiOiA0NTksCiAgIm1hdGVyaWFsU2FtcGxlcyI6IDU5MywKICAiYmxlbmRTYW1wbGVzIjogMjAsCiAgIm1heFJlc3REcmlmdCI6IDAsCiAgIm1heGltdW1UcmFuc2ZlckNlbGxzIjogNSwKICAiY29oZXJlbnRSZXN0U2FtcGxlcyI6IDQ1OSwKICAiZGlzY2FyZGVkSW5jb2hlcmVudFNhbXBsZXMiOiAwLAogICJtYXhWaWV3cG9ydERyaWZ0IjogMCwKICAibWF4aW11bUludHJhU2FtcGxlU2Nyb2xsUHgiOiAwLAogICJkaXN0aW5jdFBhc3NhZ2VzIjogMiwKICAiZHJpZnRzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-da13adbb0cac605ed898",
+          "file": "settle-motion.spec.ts",
+          "line": 23,
+          "column": 5
+        },
+        {
+          "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1134,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:15.125Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-06737aa953dbb4c88bd4",
+          "file": "settle-motion.spec.ts",
+          "line": 106,
+          "column": 5
+        },
+        {
+          "title": "a finished real recording is exact, selectable and stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17017,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:16.275Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-653434baca6acf0efe8d",
+          "file": "settle-motion.spec.ts",
+          "line": 131,
+          "column": 5
+        },
+        {
+          "title": "motion off cancels decoration while the recorded source keeps advancing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1370,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:33.303Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-98c0359984505d0071c2",
+          "file": "settle-motion.spec.ts",
+          "line": 164,
+          "column": 5
+        },
+        {
+          "title": "the embedded phone preserves its answer width and exact final text",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15996,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:34.682Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-f53654c984798afa3be6",
+          "file": "settle-motion.spec.ts",
+          "line": 179,
+          "column": 5
+        },
+        {
+          "title": "whole answer uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1011,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:50.688Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-eb64b74b13039fb61522",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each word uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 361,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:51.710Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-0f251dc3dcb5d9d30a9a",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each sentence uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 382,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:52.077Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-f46cb4355b05827ce90f",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each paragraph uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 360,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:52.463Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-7fbd2cdc23437325c710",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "earlier reading hands over only released passages and never reanimates settled words",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12423,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:17:30.739Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-earlier-reading-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmYWlsdXJlcyI6IFtdLAogICJiYXRjaGVzIjogMiwKICAicmVzdGluZ1NhbXBsZXMiOiA0NjIsCiAgIm1hdGVyaWFsU2FtcGxlcyI6IDU5MywKICAiYmxlbmRTYW1wbGVzIjogMjAsCiAgIm1heFJlc3REcmlmdCI6IDAsCiAgIm1heGltdW1UcmFuc2ZlckNlbGxzIjogNSwKICAiY29oZXJlbnRSZXN0U2FtcGxlcyI6IDQ2MiwKICAiZGlzY2FyZGVkSW5jb2hlcmVudFNhbXBsZXMiOiAwLAogICJtYXhWaWV3cG9ydERyaWZ0IjogMCwKICAibWF4aW11bUludHJhU2FtcGxlU2Nyb2xsUHgiOiAwLAogICJkaXN0aW5jdFBhc3NhZ2VzIjogMiwKICAiZHJpZnRzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-3c27203276f5fbf90714",
+          "file": "settle-motion.spec.ts",
+          "line": 23,
+          "column": 5
+        },
+        {
+          "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1943,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:17:43.174Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-ea4ee48b098779c9237a",
+          "file": "settle-motion.spec.ts",
+          "line": 106,
+          "column": 5
+        },
+        {
+          "title": "a finished real recording is exact, selectable and stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17860,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:17:45.123Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-47e0d38212565f0ea630",
+          "file": "settle-motion.spec.ts",
+          "line": 131,
+          "column": 5
+        },
+        {
+          "title": "motion off cancels decoration while the recorded source keeps advancing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1601,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:03.017Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-9a2e7fb2175cf515d206",
+          "file": "settle-motion.spec.ts",
+          "line": 164,
+          "column": 5
+        },
+        {
+          "title": "the embedded phone preserves its answer width and exact final text",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16445,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:04.628Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-db8c4fe0617e4566d1cd",
+          "file": "settle-motion.spec.ts",
+          "line": 179,
+          "column": 5
+        },
+        {
+          "title": "whole answer uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1708,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:21.091Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-b82974dc7e700d3af943",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each word uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 896,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:22.810Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-5f8b91557b3b9af625e1",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each sentence uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 808,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:23.714Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-57b1c33c4ea7325e46de",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each paragraph uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 859,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:24.529Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-888e5140a6acebc636af",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "earlier reading hands over only released passages and never reanimates settled words",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11465,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:00.827Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "v7-earlier-reading-result",
+                      "contentType": "application/json",
+                      "body": "ewogICJmYWlsdXJlcyI6IFtdLAogICJiYXRjaGVzIjogMiwKICAicmVzdGluZ1NhbXBsZXMiOiA0NjEsCiAgIm1hdGVyaWFsU2FtcGxlcyI6IDU5MiwKICAiYmxlbmRTYW1wbGVzIjogMTgsCiAgIm1heFJlc3REcmlmdCI6IDAsCiAgIm1heGltdW1UcmFuc2ZlckNlbGxzIjogNSwKICAiY29oZXJlbnRSZXN0U2FtcGxlcyI6IDQ2MSwKICAiZGlzY2FyZGVkSW5jb2hlcmVudFNhbXBsZXMiOiAwLAogICJtYXhWaWV3cG9ydERyaWZ0IjogMCwKICAibWF4aW11bUludHJhU2FtcGxlU2Nyb2xsUHgiOiAwLAogICJkaXN0aW5jdFBhc3NhZ2VzIjogMiwKICAiZHJpZnRzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-f5c2748e662778ed35f4",
+          "file": "settle-motion.spec.ts",
+          "line": 23,
+          "column": 5
+        },
+        {
+          "title": "pause and offscreen states suspend ambient activity without resetting its phase",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1722,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:12.302Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-24956f38de3b1bc64505",
+          "file": "settle-motion.spec.ts",
+          "line": 106,
+          "column": 5
+        },
+        {
+          "title": "a finished real recording is exact, selectable and stationary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17930,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:14.043Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-32c8339c6943cfd39bf9",
+          "file": "settle-motion.spec.ts",
+          "line": 131,
+          "column": 5
+        },
+        {
+          "title": "motion off cancels decoration while the recorded source keeps advancing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1746,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:31.989Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-4a8223e32ffa848d99a7",
+          "file": "settle-motion.spec.ts",
+          "line": 164,
+          "column": 5
+        },
+        {
+          "title": "the embedded phone preserves its answer width and exact final text",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16435,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:33.747Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-dccb2d0e125e147606d5",
+          "file": "settle-motion.spec.ts",
+          "line": 179,
+          "column": 5
+        },
+        {
+          "title": "whole answer uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1726,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:50.198Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-41010015acb1dc71a109",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each word uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1060,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:51.939Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-1d7eae37f4e58860851f",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each sentence uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 848,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:53.008Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-374b0cce5d86dc104e69",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        },
+        {
+          "title": "each paragraph uses the shared modern material by default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 858,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:53.862Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f9379bad649c53737b37-7b1d9beb6f51ebf761c7",
+          "file": "settle-motion.spec.ts",
+          "line": 209,
+          "column": 7
+        }
+      ]
+    },
+    {
+      "title": "snapshot-study.spec.ts",
+      "file": "snapshot-study.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5439,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:15:52.833Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c6242476cbb9674cb04a-9a0104b6c920d00c9156",
+          "file": "snapshot-study.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5973,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:18:25.404Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c6242476cbb9674cb04a-b8effaaaf80692e40fa7",
+          "file": "snapshot-study.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "revisable whole drafts leave the five-line field unchanged and never become a premature answer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-portrait",
+              "projectName": "mobile-portrait",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5924,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-12T15:20:54.735Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c6242476cbb9674cb04a-96dbd9f9c7116896b6c5",
+          "file": "snapshot-study.spec.ts",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-12T15:13:52.675Z",
+    "duration": 428140.95,
+    "expected": 69,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -17,7 +17,7 @@ export function SnapshotStudy() {
         <div className="max-w-2xl">
           <p className="readout mb-3" style={{ color: 'var(--muted)' }}>adapter exercise · authored input</p>
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight">a draft can look finished.<br />and still change.</h3>
-          <p className="mt-4 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>Play the same revisable input through two views. The cells can prepare space from the current draft while its words stay out of the reading surface. Even a complete-looking answer waits for the source&rsquo;s final signal.</p>
+          <p className="mt-4 text-base leading-relaxed" style={{ color: 'var(--ink-2)' }}>Play the same revisable input through two views. The waiting field keeps its own rhythm as the draft changes. Even a complete-looking answer waits for the source&rsquo;s final signal; only then does the page fit and reveal the actual words.</p>
         </div>
         <div className="flex flex-wrap gap-5 readout">
           <button className="replay-btn replay-btn-on-surface cursor-pointer" type="button" onClick={clock.finished ? clock.restart : clock.running ? clock.pause : clock.play}>
@@ -42,7 +42,7 @@ export function SnapshotStudy() {
           </div>
         </figure>
       </div>
-      <p className="readout mt-5 max-w-4xl leading-relaxed" style={{ color: 'var(--muted)' }}>scripted 4.2-second sequence · revisions and final signal are authored. this tests an adapter contract; it is not a google recording, inferred frame timing or a connected gemini api. candidate size is provisional; the renderer still measures the actual final layout.</p>
+      <p className="readout mt-5 max-w-4xl leading-relaxed" style={{ color: 'var(--muted)' }}>scripted 4.2-second sequence · revisions and final signal are authored. this tests an adapter contract; it is not a google recording, inferred frame timing or a connected gemini api. the waiting field does not use the candidate&rsquo;s text or size.</p>
     </div>
   )
 }

@@ -1,5 +1,7 @@
 # After Tokens v6: release verification
 
+> Historical v6 record (`responsive-cell-skeleton-v6`, published at `ca43a251bd095f37dad35163ccc1aad682d06371`). Its source-responsive waiting geometry, measurements and captures do not describe or validate the later v7 ambient score.
+
 **12 September 2026 · globalanomalyindex · `responsive-cell-skeleton-v6`.**
 
 This record separates the current source/copy audit, local engineering checks, fresh motion observations and publication. It does not promote earlier results to the current material. This is a local prepublication checkpoint based on published v5 commit `06da788390549574949c7cdcd938c3669820f214`. Commit-specific hosting and live evidence is retained in the delivery report produced after publication, rather than asserted by this source document.

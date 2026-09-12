@@ -137,8 +137,8 @@ export function SectionPreviews() {
         </Frame>
       </div>
       <p className="mt-8 text-base leading-relaxed max-w-[64ch]" style={{ color: 'var(--ink-2)' }}>
-        three surfaces, three voices, one whole-answer policy. a capsule divides into rows that breathe, reshape and briefly glimmer within the text area. the waiting shapes have no token identity.
-        current content guides approximate space; after source finality, a brief fit can prepare missing room.
+        three surfaces, three voices, one whole-answer policy. a capsule opens into rows that breathe, occasionally change and rest within the text area. the waiting shapes have no token identity.
+        the composition follows its own rhythm; after source finality, a brief fit can prepare missing room.
         the visible bubbles then reshape toward actual word groups as the answer fades in and settles over 280 ms. the recorded source has not been accelerated for the phone.
       </p>
     </Section>

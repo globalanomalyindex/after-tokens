@@ -1,0 +1,697 @@
+{
+  "schemaVersion": 1,
+  "material": "ambient-cell-skeleton-v7",
+  "fingerprint": "074d46fbf02316d3159fdc31ac4d3039acc5a6cdd8dd84b450f8c3bc69a7e09c",
+  "playbackScale": 0.5,
+  "handoverDurationMs": 280,
+  "implementation": [
+    {
+      "file": "app/ambient-composition.css",
+      "sha256": "f040bc17db1ed102b3026f8d26add8a5e09f53065b9021e45276dbfc2c501552"
+    },
+    {
+      "file": "app/skeleton-division.css",
+      "sha256": "8254361f5ab670626a61571330fb1a523db7f2f52bb8051fe42fcb2c2cdf139b"
+    },
+    {
+      "file": "app/globals.css",
+      "sha256": "fcfb7b1b49945c0f53eec3a825bd2d487d08d5d7cb81e2e05d0d5a152e6363cb"
+    },
+    {
+      "file": "components/settle/settle-answer.tsx",
+      "sha256": "e553bc2ecc34e74b2b772995f2d5cab2f25b3feea1d107d1d1080e44fbcf39e9"
+    },
+    {
+      "file": "components/settle/use-reading-surface.ts",
+      "sha256": "db612fb45d0419272e71f55915d380fe0881d7fd08371112bffeb6ff1079eccd"
+    },
+    {
+      "file": "components/settle/bubble-transfer.tsx",
+      "sha256": "63c6e13f70072a99429f4a97b37c0c8914fab739ff39ff4817381091100b5381"
+    },
+    {
+      "file": "components/settle/ambient-composition.tsx",
+      "sha256": "74c7db5340f1b348ef314ffadd566ab7ce139aa21274f9aa758d650b9a898f8d"
+    },
+    {
+      "file": "components/settle/skeleton-division.tsx",
+      "sha256": "120b42051ccaa84fb120893303e4655f0ab758e9938262343e30a811644e3c74"
+    },
+    {
+      "file": "components/settle/ambient-study.tsx",
+      "sha256": "1348eb039fac6820106345801b120ddbd49079552bce7bd7b3e02a5ace9af798"
+    },
+    {
+      "file": "components/settle/use-replay.ts",
+      "sha256": "eba95bf6946151ed9284c6087efc58c637b2593b9c798c4559e8187ccadcfa4a"
+    },
+    {
+      "file": "components/settle/settle-stage.tsx",
+      "sha256": "e6a533d7a9df4701708bfdf9f57bfb29ccb600f99dde1972dc82a78e109e2578"
+    },
+    {
+      "file": "lib/settle/ambient-score.ts",
+      "sha256": "99623c7d2167f266dfbc2be231a9d46d3cb139c032732a5a8e3f0567e1e6a403"
+    },
+    {
+      "file": "lib/settle/answer-envelope.ts",
+      "sha256": "5cb78451dbc6dfc478ba78f8cf6a924d8546d55da64e281b132f54b6d5bdb8c3"
+    },
+    {
+      "file": "lib/settle/reader.ts",
+      "sha256": "0e8affd5f9a6a0109e5debe3511b127b1fe3443537d78e68c6614c5ae603c105"
+    },
+    {
+      "file": "lib/settle/types.ts",
+      "sha256": "116a4ef1d09fd12ec88f2002c90e5ceafec3dfa2efbe16249836bacf088624cf"
+    },
+    {
+      "file": "lib/settle/replay.ts",
+      "sha256": "72f04e3e9499b12174b904be814067bdf7629b83e7314d731502bbd93dde5afe"
+    },
+    {
+      "file": "lib/settle/experimental-recordings.ts",
+      "sha256": "80e4c2b9b9b2b829ec3854e8bcd1c10ede1dfd2207a74c62727746d7369c78a0"
+    },
+    {
+      "file": "lib/settle/snapshot-study.ts",
+      "sha256": "d679cfaf527b6c29f3f8ade4d97beaf0d8170650c2f5bc11398055385cc593ca"
+    },
+    {
+      "file": "components/settle/snapshot-study.tsx",
+      "sha256": "413256e697934e491989aa00dd71b07295e31d5f72aa873ac73c3af49fa99cde"
+    },
+    {
+      "file": "lib/brand/brands.ts",
+      "sha256": "984d9188cd2739d1f1042edc0f0a3769a9a82eb535ed19f51ec66069885de050"
+    },
+    {
+      "file": "lib/brand/provider.tsx",
+      "sha256": "f493ff9d5a3fcd2d400e616de03dc1d0adc9ffe39960e2e1afe752153d0b00fb"
+    },
+    {
+      "file": "lib/settle/voice.ts",
+      "sha256": "a56a8e16dde319af36b7116eb2bc9d361c2ad13df94f26004c38700b9ec647f2"
+    },
+    {
+      "file": "scripts/measure-ambient-skeleton-v7-motion.mjs",
+      "sha256": "3f466fcb3f62754fb03b73da91a95932821687c10834a988bcd06599c4bfa1ee"
+    },
+    {
+      "file": "scripts/archive-ambient-skeleton-v7-motion.mjs",
+      "sha256": "1c69fdfc1151b7f00f1cc5d064067d41abf5907ae6ad54e81ca4110a5b3d6f56"
+    },
+    {
+      "file": "scripts/measure-anchored-skeleton-motion.mjs",
+      "sha256": "378c9bc8b94cac12033fa91959b3f91eb04d1cffad178f2da46193f28415efb9"
+    }
+  ],
+  "measurementStartedAt": "2026-09-12T15:21:40.036Z",
+  "measuredAt": "2026-09-12T15:23:10.240Z",
+  "url": "http://localhost:3000",
+  "browser": "Chromium",
+  "browserVersion": "148.0.7778.96",
+  "sourceFixtures": [
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sleep-tips__lowconf-b128-s32.json",
+      "sha256": "64e3068abde3054740364f7f1416253d0dbcc3f4a66ab232b356cd93ca1a6b05",
+      "id": "sleep-tips__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-2026-09-09/compact/sky-blue__lowconf-b128-s32.json",
+      "sha256": "950c3b1ffa6e8eaaf6a5380f6d0283c1f6d5dae5a56f022cd4f2763436fe4c31",
+      "id": "sky-blue__lowconf-b128-s32"
+    },
+    {
+      "file": "data/experiments/parallel-qwen-random-2026-09-09/compact/sleep-tips__random-b128-s32.json",
+      "sha256": "4ae260fdab94e5e65b5da22882ce5566e73cc9468af9c71f853fbf4c0d1533e7",
+      "id": "sleep-tips__random-b128-s32"
+    }
+  ],
+  "results": [
+    {
+      "name": "390-static",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "static",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:21:50.524Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9224.8,
+      "firstSampledDomMs": 9224.8,
+      "firstSampledInkMs": 9241.4,
+      "firstSampledFullOpacityMs": 9424.7,
+      "firstSampledRestMs": 9524.7,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.600000000000364,
+      "sourceToFullOpacityMs": 199.90000000000146,
+      "sourceToRestMs": 299.90000000000146,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 23,
+      "maximumTransferTravelPx": 236.80865698472022,
+      "maximumCellMotionPx": 0,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 4.171875,
+      "scoreEpisodes": [],
+      "maximumSimultaneousTargetChanges": 0,
+      "geometricRestSamples": 0,
+      "postEpisodeRestSamples": 0,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 17,
+      "maximumFrameGapMs": 20,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-breathe",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "breathe",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:01.475Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9020.7,
+      "firstSampledDomMs": 9020.7,
+      "firstSampledInkMs": 9037.3,
+      "firstSampledFullOpacityMs": 9220.7,
+      "firstSampledRestMs": 9320.7,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.599999999998545,
+      "sourceToFullOpacityMs": 200,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 23,
+      "maximumTransferTravelPx": 236.80865698472022,
+      "maximumCellMotionPx": 0,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 4.171875,
+      "scoreEpisodes": [],
+      "maximumSimultaneousTargetChanges": 0,
+      "geometricRestSamples": 0,
+      "postEpisodeRestSamples": 0,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.700000000000728,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:12.157Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9009.8,
+      "firstSampledDomMs": 9009.8,
+      "firstSampledInkMs": 9026.4,
+      "firstSampledFullOpacityMs": 9209.8,
+      "firstSampledRestMs": 9309.8,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.600000000000364,
+      "sourceToFullOpacityMs": 200,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 21,
+      "maximumTransferTravelPx": 215.4259936217236,
+      "maximumCellMotionPx": 34.328125,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.0625,
+      "scoreEpisodes": [
+        {
+          "row": 4,
+          "episode": 0,
+          "cueAtMs": 1299.7975372476503,
+          "observedAtScoreMs": 1300,
+          "transitionMs": 970.1365448534489,
+          "gesture": "divide"
+        },
+        {
+          "row": 3,
+          "episode": 0,
+          "cueAtMs": 4017.630956810899,
+          "observedAtScoreMs": 4100,
+          "transitionMs": 1106.06446005404,
+          "gesture": "gather"
+        },
+        {
+          "row": 2,
+          "episode": 0,
+          "cueAtMs": 6381.342676049098,
+          "observedAtScoreMs": 6400,
+          "transitionMs": 1107.6520753093064,
+          "gesture": "gather"
+        }
+      ],
+      "maximumSimultaneousTargetChanges": 1,
+      "geometricRestSamples": 190,
+      "postEpisodeRestSamples": 178,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.69999999999891,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-static",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "static",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:23.591Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 528,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9107.2,
+      "firstSampledDomMs": 9107.2,
+      "firstSampledInkMs": 9123.9,
+      "firstSampledFullOpacityMs": 9307.2,
+      "firstSampledRestMs": 9407.2,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.69999999999891,
+      "sourceToFullOpacityMs": 200,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 23,
+      "maximumTransferTravelPx": 568.238762414979,
+      "maximumCellMotionPx": 0,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 10.078125,
+      "scoreEpisodes": [],
+      "maximumSimultaneousTargetChanges": 0,
+      "geometricRestSamples": 0,
+      "postEpisodeRestSamples": 0,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.700000000000728,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-breathe",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "breathe",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:34.523Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 527,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9111.9,
+      "firstSampledDomMs": 9111.9,
+      "firstSampledInkMs": 9128.6,
+      "firstSampledFullOpacityMs": 9311.9,
+      "firstSampledRestMs": 9411.9,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 16.700000000000728,
+      "sourceToFullOpacityMs": 200,
+      "sourceToRestMs": 300,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 23,
+      "maximumTransferTravelPx": 568.238762414979,
+      "maximumCellMotionPx": 0,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 22,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 10.078125,
+      "scoreEpisodes": [],
+      "maximumSimultaneousTargetChanges": 0,
+      "geometricRestSamples": 0,
+      "postEpisodeRestSamples": 0,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.800000000000182,
+      "maximumFrameGapMs": 17.700000000000273,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "1380-reshape",
+      "viewport": {
+        "width": 1380,
+        "height": 900
+      },
+      "condition": "reshape",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:45.291Z",
+      "source": "sleep-tips__lowconf-b128-s32",
+      "frames": 530,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9048.8,
+      "firstSampledDomMs": 9048.8,
+      "firstSampledInkMs": 9115.4,
+      "firstSampledFullOpacityMs": 9298.8,
+      "firstSampledRestMs": 9398.8,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 66.60000000000036,
+      "sourceToFullOpacityMs": 250,
+      "sourceToRestMs": 350,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 20,
+      "maximumTransferCells": 21,
+      "maximumTransferTravelPx": 516.4031089913256,
+      "maximumCellMotionPx": 82.765625,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.140625,
+      "scoreEpisodes": [
+        {
+          "row": 4,
+          "episode": 0,
+          "cueAtMs": 1299.7975372476503,
+          "observedAtScoreMs": 1300,
+          "transitionMs": 970.1365448534489,
+          "gesture": "divide"
+        },
+        {
+          "row": 3,
+          "episode": 0,
+          "cueAtMs": 4017.630956810899,
+          "observedAtScoreMs": 4100,
+          "transitionMs": 1106.06446005404,
+          "gesture": "gather"
+        },
+        {
+          "row": 2,
+          "episode": 0,
+          "cueAtMs": 6381.342676049098,
+          "observedAtScoreMs": 6400,
+          "transitionMs": 1107.6520753093064,
+          "gesture": "gather"
+        }
+      ],
+      "maximumSimultaneousTargetChanges": 1,
+      "geometricRestSamples": 190,
+      "postEpisodeRestSamples": 178,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 17,
+      "maximumFrameGapMs": 33.30000000000109,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape-sky",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:22:57.074Z",
+      "source": "sky-blue__lowconf-b128-s32",
+      "frames": 547,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 9346,
+      "firstSampledDomMs": 9346,
+      "firstSampledInkMs": 9562.6,
+      "firstSampledFullOpacityMs": 9746,
+      "firstSampledRestMs": 9846,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 216.60000000000036,
+      "sourceToFullOpacityMs": 400,
+      "sourceToRestMs": 500,
+      "fittingFrames": 12,
+      "blendFrames": 10,
+      "transferFrames": 18,
+      "maximumTransferCells": 20,
+      "maximumTransferTravelPx": 242.07290144868313,
+      "maximumCellMotionPx": 26.546875,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 23,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 219.375,
+      "finalPageHeightPx": 219.375,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.0625,
+      "scoreEpisodes": [
+        {
+          "row": 1,
+          "episode": 0,
+          "cueAtMs": 1289.1598163172603,
+          "observedAtScoreMs": 1300,
+          "transitionMs": 1143.64317888394,
+          "gesture": "balance"
+        },
+        {
+          "row": 4,
+          "episode": 0,
+          "cueAtMs": 4002.438122383319,
+          "observedAtScoreMs": 4100,
+          "transitionMs": 1261.4451772533357,
+          "gesture": "gather"
+        },
+        {
+          "row": 2,
+          "episode": 0,
+          "cueAtMs": 6405.660819867626,
+          "observedAtScoreMs": 6500,
+          "transitionMs": 1053.5162094049156,
+          "gesture": "balance"
+        }
+      ],
+      "maximumSimultaneousTargetChanges": 1,
+      "geometricRestSamples": 185,
+      "postEpisodeRestSamples": 173,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.799999999999955,
+      "maximumFrameGapMs": 17.59999999999991,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "390-reshape-random",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "condition": "reshape",
+      "material": "ambient-cell-skeleton-v7",
+      "measuredAt": "2026-09-12T15:23:08.993Z",
+      "source": "sleep-tips__random-b128-s32",
+      "frames": 589,
+      "exactFinalText": true,
+      "nonemptyTextUpdates": 1,
+      "noEarlyText": true,
+      "firstSampledSourceCompleteMs": 10034.6,
+      "firstSampledDomMs": 10034.6,
+      "firstSampledInkMs": 10084.6,
+      "firstSampledFullOpacityMs": 10267.9,
+      "firstSampledRestMs": 10367.9,
+      "sourceToDomMs": 0,
+      "sourceToInkMs": 50,
+      "sourceToFullOpacityMs": 233.29999999999927,
+      "sourceToRestMs": 333.2999999999993,
+      "fittingFrames": 0,
+      "blendFrames": 10,
+      "transferFrames": 19,
+      "maximumTransferCells": 23,
+      "maximumTransferTravelPx": 233.62381883683625,
+      "maximumCellMotionPx": 30.015625,
+      "handoverDurationMs": 280,
+      "minimumArrivalOpacity": 0,
+      "maximumArrivalTopPx": 1.5,
+      "restSamples": 22,
+      "restedGlyphDisplacementPx": 0,
+      "initialRows": 5,
+      "maximumRows": 5,
+      "waitingFrameGrowthPx": 0,
+      "finalFrameHeightPx": 73.125,
+      "finalPageHeightPx": 73.125,
+      "leftAnchorDriftPx": 0,
+      "minimumVisibleCellGapPx": 0.09375,
+      "scoreEpisodes": [
+        {
+          "row": 1,
+          "episode": 0,
+          "cueAtMs": 1302.1607674192637,
+          "observedAtScoreMs": 1400,
+          "transitionMs": 1276.626856252551,
+          "gesture": "divide"
+        },
+        {
+          "row": 2,
+          "episode": 0,
+          "cueAtMs": 3932.352415868081,
+          "observedAtScoreMs": 4000,
+          "transitionMs": 997.2460702061653,
+          "gesture": "balance"
+        },
+        {
+          "row": 3,
+          "episode": 0,
+          "cueAtMs": 6408.388570137322,
+          "observedAtScoreMs": 6500,
+          "transitionMs": 1028.4790927544236,
+          "gesture": "divide"
+        },
+        {
+          "row": 4,
+          "episode": 0,
+          "cueAtMs": 8785.415740171447,
+          "observedAtScoreMs": 8800,
+          "transitionMs": 1155.0069789402187,
+          "gesture": "balance"
+        }
+      ],
+      "maximumSimultaneousTargetChanges": 1,
+      "geometricRestSamples": 231,
+      "postEpisodeRestSamples": 213,
+      "maximumRestCellDriftPx": 0,
+      "sourceIndependentWaiting": true,
+      "maximumGlimmerPhaseSpreadMs": 0,
+      "frameGapP95Ms": 16.900000000000546,
+      "maximumFrameGapMs": 33.29999999999927,
+      "guards": {
+        "passed": true,
+        "failures": []
+      }
+    }
+  ],
+  "method": "Eight sequential browser observations: six sleep-list condition×viewport cases plus narrow sky and random cases. An observer records whole-answer DOM changes; one rAF sampler records geometry, computed styles and one animation subtree list per frame. Raw samples remain separate from passive showcase videos.",
+  "clocks": "Source capture-loop intervals are explicitly replayed at0.5× inspection. Local activity, intro and handover retain their authored timings. Source-complete, DOM insertion, first positive ink opacity, full ink opacity, and fully settled/unoccluded readiness are first sampled browser events; neither source clock nor rendering delays are API latency.",
+  "caveats": [
+    "No physical device FPS or reader-benefit evidence.",
+    "These finite observations cover some decorative episodes and rests, not a complete10.8s round or infinite novelty.",
+    "Instrumented rAF gaps are diagnostic only, not rendering-cost comparisons.",
+    "Source policies, opacity handover and size fitting have distinct timing costs.",
+    "Capsule division, seeded decorative episodes, breathing, glimmer and handover are a bundled treatment.",
+    "Opacity1 can precede the end of the280ms movement/transfer; readiness is measured separately.",
+    "Waiting geometry is source-independent; only already eligible text can resize the reading surface. Five decorative rows are not a future layout or percent complete."
+  ],
+  "archive": {
+    "file": "data/experiments/ambient-skeleton-v7-motion-2026-09-12/manifest.json",
+    "sha256": "055574829daf2005ef2372091d687f0352c82db91d8843e6b80494a0d63c4b3f",
+    "records": 8
+  }
+}

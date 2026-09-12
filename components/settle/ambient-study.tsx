@@ -12,8 +12,8 @@ import { statusWords } from './margin'
 
 const CONDITIONS: { id: AmbientCondition; title: string; description: string }[] = [
   { id: 'static', title: '01 · still', description: 'Rounded bars at a constant brightness.' },
-  { id: 'breathe', title: '02 · breathe', description: 'Soft local breaths. Row widths follow the available text.' },
-  { id: 'reshape', title: '03 · reshape', description: 'One capsule divides. Small cells make room for new ones.' },
+  { id: 'breathe', title: '02 · breathe', description: 'Soft local breaths in a steady composition.' },
+  { id: 'reshape', title: '03 · reshape', description: 'One capsule divides. A few cells make room, then rest. The next gesture happens somewhere else.' },
 ]
 
 export function AmbientStudy() {
