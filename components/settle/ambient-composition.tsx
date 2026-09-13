@@ -7,6 +7,8 @@ import { SkeletonDivision } from './skeleton-division'
 export type AmbientCondition = 'static' | 'breathe' | 'reshape'
 
 type Props = {
+  singleRow?: boolean
+  splitRow?: boolean
   active: boolean
   motion: boolean
   condition?: AmbientCondition
@@ -28,7 +30,7 @@ export function AmbientComposition(props: Props) {
   return <AmbientField key={props.runId} {...props} />
 }
 
-function AmbientField({ active, motion, condition = 'reshape', runId, seed, tempo = 1, rowCount = 5, lineHeightPx, barHeightPx }: Props) {
+function AmbientField({ singleRow = false, splitRow = false, active, motion, condition = 'reshape', runId, seed, tempo = 1, rowCount = 5, lineHeightPx, barHeightPx }: Props) {
   const rate = Number.isFinite(tempo) ? Math.max(.7, Math.min(1.4, tempo)) : 1
   const rows = useMemo(() => createGrowingRows(seed ?? runId), [seed, runId])
   const [clock, setClock] = useState({ elapsed: 0, score: 0 })
@@ -74,10 +76,10 @@ function AmbientField({ active, motion, condition = 'reshape', runId, seed, temp
         ['--ambient-line-height' as string]: lineHeightPx ? `${lineHeightPx}px` : '1.625em',
         ['--ambient-bar-height' as string]: barHeightPx ? `${barHeightPx}px` : '.9em',
       } as CSSProperties}>
-      {condition === 'reshape' && <SkeletonDivision widths={geometry.slice(0, 5).map((row) => row.width)} lineHeightPx={lineHeightPx} barHeightPx={barHeightPx} />}
+      {condition === 'reshape' && !singleRow && <SkeletonDivision widths={geometry.slice(0, 5).map((row) => row.width)} lineHeightPx={lineHeightPx} barHeightPx={barHeightPx} />}
       <div className="ambient-composition__field">
-        {rows.map((row, index) => {
-          const shape = geometry[index]!
+        {(singleRow ? [rows[splitRow ? 1 : 0]!] : rows).map((row, index) => {
+          const shape = geometry[row.index]!
           return <span key={index} className="ambient-composition__bar" data-row={index} data-shown={index < rowCount} data-kind={shape.stable ? 'line' : 'cluster'} data-shape-episode={shape.episode} data-shape-cue={shape.cueAtMs} style={{
             ['--ambient-width' as string]: `${(shape.width * 100).toFixed(6)}%`,
             ['--ambient-top' as string]: `calc(${index} * var(--ambient-line-height) + (var(--ambient-line-height) - var(--ambient-bar-height)) / 2)`,

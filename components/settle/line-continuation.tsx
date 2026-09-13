@@ -1,5 +1,6 @@
 'use client'
 
+import { AmbientComposition, type AmbientCondition } from './ambient-composition'
 import { useLayoutEffect, useState, type RefObject } from 'react'
 
 type Props = {
@@ -9,11 +10,16 @@ type Props = {
   visibleLength: number
   showing: boolean
   seed: string
+  active: boolean
+  motion: boolean
+  condition: AmbientCondition
+  tempo: number
+  barHeight: number
 }
 
 /** A decorative continuation cue, measured only from already released text.
  * It reserves no layout space and makes no prediction about the next words. */
-export function LineContinuation({ pageRef, frameRef, text, visibleLength, showing, seed }: Props) {
+export function LineContinuation({ pageRef, frameRef, text, visibleLength, showing, seed, active, motion, condition, tempo, barHeight }: Props) {
   const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
   useLayoutEffect(() => {
     const page = pageRef.current, frame = frameRef.current
@@ -34,12 +40,10 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
         const last = range.getBoundingClientRect()
         const area = page.getBoundingClientRect(), origin = frame.getBoundingClientRect()
         const font = parseFloat(getComputedStyle(page).fontSize) || 16
-        const gap = font * .45, available = area.right - last.right - gap
+        const gap = font * .3, available = area.right - last.right - gap
         if (!last.height || available < font * 2.5) { setBox(null); return }
-        const hash = [...seed].reduce((value, letter) => (value * 31 + letter.charCodeAt(0)) >>> 0, 7)
-        const fraction = .58 + (hash % 23) / 100
-        const height = font * .62
-        setBox({ left: last.right - origin.left + gap, top: last.top - origin.top + (last.height - height) / 2, width: Math.min(available * fraction, font * 12), height })
+        const height = barHeight
+        setBox({ left: last.right - origin.left + gap, top: last.top - origin.top + (last.height - height) / 2, width: available, height })
         return
       }
       setBox(null)
@@ -49,6 +53,8 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
     observer.observe(page)
     document.fonts?.ready.then(measure)
     return () => observer.disconnect()
-  }, [pageRef, frameRef, text, visibleLength, showing, seed])
-  return <span className="settle-line-continuation" aria-hidden="true" data-line-continuation data-shown={!!box} style={box ?? undefined}><span /></span>
+  }, [pageRef, frameRef, text, visibleLength, showing, seed, barHeight])
+  return <span className="settle-line-continuation" aria-hidden="true" data-line-continuation data-shown={!!box} style={box ?? undefined}>
+    {box && <AmbientComposition singleRow splitRow={box.width > barHeight * 11} active={active} motion={motion} condition={condition} complete={false} runId={seed} rowCount={1} lineHeightPx={barHeight} barHeightPx={barHeight} tempo={tempo} />}
+  </span>
 }

@@ -133,7 +133,7 @@ export function SettleAnswer({
         {page}
         <LineContinuation pageRef={pageRef} frameRef={frameRef} text={answerText} visibleLength={surface.visibleLength}
           showing={receiving && surface.phase === 'waiting' && (state.policy === 'sentence' || state.policy === 'word')}
-          seed={String(runId)} />
+          seed={String(runId)} active={active} motion={enabled} condition={ambient} tempo={voice.tempo} barHeight={surface.barHeightPx} />
         {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} inPlace={state.policy === 'word'} onCaptured={surface.advanceWaitingField} onComplete={surface.finishHandover} />}
       </div>
       {state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}

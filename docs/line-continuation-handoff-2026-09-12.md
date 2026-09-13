@@ -6,7 +6,7 @@ I added one broad rounded bar after the last readable character when a sentence-
 
 The cue measures only text already released to the reading surface. It does not inspect future events, predict words, or guarantee that the eventual answer will continue on that line. Explicit newlines, narrow remaining space, completion, errors and stopped sources suppress it. It is a possibility cue while the source is still active.
 
-The shared SettleAnswer component owns it, so presentation, article, gallery and product demos receive the same behavior. Baseline output is unchanged. Its absolute positioning cannot rewrap readable words. During a handover it clears before incoming text occupies that area; its geometry changes discretely rather than traveling across the answer. One continuous 3.6-second breath varies its length gently. A run-derived width adds variation without consulting source content. Still mode, reduced motion, pause and offscreen states suppress or pause motion.
+The shared SettleAnswer component owns it, so presentation, article, gallery and product demos receive the same behavior. Baseline output is unchanged. Its absolute positioning cannot rewrap readable words. During a handover it clears before incoming text occupies that area; its geometry changes discretely rather than traveling across the answer. The continuation uses the exact AmbientComposition row material, measured bar height, breathing, glimmer and independently timed reshaping of the field below. A short remainder stays one broad bar; a longer remainder can divide into the same broad-cell arrangements. A 0.3em text gap joins it to the last readable character, while the existing field keeps its normal reserved line pitch below. The available remainder bounds the composition without consulting future content. Still mode, reduced motion, pause and offscreen states suppress or pause motion.
 
 Validation checks the real bar geometry in Chrome, Safari and mobile emulation: it stays within the readable line's width and disappears at source completion. This is an implemented motion treatment, not evidence of a reading or perceived-speed benefit.
 
@@ -15,6 +15,7 @@ Validation checks the real bar geometry in Chrome, Safari and mobile emulation: 
 ```tsx
 'use client'
 
+import { AmbientComposition, type AmbientCondition } from './ambient-composition'
 import { useLayoutEffect, useState, type RefObject } from 'react'
 
 type Props = {
@@ -24,11 +25,16 @@ type Props = {
   visibleLength: number
   showing: boolean
   seed: string
+  active: boolean
+  motion: boolean
+  condition: AmbientCondition
+  tempo: number
+  barHeight: number
 }
 
 /** A decorative continuation cue, measured only from already released text.
  * It reserves no layout space and makes no prediction about the next words. */
-export function LineContinuation({ pageRef, frameRef, text, visibleLength, showing, seed }: Props) {
+export function LineContinuation({ pageRef, frameRef, text, visibleLength, showing, seed, active, motion, condition, tempo, barHeight }: Props) {
   const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
   useLayoutEffect(() => {
     const page = pageRef.current, frame = frameRef.current
@@ -49,12 +55,10 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
         const last = range.getBoundingClientRect()
         const area = page.getBoundingClientRect(), origin = frame.getBoundingClientRect()
         const font = parseFloat(getComputedStyle(page).fontSize) || 16
-        const gap = font * .45, available = area.right - last.right - gap
+        const gap = font * .3, available = area.right - last.right - gap
         if (!last.height || available < font * 2.5) { setBox(null); return }
-        const hash = [...seed].reduce((value, letter) => (value * 31 + letter.charCodeAt(0)) >>> 0, 7)
-        const fraction = .58 + (hash % 23) / 100
-        const height = font * .62
-        setBox({ left: last.right - origin.left + gap, top: last.top - origin.top + (last.height - height) / 2, width: Math.min(available * fraction, font * 12), height })
+        const height = barHeight
+        setBox({ left: last.right - origin.left + gap, top: last.top - origin.top + (last.height - height) / 2, width: available, height })
         return
       }
       setBox(null)
@@ -64,10 +68,11 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
     observer.observe(page)
     document.fonts?.ready.then(measure)
     return () => observer.disconnect()
-  }, [pageRef, frameRef, text, visibleLength, showing, seed])
-  return <span className="settle-line-continuation" aria-hidden="true" data-line-continuation data-shown={!!box} style={box ?? undefined}><span /></span>
+  }, [pageRef, frameRef, text, visibleLength, showing, seed, barHeight])
+  return <span className="settle-line-continuation" aria-hidden="true" data-line-continuation data-shown={!!box} style={box ?? undefined}>
+    {box && <AmbientComposition singleRow splitRow={box.width > barHeight * 11} active={active} motion={motion} condition={condition} complete={false} runId={seed} rowCount={1} lineHeightPx={barHeight} barHeightPx={barHeight} tempo={tempo} />}
+  </span>
 }
-
 ```
 
 ## Integration

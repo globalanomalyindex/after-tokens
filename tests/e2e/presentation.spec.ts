@@ -225,6 +225,10 @@ test('continuation bars occupy free line space and clear at source completion', 
     const p = el.parentElement!.querySelector('.settle-page')!.getBoundingClientRect()
     return { left: b.left, right: b.right, width: b.width, pageLeft: p.left, pageRight: p.right }
   })
+  const mainBar = answer.locator('.settle-waiting-field .ambient-composition__bar[data-shown="true"]').first()
+  const inlineBar = bar.locator('.ambient-composition__bar').first()
+  expect(Math.abs((await inlineBar.boundingBox())!.height - (await mainBar.boundingBox())!.height)).toBeLessThan(1)
+  await expect(bar.locator('[data-material="growing-cell-skeleton-v8"]')).toHaveCount(1)
   expect(geometry.width).toBeGreaterThan(20)
   expect(geometry.left).toBeGreaterThan(geometry.pageLeft)
   expect(geometry.right).toBeLessThanOrEqual(geometry.pageRight)
