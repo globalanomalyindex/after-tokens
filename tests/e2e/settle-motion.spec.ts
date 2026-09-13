@@ -14,7 +14,7 @@ async function startEarlierWords(page: Page): Promise<Locator> {
   await hook.getByRole('radio', { name: 'recorded', exact: true }).click()
   const surface = hook.locator('.settle').first()
   await surface.scrollIntoViewIfNeeded()
-  await expect(surface.locator('.ambient-composition')).toBeAttached()
+  await expect(surface.locator('.settle-waiting-field > .ambient-composition')).toBeAttached()
   await expect(surface).toHaveAttribute('data-material', 'growing-cell-skeleton-v8')
   await expect(surface).toHaveAttribute('data-ambient-condition', 'reshape')
   await page.evaluate(() => document.fonts.ready)

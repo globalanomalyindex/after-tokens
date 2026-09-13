@@ -25,9 +25,14 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
     const page = pageRef.current, frame = frameRef.current
     if (!page || !frame) return
     const measure = () => {
+      // A committed passage often carries one delimiter space for the next
+      // passage. Measure the last meaningful glyph, never that collapsed
+      // delimiter, or a range can resolve to a phantom line below the text.
       const visible = text.slice(0, visibleLength)
-      if (!showing || !visible.trim() || /[\r\n]\s*$/.test(visible)) { setBox(null); return }
-      let remaining = visibleLength
+      const endsWithExplicitBreak = /[\r\n]\s*$/.test(visible)
+      const meaningful = visible.replace(/\s+$/, '')
+      if (!showing || !meaningful || endsWithExplicitBreak) { setBox(null); return }
+      let remaining = meaningful.length
       const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT)
       let node: Node | null
       while ((node = walker.nextNode())) {

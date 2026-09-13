@@ -119,7 +119,12 @@ export function useReadingSurface({ state, runId, frameRef, pageRef, effectiveMo
       }
       const occupiedRows = Math.ceil(pageHeight / lineHeightPx)
       const rowCount = receiving ? Math.max(length > 0 ? 4 : 5, Math.min(14, capacityRows.current - occupiedRows)) : current.current.rowCount
-      const tailOffset = receiving ? pageHeight + (length > 0 ? lineHeightPx * .4 : 0) : current.current.tailOffset
+      // Keep the first unresolved bar on the same vertical rhythm as every
+      // later bar. The field's bar is centered inside its line, so the lead
+      // before that line is the remaining half of the line-to-bar inset.
+      // This scales with the actual type and bar metrics on every viewport.
+      const waitingLead = Math.max(0, (lineHeightPx - barHeightPx) / 2)
+      const tailOffset = receiving ? pageHeight + (length > 0 ? waitingLead : 0) : current.current.tailOffset
       const target = receiving ? tailOffset + rowCount * lineHeightPx : pageHeight
       const resize = (height: number, duration: number, done?: () => void) => {
         const from = frame.getBoundingClientRect().height

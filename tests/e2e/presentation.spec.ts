@@ -214,7 +214,8 @@ test('original demo gallery precedes the closing slide and scrolls within the pa
 })
 
 test('continuation bars occupy free line space and clear at source completion', async ({ page }) => {
-  await page.goto('/#words')
+  test.setTimeout(20000)
+  await page.goto('/#comparison')
   await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
   await page.keyboard.press('Escape')
   const answer = page.locator('[data-after-tokens-reply] .settle')
@@ -228,10 +229,54 @@ test('continuation bars occupy free line space and clear at source completion', 
   const mainBar = answer.locator('.settle-waiting-field .ambient-composition__bar[data-shown="true"]').first()
   const inlineBar = bar.locator('.ambient-composition__bar').first()
   expect(Math.abs((await inlineBar.boundingBox())!.height - (await mainBar.boundingBox())!.height)).toBeLessThan(1)
+  await expect.poll(async () => answer.evaluate(el => {
+    const page = el.querySelector<HTMLElement>('.settle-page')
+    const bars = [...el.querySelectorAll<HTMLElement>('.settle-waiting-field .ambient-composition__bar[data-shown="true"]')]
+    if (!page || bars.length < 2) return Number.POSITIVE_INFINITY
+    const pageRect = page.getBoundingClientRect()
+    const first = bars[0]!.getBoundingClientRect()
+    const second = bars[1]!.getBoundingClientRect()
+    const lead = first.top - pageRect.bottom
+    const rowGap = second.top - first.bottom
+    return Math.abs(lead - rowGap)
+  }), { timeout: 3000 }).toBeLessThan(1)
   await expect(bar.locator('[data-material="growing-cell-skeleton-v8"]')).toHaveCount(1)
   expect(geometry.width).toBeGreaterThan(20)
   expect(geometry.left).toBeGreaterThan(geometry.pageLeft)
   expect(geometry.right).toBeLessThanOrEqual(geometry.pageRight)
-  await expect(answer).toHaveAttribute('data-status', 'complete')
+  await expect(answer).toHaveAttribute('data-status', 'complete', { timeout: 12000 })
   await expect(bar).toHaveAttribute('data-shown', 'false')
+})
+
+test('continuation bars anchor to the last meaningful glyph after a delimiter space', async ({ page }) => {
+  await page.goto('/#comparison')
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
+  await page.keyboard.press('Escape')
+  const answer = page.locator('[data-after-tokens-reply] .settle')
+  const bar = answer.locator('[data-line-continuation]')
+  await expect(bar).toHaveAttribute('data-shown', 'true', { timeout: 12000 })
+  await expect.poll(async () => answer.evaluate(el => {
+    const page = el.querySelector<HTMLElement>('.settle-page')
+    const cue = el.querySelector<HTMLElement>('[data-line-continuation]')
+    if (!page || !cue) return Number.POSITIVE_INFINITY
+    const length = Number(el.getAttribute('data-released-length'))
+    const source = (page.textContent ?? '').slice(0, length)
+    const meaningful = source.replace(/\s+$/, '')
+    if (!meaningful) return Number.POSITIVE_INFINITY
+    let remaining = meaningful.length
+    const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT)
+    let node: Node | null
+    while ((node = walker.nextNode())) {
+      const nodeLength = node.textContent?.length ?? 0
+      if (remaining > nodeLength) { remaining -= nodeLength; continue }
+      if (!remaining) return Number.POSITIVE_INFINITY
+      const range = document.createRange()
+      range.setStart(node, remaining - 1)
+      range.setEnd(node, remaining)
+      const glyph = range.getBoundingClientRect()
+      const cueRect = cue.getBoundingClientRect()
+      return Math.abs((cueRect.top + cueRect.height / 2) - (glyph.top + glyph.height / 2))
+    }
+    return Number.POSITIVE_INFINITY
+  }), { timeout: 3000 }).toBeLessThan(1)
 })

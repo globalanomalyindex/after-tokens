@@ -6,7 +6,7 @@ I added one broad rounded bar after the last readable character when a sentence-
 
 The cue measures only text already released to the reading surface. It does not inspect future events, predict words, or guarantee that the eventual answer will continue on that line. Explicit newlines, narrow remaining space, completion, errors and stopped sources suppress it. It is a possibility cue while the source is still active.
 
-The shared SettleAnswer component owns it, so presentation, article, gallery and product demos receive the same behavior. Baseline output is unchanged. Its absolute positioning cannot rewrap readable words. During a handover it clears before incoming text occupies that area; its geometry changes discretely rather than traveling across the answer. The continuation uses the exact AmbientComposition row material, measured bar height, breathing, glimmer and independently timed reshaping of the field below. A short remainder stays one broad bar; a longer remainder can divide into the same broad-cell arrangements. A 0.3em text gap joins it to the last readable character, while the existing field keeps its normal reserved line pitch below. The available remainder bounds the composition without consulting future content. Still mode, reduced motion, pause and offscreen states suppress or pause motion.
+The shared SettleAnswer component owns it, so presentation, article, gallery and product demos receive the same behavior. Baseline output is unchanged. Its absolute positioning cannot rewrap readable words. During a handover it clears before incoming text occupies that area; its geometry changes discretely rather than traveling across the answer. The continuation uses the exact AmbientComposition row material, measured bar height, breathing, glimmer and independently timed reshaping of the field below. A short remainder stays one broad bar; a longer remainder can divide into the same broad-cell arrangements. A 0.3em text gap joins it to the last meaningful character, while the existing field begins on the same vertical rhythm as the rows that follow: its lead is derived from half the difference between the line height and bar height. Trailing delimiter spaces are trimmed before measurement so they cannot create a phantom line below the readable text. The available remainder bounds the composition without consulting future content. Still mode, reduced motion, pause and offscreen states suppress or pause motion.
 
 Validation checks the real bar geometry in Chrome, Safari and mobile emulation: it stays within the readable line's width and disappears at source completion. This is an implemented motion treatment, not evidence of a reading or perceived-speed benefit.
 
@@ -40,9 +40,14 @@ export function LineContinuation({ pageRef, frameRef, text, visibleLength, showi
     const page = pageRef.current, frame = frameRef.current
     if (!page || !frame) return
     const measure = () => {
+      // A committed passage often carries one delimiter space for the next
+      // passage. Measure the last meaningful glyph, never that collapsed
+      // delimiter, or a range can resolve to a phantom line below the text.
       const visible = text.slice(0, visibleLength)
-      if (!showing || !visible.trim() || /[\r\n]\s*$/.test(visible)) { setBox(null); return }
-      let remaining = visibleLength
+      const endsWithExplicitBreak = /[\r\n]\s*$/.test(visible)
+      const meaningful = visible.replace(/\s+$/, '')
+      if (!showing || !meaningful || endsWithExplicitBreak) { setBox(null); return }
+      let remaining = meaningful.length
       const walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT)
       let node: Node | null
       while ((node = walker.nextNode())) {
