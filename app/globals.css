@@ -1152,3 +1152,13 @@ html[data-motion="on"] [data-in="true"] .lock-map .lm-ref {
 [data-brand='spectrum'] .settle[data-paused='true'], [data-brand='spectrum'] .settle[data-active='false'], [data-brand='spectrum'] .settle[data-motion='off'] { animation-play-state: paused; }
 @keyframes spectrum-answer-wash { from { background-position: 0% 20%; } to { background-position: 100% 80%; } }
 @media (prefers-reduced-motion: reduce) { [data-brand='spectrum'] .settle { animation: none; } }
+
+/* One broad cue in the open part of the current readable line. Position is
+   discrete: it never flies between words or changes the text's wrapping. */
+.settle-line-continuation { position: absolute; z-index: 1; pointer-events: none; opacity: 0; overflow: hidden; border-radius: 999px; }
+.settle-line-continuation[data-shown='true'] { opacity: 1; }
+.settle-line-continuation > span { display: block; width: 100%; height: 100%; border-radius: inherit; background: currentColor; opacity: .17; transform-origin: left center; animation: continuation-breathe 3600ms ease-in-out infinite alternate; }
+@keyframes continuation-breathe { from { transform: scaleX(.78); opacity: .12; } to { transform: scaleX(1); opacity: .22; } }
+.settle[data-active='false'] .settle-line-continuation > span { animation-play-state: paused; }
+.settle[data-motion='off'] .settle-line-continuation > span, .settle[data-ambient-condition='static'] .settle-line-continuation > span { animation: none; }
+@media (prefers-reduced-motion: reduce) { .settle-line-continuation > span { animation: none; } }

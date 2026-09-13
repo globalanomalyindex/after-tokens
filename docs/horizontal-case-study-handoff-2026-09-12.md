@@ -34,6 +34,10 @@ The sequence is Spectrum → After Tokens → Felt → Pulse. A voice changes 2.
 
 The 12-second alternating wash uses small translation, rotation and scale on a contained background. It does not change the text layout or consume provisional word positions. This preserves the renderer’s source-only integration boundary: ambient movement can run without a token-confidence stream or advance knowledge of the final wording.
 
+## Current-line continuation
+
+I added a broad breathing cue in the remaining space after readable words while an answer continues. The shared renderer handles all demos. [Implementation and limits](line-continuation-handoff-2026-09-12.md).
+
 ## Original demo gallery
 
 I arranged the gallery as a dark editorial sequence: the extended heist answer leads, followed by the travel comparison, technical explanation and smaller sunflower branding moment. Width and alignment vary down a single vertical reading path. These are the original source recordings in SettleStage, with compact answer type and content-driven growth; the article section layouts are not copied. Spectrum is now registered in the shared brand system and available in the stages, presentation examples, original showcase, motion study and product previews. Its low-opacity color stays behind readable ink, pauses with the answer and respects reduced motion.

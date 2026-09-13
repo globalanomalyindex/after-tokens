@@ -212,3 +212,22 @@ test('original demo gallery precedes the closing slide and scrolls within the pa
   await page.getByRole('button', { name: page.viewportSize()!.width <= 900 ? 'Go to next slide' : 'Next slide', exact: true }).click()
   await expect(page.locator('[data-case-study]')).toHaveAttribute('data-slide', 'colophon')
 })
+
+test('continuation bars occupy free line space and clear at source completion', async ({ page }) => {
+  await page.goto('/#words')
+  await expect(page.locator('[data-hero-canvas][data-presentation="fullscreen"]')).toBeVisible()
+  await page.keyboard.press('Escape')
+  const answer = page.locator('[data-after-tokens-reply] .settle')
+  const bar = answer.locator('[data-line-continuation]')
+  await expect(bar).toHaveAttribute('data-shown', 'true')
+  const geometry = await bar.evaluate(el => {
+    const b = el.getBoundingClientRect()
+    const p = el.parentElement!.querySelector('.settle-page')!.getBoundingClientRect()
+    return { left: b.left, right: b.right, width: b.width, pageLeft: p.left, pageRight: p.right }
+  })
+  expect(geometry.width).toBeGreaterThan(20)
+  expect(geometry.left).toBeGreaterThan(geometry.pageLeft)
+  expect(geometry.right).toBeLessThanOrEqual(geometry.pageRight)
+  await expect(answer).toHaveAttribute('data-status', 'complete')
+  await expect(bar).toHaveAttribute('data-shown', 'false')
+})

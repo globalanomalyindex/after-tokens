@@ -9,6 +9,7 @@ import { statusWords } from './margin'
 import { AmbientComposition, type AmbientCondition } from './ambient-composition'
 import { useReadingSurface } from './use-reading-surface'
 import { DemoProgress } from './demo-progress'
+import { LineContinuation } from './line-continuation'
 import { BubbleTransfer } from './bubble-transfer'
 import { GROWING_MATERIAL } from '@/lib/settle/growing-geometry'
 
@@ -130,6 +131,9 @@ export function SettleAnswer({
           <AmbientComposition active={active} motion={enabled} condition={ambient} complete={false} runId={`${runId}:v${state.version}`} tempo={voice.tempo} rowCount={surface.rowCount} lineHeightPx={surface.lineHeightPx} barHeightPx={surface.barHeightPx} />
         </div>}
         {page}
+        <LineContinuation pageRef={pageRef} frameRef={frameRef} text={answerText} visibleLength={surface.visibleLength}
+          showing={receiving && surface.phase === 'waiting' && (state.policy === 'sentence' || state.policy === 'word')}
+          seed={String(runId)} />
         {surface.phase === 'revealing' && surface.arrivalKey && <BubbleTransfer key={surface.arrivalKey} frameRef={frameRef} transferKey={surface.arrivalKey} inPlace={state.policy === 'word'} onCaptured={surface.advanceWaitingField} onComplete={surface.finishHandover} />}
       </div>
       {state.status === 'complete' && !answerText && <p className="readout">the source returned an empty answer</p>}
